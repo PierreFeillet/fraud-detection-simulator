@@ -1,8 +1,8 @@
 
-# Fraud Detection Simulator with Features
+# Fraud Detection Simulator
 
 ## Overview
-This project simulates both legitimate and fraudulent transactions in a banking system. The simulation includes geographical information, merchants, devices, networks, and analyzes whether devices or networks are compromised.
+This project simulates both legitimate and fraudulent transactions in a banking system in a multi-agent architecture. The simulation includes geographical information, merchants, devices, networks, and analyzes whether devices or networks are compromised.
 
 ## Features
 - **Geographical Information**: Each transaction is linked to a geographical location.
