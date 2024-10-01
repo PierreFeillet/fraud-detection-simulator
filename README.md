@@ -1,12 +1,13 @@
 
-# Fraud Detection Simulator
+# Fraud Detection Simulator with Features
 
 ## Overview
-This repository provides a Python-based simulation for fraud detection in a banking system. The simulator generates both legitimate and fraudulent transactions, as well as suspicious account activities such as password changes and failed login attempts.
+This project simulates both legitimate and fraudulent transactions in a banking system. The simulation includes geographical information, merchants, devices, networks, and analyzes whether devices or networks are compromised.
 
 ## Features
-- **Behavioral Catalog**: Fraud behaviors are defined in a catalog, making it easy to configure different types of fraud scenarios.
-- **Fraudulent Activities**: Simulates a range of fraudulent activities including failed login attempts, password changes, suspicious withdrawals, and more.
+- **Geographical Information**: Each transaction is linked to a geographical location.
+- **Merchants**: Transactions are associated with merchants like Amazon, Walmart, etc.
+- **Devices and Networks**: Transactions include device and network information, with the possibility of compromised devices or networks.
 
 ## How to Run
 1. Install the required Python dependencies:
@@ -19,7 +20,4 @@ This repository provides a Python-based simulation for fraud detection in a bank
     ```
 
 ## Data
-- A sample dataset of 100 activities is included in the `data` folder. This dataset contains both legitimate and fraudulent activities along with the corresponding risk levels and fraud labels.
-
-## Customization
-The fraud scenarios can be customized through the `behavioral_catalog` in the `simulator.py` script. You can add new fraud types, modify existing behaviors, and adjust the probabilities for different activities.
+- The generated dataset contains 100 activities (both legitimate and fraudulent) with associated geographical and device features.
