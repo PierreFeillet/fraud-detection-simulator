@@ -1,66 +1,130 @@
-
-# Include the legitimate customer, fraudster, and bank logic with merchants, locations, devices, etc.
-
 import random
 import numpy as np
-import pandas as pd
-from datetime import datetime, timedelta
-from sklearn.ensemble import IsolationForest
-from sklearn.neighbors import LocalOutlierFactor
-from sklearn.svm import OneClassSVM
-from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report, accuracy_score, f1_score
 
+from catalog import generate_transaction_amount, transaction_type, account_activity
 from catalog import behavioral_catalog
+from catalog import merchants
+from catalog import merchant_weights
+from catalog import locations
+from catalog import location_weights
+from catalog import devices
+from catalog import device_weights
+from catalog import networks
+from catalog import network_weights
+
+# Include the legitimate customer, fraudster, and bank logic with merchants, locations, devices, etc.
 
 class Agent:
     def __init__(self, agent_id, balance):
         self.agent_id = agent_id
         self.balance = balance
 
+
+
 class LegitimateCustomer(Agent):
     def generate_transaction(self):
-        transaction_type = random.choice(["deposit", "withdrawal"])
-        amount = random.uniform(10, 200)
-        if transaction_type == "withdrawal" and self.balance > amount:
+        transaction_type_choice = transaction_type("normal")
+        amount = generate_transaction_amount(transaction_type_choice, "normal")
+        merchant = np.random.choice(merchants, p=merchant_weights)
+        location = np.random.choice(locations, p=location_weights)
+        device = np.random.choice(devices, p=device_weights)
+        network = random.choice(networks)
+        compromised_device = is_fraud()
+        compromised_network = is_fraud()
+
+        if transaction_type_choice == "withdrawal" and self.balance > amount:
             self.balance -= amount
-        elif transaction_type == "deposit":
+        elif transaction_type_choice == "deposit":
             self.balance += amount
-        return {"agent_id": self.agent_id, "type": transaction_type, "amount": amount, "balance": self.balance, "fraud": 0}
+
+        return {
+            "agent_id": self.agent_id,
+            "type": transaction_type_choice,
+            "amount": amount,
+            "balance": self.balance,
+            "merchant": merchant,
+            "location": location,
+            "device": device,
+            "network": network,
+            "compromised_device": compromised_device,
+            "compromised_network": compromised_network,
+            "fraud": 0
+        }
 
     def account_activity(self):
-        activities = ["password_change", "email_change", "phone_change", "suspicious_login", "failed_login"]
-        activity_type = random.choice(activities)
-        return {"agent_id": self.agent_id, "type": activity_type, "amount": 0, "balance": self.balance, "fraud": 0}
+        activity = account_activity("normal")
+        location = np.random.choice(locations, p=location_weights)
+        device = np.random.choice(devices, p=device_weights)
+        network = random.choice(networks)
+        compromised_device = is_fraud()
+        compromised_network = is_fraud()
+
+        return {
+            "agent_id": self.agent_id,
+            "type": activity,
+            "balance": self.balance,
+            "location": location,
+            "device": device,
+            "network": network,
+            "compromised_device": compromised_device,
+            "compromised_network": compromised_network,
+            "fraud": 0
+        }
 
 class Fraudster(Agent):
-    def __init__(self, agent_id, balance, fraud_type="identity_theft"):
-        super().__init__(agent_id, balance)
-        self.fraud_type = fraud_type
-        self.behavior = behavioral_catalog[fraud_type]
-        self.activity_sequence = self.behavior["activity_behavior"]["sequence"]
-        self.time_probabilities = self.behavior["activity_behavior"]["time_probabilities"]
+    def commit_fraud(self, fraud_type):
+        transaction_type_choice = transaction_type(fraud_type)
+        amount = generate_transaction_amount(transaction_type_choice, fraud_type)
+        merchant = np.random.choice(merchants, p=merchant_weights)
+        location = np.random.choice(locations, p=location_weights)
+        device = np.random.choice(devices, p=device_weights)
+        network = random.choice(networks)
+        compromised_device = is_fraud()
+        compromised_network = is_fraud()
 
-    def commit_fraud(self):
-        transaction_type = "withdrawal" if random.random() < self.behavior["transaction_behavior"]["transaction_frequency"] else "deposit"
-        if transaction_type == "withdrawal":
-            amount = random.uniform(*self.behavior["transaction_behavior"]["withdrawal_range"])
+        if transaction_type_choice == "withdrawal":
             self.balance -= amount
         else:
-            amount = random.uniform(*self.behavior["transaction_behavior"]["deposit_range"])
             self.balance += amount
-        return {"agent_id": self.agent_id, "type": "fraud", "amount": amount, "balance": self.balance, "fraud": 1}
 
-    def account_activity(self):
-        current_time_step = random.random()
-        activity_type = None
-        for i, prob in enumerate(self.time_probabilities):
-            if current_time_step < prob:
-                activity_type = self.activity_sequence[i]
-                break
-        if not activity_type:
-            activity_type = "failed_login"
-        return {"agent_id": self.agent_id, "type": activity_type, "amount": 0, "balance": self.balance, "fraud": 1}
+        return {
+            "agent_id": self.agent_id,
+            "type": "fraud",
+            "amount": amount,
+            "balance": self.balance,
+            "merchant": merchant,
+            "location": location,
+            "device": device,
+            "network": network,
+            "compromised_device": compromised_device,
+            "compromised_network": compromised_network,
+            "fraud": 1
+        }
 
+    def account_activity(self, fraud_type):
+        activity = account_activity(fraud_type)
+        location = np.random.choice(locations, p=location_weights)
+        device = np.random.choice(devices, p=device_weights)
+        network = random.choice(networks)
+        compromised_device = is_fraud()
+        compromised_network = is_fraud()
 
+        return {
+            "agent_id": self.agent_id,
+            "type": activity,
+            "balance": self.balance,
+            "location": location,
+            "device": device,
+            "network": network,
+            "compromised_device": compromised_device,
+            "compromised_network": compromised_network,
+            "fraud": 1
+        }
+
+# Define is_fraud() function
+def is_fraud(probability=0.05):
+    """
+    Returns True if a device or network is compromised, based on the probability.
+    Default probability of compromise is 5%.
+    """
+    return random.random() < probability

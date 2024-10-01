@@ -1,20 +1,15 @@
-
-# Include the legitimate customer, fraudster, and bank logic with merchants, locations, devices, etc.
-
 import random
-import numpy as np
 import pandas as pd
 
 from datetime import datetime, timedelta
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import f1_score, accuracy_score, classification_report
 from sklearn.ensemble import IsolationForest
 from sklearn.neighbors import LocalOutlierFactor
 from sklearn.svm import OneClassSVM
-from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report, accuracy_score, f1_score
 
-from agent import LegitimateCustomer
-from agent import Fraudster
+from agent import LegitimateCustomer, Fraudster
 from catalog import behavioral_catalog
 
 class BankWithClientActivities:
@@ -33,7 +28,9 @@ class BankWithClientActivities:
         self.transaction_log = pd.concat([self.transaction_log, pd.DataFrame([activity])], ignore_index=True)
 
 def run_simulation_with_activities(legitimate_agents, fraudster_agents, bank, steps=100):
-    for _ in range(steps):
+    for step in range(steps):
+        if step % 100 == 0:
+            print(f"step: {step}")
         for agent in legitimate_agents:
             transaction = agent.generate_transaction()
             bank.process_transaction(transaction)
@@ -42,22 +39,30 @@ def run_simulation_with_activities(legitimate_agents, fraudster_agents, bank, st
                 bank.process_activity(activity)
 
         for fraudster in fraudster_agents:
-            fraud = fraudster.commit_fraud()
+            fraud_type = random.choice(list(behavioral_catalog.keys()))
+            fraud = fraudster.commit_fraud(fraud_type)
             bank.process_transaction(fraud)
             if random.random() < 0.5:
-                activity = fraudster.account_activity()
+                activity = fraudster.account_activity(fraud_type)
                 bank.process_activity(activity)
+
+def extract_features(transaction_log):
+    X = transaction_log[["amount", "balance", "risk_level"]]
+    y = transaction_log["fraud"]
+    return X, y
 
 def benchmark_models(transaction_log):
     X, y = extract_features(transaction_log)
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
     X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.3, random_state=42)
+    
     models = {
         "Isolation Forest": IsolationForest(contamination=0.1, random_state=42),
         "Local Outlier Factor": LocalOutlierFactor(n_neighbors=20, contamination=0.1, novelty=True),
         "One-Class SVM": OneClassSVM(nu=0.1, kernel="rbf", gamma=0.1)
     }
+    
     results = {}
     for model_name, model in models.items():
         if model_name == "Local Outlier Factor":
@@ -75,9 +80,18 @@ def benchmark_models(transaction_log):
     return results
 
 if __name__ == "__main__":
-    legitimate_agents = [LegitimateCustomer(agent_id=i, balance=random.uniform(1000, 5000)) for i in range(3)]
-    fraudster_agents = [Fraudster(agent_id=i+3, balance=random.uniform(1000, 5000)) for i in range(1)]
+    legitimate_agents = [LegitimateCustomer(agent_id=i, balance=random.uniform(1000, 5000)) for i in range(100)]
+    fraudster_agents = [Fraudster(agent_id=i+100, balance=random.uniform(1000, 5000)) for i in range(3)]
     bank_with_activities = BankWithClientActivities()
-    run_simulation_with_activities(legitimate_agents, fraudster_agents, bank_with_activities, steps=100)
+    run_simulation_with_activities(legitimate_agents, fraudster_agents, bank_with_activities, steps=1000)
+    
     transaction_log_with_fraud_features = bank_with_activities.transaction_log
-    transaction_log_with_fraud_features.to_csv("data/fraud_simulation_100_activities.csv", index=False)
+    transaction_log_with_fraud_features.to_csv("data/fraud_simulation_1000_activities.csv", index=False)
+
+    # Benchmark anomaly detection models
+    results = benchmark_models(transaction_log_with_fraud_features)
+    for model, metrics in results.items():
+        print(f"Model: {model}")
+        print(f"F1 Score: {metrics['F1 Score']}")
+        print(f"Accuracy: {metrics['Accuracy']}")
+        print(f"Classification Report: \n{metrics['Classification Report']}")

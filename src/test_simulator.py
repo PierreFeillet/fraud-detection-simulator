@@ -1,8 +1,7 @@
 
 import unittest
 import pandas as pd
-from simulator import LegitimateCustomer, Fraudster, BankWithClientActivities, run_simulation_with_features
-
+from simulator import LegitimateCustomer, Fraudster, BankWithClientActivities, run_simulation_with_activities
 class TestFraudDetectionSimulator(unittest.TestCase):
     
     def test_legitimate_customer_transaction(self):
@@ -21,7 +20,7 @@ class TestFraudDetectionSimulator(unittest.TestCase):
         legitimate_agents = [LegitimateCustomer(agent_id=i, balance=1000) for i in range(3)]
         fraudster_agents = [Fraudster(agent_id=i+3, balance=2000) for i in range(1)]
         bank = BankWithClientActivities()
-        run_simulation_with_features(legitimate_agents, fraudster_agents, bank, steps=10)
+        run_simulation_with_activities(legitimate_agents, fraudster_agents, bank, steps=10)
         self.assertGreater(len(bank.transaction_log), 0)  # Ensure transactions were logged
 
 if __name__ == "__main__":
