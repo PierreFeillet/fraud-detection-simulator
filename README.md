@@ -28,4 +28,4 @@ Behaviours are captured in the catalog file and represent several known patterns
     ```
 
 ## Data
-- The generated dataset contains 100 activities (both legitimate and fraudulent) with associated geographical and device features.
+- The generated dataset contains 1000 activities (both legitimate and fraudulent) with associated geographical and device features.
