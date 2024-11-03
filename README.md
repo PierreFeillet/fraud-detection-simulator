@@ -4,6 +4,14 @@
 ## Overview
 This project simulates both legitimate and fraudulent transactions in a banking system in a multi-agent architecture. The simulation includes geographical information, merchants, devices, networks, and analyzes whether devices or networks are compromised.
 
+## Fraudulent behaviours
+Behaviours are captured in the catalog file and represent several known patterns of normal or fraudulent activities:
+* normal
+* identity_theft
+* money_laundering
+* phishing
+* card_skimming
+    
 ## Features
 - **Geographical Information**: Each transaction is linked to a geographical location.
 - **Merchants**: Transactions are associated with merchants like Amazon, Walmart, etc.
@@ -20,4 +28,4 @@ This project simulates both legitimate and fraudulent transactions in a banking 
     ```
 
 ## Data
-- The generated dataset contains 100 activities (both legitimate and fraudulent) with associated geographical and device features.
+- The generated dataset contains 1000 activities (both legitimate and fraudulent) with associated geographical and device features.
