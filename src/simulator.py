@@ -38,6 +38,7 @@ class BankWithClientActivities:
         if len(self.transaction_log) >= self.max_size - 1:
             return  # Stop processing if max size is reached
 
+        activity.setdefault("amount", 0)
         activity["timestamp"] = self.current_time
         self.current_time += timedelta(minutes=random.randint(1, 30))
         self.transactions_buffer.append(activity)  # Append to buffer
@@ -144,7 +145,7 @@ def benchmark_models(transaction_log):
     return results
 
 if __name__ == "__main__":
-    nb_global_activities = 1000000
+    nb_global_activities = 100000
     nb_legitimate_agents = nb_global_activities // 10
     nb_fraudster_agents = nb_global_activities // 30
     legitimate_agents = [LegitimateCustomer(agent_id=i, balance=random.uniform(1000, 5000)) for i in range(nb_legitimate_agents)]
