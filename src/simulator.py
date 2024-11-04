@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 import time
 
+
+
 from datetime import datetime, timedelta
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -13,7 +15,7 @@ from sklearn.svm import OneClassSVM
 from sklearn.impute import SimpleImputer
 
 from agent import LegitimateCustomer, Fraudster
-from catalog import behavioral_catalog
+from catalog import behavioral_catalog, MERCHANT_TRANSACTION_TYPES
 
 # Function to generate a random country
 def generate_country():

@@ -8,8 +8,23 @@ locations = ["New York, USA", "Los Angeles, USA", "London, UK", "Tokyo, Japan", 
 location_weights = [0.3, 0.2, 0.15, 0.15, 0.1, 0.1]  # Adjust these weights as needed
 
 # Merchants
-merchants = ["Amazon", "Walmart", "Best Buy", "Target", "Starbucks", "Apple Store"]
-merchant_weights = [0.3, 0.2, 0.15, 0.15, 0.1, 0.1]
+# Define allowed transaction types for each merchant
+MERCHANT_TRANSACTION_TYPES = {
+    "Walmart": ["purchase"],
+    "Best Buy": ["purchase"],
+    "Target": ["purchase"],
+    "Starbucks": ["purchase"],
+    "Apple": ["purchase"],
+    "Bank": ["deposit", "withdrawal"],
+    "Amazon": ["purchase"],
+    "ATM": ["withdrawal", "deposit"],
+    "PayPal": ["purchase", "deposit"]
+    # Add more merchants and allowed types as needed
+}
+
+merchants = list(MERCHANT_TRANSACTION_TYPES.keys())
+#merchants = ["Amazon", "Walmart", "Best Buy", "Target", "Starbucks", "Apple Store"]
+merchant_weights = [0.1, 0.1, 0.1, 0.1, 0.15, 0.15, 0.1, 0.1, 0.1] # Needs to match the merchant dictonnary
 
 # Devices and device weights
 devices = ["iPhone", "Android", "Windows Laptop", "MacBook", "Linux PC", "iPad"]
@@ -40,8 +55,8 @@ behavioral_catalog = {
             "transaction_frequency": 0.7  # 70% of the time it's a withdrawal
         },
         "activity_behavior": {
-            "sequence": ["failed_login", "failed_login", "password_change", "suspicious_login", "withdrawal"],
-            "time_probabilities": [0.2, 0.2, 0.3, 0.7, 0.8]  # Probability of activity happening at different times
+            "sequence": ["failed_login", "failed_login", "password_change", "suspicious_login", "withdrawal", "purchase"],
+            "time_probabilities": [0.2, 0.2, 0.3, 0.7, 0.8, 0.8]  # Probability of activity happening at different times
         }
     },
     "money_laundering": {
@@ -90,9 +105,11 @@ def generate_transaction_amount(transaction_type, behavior_type, precision=2):
     
     return round(amount, precision)  # Round to the specified precision
 
+
 # Determine if the transaction is a withdrawal or deposit based on behavior
-def transaction_type(behavior_type):
-    return np.random.choice(
+def transaction_type(behavior_type, merchant):
+
+    new_type = np.random.choice(
         ["deposit", "withdrawal"],
         p=[1 - behavioral_catalog[behavior_type]["transaction_behavior"]["transaction_frequency"],
            behavioral_catalog[behavior_type]["transaction_behavior"]["transaction_frequency"]]
