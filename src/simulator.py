@@ -158,17 +158,23 @@ def format_number(nb_global_activities):
     formated_number = f"{int(value) if value.is_integer() else round(value, 1)}{suffix}"
     return formated_number
 
-if __name__ == "__main__":
-    nb_global_activities = 1000000
-    nb_legitimate_agents = nb_global_activities // 10
-    nb_fraudster_agents = nb_global_activities // 30
-    legitimate_agents = [LegitimateCustomer(agent_id=i, balance=random.uniform(1000, 5000)) for i in range(nb_legitimate_agents)]
-    fraudster_agents = [Fraudster(agent_id=i+100, balance=random.uniform(1000, 5000)) for i in range(nb_fraudster_agents)]
-    bank_with_activities = BankWithClientActivities(nb_global_activities)
+def generate_dataset(nb_activities):
+    nb_legitimate_agents = nb_activities // 10
+    nb_fraudster_agents = nb_activities // 30
+    legitimate_agents = [LegitimateCustomer(agent_id=i, balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_legitimate_agents)]
+    fraudster_agents = [Fraudster(agent_id=i+100, balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_fraudster_agents)]
+    bank_with_activities = BankWithClientActivities(nb_activities)
     run_simulation_with_activities(legitimate_agents, fraudster_agents, bank_with_activities, steps=1000)
     
     transaction_log_with_fraud_features = bank_with_activities.transaction_log
-    transaction_log_with_fraud_features.to_csv("data/fraud_simulation_" + format_number(nb_global_activities) + "_activities.csv", index=False, chunksize=10000)
+    transaction_log_with_fraud_features.to_csv("data/fraud_simulation_" + format_number(nb_activities) + "_activities.csv", index=False, chunksize=10000)
+
+if __name__ == "__main__":
+    generate_dataset(100)
+    generate_dataset(1000)
+    generate_dataset(10000)
+    generate_dataset(100000)
+    generate_dataset(1000000)
 
     # Benchmark anomaly detection models
     if False:
