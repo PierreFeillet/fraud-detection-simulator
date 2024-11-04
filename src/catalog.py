@@ -80,11 +80,15 @@ behavioral_catalog = {
 }
 
 # Generate transaction amount based on behavior
-def generate_transaction_amount(transaction_type, behavior_type):
+def generate_transaction_amount(transaction_type, behavior_type, precision=2):
     if transaction_type == "withdrawal":
-        return max(0, np.random.uniform(*behavioral_catalog[behavior_type]["transaction_behavior"]["withdrawal_range"]))
+        amount = max(0, np.random.uniform(*behavioral_catalog[behavior_type]["transaction_behavior"]["withdrawal_range"]))
     elif transaction_type == "deposit":
-        return max(0, np.random.uniform(*behavioral_catalog[behavior_type]["transaction_behavior"]["deposit_range"]))
+        amount = max(0, np.random.uniform(*behavioral_catalog[behavior_type]["transaction_behavior"]["deposit_range"]))
+    else:
+        amount = 0  # Default if transaction_type is unrecognized
+    
+    return round(amount, precision)  # Round to the specified precision
 
 # Determine if the transaction is a withdrawal or deposit based on behavior
 def transaction_type(behavior_type):
