@@ -1,100 +1,100 @@
 agent_id,type,amount,balance,merchant,location,device,network,compromised_device,compromised_network,fraud
-0,withdrawal,331.97,1759.55,Apple Store,"Tokyo, Japan",iPhone,Mobile Network,False,False,0
-1,deposit,119.09,2811.5,Amazon,"New York, USA",iPhone,Corporate Network,True,False,0
-2,withdrawal,115.88,4295.88,Best Buy,"New York, USA",Windows Laptop,Mobile Network,False,False,0
-3,deposit,915.16,5616.88,Starbucks,"Tokyo, Japan",Android,Public WiFi,False,False,0
-4,deposit,702.2,5462.01,Starbucks,"New York, USA",Windows Laptop,Corporate Network,False,False,0
-5,deposit,949.47,3419.7700000000004,Walmart,"Tokyo, Japan",Linux PC,Corporate Network,False,False,0
-6,deposit,673.22,2563.26,Apple Store,"Los Angeles, USA",Android,Home WiFi,False,False,0
-7,deposit,283.98,2531.41,Target,"Paris, France",Windows Laptop,Corporate Network,False,False,0
-7,email_change,0.0,2531.41,0,"Paris, France",Android,Home WiFi,False,False,0
-8,deposit,137.91,3016.8799999999997,Amazon,"Los Angeles, USA",Android,Mobile Network,False,False,0
-8,password_change,0.0,3016.8799999999997,0,"Tokyo, Japan",iPhone,Public WiFi,False,False,0
-9,deposit,185.48,2361.84,Amazon,"Berlin, Germany",iPhone,Mobile Network,False,False,0
-100,fraud,2492.36,1627.3799999999997,Amazon,"Los Angeles, USA",MacBook,Public WiFi,False,False,1
-101,fraud,4769.58,6856.03,Best Buy,"Tokyo, Japan",iPhone,Corporate Network,False,False,1
-102,fraud,2691.54,6456.12,Walmart,"London, UK",MacBook,Mobile Network,False,False,1
-102,withdrawal,0.0,6456.12,0,"Berlin, Germany",Linux PC,Home WiFi,False,False,1
-0,withdrawal,269.63,1489.92,Best Buy,"New York, USA",iPhone,Corporate Network,False,False,0
-1,withdrawal,458.65,2352.85,Walmart,"New York, USA",Android,Home WiFi,False,False,0
-2,deposit,825.5,5121.38,Walmart,"Berlin, Germany",Linux PC,Corporate Network,False,False,0
-3,deposit,716.08,6332.96,Target,"New York, USA",Linux PC,Mobile Network,False,False,0
-4,deposit,514.8,5976.81,Walmart,"New York, USA",iPhone,Corporate Network,True,False,0
-5,withdrawal,324.97,3094.8,Best Buy,"Berlin, Germany",Windows Laptop,Public WiFi,False,False,0
-6,deposit,659.5,3222.76,Walmart,"Berlin, Germany",Windows Laptop,Public WiFi,False,True,0
-7,withdrawal,151.61,2379.7999999999997,Walmart,"Tokyo, Japan",Windows Laptop,Home WiFi,False,False,0
-7,email_change,0.0,2379.7999999999997,0,"London, UK",Android,Public WiFi,False,False,0
-8,withdrawal,147.55,2869.3299999999995,Walmart,"Berlin, Germany",Linux PC,Mobile Network,False,False,0
-9,deposit,819.01,3180.8500000000004,Amazon,"London, UK",iPhone,Home WiFi,False,False,0
-9,phone_change,0.0,3180.8500000000004,0,"London, UK",Windows Laptop,Home WiFi,True,False,0
-100,fraud,705.52,2332.8999999999996,Walmart,"Tokyo, Japan",Android,Mobile Network,False,False,1
-101,fraud,335.93,7191.96,Amazon,"Tokyo, Japan",Linux PC,Home WiFi,False,False,1
-102,fraud,29.98,6486.099999999999,Best Buy,"New York, USA",MacBook,Home WiFi,False,False,1
-0,deposit,853.64,2343.56,Amazon,"New York, USA",iPhone,Corporate Network,False,False,0
-1,withdrawal,146.28,2206.5699999999997,Amazon,"London, UK",MacBook,Home WiFi,False,False,0
-2,withdrawal,337.5,4783.88,Apple Store,"London, UK",Android,Corporate Network,False,False,0
-3,deposit,655.21,6988.17,Starbucks,"London, UK",iPhone,Mobile Network,False,False,0
-4,withdrawal,58.75,5918.06,Best Buy,"New York, USA",iPhone,Mobile Network,False,False,0
-5,deposit,444.61,3539.4100000000003,Walmart,"Los Angeles, USA",iPhone,Home WiFi,True,False,0
-6,withdrawal,254.38,2968.38,Target,"London, UK",Android,Corporate Network,False,False,0
-7,deposit,859.9,3239.7,Amazon,"London, UK",Windows Laptop,Mobile Network,False,False,0
-8,withdrawal,281.58,2587.7499999999995,Amazon,"Los Angeles, USA",Android,Corporate Network,False,False,0
-8,phone_change,0.0,2587.7499999999995,0,"Tokyo, Japan",Windows Laptop,Home WiFi,False,False,0
-9,deposit,381.44,3562.2900000000004,Amazon,"Berlin, Germany",Android,Corporate Network,False,False,0
-100,fraud,411.15,2744.0499999999997,Target,"Tokyo, Japan",iPhone,Corporate Network,False,False,1
-101,fraud,1555.26,5636.7,Walmart,"Los Angeles, USA",iPhone,Public WiFi,False,False,1
-102,fraud,2850.43,3635.6699999999996,Best Buy,"London, UK",iPhone,Mobile Network,False,False,1
-102,password_change,0.0,3635.6699999999996,0,"New York, USA",Android,Mobile Network,False,False,1
-0,deposit,206.48,2550.04,Walmart,"Tokyo, Japan",Android,Public WiFi,False,False,0
-1,deposit,258.29,2464.8599999999997,Target,"Tokyo, Japan",Windows Laptop,Mobile Network,False,False,0
-2,deposit,768.59,5552.47,Walmart,"Tokyo, Japan",iPhone,Corporate Network,False,False,0
-3,deposit,795.27,7783.4400000000005,Amazon,"Los Angeles, USA",iPhone,Home WiFi,False,False,0
-3,password_change,0.0,7783.4400000000005,0,"Tokyo, Japan",Android,Mobile Network,False,False,0
-4,withdrawal,71.41,5846.650000000001,Starbucks,"Berlin, Germany",MacBook,Home WiFi,True,False,0
-5,withdrawal,78.09,3461.32,Walmart,"Berlin, Germany",iPhone,Mobile Network,False,False,0
-6,deposit,262.41,3230.79,Best Buy,"London, UK",iPhone,Public WiFi,False,True,0
-6,email_change,0.0,3230.79,0,"Paris, France",MacBook,Public WiFi,False,False,0
-7,deposit,804.32,4044.02,Target,"London, UK",MacBook,Corporate Network,False,False,0
-8,deposit,500.41,3088.1599999999994,Target,"Tokyo, Japan",Android,Public WiFi,False,False,0
-9,withdrawal,316.12,3246.1700000000005,Best Buy,"Paris, France",Android,Corporate Network,False,False,0
-100,fraud,4808.64,-2064.5900000000006,Starbucks,"New York, USA",iPhone,Public WiFi,False,False,1
-101,fraud,265.8,5902.5,Walmart,"Paris, France",iPhone,Corporate Network,False,False,1
-102,fraud,1499.63,2136.0399999999995,Walmart,"New York, USA",Windows Laptop,Mobile Network,True,False,1
-102,password_change,0.0,2136.0399999999995,0,"Paris, France",MacBook,Corporate Network,False,False,1
-0,withdrawal,109.99,2440.05,Target,"London, UK",Android,Mobile Network,True,False,0
-1,deposit,522.09,2986.95,Best Buy,"New York, USA",iPhone,Corporate Network,False,False,0
-2,deposit,799.67,6352.14,Starbucks,"New York, USA",MacBook,Mobile Network,False,False,0
-2,email_change,0.0,6352.14,0,"New York, USA",Android,Public WiFi,False,False,0
-3,withdrawal,93.48,7689.960000000001,Best Buy,"London, UK",iPhone,Public WiFi,False,False,0
-4,withdrawal,126.79,5719.860000000001,Target,"Los Angeles, USA",Android,Public WiFi,False,False,0
-5,deposit,995.05,4456.37,Walmart,"New York, USA",Android,Mobile Network,False,False,0
-5,phone_change,0.0,4456.37,0,"New York, USA",iPhone,Home WiFi,False,False,0
-6,withdrawal,327.57,2903.22,Apple Store,"Tokyo, Japan",Android,Mobile Network,False,False,0
-7,deposit,770.2,4814.22,Amazon,"Los Angeles, USA",MacBook,Corporate Network,False,False,0
-8,deposit,693.15,3781.3099999999995,Amazon,"New York, USA",Android,Corporate Network,True,False,0
-9,deposit,970.28,4216.450000000001,Best Buy,"Los Angeles, USA",MacBook,Corporate Network,False,False,0
-100,fraud,3527.35,1462.7599999999993,Starbucks,"Paris, France",Android,Home WiFi,False,False,1
-100,deposit,0.0,1462.7599999999993,0,"Paris, France",Linux PC,Corporate Network,False,False,1
-101,fraud,3337.01,2565.49,Walmart,"Tokyo, Japan",iPhone,Mobile Network,False,False,1
-101,deposit,0.0,2565.49,0,"Los Angeles, USA",Android,Home WiFi,False,False,1
-102,fraud,1820.29,315.74999999999955,Target,"London, UK",Windows Laptop,Corporate Network,False,False,1
-102,password_change,0.0,315.74999999999955,0,"London, UK",iPhone,Corporate Network,False,False,1
-0,withdrawal,214.66,2225.3900000000003,Apple Store,"London, UK",Android,Public WiFi,False,False,0
-1,withdrawal,227.36,2759.5899999999997,Apple Store,"Los Angeles, USA",iPhone,Mobile Network,False,False,0
-1,password_change,0.0,2759.5899999999997,0,"Los Angeles, USA",iPad,Public WiFi,False,False,0
-2,deposit,783.95,7136.09,Amazon,"London, UK",iPhone,Home WiFi,False,False,0
-3,deposit,920.96,8610.920000000002,Starbucks,"New York, USA",Windows Laptop,Home WiFi,False,False,0
-4,deposit,374.93,6094.790000000001,Target,"Tokyo, Japan",Android,Corporate Network,False,False,0
-4,email_change,0.0,6094.790000000001,0,"Los Angeles, USA",Android,Mobile Network,True,False,0
-5,deposit,660.16,5116.53,Amazon,"New York, USA",Android,Public WiFi,False,False,0
-6,deposit,848.87,3752.0899999999997,Target,"Berlin, Germany",MacBook,Mobile Network,False,False,0
-7,withdrawal,138.68,4675.54,Amazon,"Berlin, Germany",iPhone,Home WiFi,False,False,0
-8,deposit,686.96,4468.2699999999995,Best Buy,"Los Angeles, USA",Android,Corporate Network,True,False,0
-9,deposit,560.81,4777.26,Walmart,"New York, USA",Windows Laptop,Home WiFi,False,False,0
-100,fraud,1794.94,3257.6999999999994,Walmart,"Los Angeles, USA",MacBook,Corporate Network,False,False,1
-101,fraud,3416.59,-851.1000000000004,Target,"New York, USA",Android,Mobile Network,False,False,1
-102,fraud,504.21,-188.46000000000043,Target,"New York, USA",Linux PC,Mobile Network,False,False,1
-102,withdrawal,0.0,-188.46000000000043,0,"Tokyo, Japan",MacBook,Corporate Network,False,True,1
-0,deposit,336.35,2561.7400000000002,Amazon,"New York, USA",iPhone,Corporate Network,False,False,0
-1,deposit,353.87,3113.4599999999996,Amazon,"London, UK",Windows Laptop,Public WiFi,False,False,0
-2,withdrawal,277.72,6858.37,Apple Store,"New York, USA",Android,Home WiFi,False,False,0
+0,deposit,147.44,3871.54,Walmart,"Los Angeles, USA",MacBook,Public WiFi,0,0,0
+1,deposit,923.4,3096.06,Starbucks,"London, UK",Linux PC,Home WiFi,0,0,0
+2,deposit,269.88,2896.12,Best Buy,"New York, USA",iPhone,Home WiFi,0,0,0
+3,deposit,711.45,2902.69,Amazon,"New York, USA",Windows Laptop,Public WiFi,0,0,0
+3,password_change,0.0,2902.69,0,"Los Angeles, USA",Linux PC,Mobile Network,0,0,0
+4,deposit,483.59,3953.61,Best Buy,"Berlin, Germany",Android,Home WiFi,0,0,0
+4,email_change,0.0,3953.61,0,"Paris, France",Linux PC,Home WiFi,0,0,0
+5,withdrawal,435.12,1228.63,Amazon,"Paris, France",iPhone,Corporate Network,0,0,0
+6,withdrawal,297.46,1948.32,Amazon,"New York, USA",Windows Laptop,Home WiFi,1,0,0
+7,deposit,308.49,2211.02,Best Buy,"Los Angeles, USA",iPhone,Public WiFi,0,0,0
+7,phone_change,0.0,2211.02,0,"New York, USA",iPhone,Home WiFi,1,0,0
+8,deposit,401.37,3814.66,Amazon,"Los Angeles, USA",Android,Public WiFi,0,0,0
+8,email_change,0.0,3814.66,0,"London, UK",Android,Home WiFi,0,0,0
+9,deposit,725.56,2840.25,Apple Store,"London, UK",Android,Mobile Network,0,0,0
+100,fraud,614.36,2409.32,Amazon,"New York, USA",Windows Laptop,Mobile Network,0,0,1
+101,fraud,106.88,3272.64,Starbucks,"Tokyo, Japan",iPhone,Mobile Network,0,0,1
+102,fraud,1132.45,1640.25,Amazon,"Berlin, Germany",Android,Public WiFi,0,0,1
+102,failed_login,0.0,1640.25,0,"Los Angeles, USA",iPhone,Public WiFi,0,0,1
+0,withdrawal,384.75,3486.79,Best Buy,"New York, USA",iPad,Home WiFi,0,0,0
+1,deposit,789.7,3885.76,Best Buy,"New York, USA",iPhone,Public WiFi,0,0,0
+2,deposit,693.85,3589.97,Amazon,"Paris, France",Windows Laptop,Public WiFi,0,0,0
+3,deposit,785.04,3687.73,Target,"New York, USA",Linux PC,Corporate Network,0,0,0
+4,deposit,311.14,4264.75,Amazon,"New York, USA",Windows Laptop,Public WiFi,0,1,0
+5,withdrawal,64.08,1164.55,Best Buy,"Los Angeles, USA",iPhone,Public WiFi,0,0,0
+6,deposit,252.55,2200.87,Amazon,"London, UK",Android,Mobile Network,0,0,0
+7,deposit,219.25,2430.27,Amazon,"Tokyo, Japan",Android,Public WiFi,1,0,0
+8,deposit,332.54,4147.2,Target,"New York, USA",Windows Laptop,Mobile Network,0,1,0
+9,withdrawal,134.01,2706.24,Walmart,"London, UK",MacBook,Home WiFi,0,0,0
+100,fraud,995.04,3404.36,Starbucks,"Los Angeles, USA",iPhone,Public WiFi,0,0,1
+101,fraud,454.45,2818.19,Apple Store,"New York, USA",iPhone,Mobile Network,0,0,1
+101,phone_change,0.0,2818.19,0,"Tokyo, Japan",Windows Laptop,Home WiFi,0,0,1
+102,fraud,232.83,1407.42,Starbucks,"London, UK",iPad,Corporate Network,0,0,1
+0,deposit,497.44,3984.23,Starbucks,"New York, USA",iPhone,Mobile Network,0,0,0
+1,deposit,470.1,4355.86,Walmart,"Los Angeles, USA",Android,Corporate Network,0,0,0
+2,deposit,336.01,3925.98,Target,"Los Angeles, USA",MacBook,Home WiFi,0,0,0
+3,deposit,947.8,4635.53,Target,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0,0
+4,deposit,208.55,4473.3,Best Buy,"Los Angeles, USA",Windows Laptop,Mobile Network,0,0,0
+4,email_change,0.0,4473.3,0,"Tokyo, Japan",Android,Public WiFi,0,0,0
+5,withdrawal,374.0,790.55,Walmart,"Paris, France",MacBook,Corporate Network,0,0,0
+6,deposit,502.9,2703.77,Amazon,"London, UK",MacBook,Mobile Network,0,0,0
+7,withdrawal,109.67,2320.6,Walmart,"Paris, France",Windows Laptop,Public WiFi,0,0,0
+8,deposit,930.68,5077.88,Amazon,"Berlin, Germany",Android,Home WiFi,0,0,0
+9,withdrawal,446.16,2260.08,Walmart,"Paris, France",MacBook,Home WiFi,0,0,0
+100,fraud,93.85,3498.21,Best Buy,"New York, USA",Android,Home WiFi,0,0,1
+101,fraud,520.34,3338.53,Amazon,"Los Angeles, USA",Android,Home WiFi,0,0,1
+101,phone_change,0.0,3338.53,0,"New York, USA",Android,Home WiFi,0,0,1
+102,fraud,3.99,1411.41,Apple Store,"London, UK",Android,Mobile Network,0,0,1
+0,deposit,325.52,4309.75,Amazon,"New York, USA",MacBook,Public WiFi,0,0,0
+1,withdrawal,434.81,3921.05,Best Buy,"Tokyo, Japan",Windows Laptop,Home WiFi,0,0,0
+2,deposit,371.41,4297.39,Apple Store,"London, UK",Android,Corporate Network,0,0,0
+2,email_change,0.0,4297.39,0,"Los Angeles, USA",iPhone,Home WiFi,1,0,0
+3,deposit,435.56,5071.09,Walmart,"Los Angeles, USA",Android,Mobile Network,0,0,0
+4,withdrawal,190.85,4282.45,Amazon,"New York, USA",iPhone,Corporate Network,0,0,0
+5,withdrawal,150.17,640.38,Starbucks,"Tokyo, Japan",iPhone,Mobile Network,0,0,0
+6,deposit,257.99,2961.76,Amazon,"Tokyo, Japan",Android,Corporate Network,0,0,0
+6,password_change,0.0,2961.76,0,"Los Angeles, USA",iPad,Corporate Network,0,0,0
+7,withdrawal,279.98,2040.62,Target,"Los Angeles, USA",Linux PC,Corporate Network,0,0,0
+8,withdrawal,388.6,4689.28,Target,"Berlin, Germany",iPhone,Public WiFi,0,0,0
+9,withdrawal,392.1,1867.98,Starbucks,"Los Angeles, USA",Android,Corporate Network,0,0,0
+100,fraud,2353.75,1144.46,Amazon,"Paris, France",Android,Home WiFi,0,0,1
+101,fraud,6577.18,-3238.65,Apple Store,"Tokyo, Japan",Windows Laptop,Corporate Network,0,0,1
+101,deposit,0.0,-3238.65,0,"Tokyo, Japan",Android,Public WiFi,0,0,1
+102,fraud,110.8,1522.21,Starbucks,"Los Angeles, USA",iPhone,Public WiFi,0,0,1
+0,deposit,183.38,4493.13,Walmart,"New York, USA",Windows Laptop,Public WiFi,0,0,0
+1,deposit,318.31,4239.36,Apple Store,"Tokyo, Japan",Android,Corporate Network,0,0,0
+2,withdrawal,149.35,4148.04,Apple Store,"Los Angeles, USA",iPhone,Mobile Network,0,0,0
+3,deposit,371.25,5442.34,Best Buy,"New York, USA",Android,Mobile Network,0,0,0
+4,deposit,746.92,5029.37,Best Buy,"New York, USA",Android,Public WiFi,0,0,0
+5,withdrawal,477.04,163.34,Amazon,"Los Angeles, USA",iPhone,Home WiFi,0,0,0
+5,email_change,0.0,163.34,0,"Los Angeles, USA",iPhone,Public WiFi,0,0,0
+6,deposit,561.94,3523.7,Amazon,"New York, USA",MacBook,Mobile Network,0,0,0
+7,withdrawal,277.62,1763.0,Walmart,"London, UK",Linux PC,Corporate Network,0,0,0
+8,withdrawal,152.41,4536.87,Amazon,"Tokyo, Japan",MacBook,Home WiFi,0,0,0
+9,withdrawal,222.75,1645.23,Target,"Los Angeles, USA",Android,Corporate Network,0,0,0
+100,fraud,4213.34,-3068.88,Walmart,"New York, USA",Linux PC,Home WiFi,0,0,1
+101,fraud,1890.41,-5129.06,Apple Store,"Tokyo, Japan",Windows Laptop,Public WiFi,0,0,1
+101,withdrawal,0.0,-5129.06,0,"London, UK",iPhone,Home WiFi,0,0,1
+102,fraud,25.73,1547.94,Amazon,"New York, USA",Windows Laptop,Corporate Network,0,0,1
+102,withdrawal,0.0,1547.94,0,"New York, USA",MacBook,Corporate Network,0,0,1
+0,withdrawal,352.16,4140.97,Walmart,"Los Angeles, USA",Android,Corporate Network,0,0,0
+1,deposit,424.19,4663.55,Amazon,"New York, USA",MacBook,Public WiFi,0,0,0
+2,deposit,411.03,4559.07,Target,"Tokyo, Japan",MacBook,Mobile Network,0,0,0
+2,password_change,0.0,4559.07,0,"London, UK",iPhone,Public WiFi,0,0,0
+3,deposit,942.98,6385.32,Amazon,"Berlin, Germany",Android,Public WiFi,0,0,0
+4,deposit,165.12,5194.49,Starbucks,"London, UK",iPhone,Public WiFi,1,0,0
+5,deposit,207.68,371.02,Apple Store,"Tokyo, Japan",Android,Mobile Network,0,0,0
+6,deposit,563.47,4087.17,Amazon,"New York, USA",Linux PC,Public WiFi,0,0,0
+6,email_change,0.0,4087.17,0,"Tokyo, Japan",Android,Corporate Network,0,0,0
+7,withdrawal,89.69,1673.31,Walmart,"New York, USA",iPhone,Corporate Network,0,0,0
+8,withdrawal,250.7,4286.17,Apple Store,"London, UK",Windows Laptop,Home WiFi,0,0,0
+9,withdrawal,80.04,1565.19,Apple Store,"Los Angeles, USA",Windows Laptop,Corporate Network,0,0,0
+100,fraud,151.21,-2917.67,Best Buy,"Paris, France",MacBook,Public WiFi,0,0,1
+101,fraud,2479.27,-2649.79,Walmart,"Tokyo, Japan",iPhone,Home WiFi,0,0,1
+102,fraud,1316.61,231.33,Amazon,"New York, USA",Windows Laptop,Corporate Network,0,1,1
+0,deposit,927.64,5068.61,Walmart,"New York, USA",Linux PC,Home WiFi,0,0,0
+0,email_change,0.0,5068.61,0,"Paris, France",iPhone,Corporate Network,0,0,0
+1,deposit,625.43,5288.98,Target,"Paris, France",Android,Public WiFi,0,1,0
+2,withdrawal,55.54,4503.53,Walmart,"London, UK",Windows Laptop,Mobile Network,0,0,0
+2,email_change,0.0,4503.53,0,"New York, USA",Windows Laptop,Home WiFi,0,0,0

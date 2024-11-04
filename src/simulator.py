@@ -15,32 +15,31 @@ from sklearn.impute import SimpleImputer
 from agent import LegitimateCustomer, Fraudster
 from catalog import behavioral_catalog
 
-# List of example countries
-COUNTRIES = ["USA", "Canada", "France", "Germany", "Japan"]
-
 # Function to generate a random country
 def generate_country():
     return random.choice(COUNTRIES)
 
-class BankWithClientActivities:
+class BankActivities:
     def __init__(self, max_size):
         # Define all columns initially, even if empty
-        self.columns = [
-            "agent_id",
-            "type",
-            "amount",
-            "balance",
-            "merchant",
-            "location",
-            "device",
-            "network",
-            "compromised_device",
-            "compromised_network",
-            "fraud"]
-        self.transaction_log = pd.DataFrame(columns=self.columns)
+        self.dtypes = {
+            "agent_id": "int16",
+            "type": "category",
+            "amount": "float32",
+            "balance": "float32",
+            "merchant": "category",
+            "location": "category",
+            "device": "category",
+            "network": "category",
+            "compromised_device": "int8",
+            "compromised_network": "int8",
+            "fraud": "int8"}
+        
+        # Pre-define DataFrame with specified dtypes
+        self.transaction_log = pd.DataFrame(columns=self.dtypes.keys()).astype(self.dtypes)
         self.current_time = datetime.now()
         self.transactions_buffer = []  # Buffer for temporary transactions
-        self.max_size = max_size  # Set maximum size for transaction log
+        self.max_size = max_size
 
     def process_transaction(self, transaction):
         # Check if we are at max size
@@ -66,7 +65,7 @@ class BankWithClientActivities:
         """Optimize the code as Panda concat does not scale in performances."""
         """It now allows a stable TPS."""
         if self.transactions_buffer:
-            new_data = pd.DataFrame(self.transactions_buffer, columns=self.columns)
+            new_data = pd.DataFrame(self.transactions_buffer, columns=self.dtypes.keys()).astype(self.dtypes)
 
             # Check if adding new_data would exceed max_size
             if len(self.transaction_log) + len(new_data) > self.max_size - 1:
@@ -181,7 +180,7 @@ def generate_dataset(nb_activities):
     nb_fraudster_agents = nb_activities // 30
     legitimate_agents = [LegitimateCustomer(agent_id=i, balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_legitimate_agents)]
     fraudster_agents = [Fraudster(agent_id=i+100, balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_fraudster_agents)]
-    bank_with_activities = BankWithClientActivities(nb_activities)
+    bank_with_activities = BankActivities(nb_activities)
     run_simulation_with_activities(legitimate_agents, fraudster_agents, bank_with_activities, steps=1000)
     
     transaction_log_with_fraud_features = bank_with_activities.transaction_log
