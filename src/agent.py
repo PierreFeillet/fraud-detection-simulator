@@ -20,7 +20,6 @@ class Agent:
         self.balance = balance
 
 
-
 class LegitimateCustomer(Agent):
     def generate_transaction(self):
         transaction_type_choice = transaction_type("normal")
