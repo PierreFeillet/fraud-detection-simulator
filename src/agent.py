@@ -61,7 +61,9 @@ class LegitimateCustomer(Agent):
         return {
             "agent_id": self.agent_id,
             "type": activity,
+            "amount": 0,
             "balance": self.balance,
+            "merchant": 0,
             "location": location,
             "device": device,
             "network": network,
@@ -111,7 +113,9 @@ class Fraudster(Agent):
         return {
             "agent_id": self.agent_id,
             "type": activity,
+            "amount": 0,
             "balance": self.balance,
+            "merchant": 0,
             "location": location,
             "device": device,
             "network": network,

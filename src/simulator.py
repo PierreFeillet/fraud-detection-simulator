@@ -15,10 +15,28 @@ from sklearn.impute import SimpleImputer
 from agent import LegitimateCustomer, Fraudster
 from catalog import behavioral_catalog
 
+# List of example countries
+COUNTRIES = ["USA", "Canada", "France", "Germany", "Japan"]
+
+# Function to generate a random country
+def generate_country():
+    return random.choice(COUNTRIES)
+
 class BankWithClientActivities:
     def __init__(self, max_size):
         # Define all columns initially, even if empty
-        self.columns = ["agent_id", "type", "amount", "balance", "timestamp", "fraud", "risk_level"]
+        self.columns = [
+            "agent_id",
+            "type",
+            "amount",
+            "balance",
+            "merchant",
+            "location",
+            "device",
+            "network",
+            "compromised_device",
+            "compromised_network",
+            "fraud"]
         self.transaction_log = pd.DataFrame(columns=self.columns)
         self.current_time = datetime.now()
         self.transactions_buffer = []  # Buffer for temporary transactions

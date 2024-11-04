@@ -1,100 +1,100 @@
-agent_id,type,amount,balance,timestamp,fraud,risk_level
-0,deposit,371.52,4386.42,2024-11-04 13:59:10.625961,0,
-1,deposit,435.76,2084.09,2024-11-04 14:25:10.625961,0,
-1,password_change,0.0,2084.09,2024-11-04 14:33:10.625961,0,
-2,withdrawal,139.59,3301.41,2024-11-04 14:54:10.625961,0,
-3,withdrawal,425.32,669.51,2024-11-04 15:01:10.625961,0,
-4,deposit,539.35,2270.79,2024-11-04 15:11:10.625961,0,
-5,withdrawal,230.35,3053.11,2024-11-04 15:36:10.625961,0,
-6,deposit,987.43,4420.35,2024-11-04 15:49:10.625961,0,
-7,deposit,940.31,2765.46,2024-11-04 15:53:10.625961,0,
-8,withdrawal,104.59,3679.52,2024-11-04 16:13:10.625961,0,
-9,withdrawal,477.05,4435.98,2024-11-04 16:38:10.625961,0,
-100,fraud,7777.88,-6745.74,2024-11-04 17:08:10.625961,1,
-101,fraud,1398.36,1344.14,2024-11-04 17:22:10.625961,1,
-102,fraud,901.97,1144.31,2024-11-04 17:40:10.625961,1,
-0,deposit,965.92,5352.34,2024-11-04 17:56:10.625961,0,
-1,deposit,173.28,2257.3700000000003,2024-11-04 18:00:10.625961,0,
-2,deposit,583.84,3885.25,2024-11-04 18:02:10.625961,0,
-2,password_change,0.0,3885.25,2024-11-04 18:07:10.625961,0,
-3,withdrawal,346.51,323.0,2024-11-04 18:09:10.625961,0,
-4,deposit,492.62,2763.41,2024-11-04 18:17:10.625961,0,
-5,deposit,791.66,3844.77,2024-11-04 18:42:10.625961,0,
-5,password_change,0.0,3844.77,2024-11-04 18:47:10.625961,0,
-6,withdrawal,409.06,4011.2900000000004,2024-11-04 18:55:10.625961,0,
-7,withdrawal,244.4,2521.06,2024-11-04 19:17:10.625961,0,
-8,withdrawal,288.86,3390.66,2024-11-04 19:30:10.625961,0,
-9,withdrawal,102.66,4333.32,2024-11-04 19:40:10.625961,0,
-100,fraud,128.72,-6617.0199999999995,2024-11-04 19:59:10.625961,1,
-100,withdrawal,0.0,-6617.0199999999995,2024-11-04 20:28:10.625961,1,
-101,fraud,178.27,1522.41,2024-11-04 20:53:10.625961,1,
-101,withdrawal,0.0,1522.41,2024-11-04 21:19:10.625961,1,
-102,fraud,751.83,392.4799999999999,2024-11-04 21:28:10.625961,1,
-102,withdrawal,0.0,392.4799999999999,2024-11-04 21:52:10.625961,1,
-0,deposit,406.25,5758.59,2024-11-04 21:54:10.625961,0,
-1,withdrawal,245.52,2011.8500000000004,2024-11-04 22:19:10.625961,0,
-2,withdrawal,363.04,3522.21,2024-11-04 22:37:10.625961,0,
-3,deposit,299.27,622.27,2024-11-04 23:03:10.625961,0,
-4,withdrawal,381.77,2381.64,2024-11-04 23:15:10.625961,0,
-4,password_change,0.0,2381.64,2024-11-04 23:40:10.625961,0,
-5,withdrawal,238.18,3606.59,2024-11-04 23:51:10.625961,0,
-6,deposit,595.09,4606.38,2024-11-05 00:09:10.625961,0,
-6,phone_change,0.0,4606.38,2024-11-05 00:36:10.625961,0,
-7,withdrawal,325.8,2195.2599999999998,2024-11-05 00:49:10.625961,0,
-7,phone_change,0.0,2195.2599999999998,2024-11-05 01:04:10.625961,0,
-8,deposit,812.3,4202.96,2024-11-05 01:12:10.625961,0,
-9,deposit,818.86,5152.179999999999,2024-11-05 01:30:10.625961,0,
-100,fraud,858.04,-5758.98,2024-11-05 01:42:10.625961,1,
-101,fraud,130.15,1652.5600000000002,2024-11-05 01:43:10.625961,1,
-102,fraud,4939.7,5332.179999999999,2024-11-05 02:03:10.625961,1,
-102,deposit,0.0,5332.179999999999,2024-11-05 02:13:10.625961,1,
-0,deposit,690.19,6448.780000000001,2024-11-05 02:36:10.625961,0,
-0,phone_change,0.0,6448.780000000001,2024-11-05 03:04:10.625961,0,
-1,withdrawal,296.08,1715.7700000000004,2024-11-05 03:05:10.625961,0,
-1,password_change,0.0,1715.7700000000004,2024-11-05 03:28:10.625961,0,
-2,withdrawal,215.29,3306.92,2024-11-05 03:34:10.625961,0,
-3,deposit,544.85,1167.12,2024-11-05 03:51:10.625961,0,
-4,deposit,203.9,2585.54,2024-11-05 03:52:10.625961,0,
-5,withdrawal,325.14,3281.4500000000003,2024-11-05 03:57:10.625961,0,
-6,withdrawal,444.75,4161.63,2024-11-05 04:18:10.625961,0,
-7,withdrawal,347.83,1847.4299999999998,2024-11-05 04:38:10.625961,0,
-8,deposit,416.68,4619.64,2024-11-05 04:48:10.625961,0,
-9,deposit,111.74,5263.919999999999,2024-11-05 05:01:10.625961,0,
-100,fraud,3402.82,-2356.1599999999994,2024-11-05 05:18:10.625961,1,
-101,fraud,2584.93,-932.3699999999997,2024-11-05 05:48:10.625961,1,
-102,fraud,66.41,5398.589999999999,2024-11-05 05:53:10.625961,1,
-102,password_change,0.0,5398.589999999999,2024-11-05 05:54:10.625961,1,
-0,withdrawal,105.47,6343.31,2024-11-05 06:24:10.625961,0,
-1,deposit,899.33,2615.1000000000004,2024-11-05 06:51:10.625961,0,
-2,withdrawal,216.3,3090.62,2024-11-05 06:55:10.625961,0,
-3,withdrawal,123.82,1043.3,2024-11-05 06:56:10.625961,0,
-4,withdrawal,475.39,2110.15,2024-11-05 07:05:10.625961,0,
-5,deposit,583.57,3865.0200000000004,2024-11-05 07:24:10.625961,0,
-5,phone_change,0.0,3865.0200000000004,2024-11-05 07:29:10.625961,0,
-6,deposit,762.41,4924.04,2024-11-05 07:39:10.625961,0,
-6,phone_change,0.0,4924.04,2024-11-05 08:04:10.625961,0,
-7,withdrawal,194.58,1652.85,2024-11-05 08:17:10.625961,0,
-8,deposit,431.97,5051.610000000001,2024-11-05 08:31:10.625961,0,
-9,deposit,365.9,5629.819999999999,2024-11-05 08:48:10.625961,0,
-100,fraud,3614.95,1258.7900000000004,2024-11-05 09:02:10.625961,1,
-100,deposit,0.0,1258.7900000000004,2024-11-05 09:06:10.625961,1,
-101,fraud,26.66,-905.7099999999997,2024-11-05 09:21:10.625961,1,
-101,withdrawal,0.0,-905.7099999999997,2024-11-05 09:33:10.625961,1,
-102,fraud,3454.46,1944.1299999999992,2024-11-05 09:53:10.625961,1,
-0,deposit,637.74,6981.05,2024-11-05 09:58:10.625961,0,
-1,deposit,707.39,3322.4900000000002,2024-11-05 10:02:10.625961,0,
-1,phone_change,0.0,3322.4900000000002,2024-11-05 10:31:10.625961,0,
-2,withdrawal,464.38,2626.24,2024-11-05 11:01:10.625961,0,
-3,deposit,285.81,1329.11,2024-11-05 11:21:10.625961,0,
-4,deposit,393.38,2503.53,2024-11-05 11:44:10.625961,0,
-5,withdrawal,424.2,3440.8200000000006,2024-11-05 11:56:10.625961,0,
-5,phone_change,0.0,3440.8200000000006,2024-11-05 12:26:10.625961,0,
-6,withdrawal,235.21,4688.83,2024-11-05 12:44:10.625961,0,
-6,password_change,0.0,4688.83,2024-11-05 13:12:10.625961,0,
-7,withdrawal,499.79,1153.06,2024-11-05 13:27:10.625961,0,
-8,deposit,372.78,5424.39,2024-11-05 13:33:10.625961,0,
-9,withdrawal,139.73,5490.089999999999,2024-11-05 13:48:10.625961,0,
-100,fraud,3215.59,-1956.7999999999997,2024-11-05 14:08:10.625961,1,
-100,withdrawal,0.0,-1956.7999999999997,2024-11-05 14:21:10.625961,1,
-101,fraud,2708.53,-3614.24,2024-11-05 14:36:10.625961,1,
-102,fraud,3564.57,-1620.440000000001,2024-11-05 14:59:10.625961,1,
+agent_id,type,amount,balance,merchant,location,device,network,compromised_device,compromised_network,fraud
+0,withdrawal,331.97,1759.55,Apple Store,"Tokyo, Japan",iPhone,Mobile Network,False,False,0
+1,deposit,119.09,2811.5,Amazon,"New York, USA",iPhone,Corporate Network,True,False,0
+2,withdrawal,115.88,4295.88,Best Buy,"New York, USA",Windows Laptop,Mobile Network,False,False,0
+3,deposit,915.16,5616.88,Starbucks,"Tokyo, Japan",Android,Public WiFi,False,False,0
+4,deposit,702.2,5462.01,Starbucks,"New York, USA",Windows Laptop,Corporate Network,False,False,0
+5,deposit,949.47,3419.7700000000004,Walmart,"Tokyo, Japan",Linux PC,Corporate Network,False,False,0
+6,deposit,673.22,2563.26,Apple Store,"Los Angeles, USA",Android,Home WiFi,False,False,0
+7,deposit,283.98,2531.41,Target,"Paris, France",Windows Laptop,Corporate Network,False,False,0
+7,email_change,0.0,2531.41,0,"Paris, France",Android,Home WiFi,False,False,0
+8,deposit,137.91,3016.8799999999997,Amazon,"Los Angeles, USA",Android,Mobile Network,False,False,0
+8,password_change,0.0,3016.8799999999997,0,"Tokyo, Japan",iPhone,Public WiFi,False,False,0
+9,deposit,185.48,2361.84,Amazon,"Berlin, Germany",iPhone,Mobile Network,False,False,0
+100,fraud,2492.36,1627.3799999999997,Amazon,"Los Angeles, USA",MacBook,Public WiFi,False,False,1
+101,fraud,4769.58,6856.03,Best Buy,"Tokyo, Japan",iPhone,Corporate Network,False,False,1
+102,fraud,2691.54,6456.12,Walmart,"London, UK",MacBook,Mobile Network,False,False,1
+102,withdrawal,0.0,6456.12,0,"Berlin, Germany",Linux PC,Home WiFi,False,False,1
+0,withdrawal,269.63,1489.92,Best Buy,"New York, USA",iPhone,Corporate Network,False,False,0
+1,withdrawal,458.65,2352.85,Walmart,"New York, USA",Android,Home WiFi,False,False,0
+2,deposit,825.5,5121.38,Walmart,"Berlin, Germany",Linux PC,Corporate Network,False,False,0
+3,deposit,716.08,6332.96,Target,"New York, USA",Linux PC,Mobile Network,False,False,0
+4,deposit,514.8,5976.81,Walmart,"New York, USA",iPhone,Corporate Network,True,False,0
+5,withdrawal,324.97,3094.8,Best Buy,"Berlin, Germany",Windows Laptop,Public WiFi,False,False,0
+6,deposit,659.5,3222.76,Walmart,"Berlin, Germany",Windows Laptop,Public WiFi,False,True,0
+7,withdrawal,151.61,2379.7999999999997,Walmart,"Tokyo, Japan",Windows Laptop,Home WiFi,False,False,0
+7,email_change,0.0,2379.7999999999997,0,"London, UK",Android,Public WiFi,False,False,0
+8,withdrawal,147.55,2869.3299999999995,Walmart,"Berlin, Germany",Linux PC,Mobile Network,False,False,0
+9,deposit,819.01,3180.8500000000004,Amazon,"London, UK",iPhone,Home WiFi,False,False,0
+9,phone_change,0.0,3180.8500000000004,0,"London, UK",Windows Laptop,Home WiFi,True,False,0
+100,fraud,705.52,2332.8999999999996,Walmart,"Tokyo, Japan",Android,Mobile Network,False,False,1
+101,fraud,335.93,7191.96,Amazon,"Tokyo, Japan",Linux PC,Home WiFi,False,False,1
+102,fraud,29.98,6486.099999999999,Best Buy,"New York, USA",MacBook,Home WiFi,False,False,1
+0,deposit,853.64,2343.56,Amazon,"New York, USA",iPhone,Corporate Network,False,False,0
+1,withdrawal,146.28,2206.5699999999997,Amazon,"London, UK",MacBook,Home WiFi,False,False,0
+2,withdrawal,337.5,4783.88,Apple Store,"London, UK",Android,Corporate Network,False,False,0
+3,deposit,655.21,6988.17,Starbucks,"London, UK",iPhone,Mobile Network,False,False,0
+4,withdrawal,58.75,5918.06,Best Buy,"New York, USA",iPhone,Mobile Network,False,False,0
+5,deposit,444.61,3539.4100000000003,Walmart,"Los Angeles, USA",iPhone,Home WiFi,True,False,0
+6,withdrawal,254.38,2968.38,Target,"London, UK",Android,Corporate Network,False,False,0
+7,deposit,859.9,3239.7,Amazon,"London, UK",Windows Laptop,Mobile Network,False,False,0
+8,withdrawal,281.58,2587.7499999999995,Amazon,"Los Angeles, USA",Android,Corporate Network,False,False,0
+8,phone_change,0.0,2587.7499999999995,0,"Tokyo, Japan",Windows Laptop,Home WiFi,False,False,0
+9,deposit,381.44,3562.2900000000004,Amazon,"Berlin, Germany",Android,Corporate Network,False,False,0
+100,fraud,411.15,2744.0499999999997,Target,"Tokyo, Japan",iPhone,Corporate Network,False,False,1
+101,fraud,1555.26,5636.7,Walmart,"Los Angeles, USA",iPhone,Public WiFi,False,False,1
+102,fraud,2850.43,3635.6699999999996,Best Buy,"London, UK",iPhone,Mobile Network,False,False,1
+102,password_change,0.0,3635.6699999999996,0,"New York, USA",Android,Mobile Network,False,False,1
+0,deposit,206.48,2550.04,Walmart,"Tokyo, Japan",Android,Public WiFi,False,False,0
+1,deposit,258.29,2464.8599999999997,Target,"Tokyo, Japan",Windows Laptop,Mobile Network,False,False,0
+2,deposit,768.59,5552.47,Walmart,"Tokyo, Japan",iPhone,Corporate Network,False,False,0
+3,deposit,795.27,7783.4400000000005,Amazon,"Los Angeles, USA",iPhone,Home WiFi,False,False,0
+3,password_change,0.0,7783.4400000000005,0,"Tokyo, Japan",Android,Mobile Network,False,False,0
+4,withdrawal,71.41,5846.650000000001,Starbucks,"Berlin, Germany",MacBook,Home WiFi,True,False,0
+5,withdrawal,78.09,3461.32,Walmart,"Berlin, Germany",iPhone,Mobile Network,False,False,0
+6,deposit,262.41,3230.79,Best Buy,"London, UK",iPhone,Public WiFi,False,True,0
+6,email_change,0.0,3230.79,0,"Paris, France",MacBook,Public WiFi,False,False,0
+7,deposit,804.32,4044.02,Target,"London, UK",MacBook,Corporate Network,False,False,0
+8,deposit,500.41,3088.1599999999994,Target,"Tokyo, Japan",Android,Public WiFi,False,False,0
+9,withdrawal,316.12,3246.1700000000005,Best Buy,"Paris, France",Android,Corporate Network,False,False,0
+100,fraud,4808.64,-2064.5900000000006,Starbucks,"New York, USA",iPhone,Public WiFi,False,False,1
+101,fraud,265.8,5902.5,Walmart,"Paris, France",iPhone,Corporate Network,False,False,1
+102,fraud,1499.63,2136.0399999999995,Walmart,"New York, USA",Windows Laptop,Mobile Network,True,False,1
+102,password_change,0.0,2136.0399999999995,0,"Paris, France",MacBook,Corporate Network,False,False,1
+0,withdrawal,109.99,2440.05,Target,"London, UK",Android,Mobile Network,True,False,0
+1,deposit,522.09,2986.95,Best Buy,"New York, USA",iPhone,Corporate Network,False,False,0
+2,deposit,799.67,6352.14,Starbucks,"New York, USA",MacBook,Mobile Network,False,False,0
+2,email_change,0.0,6352.14,0,"New York, USA",Android,Public WiFi,False,False,0
+3,withdrawal,93.48,7689.960000000001,Best Buy,"London, UK",iPhone,Public WiFi,False,False,0
+4,withdrawal,126.79,5719.860000000001,Target,"Los Angeles, USA",Android,Public WiFi,False,False,0
+5,deposit,995.05,4456.37,Walmart,"New York, USA",Android,Mobile Network,False,False,0
+5,phone_change,0.0,4456.37,0,"New York, USA",iPhone,Home WiFi,False,False,0
+6,withdrawal,327.57,2903.22,Apple Store,"Tokyo, Japan",Android,Mobile Network,False,False,0
+7,deposit,770.2,4814.22,Amazon,"Los Angeles, USA",MacBook,Corporate Network,False,False,0
+8,deposit,693.15,3781.3099999999995,Amazon,"New York, USA",Android,Corporate Network,True,False,0
+9,deposit,970.28,4216.450000000001,Best Buy,"Los Angeles, USA",MacBook,Corporate Network,False,False,0
+100,fraud,3527.35,1462.7599999999993,Starbucks,"Paris, France",Android,Home WiFi,False,False,1
+100,deposit,0.0,1462.7599999999993,0,"Paris, France",Linux PC,Corporate Network,False,False,1
+101,fraud,3337.01,2565.49,Walmart,"Tokyo, Japan",iPhone,Mobile Network,False,False,1
+101,deposit,0.0,2565.49,0,"Los Angeles, USA",Android,Home WiFi,False,False,1
+102,fraud,1820.29,315.74999999999955,Target,"London, UK",Windows Laptop,Corporate Network,False,False,1
+102,password_change,0.0,315.74999999999955,0,"London, UK",iPhone,Corporate Network,False,False,1
+0,withdrawal,214.66,2225.3900000000003,Apple Store,"London, UK",Android,Public WiFi,False,False,0
+1,withdrawal,227.36,2759.5899999999997,Apple Store,"Los Angeles, USA",iPhone,Mobile Network,False,False,0
+1,password_change,0.0,2759.5899999999997,0,"Los Angeles, USA",iPad,Public WiFi,False,False,0
+2,deposit,783.95,7136.09,Amazon,"London, UK",iPhone,Home WiFi,False,False,0
+3,deposit,920.96,8610.920000000002,Starbucks,"New York, USA",Windows Laptop,Home WiFi,False,False,0
+4,deposit,374.93,6094.790000000001,Target,"Tokyo, Japan",Android,Corporate Network,False,False,0
+4,email_change,0.0,6094.790000000001,0,"Los Angeles, USA",Android,Mobile Network,True,False,0
+5,deposit,660.16,5116.53,Amazon,"New York, USA",Android,Public WiFi,False,False,0
+6,deposit,848.87,3752.0899999999997,Target,"Berlin, Germany",MacBook,Mobile Network,False,False,0
+7,withdrawal,138.68,4675.54,Amazon,"Berlin, Germany",iPhone,Home WiFi,False,False,0
+8,deposit,686.96,4468.2699999999995,Best Buy,"Los Angeles, USA",Android,Corporate Network,True,False,0
+9,deposit,560.81,4777.26,Walmart,"New York, USA",Windows Laptop,Home WiFi,False,False,0
+100,fraud,1794.94,3257.6999999999994,Walmart,"Los Angeles, USA",MacBook,Corporate Network,False,False,1
+101,fraud,3416.59,-851.1000000000004,Target,"New York, USA",Android,Mobile Network,False,False,1
+102,fraud,504.21,-188.46000000000043,Target,"New York, USA",Linux PC,Mobile Network,False,False,1
+102,withdrawal,0.0,-188.46000000000043,0,"Tokyo, Japan",MacBook,Corporate Network,False,True,1
+0,deposit,336.35,2561.7400000000002,Amazon,"New York, USA",iPhone,Corporate Network,False,False,0
+1,deposit,353.87,3113.4599999999996,Amazon,"London, UK",Windows Laptop,Public WiFi,False,False,0
+2,withdrawal,277.72,6858.37,Apple Store,"New York, USA",Android,Home WiFi,False,False,0
