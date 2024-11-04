@@ -144,8 +144,22 @@ def benchmark_models(transaction_log):
         }
     return results
 
+def format_number(nb_global_activities):
+    if nb_global_activities >= 1_000_000:
+        value = nb_global_activities / 1_000_000
+        suffix = "M"
+    elif nb_global_activities >= 1_000:
+        value = nb_global_activities / 1_000
+        suffix = "K"
+    else:
+        return str(nb_global_activities)  # No suffix for numbers less than 1,000
+
+    # Format to remove .0 if the value is an integer
+    formated_number = f"{int(value) if value.is_integer() else round(value, 1)}{suffix}"
+    return formated_number
+
 if __name__ == "__main__":
-    nb_global_activities = 100000
+    nb_global_activities = 1000000
     nb_legitimate_agents = nb_global_activities // 10
     nb_fraudster_agents = nb_global_activities // 30
     legitimate_agents = [LegitimateCustomer(agent_id=i, balance=random.uniform(1000, 5000)) for i in range(nb_legitimate_agents)]
@@ -154,7 +168,7 @@ if __name__ == "__main__":
     run_simulation_with_activities(legitimate_agents, fraudster_agents, bank_with_activities, steps=1000)
     
     transaction_log_with_fraud_features = bank_with_activities.transaction_log
-    transaction_log_with_fraud_features.to_csv("data/fraud_simulation_" + str(nb_global_activities) + "_activities.csv", index=False, chunksize=10000)
+    transaction_log_with_fraud_features.to_csv("data/fraud_simulation_" + format_number(nb_global_activities) + "_activities.csv", index=False, chunksize=10000)
 
     # Benchmark anomaly detection models
     if False:
