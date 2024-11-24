@@ -35,3 +35,6 @@ The generated dataset contains x activities (both legitimate and fraudulent) wit
 - [100K activities](data/fraud_simulation_100K_activities.csv)
 - [1M activities](data/fraud_simulation_1M_activities.csv)
 
+## Links
+[PaySim simulator project](https://github.com/EdgarLopezPhD/PaySim)
+

@@ -3,8 +3,6 @@ import pandas as pd
 import numpy as np
 import time
 
-
-
 from datetime import datetime, timedelta
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -14,7 +12,9 @@ from sklearn.neighbors import LocalOutlierFactor
 from sklearn.svm import OneClassSVM
 from sklearn.impute import SimpleImputer
 
-from agent import LegitimateCustomer, Fraudster
+from legitimate_agent import LegitimateCustomer
+from fraudster_agent import Fraudster
+
 from catalog import behavioral_catalog, MERCHANT_TRANSACTION_TYPES
 
 # Function to generate a random country
@@ -26,6 +26,7 @@ class BankActivities:
         # Define all columns initially, even if empty
         self.dtypes = {
             "agent_id": "int16",
+            "timestamp": "datetime64[ns]",
             "type": "category",
             "amount": "float32",
             "balance": "float32",
