@@ -68,17 +68,21 @@ class BankActivities:
         """Optimize the code as Panda concat does not scale in performances."""
         """It now allows a stable TPS."""
         if self.transactions_buffer:
-            new_data = pd.DataFrame(self.transactions_buffer, columns=self.dtypes.keys()).astype(self.dtypes)
+            try:
+                new_data = pd.DataFrame(self.transactions_buffer, columns=self.dtypes.keys()).astype(self.dtypes)
 
-            # Check if adding new_data would exceed max_size
-            if len(self.transaction_log) + len(new_data) > self.max_size - 1:
-                # Truncate new_data to fit the remaining space in transaction_log
-                remaining_space = self.max_size - len(self.transaction_log) - 1
-                new_data = new_data.iloc[:remaining_space]
+                # Check if adding new_data would exceed max_size
+                if len(self.transaction_log) + len(new_data) > self.max_size - 1:
+                    # Truncate new_data to fit the remaining space in transaction_log
+                    remaining_space = self.max_size - len(self.transaction_log) - 1
+                    new_data = new_data.iloc[:remaining_space]
 
-            # Add new data to transaction log
-            self.transaction_log = pd.concat([self.transaction_log, new_data], ignore_index=True)
-            self.transactions_buffer = []  # Clear buffer
+                # Add new data to transaction log
+                self.transaction_log = pd.concat([self.transaction_log, new_data], ignore_index=True)
+                self.transactions_buffer = []  # Clear buffer
+
+            except pd.errors.OutOfBoundsDatetime as e:
+                print("Error:", e)
 
 
 def run_simulation_with_activities(legitimate_agents, fraudster_agents, bank, steps=100, flush_interval=100):
@@ -99,9 +103,9 @@ def run_simulation_with_activities(legitimate_agents, fraudster_agents, bank, st
             print(f"TPS: {tps}")
             start_time = time.time()
 
-        # Only continue if the transaction log is not full
+        # Interrupt the generation when the targeted number of activities has been reached
         if len(bank.transaction_log) >= bank.max_size - 1:
-            print("Reached maximum transaction log size.")
+            print("Target generation of " + str(bank.max_size) + " actvities reached")
             break
 
         for agent in legitimate_agents:
@@ -190,11 +194,11 @@ def generate_dataset(nb_activities):
     transaction_log_with_fraud_features.to_csv("data/fraud_simulation_" + format_number(nb_activities) + "_activities.csv", index=False, chunksize=10000)
 
 if __name__ == "__main__":
-    generate_dataset(100)
-    generate_dataset(1000)
-    generate_dataset(10000)
-    generate_dataset(100000)
-    generate_dataset(1000000)
+    #generate_dataset(100)
+    #generate_dataset(1000)
+   # generate_dataset(10000)
+    #generate_dataset(100000)
+    generate_dataset(400000)
 
     # Benchmark anomaly detection models
     if False:
