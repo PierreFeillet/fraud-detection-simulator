@@ -4,13 +4,19 @@
 ## Overview
 This project simulates both legitimate and fraudulent transactions in a banking system in a multi-agent architecture. The simulation includes geographical information, merchants, devices, networks, and analyzes whether devices or networks are compromised.
 
-## Fraudulent behaviours
+Nominal and fraudulent behaviours are modeled in a catalog as Marhov chains. Each chain is a time sequence of activities with an associated probability.
+Each beahviour is described through a descriptor in the - [catalog](catalog.py)
+All activities participating to nominal and fraudulent behavioral sequences are meshed into a unique dataset and timeline.
+
+## Models for fraudulent and normal behaviours
 Behaviours are captured in the catalog file and represent several known patterns of normal or fraudulent activities:
 * normal
 * identity_theft
 * money_laundering
 * phishing
 * card_skimming
+
+They capture a simplified sequence of activities and can be endlessly improved to better refect state of real activities and fraud evolutions.
     
 ## Features
 - **Geographical Information**: Each transaction is linked to a geographical location.
