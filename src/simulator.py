@@ -50,7 +50,7 @@ class BankActivities:
             return  # Stop processing if max size is reached
 
         transaction["timestamp"] = self.current_time
-        self.current_time += timedelta(minutes=random.randint(1, 30))
+        self.moveCurrentTime()
         self.transactions_buffer.append(transaction)  # Append to buffer
 
     def process_activity(self, activity):
@@ -60,13 +60,17 @@ class BankActivities:
 
         activity.setdefault("amount", 0)
         activity["timestamp"] = self.current_time
-        self.current_time += timedelta(minutes=random.randint(1, 30))
+        self.moveCurrentTime()
         self.transactions_buffer.append(activity)  # Append to buffer
+
+    def moveCurrentTime(self):
+        self.current_time += timedelta(seconds=random.randint(1, 30))
+        print("Current time now: " + str(self.current_time))
 
     def flush_transactions(self):
         """Consolidate buffered transactions."""
         """Optimize the code as Panda concat does not scale in performances."""
-        """It now allows a stable TPS."""
+        """It now allows a more stable TPS."""
         if self.transactions_buffer:
             try:
                 new_data = pd.DataFrame(self.transactions_buffer, columns=self.dtypes.keys()).astype(self.dtypes)
@@ -194,11 +198,11 @@ def generate_dataset(nb_activities):
     transaction_log_with_fraud_features.to_csv("data/fraud_simulation_" + format_number(nb_activities) + "_activities.csv", index=False, chunksize=10000)
 
 if __name__ == "__main__":
-    #generate_dataset(100)
-    #generate_dataset(1000)
-   # generate_dataset(10000)
-    #generate_dataset(100000)
-    generate_dataset(400000)
+    generate_dataset(100)
+    generate_dataset(1000)
+    generate_dataset(10000)
+    generate_dataset(100000)
+    generate_dataset(500000)
 
     # Benchmark anomaly detection models
     if False:
