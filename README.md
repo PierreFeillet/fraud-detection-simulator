@@ -19,9 +19,18 @@ Behaviours are captured in the catalog file and represent several known patterns
 They capture a simplified sequence of activities and can be endlessly improved to better refect state of real activities and fraud evolutions.
     
 ## Features
-- **Geographical Information**: Each transaction is linked to a geographical location.
-- **Merchants**: Transactions are associated with merchants like Amazon, Walmart, etc.
-- **Devices and Networks**: Transactions include device and network information, with the possibility of compromised devices or networks.
+* agent_id: if of the acting agent
+* timestamp: instant of the activity in ms
+* type: nature of the activity
+* amount: amount for the transactions, or no value for other activities
+* balance: balance of the account for transactions, or no value for other activities
+* merchant: Transactions are associated with realistic merchants like Amazon, Walmart, etc.
+* location: Each transaction is linked to a geographical location.
+* device: id of the device performing the activity
+* network: 	id of the network performing the activity
+* compromised_device: is the device hacked
+* compromised_network: is the network hacked
+* fraud: the label identicating if the activity is part of a fraud or not
 
 ## How to Run
 1. Install the required Python dependencies:
