@@ -33,11 +33,11 @@ They capture a simplified sequence of activities and can be endlessly improved t
 * fraud: the label identicating if the activity is part of a fraud or not
 
 ## How to Run
-1. To avoid project conflicts, create a virtual environment (necessary only the first time you run the code):
+1. To avoid project conflicts, create a virtual environment `fraud_env`(necessary only the first time you run the code):
     ```
     python -m venv fraud_env
     ```
-Activate the environment (to be run always):
+2. Activate the environment (always):
     ```
     source fraud_env/bin/activate
     ``
