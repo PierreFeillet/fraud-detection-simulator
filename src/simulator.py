@@ -4,6 +4,7 @@ import numpy as np
 import time
 import argparse
 from pprint import pprint
+import os
 
 
 from datetime import datetime, timedelta
@@ -200,8 +201,9 @@ def generate_dataset(nb_activities, nb_agents, pr_fraudulent=0.3,):
     run_simulation_with_activities(legitimate_agents, fraudster_agents, bank_with_activities, steps=1000)
     
     transaction_log_with_fraud_features = bank_with_activities.transaction_log
-    print(transaction_log_with_fraud_features.shape[0])
-    transaction_log_with_fraud_features.to_csv("data/fraud_simulation_" + format_number(nb_activities) + "_activities.csv", index=False, chunksize=10000)
+    data_folder = 'data_test'
+    os.makedirs(data_folder, exist_ok=True)
+    transaction_log_with_fraud_features.to_csv(f"{data_folder}/fraud_simulation_" + format_number(nb_activities) + "_activities.csv", index=False, chunksize=10000)
 
 '''
 def test_unitary_agent(nb_activities):
