@@ -26,7 +26,7 @@ class LegitimateCustomer(Agent):
 
         transaction_type_choice = transaction_type("normal", merchant)
         amount = generate_transaction_amount(transaction_type_choice, "normal")
-        transac_time = 0
+        #transac_time = 0
         #merchant = np.random.choice(merchants, p=merchant_weights)
         location = np.random.choice(locations, p=location_weights)
         device = np.random.choice(devices, p=device_weights)
@@ -42,7 +42,7 @@ class LegitimateCustomer(Agent):
         return {
             "agent_id": self.agent_id,
             "timestamp": pd.Timestamp.now(),
-            "time": transac_time,
+            #"time": transac_time,
             "type": transaction_type_choice,
             "amount": amount,
             "balance": self.balance,
