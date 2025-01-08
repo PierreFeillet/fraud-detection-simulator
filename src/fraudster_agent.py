@@ -22,7 +22,7 @@ class Fraudster(Agent):
     def commit_fraud(self, fraud_type):
         merchant = np.random.choice(merchants, p=merchant_weights)
         
-        transaction_type_choice = transaction_type(fraud_type, merchant)
+        transaction_type_choice = transaction_type(fraud_type)
         amount = generate_transaction_amount(transaction_type_choice, fraud_type)
         
         location = np.random.choice(locations, p=location_weights)

@@ -24,7 +24,7 @@ class LegitimateCustomer(Agent):
         merchant = np.random.choice(merchants, p=merchant_weights) #ToDo condition the actor to its type
         allowed_types = MERCHANT_TRANSACTION_TYPES[merchant] #ToDo condition the transaction type to its actor type
 
-        transaction_type_choice = transaction_type("normal", merchant)
+        transaction_type_choice = transaction_type("normal")
         amount = generate_transaction_amount(transaction_type_choice, "normal")
         #transac_time = 0
         #merchant = np.random.choice(merchants, p=merchant_weights)

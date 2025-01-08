@@ -107,13 +107,14 @@ def generate_transaction_amount(transaction_type, behavior_type, precision=2):
 
 
 # Determine if the transaction is a withdrawal or deposit based on behavior
-def transaction_type(behavior_type, merchant):
+def transaction_type(behavior_type,):
 
     new_type = np.random.choice(
         ["deposit", "withdrawal"],
         p=[1 - behavioral_catalog[behavior_type]["transaction_behavior"]["transaction_frequency"],
            behavioral_catalog[behavior_type]["transaction_behavior"]["transaction_frequency"]]
     )
+    return new_type
 
 def check_and_normalize_probabilities(time_probabilities):
     total = sum(time_probabilities)
