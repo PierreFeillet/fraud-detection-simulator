@@ -40,14 +40,14 @@ They capture a simplified sequence of activities and can be endlessly improved t
 2. Activate the environment (always):
     ```
     source fraud_env/bin/activate
-    ``
+    ```
 2. Install the required Python dependencies (necessary only the first time you run the code):
     ```
     pip install -r requirements.txt
     ```
-3. Run the simulator by executing the `simulator.py` script:
+3. Run the simulator by executing the `simulator.py` script wiht the specified inputs (number of activities, number of agents (fraudulent+legitimate), proportion of fraudulent agents):
     ```
-    python src/simulator.py
+    python src/simulator.py --nb_activities 1000 --nb_agents 10 --pr_fraudulent 0.3
     ```
 
 ## Data

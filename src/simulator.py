@@ -2,6 +2,9 @@ import random
 import pandas as pd
 import numpy as np
 import time
+import argparse
+from pprint import pprint
+
 
 from datetime import datetime, timedelta
 from sklearn.preprocessing import StandardScaler
@@ -69,7 +72,7 @@ class BankActivities:
 
     def flush_transactions(self):
         """Consolidate buffered transactions."""
-        """Optimize the code as Panda concat does not scale in performances."""
+        """Optimize the code as Pandas concat does not scale in performances."""
         """It now allows a more stable TPS."""
         if self.transactions_buffer:
             try:
@@ -186,23 +189,44 @@ def format_number(nb_global_activities):
     formated_number = f"{int(value) if value.is_integer() else round(value, 1)}{suffix}"
     return formated_number
 
-def generate_dataset(nb_activities):
-    nb_legitimate_agents = nb_activities // 10
-    nb_fraudster_agents = nb_activities // 30
+def generate_dataset(nb_activities, nb_agents, pr_fraudulent=0.3,):
+    # nb_agents sets total number of agents (fraudulent+legitimate)
+    # pr_fraudulent sets proportion of fraudulent agent
+    nb_fraudster_agents = int(pr_fraudulent*nb_agents)
+    nb_legitimate_agents = nb_agents - nb_fraudster_agents
     legitimate_agents = [LegitimateCustomer(agent_id=i, balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_legitimate_agents)]
-    fraudster_agents = [Fraudster(agent_id=i+100, balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_fraudster_agents)]
+    fraudster_agents = [Fraudster(agent_id=i+nb_legitimate_agents, balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_fraudster_agents)]
     bank_with_activities = BankActivities(nb_activities)
     run_simulation_with_activities(legitimate_agents, fraudster_agents, bank_with_activities, steps=1000)
     
     transaction_log_with_fraud_features = bank_with_activities.transaction_log
     transaction_log_with_fraud_features.to_csv("data/fraud_simulation_" + format_number(nb_activities) + "_activities.csv", index=False, chunksize=10000)
 
+'''
+def test_unitary_agent(nb_activities):
+    nb_legitimate_agents = nb_activities // 10
+    nb_fraudster_agents = nb_activities // 30
+    legitimate_agents = [LegitimateCustomer(agent_id=i, balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_legitimate_agents)]
+'''
+
 if __name__ == "__main__":
-    generate_dataset(100)
-    generate_dataset(1000)
-    generate_dataset(10000)
-    generate_dataset(100000)
-    generate_dataset(500000)
+    parser = argparse.ArgumentParser(
+        description='Script for generating the dataset',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument('--nb_activities', help='Total number of activities to be generated', type=int, required=True)
+    parser.add_argument('--nb_agents', help='Total number of agents', type=int, required=True)
+    parser.add_argument('--pr_fraudulent', help='Proportion of fraudulent agent with respect to the total number of agents', type=float, default=0.3)
+    # Example: python src/simulator.py --nb_activities 1000 --nb_agents 10 --pr_fraudulent 0.3
+
+    cfg = parser.parse_args()
+    pprint(cfg)
+
+    generate_dataset(cfg.nb_activities, cfg.nb_agents, cfg.pr_fraudulent)
+    #generate_dataset(1000)
+    #generate_dataset(10000)
+    #generate_dataset(100000)
+    #generate_dataset(500000)
 
     # Benchmark anomaly detection models
     if False:
