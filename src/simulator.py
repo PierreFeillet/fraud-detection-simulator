@@ -49,7 +49,7 @@ class BankActivities:
 
     def process_transaction(self, transaction):
         # Check if we are at max size
-        if len(self.transaction_log) >= self.max_size - 1:
+        if len(self.transaction_log) == self.max_size:
             return  # Stop processing if max size is reached
 
         transaction["timestamp"] = self.current_time
@@ -58,7 +58,7 @@ class BankActivities:
 
     def process_activity(self, activity):
         # Check if we are at max size
-        if len(self.transaction_log) >= self.max_size - 1:
+        if len(self.transaction_log) == self.max_size:
             return  # Stop processing if max size is reached
 
         activity.setdefault("amount", 0)
@@ -79,9 +79,9 @@ class BankActivities:
                 new_data = pd.DataFrame(self.transactions_buffer, columns=self.dtypes.keys()).astype(self.dtypes)
 
                 # Check if adding new_data would exceed max_size
-                if len(self.transaction_log) + len(new_data) > self.max_size - 1:
+                if len(self.transaction_log) + len(new_data) > self.max_size:
                     # Truncate new_data to fit the remaining space in transaction_log
-                    remaining_space = self.max_size - len(self.transaction_log) - 1
+                    remaining_space = self.max_size - len(self.transaction_log)
                     new_data = new_data.iloc[:remaining_space]
 
                 # Add new data to transaction log
@@ -200,6 +200,7 @@ def generate_dataset(nb_activities, nb_agents, pr_fraudulent=0.3,):
     run_simulation_with_activities(legitimate_agents, fraudster_agents, bank_with_activities, steps=1000)
     
     transaction_log_with_fraud_features = bank_with_activities.transaction_log
+    print(transaction_log_with_fraud_features.shape[0])
     transaction_log_with_fraud_features.to_csv("data/fraud_simulation_" + format_number(nb_activities) + "_activities.csv", index=False, chunksize=10000)
 
 '''
@@ -223,10 +224,6 @@ if __name__ == "__main__":
     pprint(cfg)
 
     generate_dataset(cfg.nb_activities, cfg.nb_agents, cfg.pr_fraudulent)
-    #generate_dataset(1000)
-    #generate_dataset(10000)
-    #generate_dataset(100000)
-    #generate_dataset(500000)
 
     # Benchmark anomaly detection models
     if False:
