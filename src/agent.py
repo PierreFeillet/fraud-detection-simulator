@@ -2,17 +2,6 @@ import random
 import pandas as pd
 import numpy as np
 
-from catalog import generate_transaction_amount, transaction_type, account_activity
-from catalog import behavioral_catalog
-from catalog import MERCHANT_TRANSACTION_TYPES
-from catalog import merchants
-from catalog import merchant_weights
-from catalog import locations
-from catalog import location_weights
-from catalog import devices
-from catalog import device_weights
-from catalog import networks
-from catalog import network_weights
 
 # Include the legitimate customer, fraudster, and bank logic with merchants, locations, devices, etc.
 

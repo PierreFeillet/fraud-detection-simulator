@@ -2,11 +2,8 @@ import random
 import pandas as pd
 import numpy as np
 
-from catalog import generate_transaction_amount, transaction_type, account_activity
+from catalog import generate_transaction_amount, get_transaction_type, account_activity, extract_merchant
 from catalog import behavioral_catalog
-from catalog import MERCHANT_TRANSACTION_TYPES
-from catalog import merchants
-from catalog import merchant_weights
 from catalog import locations
 from catalog import location_weights
 from catalog import devices
@@ -19,12 +16,10 @@ from agent import Agent
 # Include the legitimate customer, fraudster, and bank logic with merchants, locations, devices, etc.
 
 class Fraudster(Agent):
-    def commit_fraud(self, fraud_type):
-        merchant = np.random.choice(merchants, p=merchant_weights)
-        
-        transaction_type_choice = transaction_type(fraud_type)
-        amount = generate_transaction_amount(transaction_type_choice, fraud_type)
-        
+    def commit_fraud(self, fraud_type):        
+        transaction_type = get_transaction_type(fraud_type)
+        amount = generate_transaction_amount(transaction_type, fraud_type)
+        merchant = extract_merchant(transaction_type)
         location = np.random.choice(locations, p=location_weights)
         device = np.random.choice(devices, p=device_weights)
         network = random.choice(networks)
@@ -32,7 +27,7 @@ class Fraudster(Agent):
         compromised_network = self.is_compromised()
         self.before_transaction = self.balance
 
-        if transaction_type_choice == "withdrawal" or transaction_type_choice == "purchase":
+        if transaction_type == "withdrawal" or transaction_type == "purchase":
             self.balance -= amount
         else:
             self.balance += amount
@@ -40,7 +35,7 @@ class Fraudster(Agent):
         return {
             "agent_id": self.agent_id,
             "timestamp": pd.Timestamp.now(),
-            "type": transaction_type_choice,
+            "type": transaction_type,
             "before_transaction": self.before_transaction,
             "amount": amount,
             "balance": self.balance,

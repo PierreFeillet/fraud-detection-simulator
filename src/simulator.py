@@ -19,7 +19,7 @@ from sklearn.impute import SimpleImputer
 from legitimate_agent import LegitimateCustomer
 from fraudster_agent import Fraudster
 
-from catalog import behavioral_catalog, MERCHANT_TRANSACTION_TYPES
+from catalog import behavioral_catalog
 
 # Function to generate a random country
 def generate_country():

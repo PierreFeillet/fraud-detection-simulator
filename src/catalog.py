@@ -9,22 +9,30 @@ location_weights = [0.3, 0.2, 0.15, 0.15, 0.1, 0.1]  # Adjust these weights as n
 
 # Merchants
 # Define allowed transaction types for each merchant
-MERCHANT_TRANSACTION_TYPES = {
-    "Walmart": ["purchase"],
-    "Best Buy": ["purchase"],
-    "Target": ["purchase"],
-    "Starbucks": ["purchase"],
-    "Apple": ["purchase"],
-    "Bank": ["deposit", "withdrawal"],
-    "Amazon": ["purchase"],
-    "ATM": ["withdrawal", "deposit"],
-    "PayPal": ["purchase", "deposit"]
-    # Add more merchants and allowed types as needed
+TRANSACTION_TYPE_MERCHANTS = {
+    "purchase": [
+        ("Walmart", 0.15),
+        ("Best Buy", 0.2),
+        ("Target", 0.1),
+        ("Starbucks", 0.1),
+        ("Apple", 0.1),
+        ("Amazon", 0.25),
+        ("PayPal", 0.1)
+    ],
+    "deposit": [
+        ("Bank", 0.4),
+        ("ATM", 0.3),
+        ("PayPal", 0.3)
+    ],
+    "withdrawal": [
+        ("Bank", 0.5),
+        ("ATM", 0.5)
+    ]
 }
 
-merchants = list(MERCHANT_TRANSACTION_TYPES.keys())
+#merchants = list(MERCHANT_TRANSACTION_TYPES.keys())
 #merchants = ["Amazon", "Walmart", "Best Buy", "Target", "Starbucks", "Apple Store"]
-merchant_weights = [0.1, 0.1, 0.1, 0.1, 0.15, 0.15, 0.1, 0.1, 0.1] # Needs to match the merchant dictonnary
+#merchant_weights = [0.1, 0.1, 0.1, 0.1, 0.15, 0.15, 0.1, 0.1, 0.1] # Needs to match the merchant dictonnary
 
 # Devices and device weights
 devices = ["iPhone", "Android", "Windows Laptop", "MacBook", "Linux PC", "iPad"]
@@ -117,12 +125,30 @@ def generate_transaction_amount(transaction_type, behavior_type, precision=2):
 
 
 # Determine if the transaction is a withdrawal or deposit based on behavior
-def transaction_type(behavior_type,):
+def get_transaction_type(behavior_type,):
     new_type = np.random.choice(
         ["withdrawal", "deposit", "purchase"],
         p=behavioral_catalog[behavior_type]["transaction_behavior"]["transaction_frequency"]
     )
     return new_type
+
+def extract_merchant(transaction):
+    """
+    Extract a random merchant based on the transaction type and probabilities.
+    
+    Args:
+        transaction (str): The transaction type (e.g., 'purchase', 'deposit', 'withdrawal').
+        
+    Returns:
+        str: The selected merchant.
+    """
+    if transaction not in TRANSACTION_TYPE_MERCHANTS:
+        raise ValueError(f"Transaction type '{transaction}' is not recognized.")
+    
+    merchants, probabilities = zip(*TRANSACTION_TYPE_MERCHANTS[transaction]) # Unzip the dictionary for the given transaction to get an array of merchants and an array of relative probabilities
+    merchant = np.random.choice(merchants, p=probabilities)
+    return merchant
+
 
 def check_and_normalize_probabilities(time_probabilities):
     total = sum(time_probabilities)

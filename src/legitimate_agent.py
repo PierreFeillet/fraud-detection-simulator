@@ -2,11 +2,8 @@ import random
 import pandas as pd
 import numpy as np
 
-from catalog import generate_transaction_amount, transaction_type, account_activity
+from catalog import generate_transaction_amount, get_transaction_type, account_activity, extract_merchant
 from catalog import behavioral_catalog
-from catalog import MERCHANT_TRANSACTION_TYPES
-from catalog import merchants
-from catalog import merchant_weights
 from catalog import locations
 from catalog import location_weights
 from catalog import devices
@@ -21,11 +18,9 @@ from agent import Agent
 class LegitimateCustomer(Agent):
 
     def generate_transaction(self):
-        merchant = np.random.choice(merchants, p=merchant_weights) #ToDo condition the actor to its type
-        allowed_types = MERCHANT_TRANSACTION_TYPES[merchant] #ToDo condition the transaction type to its actor type
-
-        transaction_type_choice = transaction_type("normal")
-        amount = generate_transaction_amount(transaction_type_choice, "normal")
+        transaction_type = get_transaction_type("normal")
+        merchant = extract_merchant(transaction_type)
+        amount = generate_transaction_amount(transaction_type, "normal")
         #transac_time = 0
         #merchant = np.random.choice(merchants, p=merchant_weights)
         location = np.random.choice(locations, p=location_weights)
@@ -35,17 +30,17 @@ class LegitimateCustomer(Agent):
         compromised_network = self.is_compromised()
         self.before_transaction = self.balance
 
-        if (transaction_type_choice == "withdrawal" or transaction_type_choice == "purchase") and self.balance > amount:
+        if (transaction_type == "withdrawal" or transaction_type == "purchase") and self.balance > amount:
             self.balance -= amount
             self.before_transaction = self.balance
-        elif transaction_type_choice == "deposit":
+        elif transaction_type == "deposit":
             self.balance += amount
 
         return {
             "agent_id": self.agent_id,
             "timestamp": pd.Timestamp.now(),
             #"time": transac_time,
-            "type": transaction_type_choice,
+            "type": transaction_type,
             "before_transaction": self.before_transaction,
             "amount": amount,
             "balance": self.balance,

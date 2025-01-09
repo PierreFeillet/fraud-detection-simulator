@@ -1,101 +1,101 @@
 agent_id,timestamp,type,before_transaction,amount,balance,merchant,location,device,network,compromised_device,compromised_network,fraud
-0,2025-01-09 16:39:35.257442,deposit,3611.58,381.52,3993.1,Bank,"Tokyo, Japan",Android,Corporate Network,0,0,1
-0,2025-01-09 16:39:38.257442,purchase,3993.1,671.2,3321.9,Amazon,"Paris, France",Android,Home WiFi,0,0,1
-0,2025-01-09 16:39:57.257442,password_change,3993.1,0.0,3321.9,0,"Los Angeles, USA",MacBook,Home WiFi,0,0,1
-0,2025-01-09 16:40:22.257442,withdrawal,3321.9,1941.15,1380.75,Bank,"London, UK",iPhone,Public WiFi,1,0,1
-0,2025-01-09 16:40:40.257442,password_change,3321.9,0.0,1380.75,0,"New York, USA",Android,Mobile Network,1,0,1
-0,2025-01-09 16:40:59.257442,withdrawal,1380.75,933.86,446.89,Best Buy,"New York, USA",iPad,Corporate Network,0,0,1
-0,2025-01-09 16:41:14.257442,withdrawal,446.89,854.94,-408.05,Walmart,"Los Angeles, USA",MacBook,Mobile Network,0,0,1
-0,2025-01-09 16:41:26.257442,purchase,-408.05,543.18,-951.23,Target,"Berlin, Germany",Android,Mobile Network,0,0,1
-0,2025-01-09 16:41:43.257442,suspicious_login,-408.05,0.0,-951.23,0,"New York, USA",Linux PC,Corporate Network,0,0,1
-0,2025-01-09 16:41:48.257442,withdrawal,-951.23,1364.62,-2315.85,Best Buy,"Los Angeles, USA",Android,Home WiFi,0,0,1
-0,2025-01-09 16:42:07.257442,withdrawal,-2315.85,3465.12,-5780.97,PayPal,"Los Angeles, USA",iPhone,Home WiFi,0,0,1
-0,2025-01-09 16:42:21.257442,withdrawal,-5780.97,735.26,-6516.23,Apple,"London, UK",Windows Laptop,Mobile Network,1,0,1
-0,2025-01-09 16:42:45.257442,failed_login,-5780.97,0.0,-6516.23,0,"New York, USA",Windows Laptop,Corporate Network,0,0,1
-0,2025-01-09 16:43:02.257442,withdrawal,-6516.23,1283.62,-7799.85,Target,"Los Angeles, USA",MacBook,Corporate Network,0,0,1
-0,2025-01-09 16:43:30.257442,withdrawal,-7799.85,3418.47,-11218.32,Starbucks,"New York, USA",Windows Laptop,Mobile Network,0,0,1
-0,2025-01-09 16:43:59.257442,deposit,-11218.32,258.24,-10960.08,Apple,"Paris, France",iPhone,Mobile Network,1,0,1
-0,2025-01-09 16:44:18.257442,deposit,-10960.08,11.33,-10948.75,Best Buy,"Tokyo, Japan",Android,Home WiFi,0,0,1
-0,2025-01-09 16:44:41.257442,withdrawal,-10948.75,2381.14,-13329.89,Amazon,"New York, USA",iPhone,Corporate Network,0,0,1
-0,2025-01-09 16:45:03.257442,withdrawal,-13329.89,2778.53,-16108.42,Best Buy,"Los Angeles, USA",iPhone,Public WiFi,0,0,1
-0,2025-01-09 16:45:09.257442,password_change,-13329.89,0.0,-16108.42,0,"Tokyo, Japan",MacBook,Home WiFi,0,0,1
-0,2025-01-09 16:45:18.257442,withdrawal,-16108.42,4069.74,-20178.16,ATM,"Berlin, Germany",iPhone,Public WiFi,0,0,1
-0,2025-01-09 16:45:25.257442,withdrawal,-20178.16,206.31,-20384.47,Apple,"New York, USA",iPad,Mobile Network,0,0,1
-0,2025-01-09 16:45:52.257442,password_change,-20178.16,0.0,-20384.47,0,"Los Angeles, USA",iPhone,Home WiFi,0,0,1
-0,2025-01-09 16:45:54.257442,deposit,-20384.47,167.67,-20216.8,Starbucks,"New York, USA",Android,Home WiFi,0,0,1
-0,2025-01-09 16:46:21.257442,withdrawal,-20216.8,505.93,-20722.73,Bank,"Los Angeles, USA",Windows Laptop,Mobile Network,0,0,1
-0,2025-01-09 16:46:22.257442,withdrawal,-20216.8,0.0,-20722.73,0,"London, UK",Linux PC,Home WiFi,0,0,1
-0,2025-01-09 16:46:39.257442,deposit,-20722.73,638.63,-20084.1,Amazon,"Berlin, Germany",Windows Laptop,Mobile Network,0,0,1
-0,2025-01-09 16:46:48.257442,withdrawal,-20084.1,5861.32,-25945.42,Walmart,"New York, USA",Android,Corporate Network,0,0,1
-0,2025-01-09 16:47:05.257442,withdrawal,-20084.1,0.0,-25945.42,0,"London, UK",iPhone,Home WiFi,0,0,1
-0,2025-01-09 16:47:15.257442,purchase,-25945.42,275.37,-26220.79,PayPal,"Los Angeles, USA",iPhone,Public WiFi,0,0,1
-0,2025-01-09 16:47:32.257442,withdrawal,-26220.79,6854.81,-33075.6,Walmart,"New York, USA",iPhone,Home WiFi,0,0,1
-0,2025-01-09 16:47:44.257442,phone_change,-26220.79,0.0,-33075.6,0,"London, UK",iPhone,Corporate Network,0,0,1
-0,2025-01-09 16:48:09.257442,withdrawal,-33075.6,291.44,-33367.04,Starbucks,"Los Angeles, USA",Linux PC,Home WiFi,0,0,1
-0,2025-01-09 16:48:10.257442,phone_change,-33075.6,0.0,-33367.04,0,"New York, USA",Windows Laptop,Mobile Network,0,0,1
-0,2025-01-09 16:48:15.257442,purchase,-33367.04,192.94,-33559.98,Starbucks,"Berlin, Germany",iPhone,Mobile Network,0,0,1
-0,2025-01-09 16:48:29.257442,withdrawal,-33367.04,0.0,-33559.98,0,"London, UK",Android,Corporate Network,0,0,1
-0,2025-01-09 16:48:37.257442,withdrawal,-33559.98,1454.33,-35014.31,Amazon,"London, UK",Android,Corporate Network,0,0,1
-0,2025-01-09 16:49:00.257442,withdrawal,-33559.98,0.0,-35014.31,0,"Los Angeles, USA",MacBook,Public WiFi,0,0,1
-0,2025-01-09 16:49:13.257442,purchase,-35014.31,293.67,-35307.98,Bank,"Los Angeles, USA",iPhone,Mobile Network,0,0,1
-0,2025-01-09 16:49:14.257442,phone_change,-35014.31,0.0,-35307.98,0,"Los Angeles, USA",Windows Laptop,Mobile Network,0,0,1
-0,2025-01-09 16:49:29.257442,deposit,-35307.98,692.99,-34614.99,Amazon,"Paris, France",Android,Public WiFi,0,0,1
-0,2025-01-09 16:49:41.257442,withdrawal,-34614.99,7776.06,-42391.05,Target,"Tokyo, Japan",iPad,Mobile Network,0,1,1
-0,2025-01-09 16:49:46.257442,email_change,-34614.99,0.0,-42391.05,0,"Los Angeles, USA",iPhone,Mobile Network,0,0,1
-0,2025-01-09 16:50:06.257442,purchase,-42391.05,506.54,-42897.59,PayPal,"New York, USA",iPhone,Home WiFi,1,0,1
-0,2025-01-09 16:50:35.257442,deposit,-42897.59,50.23,-42847.36,Apple,"Tokyo, Japan",iPhone,Corporate Network,0,0,1
-0,2025-01-09 16:50:36.257442,withdrawal,-42897.59,0.0,-42847.36,0,"Los Angeles, USA",Android,Corporate Network,0,0,1
-0,2025-01-09 16:50:43.257442,deposit,-42847.36,728.05,-42119.31,Bank,"Los Angeles, USA",Android,Public WiFi,0,0,1
-0,2025-01-09 16:51:13.257442,withdrawal,-42119.31,1229.21,-43348.52,Apple,"Tokyo, Japan",MacBook,Home WiFi,0,0,1
-0,2025-01-09 16:51:40.257442,withdrawal,-42119.31,0.0,-43348.52,0,"New York, USA",iPhone,Public WiFi,0,0,1
-0,2025-01-09 16:51:47.257442,purchase,-43348.52,296.62,-43645.14,Target,"Berlin, Germany",MacBook,Home WiFi,0,0,1
-0,2025-01-09 16:51:59.257442,withdrawal,-43645.14,2331.83,-45976.97,Starbucks,"London, UK",iPhone,Corporate Network,0,0,1
-0,2025-01-09 16:52:26.257442,email_change,-43645.14,0.0,-45976.97,0,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0,1
-0,2025-01-09 16:52:53.257442,purchase,-45976.97,472.27,-46449.24,Target,"Los Angeles, USA",MacBook,Corporate Network,0,0,1
-0,2025-01-09 16:52:59.257442,purchase,-46449.24,641.86,-47091.1,PayPal,"Berlin, Germany",Android,Public WiFi,0,0,1
-0,2025-01-09 16:53:13.257442,deposit,-46449.24,0.0,-47091.1,0,"New York, USA",MacBook,Corporate Network,0,0,1
-0,2025-01-09 16:53:20.257442,purchase,-47091.1,25.32,-47116.42,Target,"Los Angeles, USA",Android,Corporate Network,0,0,1
-0,2025-01-09 16:53:28.257442,password_change,-47091.1,0.0,-47116.42,0,"London, UK",iPhone,Home WiFi,0,0,1
-0,2025-01-09 16:53:55.257442,withdrawal,-47116.42,2700.42,-49816.84,PayPal,"New York, USA",Windows Laptop,Home WiFi,1,0,1
-0,2025-01-09 16:54:22.257442,phone_change,-47116.42,0.0,-49816.84,0,"Paris, France",MacBook,Corporate Network,0,0,1
-0,2025-01-09 16:54:40.257442,withdrawal,-49816.84,3008.28,-52825.12,Apple,"Los Angeles, USA",Windows Laptop,Public WiFi,0,0,1
-0,2025-01-09 16:54:51.257442,deposit,-52825.12,810.33,-52014.79,PayPal,"Tokyo, Japan",iPhone,Corporate Network,0,0,1
-0,2025-01-09 16:55:09.257442,withdrawal,-52014.79,579.75,-52594.54,Bank,"New York, USA",iPhone,Home WiFi,0,0,1
-0,2025-01-09 16:55:15.257442,phone_change,-52014.79,0.0,-52594.54,0,"Tokyo, Japan",MacBook,Home WiFi,0,0,1
-0,2025-01-09 16:55:41.257442,withdrawal,-52594.54,421.09,-53015.63,Bank,"Los Angeles, USA",iPhone,Corporate Network,0,0,1
-0,2025-01-09 16:56:02.257442,purchase,-53015.63,428.12,-53443.75,Apple,"Tokyo, Japan",Windows Laptop,Public WiFi,0,0,1
-0,2025-01-09 16:56:25.257442,withdrawal,-53443.75,1758.38,-55202.13,Walmart,"Tokyo, Japan",iPhone,Public WiFi,0,0,1
-0,2025-01-09 16:56:53.257442,password_change,-53443.75,0.0,-55202.13,0,"London, UK",Android,Home WiFi,0,0,1
-0,2025-01-09 16:57:07.257442,withdrawal,-55202.13,2226.29,-57428.42,Target,"Los Angeles, USA",iPhone,Corporate Network,0,0,1
-0,2025-01-09 16:57:11.257442,withdrawal,-57428.42,1340.98,-58769.4,Bank,"Los Angeles, USA",Android,Home WiFi,0,0,1
-0,2025-01-09 16:57:22.257442,withdrawal,-57428.42,0.0,-58769.4,0,"London, UK",iPhone,Corporate Network,0,1,1
-0,2025-01-09 16:57:25.257442,purchase,-58769.4,240.79,-59010.19,Bank,"Tokyo, Japan",MacBook,Public WiFi,0,0,1
-0,2025-01-09 16:57:34.257442,phone_change,-58769.4,0.0,-59010.19,0,"New York, USA",Android,Home WiFi,0,1,1
-0,2025-01-09 16:57:46.257442,purchase,-59010.19,264.98,-59275.17,ATM,"London, UK",Android,Corporate Network,0,0,1
-0,2025-01-09 16:58:06.257442,withdrawal,-59275.17,2460.23,-61735.4,Apple,"New York, USA",iPhone,Corporate Network,0,0,1
-0,2025-01-09 16:58:35.257442,withdrawal,-61735.4,8429.54,-70164.94,Amazon,"Paris, France",iPhone,Home WiFi,0,0,1
-0,2025-01-09 16:59:04.257442,deposit,-70164.94,155.59,-70009.35,Target,"Los Angeles, USA",MacBook,Mobile Network,0,0,1
-0,2025-01-09 16:59:10.257442,phone_change,-70164.94,0.0,-70009.35,0,"Berlin, Germany",MacBook,Mobile Network,0,0,1
-0,2025-01-09 16:59:37.257442,withdrawal,-70009.35,1874.97,-71884.32,Best Buy,"New York, USA",Windows Laptop,Corporate Network,0,0,1
-0,2025-01-09 16:59:50.257442,suspicious_login,-70009.35,0.0,-71884.32,0,"Tokyo, Japan",iPhone,Corporate Network,0,0,1
-0,2025-01-09 17:00:14.257442,purchase,-71884.32,196.71,-72081.03,Amazon,"New York, USA",iPhone,Mobile Network,0,0,1
-0,2025-01-09 17:00:25.257442,failed_login,-71884.32,0.0,-72081.03,0,"Paris, France",Android,Corporate Network,0,0,1
-0,2025-01-09 17:00:30.257442,purchase,-72081.03,504.76,-72585.79,Apple,"New York, USA",MacBook,Public WiFi,0,0,1
-0,2025-01-09 17:00:57.257442,password_change,-72081.03,0.0,-72585.79,0,"New York, USA",Android,Home WiFi,0,0,1
-0,2025-01-09 17:01:15.257442,withdrawal,-72585.79,3681.4,-76267.19,Amazon,"Berlin, Germany",iPad,Corporate Network,0,0,1
-0,2025-01-09 17:01:25.257442,withdrawal,-72585.79,0.0,-76267.19,0,"Los Angeles, USA",iPhone,Public WiFi,0,0,1
-0,2025-01-09 17:01:39.257442,withdrawal,-76267.19,1858.68,-78125.87,Walmart,"London, UK",Android,Corporate Network,0,0,1
-0,2025-01-09 17:01:53.257442,withdrawal,-76267.19,0.0,-78125.87,0,"New York, USA",Windows Laptop,Mobile Network,0,1,1
-0,2025-01-09 17:02:05.257442,purchase,-78125.87,60.98,-78186.85,Bank,"New York, USA",iPhone,Public WiFi,0,0,1
-0,2025-01-09 17:02:19.257442,withdrawal,-78186.85,627.89,-78814.74,Best Buy,"New York, USA",iPad,Mobile Network,0,0,1
-0,2025-01-09 17:02:42.257442,withdrawal,-78186.85,0.0,-78814.74,0,"Paris, France",Windows Laptop,Home WiFi,0,0,1
-0,2025-01-09 17:03:06.257442,withdrawal,-78814.74,1469.08,-80283.82,Amazon,"Los Angeles, USA",Linux PC,Corporate Network,0,0,1
-0,2025-01-09 17:03:07.257442,failed_login,-78814.74,0.0,-80283.82,0,"Berlin, Germany",Android,Home WiFi,0,0,1
-0,2025-01-09 17:03:08.257442,withdrawal,-80283.82,380.24,-80664.06,Apple,"Los Angeles, USA",MacBook,Public WiFi,0,0,1
-0,2025-01-09 17:03:32.257442,email_change,-80283.82,0.0,-80664.06,0,"New York, USA",Windows Laptop,Corporate Network,0,0,1
-0,2025-01-09 17:03:39.257442,deposit,-80664.06,79.22,-80584.84,Bank,"Berlin, Germany",iPhone,Home WiFi,0,0,1
-0,2025-01-09 17:03:51.257442,suspicious_login,-80664.06,0.0,-80584.84,0,"New York, USA",Windows Laptop,Corporate Network,0,0,1
-0,2025-01-09 17:04:10.257442,withdrawal,-80584.84,1008.36,-81593.2,Best Buy,"Tokyo, Japan",iPhone,Mobile Network,0,1,1
-0,2025-01-09 17:04:34.257442,withdrawal,-80584.84,0.0,-81593.2,0,"Paris, France",Linux PC,Mobile Network,0,1,1
-0,2025-01-09 17:04:44.257442,withdrawal,-81593.2,4954.01,-86547.21,Apple,"Los Angeles, USA",Android,Home WiFi,0,0,1
-0,2025-01-09 17:05:14.257442,deposit,-86547.21,123.11,-86424.1,PayPal,"London, UK",Windows Laptop,Public WiFi,0,0,1
+0,2025-01-09 17:09:20.650591,deposit,4432.09,419.36,4851.45,PayPal,"Tokyo, Japan",iPhone,Home WiFi,0,0,1
+0,2025-01-09 17:09:49.650591,withdrawal,4851.45,3582.2,1269.25,Bank,"Berlin, Germany",Windows Laptop,Mobile Network,0,0,1
+0,2025-01-09 17:10:18.650591,deposit,4851.45,0.0,1269.25,0,"Tokyo, Japan",MacBook,Mobile Network,0,0,1
+0,2025-01-09 17:10:43.650591,withdrawal,1269.25,522.42,746.83,Bank,"Berlin, Germany",iPhone,Corporate Network,0,0,1
+0,2025-01-09 17:11:02.650591,purchase,746.83,223.18,523.65,Best Buy,"New York, USA",MacBook,Corporate Network,0,0,1
+0,2025-01-09 17:11:27.650591,purchase,523.65,163.62,360.03,Target,"London, UK",Windows Laptop,Corporate Network,0,0,1
+0,2025-01-09 17:11:43.650591,failed_login,523.65,0.0,360.03,0,"Tokyo, Japan",Android,Corporate Network,0,0,1
+0,2025-01-09 17:11:47.650591,withdrawal,360.03,9492.59,-9132.56,ATM,"London, UK",Windows Laptop,Public WiFi,0,0,1
+0,2025-01-09 17:12:05.650591,withdrawal,360.03,0.0,-9132.56,0,"Los Angeles, USA",Android,Corporate Network,0,0,1
+0,2025-01-09 17:12:15.650591,purchase,-9132.56,408.97,-9541.53,Apple,"New York, USA",Windows Laptop,Corporate Network,0,0,1
+0,2025-01-09 17:12:39.650591,failed_login,-9132.56,0.0,-9541.53,0,"New York, USA",MacBook,Public WiFi,0,0,1
+0,2025-01-09 17:12:43.650591,deposit,-9541.53,849.35,-8692.18,Bank,"Los Angeles, USA",iPhone,Mobile Network,0,0,1
+0,2025-01-09 17:13:09.650591,phone_change,-9541.53,0.0,-8692.18,0,"Berlin, Germany",iPhone,Home WiFi,0,0,1
+0,2025-01-09 17:13:22.650591,purchase,-8692.18,560.11,-9252.29,Target,"Tokyo, Japan",MacBook,Home WiFi,0,1,1
+0,2025-01-09 17:13:44.650591,withdrawal,-9252.29,1180.4,-10432.69,ATM,"New York, USA",MacBook,Home WiFi,0,0,1
+0,2025-01-09 17:13:45.650591,withdrawal,-9252.29,0.0,-10432.69,0,"Los Angeles, USA",Android,Corporate Network,0,1,1
+0,2025-01-09 17:14:04.650591,withdrawal,-10432.69,1796.9,-12229.59,ATM,"Tokyo, Japan",iPhone,Corporate Network,0,0,1
+0,2025-01-09 17:14:14.650591,withdrawal,-10432.69,0.0,-12229.59,0,"New York, USA",iPhone,Public WiFi,0,0,1
+0,2025-01-09 17:14:25.650591,withdrawal,-12229.59,8729.25,-20958.84,ATM,"Berlin, Germany",Android,Public WiFi,0,0,1
+0,2025-01-09 17:14:39.650591,purchase,-20958.84,678.53,-21637.37,Walmart,"Los Angeles, USA",Linux PC,Public WiFi,0,0,1
+0,2025-01-09 17:15:00.650591,password_change,-20958.84,0.0,-21637.37,0,"New York, USA",MacBook,Mobile Network,0,0,1
+0,2025-01-09 17:15:05.650591,deposit,-21637.37,872.77,-20764.6,Bank,"New York, USA",Android,Home WiFi,0,0,1
+0,2025-01-09 17:15:13.650591,purchase,-20764.6,156.84,-20921.44,Walmart,"New York, USA",Windows Laptop,Public WiFi,0,1,1
+0,2025-01-09 17:15:29.650591,withdrawal,-20921.44,1382.13,-22303.57,Bank,"London, UK",iPhone,Mobile Network,0,0,1
+0,2025-01-09 17:15:31.650591,suspicious_login,-20921.44,0.0,-22303.57,0,"London, UK",Android,Mobile Network,0,0,1
+0,2025-01-09 17:15:35.650591,deposit,-22303.57,42.49,-22261.08,PayPal,"Los Angeles, USA",iPhone,Corporate Network,0,0,1
+0,2025-01-09 17:15:51.650591,withdrawal,-22261.08,4528.03,-26789.11,Bank,"Los Angeles, USA",iPhone,Public WiFi,0,1,1
+0,2025-01-09 17:15:58.650591,withdrawal,-22261.08,0.0,-26789.11,0,"London, UK",Android,Mobile Network,0,0,1
+0,2025-01-09 17:16:02.650591,deposit,-26789.11,777.6,-26011.51,Bank,"Berlin, Germany",iPhone,Corporate Network,0,0,1
+0,2025-01-09 17:16:26.650591,withdrawal,-26011.51,378.96,-26390.47,Bank,"New York, USA",Windows Laptop,Public WiFi,0,0,1
+0,2025-01-09 17:16:29.650591,phone_change,-26011.51,0.0,-26390.47,0,"Berlin, Germany",Windows Laptop,Mobile Network,0,0,1
+0,2025-01-09 17:16:59.650591,deposit,-26390.47,36.83,-26353.64,PayPal,"Los Angeles, USA",Windows Laptop,Corporate Network,0,0,1
+0,2025-01-09 17:17:23.650591,withdrawal,-26353.64,1063.3,-27416.94,Bank,"Los Angeles, USA",iPad,Mobile Network,0,0,1
+0,2025-01-09 17:17:43.650591,failed_login,-26353.64,0.0,-27416.94,0,"Los Angeles, USA",Android,Home WiFi,0,0,1
+0,2025-01-09 17:17:48.650591,purchase,-27416.94,657.6,-28074.54,Best Buy,"New York, USA",Windows Laptop,Mobile Network,0,0,1
+0,2025-01-09 17:17:50.650591,phone_change,-27416.94,0.0,-28074.54,0,"Berlin, Germany",Android,Home WiFi,0,0,1
+0,2025-01-09 17:18:01.650591,withdrawal,-28074.54,2185.48,-30260.02,ATM,"Tokyo, Japan",iPhone,Mobile Network,0,0,1
+0,2025-01-09 17:18:09.650591,withdrawal,-30260.02,3067.31,-33327.33,Bank,"Tokyo, Japan",MacBook,Corporate Network,0,0,1
+0,2025-01-09 17:18:16.650591,purchase,-33327.33,334.46,-33661.79,Amazon,"Paris, France",iPhone,Public WiFi,0,0,1
+0,2025-01-09 17:18:23.650591,withdrawal,-33661.79,1993.82,-35655.61,Bank,"New York, USA",MacBook,Corporate Network,0,0,1
+0,2025-01-09 17:18:24.650591,failed_login,-33661.79,0.0,-35655.61,0,"Los Angeles, USA",Windows Laptop,Mobile Network,0,1,1
+0,2025-01-09 17:18:53.650591,deposit,-35655.61,934.2,-34721.41,ATM,"New York, USA",MacBook,Public WiFi,0,0,1
+0,2025-01-09 17:19:00.650591,deposit,-34721.41,613.44,-34107.97,Bank,"Tokyo, Japan",Windows Laptop,Public WiFi,1,0,1
+0,2025-01-09 17:19:26.650591,withdrawal,-34107.97,713.15,-34821.12,Bank,"London, UK",iPhone,Home WiFi,1,0,1
+0,2025-01-09 17:19:44.650591,withdrawal,-34107.97,0.0,-34821.12,0,"Paris, France",Linux PC,Mobile Network,0,0,1
+0,2025-01-09 17:19:58.650591,purchase,-34821.12,691.21,-35512.33,Amazon,"Berlin, Germany",iPhone,Mobile Network,0,0,1
+0,2025-01-09 17:20:10.650591,withdrawal,-35512.33,764.28,-36276.61,Bank,"Paris, France",Windows Laptop,Mobile Network,0,0,1
+0,2025-01-09 17:20:30.650591,withdrawal,-36276.61,4366.36,-40642.97,Bank,"Berlin, Germany",Android,Home WiFi,0,0,1
+0,2025-01-09 17:20:53.650591,withdrawal,-40642.97,9662.7,-50305.67,Bank,"London, UK",iPhone,Mobile Network,0,0,1
+0,2025-01-09 17:21:09.650591,withdrawal,-50305.67,1208.7,-51514.37,Bank,"Paris, France",Windows Laptop,Mobile Network,0,0,1
+0,2025-01-09 17:21:11.650591,withdrawal,-50305.67,0.0,-51514.37,0,"London, UK",iPhone,Public WiFi,0,0,1
+0,2025-01-09 17:21:28.650591,withdrawal,-51514.37,6803.34,-58317.71,Bank,"London, UK",MacBook,Corporate Network,1,0,1
+0,2025-01-09 17:21:55.650591,withdrawal,-58317.71,1020.93,-59338.64,Bank,"New York, USA",MacBook,Mobile Network,0,0,1
+0,2025-01-09 17:21:58.650591,withdrawal,-58317.71,0.0,-59338.64,0,"Tokyo, Japan",Windows Laptop,Home WiFi,0,0,1
+0,2025-01-09 17:22:12.650591,withdrawal,-59338.64,1597.41,-60936.05,Bank,"Paris, France",iPhone,Corporate Network,0,0,1
+0,2025-01-09 17:22:26.650591,suspicious_login,-59338.64,0.0,-60936.05,0,"Los Angeles, USA",iPhone,Corporate Network,0,0,1
+0,2025-01-09 17:22:41.650591,deposit,-60936.05,20.21,-60915.84,Bank,"Los Angeles, USA",iPhone,Mobile Network,0,0,1
+0,2025-01-09 17:22:54.650591,withdrawal,-60936.05,0.0,-60915.84,0,"Paris, France",Linux PC,Home WiFi,0,0,1
+0,2025-01-09 17:23:16.650591,purchase,-60915.84,441.36,-61357.2,Target,"New York, USA",iPhone,Home WiFi,0,0,1
+0,2025-01-09 17:23:46.650591,deposit,-60915.84,0.0,-61357.2,0,"New York, USA",Windows Laptop,Public WiFi,1,0,1
+0,2025-01-09 17:24:06.650591,withdrawal,-61357.2,4533.54,-65890.74,ATM,"Paris, France",iPhone,Mobile Network,0,0,1
+0,2025-01-09 17:24:18.650591,withdrawal,-61357.2,0.0,-65890.74,0,"Los Angeles, USA",MacBook,Home WiFi,0,0,1
+0,2025-01-09 17:24:33.650591,purchase,-65890.74,510.38,-66401.12,Amazon,"New York, USA",MacBook,Public WiFi,0,0,1
+0,2025-01-09 17:24:50.650591,failed_login,-65890.74,0.0,-66401.12,0,"Tokyo, Japan",MacBook,Public WiFi,0,0,1
+0,2025-01-09 17:24:55.650591,withdrawal,-66401.12,1317.06,-67718.18,Bank,"Paris, France",Android,Home WiFi,0,0,1
+0,2025-01-09 17:25:07.650591,withdrawal,-66401.12,0.0,-67718.18,0,"Los Angeles, USA",iPhone,Public WiFi,0,0,1
+0,2025-01-09 17:25:17.650591,withdrawal,-67718.18,1050.57,-68768.75,Bank,"Paris, France",Linux PC,Public WiFi,0,0,1
+0,2025-01-09 17:25:38.650591,deposit,-68768.75,36.64,-68732.11,Bank,"London, UK",MacBook,Home WiFi,0,0,1
+0,2025-01-09 17:26:00.650591,withdrawal,-68732.11,1878.94,-70611.05,ATM,"Berlin, Germany",Linux PC,Home WiFi,0,0,1
+0,2025-01-09 17:26:24.650591,purchase,-70611.05,469.17,-71080.22,Apple,"Los Angeles, USA",iPhone,Public WiFi,0,0,1
+0,2025-01-09 17:26:25.650591,purchase,-71080.22,585.84,-71666.06,Amazon,"New York, USA",iPhone,Public WiFi,0,0,1
+0,2025-01-09 17:26:26.650591,password_change,-71080.22,0.0,-71666.06,0,"Berlin, Germany",iPhone,Home WiFi,0,0,1
+0,2025-01-09 17:26:55.650591,deposit,-71666.06,311.29,-71354.77,PayPal,"Tokyo, Japan",iPhone,Mobile Network,0,0,1
+0,2025-01-09 17:27:08.650591,phone_change,-71666.06,0.0,-71354.77,0,"Tokyo, Japan",Android,Mobile Network,0,0,1
+0,2025-01-09 17:27:31.650591,deposit,-71354.77,47.62,-71307.15,ATM,"Berlin, Germany",Windows Laptop,Public WiFi,0,0,1
+0,2025-01-09 17:27:37.650591,suspicious_login,-71354.77,0.0,-71307.15,0,"Tokyo, Japan",iPhone,Mobile Network,0,0,1
+0,2025-01-09 17:27:54.650591,purchase,-71307.15,501.18,-71808.33,PayPal,"Los Angeles, USA",Android,Home WiFi,0,0,1
+0,2025-01-09 17:28:03.650591,withdrawal,-71307.15,0.0,-71808.33,0,"Los Angeles, USA",MacBook,Mobile Network,0,0,1
+0,2025-01-09 17:28:14.650591,withdrawal,-71808.33,2221.49,-74029.82,ATM,"Los Angeles, USA",MacBook,Corporate Network,0,0,1
+0,2025-01-09 17:28:34.650591,withdrawal,-71808.33,0.0,-74029.82,0,"Berlin, Germany",Windows Laptop,Public WiFi,0,0,1
+0,2025-01-09 17:28:51.650591,withdrawal,-74029.82,4031.73,-78061.55,Bank,"New York, USA",Windows Laptop,Public WiFi,0,0,1
+0,2025-01-09 17:29:21.650591,email_change,-74029.82,0.0,-78061.55,0,"New York, USA",iPhone,Home WiFi,0,0,1
+0,2025-01-09 17:29:22.650591,withdrawal,-78061.55,6046.44,-84107.99,ATM,"New York, USA",iPad,Mobile Network,0,0,1
+0,2025-01-09 17:29:37.650591,withdrawal,-78061.55,0.0,-84107.99,0,"New York, USA",Android,Corporate Network,0,1,1
+0,2025-01-09 17:29:56.650591,deposit,-84107.99,610.24,-83497.75,ATM,"Los Angeles, USA",iPhone,Mobile Network,0,0,1
+0,2025-01-09 17:30:09.650591,phone_change,-84107.99,0.0,-83497.75,0,"London, UK",MacBook,Mobile Network,0,1,1
+0,2025-01-09 17:30:38.650591,purchase,-83497.75,351.65,-83849.4,Best Buy,"Tokyo, Japan",iPhone,Public WiFi,0,0,1
+0,2025-01-09 17:31:07.650591,withdrawal,-83497.75,0.0,-83849.4,0,"New York, USA",MacBook,Corporate Network,0,1,1
+0,2025-01-09 17:31:30.650591,withdrawal,-83849.4,1233.93,-85083.33,ATM,"New York, USA",iPhone,Home WiFi,0,0,1
+0,2025-01-09 17:31:45.650591,withdrawal,-85083.33,6636.69,-91720.02,ATM,"Los Angeles, USA",MacBook,Corporate Network,0,0,1
+0,2025-01-09 17:31:58.650591,deposit,-91720.02,372.74,-91347.28,Bank,"Paris, France",iPhone,Public WiFi,0,0,1
+0,2025-01-09 17:32:13.650591,password_change,-91720.02,0.0,-91347.28,0,"London, UK",Android,Public WiFi,0,0,1
+0,2025-01-09 17:32:30.650591,purchase,-91347.28,690.04,-92037.32,Amazon,"Paris, France",Android,Home WiFi,0,0,1
+0,2025-01-09 17:32:54.650591,phone_change,-91347.28,0.0,-92037.32,0,"Los Angeles, USA",MacBook,Public WiFi,0,1,1
+0,2025-01-09 17:32:59.650591,purchase,-92037.32,86.48,-92123.8,Apple,"Tokyo, Japan",iPhone,Home WiFi,0,0,1
+0,2025-01-09 17:33:04.650591,purchase,-92123.8,323.07,-92446.87,Best Buy,"Los Angeles, USA",Android,Home WiFi,0,0,1
+0,2025-01-09 17:33:34.650591,purchase,-92446.87,19.26,-92466.13,PayPal,"Los Angeles, USA",Windows Laptop,Corporate Network,0,0,1
+0,2025-01-09 17:33:35.650591,suspicious_login,-92446.87,0.0,-92466.13,0,"New York, USA",Android,Home WiFi,0,0,1
+0,2025-01-09 17:34:00.650591,withdrawal,-92466.13,1581.29,-94047.42,Bank,"New York, USA",Android,Home WiFi,0,0,1
+0,2025-01-09 17:34:28.650591,suspicious_login,-92466.13,0.0,-94047.42,0,"Los Angeles, USA",iPad,Home WiFi,0,0,1
