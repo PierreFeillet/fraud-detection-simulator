@@ -28,8 +28,9 @@ class Fraudster(Agent):
         location = np.random.choice(locations, p=location_weights)
         device = np.random.choice(devices, p=device_weights)
         network = random.choice(networks)
-        compromised_device = self.is_fraud()
-        compromised_network = self.is_fraud()
+        compromised_device = self.is_compromised()
+        compromised_network = self.is_compromised()
+        self.before_transaction = self.balance
 
         if transaction_type_choice == "withdrawal" or transaction_type_choice == "purchase":
             self.balance -= amount
@@ -39,7 +40,8 @@ class Fraudster(Agent):
         return {
             "agent_id": self.agent_id,
             "timestamp": pd.Timestamp.now(),
-            "type": "fraud",
+            "type": transaction_type_choice,
+            "before_transaction": self.before_transaction,
             "amount": amount,
             "balance": self.balance,
             "merchant": merchant,
@@ -56,13 +58,14 @@ class Fraudster(Agent):
         location = np.random.choice(locations, p=location_weights)
         device = np.random.choice(devices, p=device_weights)
         network = random.choice(networks)
-        compromised_device = self.is_fraud()
-        compromised_network = self.is_fraud()
+        compromised_device = self.is_compromised()
+        compromised_network = self.is_compromised()
 
         return {
             "agent_id": self.agent_id,
             "timestamp": pd.Timestamp.now(),
             "type": activity,
+            "before_transaction": self.before_transaction,
             "amount": 0,
             "balance": self.balance,
             "merchant": 0,

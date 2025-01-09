@@ -31,11 +31,13 @@ class LegitimateCustomer(Agent):
         location = np.random.choice(locations, p=location_weights)
         device = np.random.choice(devices, p=device_weights)
         network = random.choice(networks)
-        compromised_device = self.is_fraud()
-        compromised_network = self.is_fraud()
+        compromised_device = self.is_compromised()
+        compromised_network = self.is_compromised()
+        self.before_transaction = self.balance
 
         if (transaction_type_choice == "withdrawal" or transaction_type_choice == "purchase") and self.balance > amount:
             self.balance -= amount
+            self.before_transaction = self.balance
         elif transaction_type_choice == "deposit":
             self.balance += amount
 
@@ -44,6 +46,7 @@ class LegitimateCustomer(Agent):
             "timestamp": pd.Timestamp.now(),
             #"time": transac_time,
             "type": transaction_type_choice,
+            "before_transaction": self.before_transaction,
             "amount": amount,
             "balance": self.balance,
             "merchant": merchant,
@@ -60,13 +63,14 @@ class LegitimateCustomer(Agent):
         location = np.random.choice(locations, p=location_weights)
         device = np.random.choice(devices, p=device_weights)
         network = random.choice(networks)
-        compromised_device = self.is_fraud()
-        compromised_network = self.is_fraud()
+        compromised_device = self.is_compromised()
+        compromised_network = self.is_compromised()
 
         return {
             "agent_id": self.agent_id,
             "timestamp": pd.Timestamp.now(),
             "type": activity,
+            "before_transaction": self.before_transaction,
             "amount": 0,
             "balance": self.balance,
             "merchant": 0,

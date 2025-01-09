@@ -22,8 +22,8 @@ class Agent:
         self.balance = balance
         self.type = type=np.random.choice(["bank", "merchant", "client"], p=[0.2, 0.4, 0.4])
 
-    # Define is_fraud() function
-    def is_fraud(self, probability=0.05):
+    # Define is_compromised() function
+    def is_compromised(self, probability=0.05):
         """
         Returns True if a device or network is compromised, based on the probability.
         Default probability of compromise is 5%.
