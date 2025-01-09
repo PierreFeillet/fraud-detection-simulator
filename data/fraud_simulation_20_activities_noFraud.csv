@@ -1,0 +1,21 @@
+agent_id,timestamp,type,amount,balance,merchant,location,device,network,compromised_device,compromised_network,fraud
+0,2025-01-09 13:17:07.321592,deposit,917.34,4098.17,Best Buy,"Tokyo, Japan",iPhone,Public WiFi,0,0,0
+0,2025-01-09 13:17:36.321592,deposit,200.84,4299.01,Amazon,"Los Angeles, USA",iPhone,Mobile Network,0,0,0
+0,2025-01-09 13:17:38.321592,deposit,926.25,5225.26,Bank,"Tokyo, Japan",iPhone,Public WiFi,0,0,0
+0,2025-01-09 13:17:51.321592,deposit,532.67,5757.93,Apple,"London, UK",Android,Home WiFi,0,0,0
+0,2025-01-09 13:18:17.321592,withdrawal,408.5,5349.43,Bank,"London, UK",Android,Mobile Network,0,0,0
+0,2025-01-09 13:18:20.321592,phone_change,0.0,5349.43,0,"Tokyo, Japan",Android,Mobile Network,0,0,0
+0,2025-01-09 13:18:25.321592,deposit,442.94,5792.37,Walmart,"New York, USA",iPhone,Mobile Network,0,0,0
+0,2025-01-09 13:18:40.321592,email_change,0.0,5792.37,0,"Los Angeles, USA",Android,Home WiFi,0,0,0
+0,2025-01-09 13:18:59.321592,deposit,149.02,5941.39,Target,"Berlin, Germany",iPhone,Public WiFi,0,0,0
+0,2025-01-09 13:19:10.321592,deposit,336.62,6278.01,Apple,"New York, USA",iPhone,Public WiFi,0,0,0
+0,2025-01-09 13:19:32.321592,deposit,173.83,6451.84,Best Buy,"Los Angeles, USA",MacBook,Corporate Network,0,0,0
+0,2025-01-09 13:20:00.321592,deposit,734.03,7185.87,PayPal,"Paris, France",MacBook,Public WiFi,0,0,0
+0,2025-01-09 13:20:30.321592,deposit,796.94,7982.81,PayPal,"Los Angeles, USA",iPhone,Home WiFi,0,1,0
+0,2025-01-09 13:20:58.321592,withdrawal,221.01,7761.8,Apple,"Los Angeles, USA",Android,Home WiFi,0,1,0
+0,2025-01-09 13:21:21.321592,deposit,978.45,8740.25,Amazon,"Berlin, Germany",Windows Laptop,Corporate Network,0,0,0
+0,2025-01-09 13:21:42.321592,deposit,332.28,9072.53,Apple,"London, UK",iPhone,Public WiFi,0,0,0
+0,2025-01-09 13:22:07.321592,deposit,301.55,9374.08,Bank,"Los Angeles, USA",Android,Public WiFi,0,0,0
+0,2025-01-09 13:22:13.321592,deposit,823.19,10197.27,Bank,"Los Angeles, USA",Android,Public WiFi,0,0,0
+0,2025-01-09 13:22:26.321592,withdrawal,175.59,10021.68,ATM,"Berlin, Germany",MacBook,Public WiFi,0,0,0
+0,2025-01-09 13:22:55.321592,deposit,595.64,10617.32,ATM,"London, UK",Android,Corporate Network,0,0,0
