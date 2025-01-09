@@ -41,7 +41,8 @@ behavioral_catalog = {
         "transaction_behavior": {
             "withdrawal_range": (50, 500),
             "deposit_range": (100, 1000),
-            "transaction_frequency": 0.4  # 40% withdrawals, 60% deposits
+            "purchase_range": (0, 700),
+            "transaction_frequency": [0.3, 0.5, 0.2]  # 30% withdrawals, 50% deposits, 20% purchase
         },
         "activity_behavior": {
             "sequence": ["password_change", "email_change", "phone_change"],
@@ -52,18 +53,21 @@ behavioral_catalog = {
         "transaction_behavior": {
             "withdrawal_range": (1000, 5000),
             "deposit_range": (10, 100),
-            "transaction_frequency": 0.7  # 70% of the time it's a withdrawal
+            "purchase_range": (0, 700),
+            "transaction_frequency": [0.7, 0.1, 0.2]  # withdrawals, deposit, purchase
         },
         "activity_behavior": {
-            "sequence": ["failed_login", "failed_login", "password_change", "suspicious_login", "withdrawal", "purchase"],
-            "time_probabilities": [0.2, 0.2, 0.3, 0.7, 0.8, 0.8]  # Probability of activity happening at different times
+            "sequence": ["failed_login", "failed_login", "password_change", "suspicious_login", "withdrawal",],
+            "time_probabilities": [0.2, 0.2, 0.3, 0.7, 0.8,]  # Probability of activity happening at different times
         }
     },
     "money_laundering": {
         "transaction_behavior": {
             "withdrawal_range": (2000, 10000),
             "deposit_range": (500, 5000),
-            "transaction_frequency": 0.4  # Less frequent large withdrawals
+            "purchase_range": (0, 700),
+            "transaction_frequency": [0.6, 0.05, 0.35]  
+
         },
         "activity_behavior": {
             "sequence": ["deposit", "deposit", "withdrawal", "phone_change", "email_change"],
@@ -74,7 +78,9 @@ behavioral_catalog = {
         "transaction_behavior": {
             "withdrawal_range": (1000, 3000),
             "deposit_range": (50, 200),
-            "transaction_frequency": 0.6
+            "purchase_range": (0, 700),
+            "transaction_frequency": [0.6, 0.1, 0.3]  # 30% withdrawals, 50% deposits, 20% purchase
+
         },
         "activity_behavior": {
             "sequence": ["failed_login", "suspicious_login", "password_change", "withdrawal", "phone_change"],
@@ -85,7 +91,9 @@ behavioral_catalog = {
         "transaction_behavior": {
             "withdrawal_range": (500, 2000),
             "deposit_range": (0, 50),
-            "transaction_frequency": 0.8  # Frequent small withdrawals
+            "purchase_range": (0, 700),
+            "transaction_frequency": [0.5, 0.1, 0.4]  # 30% withdrawals, 50% deposits, 20% purchase
+
         },
         "activity_behavior": {
             "sequence": ["withdrawal", "failed_login", "withdrawal", "phone_change", "email_change"],
@@ -100,6 +108,8 @@ def generate_transaction_amount(transaction_type, behavior_type, precision=2):
         amount = max(0, np.random.uniform(*behavioral_catalog[behavior_type]["transaction_behavior"]["withdrawal_range"]))
     elif transaction_type == "deposit":
         amount = max(0, np.random.uniform(*behavioral_catalog[behavior_type]["transaction_behavior"]["deposit_range"]))
+    elif transaction_type == "purchase":
+        amount = max(0, np.random.uniform(*behavioral_catalog[behavior_type]["transaction_behavior"]["purchase_range"]))
     else:
         amount = 0  # Default if transaction_type is unrecognized
     
@@ -108,11 +118,9 @@ def generate_transaction_amount(transaction_type, behavior_type, precision=2):
 
 # Determine if the transaction is a withdrawal or deposit based on behavior
 def transaction_type(behavior_type,):
-
     new_type = np.random.choice(
-        ["deposit", "withdrawal"],
-        p=[1 - behavioral_catalog[behavior_type]["transaction_behavior"]["transaction_frequency"],
-           behavioral_catalog[behavior_type]["transaction_behavior"]["transaction_frequency"]]
+        ["withdrawal", "deposit", "purchase"],
+        p=behavioral_catalog[behavior_type]["transaction_behavior"]["transaction_frequency"]
     )
     return new_type
 

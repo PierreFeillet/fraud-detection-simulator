@@ -32,6 +32,7 @@ class BankActivities:
             "agent_id": "int16",
             "timestamp": "datetime64[ns]",
             "type": "category",
+            "before_transaction": "float32",
             "amount": "float32",
             "balance": "float32",
             "merchant": "category",
