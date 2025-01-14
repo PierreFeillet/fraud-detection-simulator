@@ -21,6 +21,7 @@ class Operation(Agent):
     OPERATION_DTYPE = {
         "agent_id": "int16",
         "timestamp": "datetime64[ns]",
+        "behavior": "category",
         "action": "category",
         "granted": "bool",
         "initial_balance": "float32",
@@ -48,6 +49,7 @@ class Operation(Agent):
         super().__init__(agent_id, initial_balance)
         # Operation-specific attributes
         self.timestamp = timestamp if timestamp is not None else datetime.now()
+        self.behavior = behavior_type
         #self.balance = self.initial_balance
         self.fraud = is_fraud(behavior_type)
         self.action = self.get_operation_type(behavior_type)
