@@ -30,6 +30,7 @@ class BankActivities:
                 if len(self.operation_log) + len(new_data) > self.max_size:
                     remaining_space = self.max_size - len(self.operation_log)
                     new_data = new_data.iloc[:remaining_space]
+                    print("Truncated 'new_data' to fit within max_size:", new_data)
                 self.operation_log = pd.concat([self.operation_log, new_data], ignore_index=True)
                 self.transactions_buffer = []
             except pd.errors.OutOfBoundsDatetime as e:

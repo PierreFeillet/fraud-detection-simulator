@@ -35,7 +35,7 @@ class Operation(Agent):
         "fraud": "int8"
     }
 
-    def __init__(self, agent_id, initial_balance, behavior_type):
+    def __init__(self, agent_id, initial_balance, behavior_type, timestamp=None):
         """
         Initialize an Operation instance.
 
@@ -46,9 +46,8 @@ class Operation(Agent):
         """
         # Initialize the parent class (Agent)
         super().__init__(agent_id, initial_balance)
-
         # Operation-specific attributes
-        self.timestamp = datetime.now()
+        self.timestamp = timestamp if timestamp is not None else datetime.now()
         #self.balance = self.initial_balance
         self.fraud = is_fraud(behavior_type)
         self.action = self.get_operation_type(behavior_type)
