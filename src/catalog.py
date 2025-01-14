@@ -6,6 +6,27 @@ import random
 locations = ["New York, USA", "Los Angeles, USA", "London, UK", "Tokyo, Japan", "Paris, France", "Berlin, Germany"]
 # Define location weights (if you want some locations to appear more frequently)
 location_weights = [0.3, 0.2, 0.15, 0.15, 0.1, 0.1]  # Adjust these weights as needed
+LOCATIONS = {
+    "USA": [
+        ("New York", 0.2),
+        ("Los Angeles", 0.2)
+    ],
+    "UK": [
+        ("London", 0.15)
+    ],
+    "France": [
+        ("Paris", 0.1)
+    ],
+    "Italy": [
+        ("Rome", 0.1)
+    ],
+    "Germany":[
+        ("Berlin", 0.1)
+    ],
+    "Japan":[
+        ("Tokyo", 0.15)
+    ]
+}
 
 # Merchants
 # Define allowed transaction types for each merchant
@@ -30,10 +51,6 @@ TRANSACTION_TYPE_MERCHANTS = {
     ]
 }
 
-#merchants = list(MERCHANT_TRANSACTION_TYPES.keys())
-#merchants = ["Amazon", "Walmart", "Best Buy", "Target", "Starbucks", "Apple Store"]
-#merchant_weights = [0.1, 0.1, 0.1, 0.1, 0.15, 0.15, 0.1, 0.1, 0.1] # Needs to match the merchant dictonnary
-
 # Devices and device weights
 devices = ["iPhone", "Android", "Windows Laptop", "MacBook", "Linux PC", "iPad"]
 device_weights = [0.3, 0.25, 0.2, 0.15, 0.05, 0.05]  # Weights representing how frequently each device is used
@@ -41,6 +58,9 @@ device_weights = [0.3, 0.25, 0.2, 0.15, 0.05, 0.05]  # Weights representing how 
 # Networks and network weights
 networks = ["Home WiFi", "Public WiFi", "Mobile Network", "Corporate Network"]
 network_weights = [0.4, 0.3, 0.2, 0.1]  # Weights indicating the frequency of each network
+
+# List of transactions. If not in this list a certain operation is considered an activity
+possible_transactions = ["withdrawal", "deposit", "purchase"]
 
 # Behavioral catalog for different fraud types
 
@@ -55,8 +75,9 @@ behavioral_catalog = {
         "activity_behavior": {
             "sequence": ["password_change", "email_change", "phone_change"],
             "time_probabilities": [0.3, 0.3, 0.4]  # Normal customer activities
-        }
-    },
+        },
+        "fraud": 0
+            },
     "identity_theft": {
         "transaction_behavior": {
             "withdrawal_range": (1000, 5000),
@@ -67,7 +88,8 @@ behavioral_catalog = {
         "activity_behavior": {
             "sequence": ["failed_login", "failed_login", "password_change", "suspicious_login", "withdrawal",],
             "time_probabilities": [0.2, 0.2, 0.3, 0.7, 0.8,]  # Probability of activity happening at different times
-        }
+        },
+        "fraud": 1
     },
     "money_laundering": {
         "transaction_behavior": {
@@ -80,7 +102,8 @@ behavioral_catalog = {
         "activity_behavior": {
             "sequence": ["deposit", "deposit", "withdrawal", "phone_change", "email_change"],
             "time_probabilities": [0.5, 0.6, 0.8, 0.4, 0.3]
-        }
+        },
+        "fraud": 1
     },
     "phishing": {
         "transaction_behavior": {
@@ -93,7 +116,8 @@ behavioral_catalog = {
         "activity_behavior": {
             "sequence": ["failed_login", "suspicious_login", "password_change", "withdrawal", "phone_change"],
             "time_probabilities": [0.7, 0.6, 0.5, 0.8, 0.4]
-        }
+        },
+        "fraud": 1
     },
     "card_skimming": {
         "transaction_behavior": {
@@ -106,7 +130,8 @@ behavioral_catalog = {
         "activity_behavior": {
             "sequence": ["withdrawal", "failed_login", "withdrawal", "phone_change", "email_change"],
             "time_probabilities": [0.6, 0.5, 0.8, 0.3, 0.2]
-        }
+        },
+        "fraud": 1
     }
 }
 
@@ -120,7 +145,6 @@ def generate_transaction_amount(transaction_type, behavior_type, precision=2):
         amount = max(0, np.random.uniform(*behavioral_catalog[behavior_type]["transaction_behavior"]["purchase_range"]))
     else:
         amount = 0  # Default if transaction_type is unrecognized
-    
     return round(amount, precision)  # Round to the specified precision
 
 
@@ -131,6 +155,14 @@ def get_transaction_type(behavior_type,):
         p=behavioral_catalog[behavior_type]["transaction_behavior"]["transaction_frequency"]
     )
     return new_type
+
+def get_activity_type(behavior_type):
+    activity_sequence = behavioral_catalog[behavior_type]["activity_behavior"]["sequence"]
+    time_probabilities = behavioral_catalog[behavior_type]["activity_behavior"]["time_probabilities"]
+    return np.random.choice(activity_sequence, p=check_and_normalize_probabilities(time_probabilities))
+
+def is_fraud(behavior_type):
+    return behavioral_catalog[behavior_type]["fraud"]
 
 def extract_merchant(transaction):
     """
@@ -144,7 +176,6 @@ def extract_merchant(transaction):
     """
     if transaction not in TRANSACTION_TYPE_MERCHANTS:
         raise ValueError(f"Transaction type '{transaction}' is not recognized.")
-    
     merchants, probabilities = zip(*TRANSACTION_TYPE_MERCHANTS[transaction]) # Unzip the dictionary for the given transaction to get an array of merchants and an array of relative probabilities
     merchant = np.random.choice(merchants, p=probabilities)
     return merchant
@@ -158,8 +189,4 @@ def check_and_normalize_probabilities(time_probabilities):
     return time_probabilities
 
 
-# Generate account activities based on behavior type and sequence
-def account_activity(behavior_type):
-    activity_sequence = behavioral_catalog[behavior_type]["activity_behavior"]["sequence"]
-    time_probabilities = behavioral_catalog[behavior_type]["activity_behavior"]["time_probabilities"]
-    return np.random.choice(activity_sequence, p=check_and_normalize_probabilities(time_probabilities))
+
