@@ -2,7 +2,6 @@
 import random
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
 
 from operation import Operation
 
@@ -10,7 +9,6 @@ class BankActivities:
     def __init__(self, max_size):
         self.dtypes = Operation.OPERATION_DTYPE
         self.operation_log = pd.DataFrame(columns=self.dtypes.keys()).astype(self.dtypes)
-        self.current_time = datetime.now()
         self.transactions_buffer = []
         self.max_size = max_size
 
@@ -21,12 +19,9 @@ class BankActivities:
     def process_operation(self, operation):
         if len(self.operation_log) == self.max_size:
             return
-        operation["timestamp"] = self.current_time
-        self.moveCurrentTime()
         self.transactions_buffer.append(operation)
 
-    def moveCurrentTime(self):
-        self.current_time += timedelta(seconds=random.randint(1, 30))
+    
 
     def flush_transactions(self):
         if self.transactions_buffer:

@@ -56,10 +56,15 @@ def generate_agent_operations(agent_id, behavior_type, max_operations=10):
     operations = []
     balance = round(random.uniform(1000, 5000), 2)
     for _ in range(num_operations):
-        operation = Operation(agent_id=agent_id, balance=balance, behavior_type=behavior_type)
+        operation = Operation(agent_id=agent_id, initial_balance=balance, behavior_type=behavior_type)
+        operation.moveTime()
+        # Update the agent' balance based on the transaction
+        operation.initial_balance = balance
+        if operation.granted:
+            operation.update_balance()
         operation_data = {key: getattr(operation, key) for key in Operation.OPERATION_DTYPE.keys()}
-        balance = operation.balance  # Update balance after each operation
         operations.append(operation_data)
+        balance = operation.balance
     return operations
 
 def extract_features(operation_log):
@@ -118,8 +123,8 @@ def generate_dataset(nb_activities, nb_agents, data_folder, pr_fraudulent=0.3):
     nb_fraudster_agents = int(pr_fraudulent * nb_agents)
     nb_legitimate_agents = nb_agents - nb_fraudster_agents
 
-    legitimate_agents = [Agent(agent_id=i, balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_legitimate_agents)]
-    fraudster_agents = [Agent(agent_id=i + nb_legitimate_agents, balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_fraudster_agents)]
+    legitimate_agents = [Agent(agent_id=i, initial_balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_legitimate_agents)]
+    fraudster_agents = [Agent(agent_id=i + nb_legitimate_agents, initial_balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_fraudster_agents)]
 
     bank_with_activities = BankActivities(nb_activities)
     run_simulation_with_activities(legitimate_agents, fraudster_agents, behavioral_catalog, bank_with_activities, steps=1000)

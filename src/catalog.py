@@ -159,7 +159,8 @@ def get_transaction_type(behavior_type,):
 def get_activity_type(behavior_type):
     activity_sequence = behavioral_catalog[behavior_type]["activity_behavior"]["sequence"]
     time_probabilities = behavioral_catalog[behavior_type]["activity_behavior"]["time_probabilities"]
-    return np.random.choice(activity_sequence, p=check_and_normalize_probabilities(time_probabilities))
+    activity = np.random.choice(activity_sequence, p=check_and_normalize_probabilities(time_probabilities))
+    return activity
 
 def is_fraud(behavior_type):
     return behavioral_catalog[behavior_type]["fraud"]

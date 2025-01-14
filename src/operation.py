@@ -1,6 +1,8 @@
 import random
 import pandas as pd
 import numpy as np
+from datetime import datetime, timedelta
+
 
 from catalog import generate_transaction_amount, get_transaction_type, get_activity_type, extract_merchant, is_fraud
 from catalog import locations
@@ -21,6 +23,7 @@ class Operation(Agent):
         "timestamp": "datetime64[ns]",
         "action": "category",
         "granted": "bool",
+        "initial_balance": "float32",
         "amount": "float32",
         "balance": "float32",
         "merchant": "category",
@@ -32,7 +35,7 @@ class Operation(Agent):
         "fraud": "int8"
     }
 
-    def __init__(self, agent_id, balance, behavior_type):
+    def __init__(self, agent_id, initial_balance, behavior_type):
         """
         Initialize an Operation instance.
 
@@ -42,10 +45,11 @@ class Operation(Agent):
             behavior_type (str): Behavior type ("normal", "fraud", etc.).
         """
         # Initialize the parent class (Agent)
-        super().__init__(agent_id, balance)
+        super().__init__(agent_id, initial_balance)
 
         # Operation-specific attributes
-        self.timestamp = pd.Timestamp.now()
+        self.timestamp = datetime.now()
+        #self.balance = self.initial_balance
         self.fraud = is_fraud(behavior_type)
         self.action = self.get_operation_type(behavior_type)
         self.granted = True
@@ -62,8 +66,9 @@ class Operation(Agent):
         self.network = np.random.choice(networks, p=network_weights)
         self.compromised_device = self.is_compromised()
         self.compromised_network = self.is_compromised()
-        # Update the agent's balance based on the transaction
-        self.update_balance()
+
+    def moveTime(self):
+        self.timestamp += timedelta(seconds=random.randint(1, 30))
 
     def is_compromised(self, probability=0.05):
         """
@@ -91,20 +96,26 @@ class Operation(Agent):
         """
         if self.fraud==0:
             if random.random() < legitimate_activity_probability:
-                return get_activity_type(behavior_type)
+                operation = get_activity_type(behavior_type)
             else:
-                return get_transaction_type(behavior_type)
+                operation = get_transaction_type(behavior_type)
         elif self.fraud==1:
             if random.random() < fraud_activity_probability:
-                return get_activity_type(behavior_type)
+                operation = get_activity_type(behavior_type)
             else:
-                return get_transaction_type(behavior_type)
+                operation = get_transaction_type(behavior_type)
+        if operation == 'failed_login':
+            self.granted = False
+        return operation
+
 
     def update_balance(self):
         """
         Update the agent's balance based on the transaction type and amount.
         """
         if self.action in possible_transactions:
+            self.initial_balance = self.balance
+
             if self.action in ["withdrawal", "purchase"]:
                 if self.balance >= self.amount:
                     self.balance -= self.amount

@@ -6,6 +6,7 @@ import numpy as np
 # Include the legitimate customer, fraudster, and bank logic with merchants, locations, devices, etc.
 
 class Agent:
-    def __init__(self, agent_id, balance):
+    def __init__(self, agent_id, initial_balance):
         self.agent_id = agent_id
-        self.balance = balance
+        self.initial_balance = initial_balance
+        self.balance = self.initial_balance
