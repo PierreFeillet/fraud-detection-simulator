@@ -20,6 +20,7 @@ class Operation(Agent):
         "agent_id": "int16",
         "timestamp": "datetime64[ns]",
         "action": "category",
+        "granted": "bool",
         "amount": "float32",
         "balance": "float32",
         "merchant": "category",
@@ -47,6 +48,7 @@ class Operation(Agent):
         self.timestamp = pd.Timestamp.now()
         self.fraud = is_fraud(behavior_type)
         self.action = self.get_operation_type(behavior_type)
+        self.granted = True
         self.amount = (
             generate_transaction_amount(self.action, behavior_type)
             if self.action in possible_transactions
@@ -60,8 +62,6 @@ class Operation(Agent):
         self.network = np.random.choice(networks, p=network_weights)
         self.compromised_device = self.is_compromised()
         self.compromised_network = self.is_compromised()
-        
-
         # Update the agent's balance based on the transaction
         self.update_balance()
 
@@ -82,7 +82,7 @@ class Operation(Agent):
         Determine the transaction type based on behavior type.
 
         Args:
-            behavior_type (str): Type of behavior ("normal", "fraud").
+            behavior_type (str): Type of behavior (defined in the catalog.py).
             legitimate_activity_probability (float): Probability for legitimate activity.
             fraud_activity_probability (float): Probability for fraudulent activity.
 
@@ -109,7 +109,7 @@ class Operation(Agent):
                 if self.balance >= self.amount:
                     self.balance -= self.amount
                 else:
-                    self.balance = float("nan")  # Insufficient funds
+                    self.granted = False # Insufficient funds
             elif self.action == "deposit":
                 self.balance += self.amount
 
