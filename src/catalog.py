@@ -86,8 +86,8 @@ behavioral_catalog = {
             "transaction_frequency": [0.7, 0.1, 0.2]  # withdrawals, deposit, purchase
         },
         "activity_behavior": {
-            "sequence": ["failed_login", "failed_login", "password_change", "suspicious_login", "withdrawal",],
-            "time_probabilities": [0.2, 0.2, 0.3, 0.7, 0.8,]  # Probability of activity happening at different times
+            "sequence": ["failed_login", "failed_login", "password_change", "suspicious_login",],
+            "time_probabilities": [0.1, 0.2, 0.5, 0.2,]  # Probability of activity happening at different times
         },
         "fraud": 1
     },
@@ -100,8 +100,8 @@ behavioral_catalog = {
 
         },
         "activity_behavior": {
-            "sequence": ["deposit", "deposit", "withdrawal", "phone_change", "email_change"],
-            "time_probabilities": [0.5, 0.6, 0.8, 0.4, 0.3]
+            "sequence": ["phone_change", "email_change"],
+            "time_probabilities": [0.4, 0.6]
         },
         "fraud": 1
     },
@@ -114,8 +114,8 @@ behavioral_catalog = {
 
         },
         "activity_behavior": {
-            "sequence": ["failed_login", "suspicious_login", "password_change", "withdrawal", "phone_change"],
-            "time_probabilities": [0.7, 0.6, 0.5, 0.8, 0.4]
+            "sequence": ["failed_login", "suspicious_login", "password_change", "phone_change"],
+            "time_probabilities": [0.4, 0.3, 0.2, 0.1]
         },
         "fraud": 1
     },
@@ -128,8 +128,8 @@ behavioral_catalog = {
 
         },
         "activity_behavior": {
-            "sequence": ["withdrawal", "failed_login", "withdrawal", "phone_change", "email_change"],
-            "time_probabilities": [0.6, 0.5, 0.8, 0.3, 0.2]
+            "sequence": ["failed_login", "phone_change", "email_change"],
+            "time_probabilities": [0.3, 0.5, 0.2,]
         },
         "fraud": 1
     }

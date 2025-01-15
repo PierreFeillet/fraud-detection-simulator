@@ -48,13 +48,14 @@ app.layout = html.Div([
 ], style={'font-family': 'IBM Plex Sans'})
 
 @app.callback(
-    [Output('agent-dropdown', 'options')],
-    [Input('agent-dropdown', 'value')]  # You can now remove the upload data input
+    Output('agent-dropdown', 'options'),
+    Input('agent-dropdown', 'value')
 )
 def update_dropdown(selected_agent):
-    # Get unique agents from the dataframe
-    agent_options = [{'label': str(agent), 'value': agent} for agent in df['agent_id'].unique()]
-    return [agent_options]
+    # Get unique agents from the dataframe and add an 'All' option
+    agent_options = [{'label': 'All', 'value': 'all'}]  # 'All' option
+    agent_options += [{'label': str(agent), 'value': agent} for agent in df['agent_id'].unique()]
+    return agent_options
 
 @app.callback(
     [Output('summary-stats', 'children'),
@@ -66,8 +67,11 @@ def update_dropdown(selected_agent):
     [Input('agent-dropdown', 'value')]
 )
 def update_dashboard(selected_agent):
-    # Filter the dataframe if an agent is selected
-    filtered_df = df if selected_agent is None else df[df['agent_id'] == selected_agent]
+    # Filter the dataframe based on the selected agent
+    if selected_agent == 'all' or selected_agent is None:
+        filtered_df = df  # Show all agents if 'all' is selected
+    else:
+        filtered_df = df[df['agent_id'] == selected_agent]
 
     # Summary statistics
     total_transactions = len(filtered_df)
@@ -89,8 +93,8 @@ def update_dashboard(selected_agent):
     network_fig = px.histogram(filtered_df, x='network', color='fraud', barmode='group', histnorm='probability', title='Fraud Occurrence by Network')
     
     # Time Series Analysis per Agent ID
-    time_fig = px.line(filtered_df.groupby(filtered_df['timestamp'].dt.floor('T')).size().reset_index(name='count'),
-                       x='timestamp', y='count', title=f'Transactions Over Time for Agent {selected_agent if selected_agent else "All"}')
+    time_fig = px.line(filtered_df.groupby(filtered_df['timestamp'].dt.floor('s')).size().reset_index(name='count'),
+                       x='timestamp', y='count', title=f'Transactions Over Time for Agent {selected_agent if selected_agent != "all" else "All"}')
     
     # Normalized Histograms for each behavior type
     behavior_figs = []

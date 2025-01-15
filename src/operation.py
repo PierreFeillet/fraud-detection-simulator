@@ -96,15 +96,17 @@ class Operation(Agent):
             str: Transaction type.
         """
         if self.fraud==0:
-            if random.random() < legitimate_activity_probability:
-                operation = get_activity_type(behavior_type)
-            else:
-                operation = get_transaction_type(behavior_type)
+            operation = get_activity_type(behavior_type)
+            #if random.random() < legitimate_activity_probability:
+            #    operation = get_activity_type(behavior_type)
+            #else:
+            #    operation = get_transaction_type(behavior_type)
         elif self.fraud==1:
-            if random.random() < fraud_activity_probability:
-                operation = get_activity_type(behavior_type)
-            else:
-                operation = get_transaction_type(behavior_type)
+            operation = get_activity_type(behavior_type)
+        #    if random.random() < fraud_activity_probability:
+        #        operation = get_activity_type(behavior_type)
+        #    else:
+        #        operation = get_transaction_type(behavior_type)
         if operation == 'failed_login':
             self.granted = False
         return operation
