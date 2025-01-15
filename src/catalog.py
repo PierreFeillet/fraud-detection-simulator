@@ -1,4 +1,4 @@
-# Behavioral catalog for various fraudulent behaviors with time series and activity sequences
+# Behavioral catalog for various fraudulentulent behaviors with time series and activity sequences
 import numpy as np
 import random
 
@@ -62,7 +62,7 @@ network_weights = [0.4, 0.3, 0.2, 0.1]  # Weights indicating the frequency of ea
 # List of transactions. If not in this list a certain operation is considered an activity
 possible_transactions = ["withdrawal", "deposit", "purchase"]
 
-# Behavioral catalog for different fraud types
+# Behavioral catalog for different fraudulent types
 
 behavioral_catalog = {
     "normal": {
@@ -73,10 +73,10 @@ behavioral_catalog = {
             "transaction_frequency": [0.3, 0.5, 0.2]  # 30% withdrawals, 50% deposits, 20% purchase
         },
         "activity_behavior": {
-            "sequence": ["password_change", "email_change", "phone_change"],
-            "time_probabilities": [0.3, 0.3, 0.4]  # Normal customer activities
+            "sequence": ["password_change", "email_change", "phone_change", "purchase"],
+            "activity_probabilities": [0.3, 0.2, 0.4, 0.1]  # Normal customer activities
         },
-        "fraud": 0
+        "fraudulent": 0
             },
     "identity_theft": {
         "transaction_behavior": {
@@ -86,10 +86,10 @@ behavioral_catalog = {
             "transaction_frequency": [0.7, 0.1, 0.2]  # withdrawals, deposit, purchase
         },
         "activity_behavior": {
-            "sequence": ["failed_login", "failed_login", "password_change", "suspicious_login",],
-            "time_probabilities": [0.1, 0.2, 0.5, 0.2,]  # Probability of activity happening at different times
+            "sequence": ["failed_login", "failed_login", "password_change", "suspicious_login", "withdrawal"],
+            "activity_probabilities": [0.1, 0.2, 0.3, 0.2, 0.2]  # Probability of activity happening at different times
         },
-        "fraud": 1
+        "fraudulent": 1
     },
     "money_laundering": {
         "transaction_behavior": {
@@ -100,10 +100,10 @@ behavioral_catalog = {
 
         },
         "activity_behavior": {
-            "sequence": ["phone_change", "email_change"],
-            "time_probabilities": [0.4, 0.6]
+            "sequence": ["deposit", "deposit", "phone_change", "email_change"],
+            "activity_probabilities": [0.1, 0.2, 0.4, 0.3]
         },
-        "fraud": 1
+        "fraudulent": 1
     },
     "phishing": {
         "transaction_behavior": {
@@ -114,10 +114,10 @@ behavioral_catalog = {
 
         },
         "activity_behavior": {
-            "sequence": ["failed_login", "suspicious_login", "password_change", "phone_change"],
-            "time_probabilities": [0.4, 0.3, 0.2, 0.1]
+            "sequence": ["failed_login", "suspicious_login", "password_change", "withdrawal", "phone_change"],
+            "activity_probabilities": [0.3, 0.3, 0.2, 0.1, 0.1]
         },
-        "fraud": 1
+        "fraudulent": 1
     },
     "card_skimming": {
         "transaction_behavior": {
@@ -128,10 +128,10 @@ behavioral_catalog = {
 
         },
         "activity_behavior": {
-            "sequence": ["failed_login", "phone_change", "email_change"],
-            "time_probabilities": [0.3, 0.5, 0.2,]
+            "sequence": ["withdrawal", "failed_login", "phone_change", "email_change"],
+            "activity_probabilities": [0.4, 0.3, 0.1, 0.2,]
         },
-        "fraud": 1
+        "fraudulent": 1
     }
 }
 
@@ -158,12 +158,12 @@ def get_transaction_type(behavior_type,):
 
 def get_activity_type(behavior_type):
     activity_sequence = behavioral_catalog[behavior_type]["activity_behavior"]["sequence"]
-    time_probabilities = behavioral_catalog[behavior_type]["activity_behavior"]["time_probabilities"]
-    activity = np.random.choice(activity_sequence, p=check_and_normalize_probabilities(time_probabilities))
+    activity_probabilities = behavioral_catalog[behavior_type]["activity_behavior"]["activity_probabilities"]
+    activity = np.random.choice(activity_sequence, p=check_and_normalize_probabilities(activity_probabilities))
     return activity
 
-def is_fraud(behavior_type):
-    return behavioral_catalog[behavior_type]["fraud"]
+def is_fraudulent(behavior_type):
+    return behavioral_catalog[behavior_type]["fraudulent"]
 
 def extract_merchant(transaction):
     """
@@ -182,12 +182,12 @@ def extract_merchant(transaction):
     return merchant
 
 
-def check_and_normalize_probabilities(time_probabilities):
-    total = sum(time_probabilities)
+def check_and_normalize_probabilities(activity_probabilities):
+    total = sum(activity_probabilities)
     if not np.isclose(total, 1.0):
         # If the sum is not close to 1, normalize the array
-        time_probabilities = [p / total for p in time_probabilities]
-    return time_probabilities
+        activity_probabilities = [p / total for p in activity_probabilities]
+    return activity_probabilities
 
 
 

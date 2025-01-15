@@ -16,7 +16,7 @@ from sklearn.svm import OneClassSVM
 from sklearn.impute import SimpleImputer
 
 #from legitimate_agent import LegitimateCustomer
-#from fraudster_agent import Fraudster
+#from fraudulentster_agent import fraudulentster
 from operation import Operation
 from agent import Agent
 from bank import BankActivities
@@ -27,7 +27,7 @@ def generate_country():
     return random.choice(COUNTRIES)
 
 
-def run_simulation_with_activities(legitimate_agents, fraudster_agents, behavioral_catalog, bank, timestamp, steps=100, flush_interval=100):
+def run_simulation_with_activities(legitimate_agents, fraudulent_agents, behavioral_catalog, bank, timestamp, steps=100, flush_interval=100):
     start_time = time.time()
     for step in range(steps):
         if len(bank.operation_log) == bank.max_size:
@@ -36,12 +36,12 @@ def run_simulation_with_activities(legitimate_agents, fraudster_agents, behavior
 
         # The following two for block can be unified if
         for agent in legitimate_agents:
-            legitimate_behavior = random.choice([key for key, value in behavioral_catalog.items() if value["fraud"] == 0])
+            legitimate_behavior = random.choice([key for key, value in behavioral_catalog.items() if value["fraudulent"] == 0])
             agent_operations = generate_agent_operations(agent.agent_id, behavior_type=legitimate_behavior, timestamp=timestamp)
             bank.add_operations(agent_operations)
 
-        for agent in fraudster_agents:
-            fraudulent_behavior = random.choice([key for key, value in behavioral_catalog.items() if value["fraud"] == 1])
+        for agent in fraudulent_agents:
+            fraudulent_behavior = random.choice([key for key, value in behavioral_catalog.items() if value["fraudulent"] == 1])
             agent_operations = generate_agent_operations(agent.agent_id, behavior_type=fraudulent_behavior, timestamp=timestamp)
             bank.add_operations(agent_operations)
 
@@ -69,7 +69,7 @@ def generate_agent_operations(agent_id, behavior_type, timestamp, max_operations
 
 def extract_features(operation_log):
     X = operation_log[["amount", "balance"]] #"risk_level"
-    y = operation_log["fraud"]
+    y = operation_log["fraudulent"]
     return X, y
 
 def benchmark_models(operation_log):
@@ -120,18 +120,18 @@ def format_number(nb_global_activities):
     return formated_number
 
 def generate_dataset(nb_activities, nb_agents, data_folder, timestamp, pr_fraudulent=0.3):
-    nb_fraudster_agents = int(pr_fraudulent * nb_agents)
-    nb_legitimate_agents = nb_agents - nb_fraudster_agents
+    nb_fraudulent_agents = int(pr_fraudulent * nb_agents)
+    nb_legitimate_agents = nb_agents - nb_fraudulent_agents
 
     legitimate_agents = [Agent(agent_id=i, initial_balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_legitimate_agents)]
-    fraudster_agents = [Agent(agent_id=i + nb_legitimate_agents, initial_balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_fraudster_agents)]
+    fraudulent_agents = [Agent(agent_id=i + nb_legitimate_agents, initial_balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_fraudulent_agents)]
 
     bank_with_activities = BankActivities(nb_activities)
-    run_simulation_with_activities(legitimate_agents, fraudster_agents, behavioral_catalog, bank_with_activities, timestamp, steps=1000)
+    run_simulation_with_activities(legitimate_agents, fraudulent_agents, behavioral_catalog, bank_with_activities, timestamp, steps=1000)
 
-    operation_log_with_fraud_features = bank_with_activities.operation_log
+    operation_log_with_fraudulent_features = bank_with_activities.operation_log
     os.makedirs(data_folder, exist_ok=True)
-    operation_log_with_fraud_features.to_csv(f"{data_folder}/fraud_simulation_{format_number(nb_activities)}_activities.csv", index=True)
+    operation_log_with_fraudulent_features.to_csv(f"{data_folder}/fraudulent_simulation_{format_number(nb_activities)}_activities.csv", index=True)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -140,7 +140,7 @@ if __name__ == "__main__":
     )
     parser.add_argument('--nb_activities', help='Total number of activities to be generated', type=int, required=True)
     parser.add_argument('--nb_agents', help='Total number of agents', type=int, required=True)
-    parser.add_argument('--pr_fraudulent', help='Proportion of fraudulent agent with respect to the total number of agents', type=float, default=0.3)
+    parser.add_argument('--pr_fraudulent', help='Proportion of fraudulentulent agent with respect to the total number of agents', type=float, default=0.3)
     parser.add_argument('--data_folder', help='Where to save produced data', type=str, default='data')
     parser.add_argument('--initial_timestamp', help='Initial timestamp value for the generating the series (ISO 8601 format, example: "2025-01-06T12:00:00")', default=None)
     # Example: python src/simulator.py --nb_activities 1000 --nb_agents 10 --pr_fraudulent 0.3
@@ -148,11 +148,11 @@ if __name__ == "__main__":
     cfg = parser.parse_args()
     pprint(cfg)
 
-    operation_log_with_fraud_features = generate_dataset(nb_activities=cfg.nb_activities, nb_agents=cfg.nb_agents, data_folder=cfg.data_folder, pr_fraudulent=cfg.pr_fraudulent, timestamp=cfg.initial_timestamp)
+    operation_log_with_fraudulent_features = generate_dataset(nb_activities=cfg.nb_activities, nb_agents=cfg.nb_agents, data_folder=cfg.data_folder, pr_fraudulent=cfg.pr_fraudulent, timestamp=cfg.initial_timestamp)
 
     # Benchmark anomaly detection models
     if False:
-        results = benchmark_models(operation_log_with_fraud_features)
+        results = benchmark_models(operation_log_with_fraudulent_features)
         for model, metrics in results.items():
             print(f"Model: {model}")
             print(f"F1 Score: {metrics['F1 Score']}")
