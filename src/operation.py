@@ -4,14 +4,13 @@ import numpy as np
 from datetime import datetime, timedelta
 
 
-from catalog import generate_transaction_amount, get_transaction_type, get_activity_type, extract_merchant, is_fraudulent
-from catalog import locations
-from catalog import location_weights
-from catalog import devices
-from catalog import device_weights
-from catalog import networks
-from catalog import network_weights
-from catalog import possible_transactions
+from extract_sequence import locations
+from extract_sequence import location_weights
+from extract_sequence import devices
+from extract_sequence import device_weights
+from extract_sequence import networks
+from extract_sequence import network_weights
+from extract_sequence import possible_transactions
 
 from agent import Agent  # Import the Agent class
 
@@ -21,55 +20,35 @@ class Operation(Agent):
     OPERATION_DTYPE = {
         "agent_id": "int16",
         "timestamp": "datetime64[ns]",
-        "behavior": "category",
-        "action": "category",
-        "granted": "bool",
         "initial_balance": "float32",
+        "activity": "category",
+        "granted": "bool",
         "amount": "float32",
         "balance": "float32",
-        "merchant": "category",
+        #"merchant": "category",
         "location": "category",
         "device": "category",
         "network": "category",
         "compromised_device": "int8",
         "compromised_network": "int8",
-        "fraudulent": "int8"
+      #  "fraudulent": "int8"
     }
 
-    def __init__(self, agent_id, initial_balance, behavior_type, timestamp=None):
-        """
-        Initialize an Operation instance.
-
-        Args:
-            agent_id (int): Unique identifier for the agent.
-            balance (float): Initial balance of the agent.
-            behavior_type (str): Behavior type ("normal", "fraudulent", etc.).
-        """
+    def __init__(self, agent_id, initial_balance, timestamp):
         # Initialize the parent class (Agent)
         super().__init__(agent_id, initial_balance)
         # Operation-specific attributes
-        self.timestamp = timestamp if timestamp is not None else datetime.now()
-        self.behavior = behavior_type
+        self.timestamp = timestamp
+        self.activity = ''
         #self.balance = self.initial_balance
-        self.fraudulent = is_fraudulent(behavior_type)
-        self.action = get_activity_type(behavior_type)
-        self.granted = True if self.action != 'failed_login' else False
-        self.amount = (
-            generate_transaction_amount(self.action, behavior_type)
-            if self.action in possible_transactions
-            else 0
-        )
-        self.merchant = (
-            extract_merchant(self.action) if self.action in possible_transactions else None
-        )
+        self.granted = True 
+        self.amount = 0
+       #self.merchant =  extract_merchant(self.activity) if self.amount !=0 else ''
         self.location = np.random.choice(locations, p=location_weights)
         self.device = np.random.choice(devices, p=device_weights)
         self.network = np.random.choice(networks, p=network_weights)
         self.compromised_device = self.is_compromised()
         self.compromised_network = self.is_compromised()
-
-    def moveTime(self):
-        self.timestamp += timedelta(seconds=random.randint(1, 30))
 
     def is_compromised(self, probability=0.05):
         """
@@ -77,53 +56,16 @@ class Operation(Agent):
         Default probability of compromise is 5%.
         """
         return random.random() < probability
-    '''
-    def get_operation_type(
-        self,
-        behavior_type="",
-        legitimate_activity_probability=0.2,
-        fraudulent_activity_probability=0.5,
-    ):
-        """
-        Determine the transaction type based on behavior type.
-
-        Args:
-            behavior_type (str): Type of behavior (defined in the catalog.py).
-            legitimate_activity_probability (float): Probability for legitimate activity.
-            fraudulent_activity_probability (float): Probability for fraudulent activity.
-
-        Returns:
-            str: Transaction type.
-        """
-        if self.fraud==0:
-            if random.random() < legitimate_activity_probability:
-                operation = get_activity_type(behavior_type)
-            else:
-                operation = get_transaction_type(behavior_type)
-        elif self.fraud==1:
-            if random.random() < fraudulent_activity_probability:
-                operation = get_activity_type(behavior_type)
-            else:
-                operation = get_transaction_type(behavior_type)
-        if operation == 'failed_login':
-            self.granted = False
-        return operation
-    '''
 
     def update_balance(self):
         """
         Update the agent's balance based on the transaction type and amount.
         """
-        if self.action in possible_transactions:
-            self.initial_balance = self.balance
-
-            if self.action in ["withdrawal", "purchase"]:
-                if self.balance >= self.amount:
-                    self.balance -= self.amount
-                else:
-                    self.granted = False # Insufficient funds
-            elif self.action == "deposit":
-                self.balance += self.amount
+        if self.amount>=0 or (self.amount<0 and self.balance>=abs(self.amount)):
+            self.balance = self.balance + self.amount
+        else:
+            self.granted = False # Insufficient funds
+    
 
     def __repr__(self):
         return (
@@ -131,4 +73,20 @@ class Operation(Agent):
             f"balance={self.balance}, fraud={self.fraudulent}, timestamp={self.timestamp})"
         )
 
-
+    '''
+    def extract_merchant(transaction):
+    """
+    Extract a random merchant based on the transaction type and probabilities.
+    
+    Args:
+        transaction (str): The transaction type (e.g., 'purchase', 'deposit', 'withdrawal').
+        
+    Returns:
+        str: The selected merchant.
+    """
+    if transaction not in TRANSACTION_TYPE_MERCHANTS:
+        raise ValueError(f"Transaction type '{transaction}' is not recognized.")
+    merchants, probabilities = zip(*TRANSACTION_TYPE_MERCHANTS[transaction]) # Unzip the dictionary for the given transaction to get an array of merchants and an array of relative probabilities
+    merchant = np.random.choice(merchants, p=probabilities)
+    return merchant
+    '''

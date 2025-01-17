@@ -1,193 +1,258 @@
-# Behavioral catalog for various fraudulentulent behaviors with time series and activity sequences
 import numpy as np
+import json
 import random
 
-# Locations
-locations = ["New York, USA", "Los Angeles, USA", "London, UK", "Tokyo, Japan", "Paris, France", "Berlin, Germany"]
-# Define location weights (if you want some locations to appear more frequently)
-location_weights = [0.3, 0.2, 0.15, 0.15, 0.1, 0.1]  # Adjust these weights as needed
-LOCATIONS = {
-    "USA": [
-        ("New York", 0.2),
-        ("Los Angeles", 0.2)
-    ],
-    "UK": [
-        ("London", 0.15)
-    ],
-    "France": [
-        ("Paris", 0.1)
-    ],
-    "Italy": [
-        ("Rome", 0.1)
-    ],
-    "Germany":[
-        ("Berlin", 0.1)
-    ],
-    "Japan":[
-        ("Tokyo", 0.15)
-    ]
-}
-
-# Merchants
-# Define allowed transaction types for each merchant
-TRANSACTION_TYPE_MERCHANTS = {
-    "purchase": [
-        ("Walmart", 0.15),
-        ("Best Buy", 0.2),
-        ("Target", 0.1),
-        ("Starbucks", 0.1),
-        ("Apple", 0.1),
-        ("Amazon", 0.25),
-        ("PayPal", 0.1)
-    ],
-    "deposit": [
-        ("Bank", 0.4),
-        ("ATM", 0.3),
-        ("PayPal", 0.3)
-    ],
-    "withdrawal": [
-        ("Bank", 0.5),
-        ("ATM", 0.5)
-    ]
-}
-
-# Devices and device weights
-devices = ["iPhone", "Android", "Windows Laptop", "MacBook", "Linux PC", "iPad"]
-device_weights = [0.3, 0.25, 0.2, 0.15, 0.05, 0.05]  # Weights representing how frequently each device is used
-
-# Networks and network weights
-networks = ["Home WiFi", "Public WiFi", "Mobile Network", "Corporate Network"]
-network_weights = [0.4, 0.3, 0.2, 0.1]  # Weights indicating the frequency of each network
-
-# List of transactions. If not in this list a certain operation is considered an activity
-possible_transactions = ["withdrawal", "deposit", "purchase"]
-
-# Behavioral catalog for different fraudulent types
-
-behavioral_catalog = {
-    "normal": {
-        "transaction_behavior": {
-            "withdrawal_range": (50, 500),
-            "deposit_range": (100, 1000),
-            "purchase_range": (0, 700),
-            "transaction_frequency": [0.3, 0.5, 0.2]  # 30% withdrawals, 50% deposits, 20% purchase
+behavior_catalog = {
+    "legitimate": {
+        "activities": {
+            "Open Account": (0, 0),                  # No transaction at the start
+            "Deposit Funds": (0, 10000),             # Can vary from 0 to 10,000
+            "Make Purchase": (-1000, -1),            # Purchases are negative (money spent)
+            "Pay Bills": (-5000, 0),                 # Payments are negative (money spent)
+            "Transfer Funds": (-5000, -1),           # Transfers are negative (money sent out)
+            "Apply for Credit Card": (0, 0),         # No transaction, just an application
+            "Apply for Loan": (0, 0),                # No transaction, just an application
+            "Invest Money": (-50000, -500),          # Investments are negative (money spent)
+            "Review activityments": (0, 0),          # No transaction, review only
+            "Close Account": (0, 0)                  # No transaction at account closure
         },
-        "activity_behavior": {
-            "sequence": ["password_change", "email_change", "phone_change", "purchase"],
-            "activity_probabilities": [0.3, 0.2, 0.4, 0.1]  # Normal customer activities
-        },
-        "fraudulent": 0
-            },
+        "transition_matrix": [
+            [0.0, 0.5, 0.2, 0.1, 0.1, 0.02, 0.02, 0.02, 0.03, 0.01],
+            [0.0, 0.4, 0.3, 0.1, 0.1, 0.03, 0.02, 0.02, 0.07, 0.01],
+            [0.0, 0.1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.01, 0.0],
+            [0.0, 0.1, 0.2, 0.5, 0.1, 0.03, 0.02, 0.02, 0.02, 0.0],
+            [0.0, 0.2, 0.3, 0.1, 0.3, 0.02, 0.02, 0.02, 0.02, 0.01],
+            [0.0, 0.1, 0.2, 0.2, 0.1, 0.3, 0.05, 0.02, 0.01, 0.01],
+            [0.0, 0.1, 0.1, 0.1, 0.1, 0.02, 0.4, 0.1, 0.05, 0.02],
+            [0.0, 0.05, 0.05, 0.1, 0.1, 0.02, 0.03, 0.5, 0.1, 0.05],
+            [0.0, 0.05, 0.05, 0.1, 0.1, 0.02, 0.03, 0.05, 0.5, 0.1],
+            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+        ],
+        "time_limit": 180  # Maximum 3 hours between events
+    },
+
     "identity_theft": {
-        "transaction_behavior": {
-            "withdrawal_range": (1000, 5000),
-            "deposit_range": (10, 100),
-            "purchase_range": (0, 700),
-            "transaction_frequency": [0.7, 0.1, 0.2]  # withdrawals, deposit, purchase
+        "activities": {
+            "Failed Login": (0, 0),                  # No transaction
+            "Suspicious Login": (0, 0),              # No transaction
+            "Change Password": (0, 0),               # No transaction
+            "Change Email": (0, 0),                  # No transaction
+            "Change Phone": (0, 0),                  # No transaction
+            "Request New Card": (0, 0),              # No transaction
+            "Unauthorized Transfer": (-10000, -100),  # Unauthorized transfers are negative (money stolen)
+            "Close Account": (0, 0),                  # No transaction at account closure
         },
-        "activity_behavior": {
-            "sequence": ["failed_login", "failed_login", "password_change", "suspicious_login", "withdrawal"],
-            "activity_probabilities": [0.1, 0.2, 0.3, 0.2, 0.2]  # Probability of activity happening at different times
-        },
-        "fraudulent": 1
+        "transition_matrix": [
+            [0.6, 0.3, 0.05, 0.02, 0.02, 0.0, 0.01, 0.0],
+            [0.1, 0.5, 0.3, 0.05, 0.03, 0.02, 0.05, 0.0],
+            [0.0, 0.1, 0.5, 0.2, 0.1, 0.05, 0.05, 0.0],
+            [0.0, 0.05, 0.1, 0.5, 0.2, 0.1, 0.05, 0.0],
+            [0.0, 0.05, 0.1, 0.2, 0.5, 0.1, 0.04, 0.01],
+            [0.0, 0.02, 0.05, 0.1, 0.1, 0.5, 0.2, 0.03],
+            [0.0, 0.01, 0.02, 0.05, 0.1, 0.1, 0.6, 0.12],
+            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+        ],
+        "time_limit": 30  # Shorter time between suspicious activity
     },
-    "money_laundering": {
-        "transaction_behavior": {
-            "withdrawal_range": (2000, 10000),
-            "deposit_range": (500, 5000),
-            "purchase_range": (0, 700),
-            "transaction_frequency": [0.6, 0.05, 0.35]  
 
-        },
-        "activity_behavior": {
-            "sequence": ["deposit", "deposit", "phone_change", "email_change"],
-            "activity_probabilities": [0.1, 0.2, 0.4, 0.3]
-        },
-        "fraudulent": 1
-    },
-    "phishing": {
-        "transaction_behavior": {
-            "withdrawal_range": (1000, 3000),
-            "deposit_range": (50, 200),
-            "purchase_range": (0, 700),
-            "transaction_frequency": [0.6, 0.1, 0.3]  # 30% withdrawals, 50% deposits, 20% purchase
-
-        },
-        "activity_behavior": {
-            "sequence": ["failed_login", "suspicious_login", "password_change", "withdrawal", "phone_change"],
-            "activity_probabilities": [0.3, 0.3, 0.2, 0.1, 0.1]
-        },
-        "fraudulent": 1
-    },
     "card_skimming": {
-        "transaction_behavior": {
-            "withdrawal_range": (500, 2000),
-            "deposit_range": (0, 50),
-            "purchase_range": (0, 700),
-            "transaction_frequency": [0.5, 0.1, 0.4]  # 30% withdrawals, 50% deposits, 20% purchase
+        "activities": {
+            "ATM Withdrawal": (-1000, -10),           # Withdrawals are negative (money taken out)
+            "Online Purchase": (-500, -5),            # Purchases are negative (money spent)
+            "POS Purchase": (-1000, -1),              # In-person purchases are negative (money spent)
+            "Balance Check": (0, 0),                  # No transaction for balance check
+            "Request New PIN": (0, 0),                # No transaction for PIN request
+            "Report Lost Card": (0, 0),               # No transaction for report
+            "Close Account": (0, 0)                   # No transaction at account closure
+        },
+        "transition_matrix": [
+            [0.0, 0.3, 0.3, 0.2, 0.1, 0.05, 0.05],
+            [0.0, 0.4, 0.3, 0.1, 0.1, 0.05, 0.05],
+            [0.0, 0.3, 0.4, 0.1, 0.1, 0.05, 0.04],
+            [0.1, 0.2, 0.2, 0.2, 0.2, 0.05, 0.05],
+            [0.0, 0.1, 0.1, 0.1, 0.4, 0.2, 0.1],
+            [0.0, 0.05, 0.05, 0.05, 0.2, 0.5, 0.15],
+            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+        ],
+        "time_limit": 15  # Rapid transactions typical in skimming
+    },
 
+    "money_laundering": {
+        "activities": {
+            "Open Account": (0, 0),                  # No transaction at account opening
+            "Deposit Funds": (10000, 100),           # Deposits can vary, but negative when spent
+            "Wire Transfer": (-50000, -100),         # Wire transfers are negative (money sent)
+            "Purchase Luxury Goods": (-100000, -500), # Luxury goods are negative (money spent)
+            "Cash Withdrawal": (-5000, -100),         # Withdrawals are negative (money taken out)
+            "Invest in Assets": (-50000, -500),      # Investments are negative (money spent)
+            "Close Account": (0, 0)                  # No transaction at account closure
         },
-        "activity_behavior": {
-            "sequence": ["withdrawal", "failed_login", "phone_change", "email_change"],
-            "activity_probabilities": [0.4, 0.3, 0.1, 0.2,]
+        "transition_matrix": [
+            [0.0, 0.5, 0.3, 0.1, 0.05, 0.03, 0.02],
+            [0.0, 0.2, 0.4, 0.2, 0.1, 0.05, 0.03],
+            [0.0, 0.3, 0.2, 0.2, 0.1, 0.1, 0.1],
+            [0.0, 0.1, 0.1, 0.4, 0.2, 0.1, 0.1],
+            [0.0, 0.1, 0.1, 0.2, 0.4, 0.1, 0.1],
+            [0.0, 0.1, 0.1, 0.2, 0.1, 0.4, 0.1],
+            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+        ],
+        "time_limit": 120  # Frequent but spread-out transactions
+    },
+
+    "synthetic_identity_fraud": {
+        "activities": {
+            "Create Fake Identity": (0, 0),          # No transaction for creating fake identity
+            "Open Account": (0, 0),                  # No transaction at account opening
+            "Apply for Credit Card": (0, 0),         # No transaction for credit card application
+            "Apply for Loan": (0, 0),                # No transaction for loan application
+            "Make Purchase": (-50000, -500),         # Purchases are negative (money spent)
+            "Max Out Credit": (-10000, -100),        # Maxing out credit is negative (money used)
+            "Withdraw Funds": (-5000, -100),         # Withdrawals are negative (money taken out)
+            "Close Account": (0, 0)                  # No transaction at account closure
         },
-        "fraudulent": 1
+        "transition_matrix": [
+            [0.4, 0.3, 0.1, 0.1, 0.05, 0.01, 0.01],
+            [0.3, 0.3, 0.2, 0.1, 0.05, 0.01, 0.01],
+            [0.2, 0.3, 0.3, 0.1, 0.05, 0.02, 0.02],
+            [0.1, 0.2, 0.2, 0.4, 0.1, 0.02, 0.02],
+            [0.1, 0.1, 0.2, 0.1, 0.3, 0.1, 0.1],
+            [0.05, 0.05, 0.1, 0.1, 0.2, 0.3, 0.1],
+            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+        ],
+        "time_limit": 60  # Faster spending to exploit identity
     }
 }
 
-# Generate transaction amount based on behavior
-def generate_transaction_amount(transaction_type, behavior_type, precision=2):
-    if transaction_type == "withdrawal":
-        amount = max(0, np.random.uniform(*behavioral_catalog[behavior_type]["transaction_behavior"]["withdrawal_range"]))
-    elif transaction_type == "deposit":
-        amount = max(0, np.random.uniform(*behavioral_catalog[behavior_type]["transaction_behavior"]["deposit_range"]))
-    elif transaction_type == "purchase":
-        amount = max(0, np.random.uniform(*behavioral_catalog[behavior_type]["transaction_behavior"]["purchase_range"]))
-    else:
-        amount = 0  # Default if transaction_type is unrecognized
-    return round(amount, precision)  # Round to the specified precision
 
-
-# Determine if the transaction is a withdrawal or deposit based on behavior
-def get_transaction_type(behavior_type,):
-    new_type = np.random.choice(
-        ["withdrawal", "deposit", "purchase"],
-        p=behavioral_catalog[behavior_type]["transaction_behavior"]["transaction_frequency"]
-    )
-    return new_type
-
-def get_activity_type(behavior_type):
-    activity_sequence = behavioral_catalog[behavior_type]["activity_behavior"]["sequence"]
-    activity_probabilities = behavioral_catalog[behavior_type]["activity_behavior"]["activity_probabilities"]
-    activity = np.random.choice(activity_sequence, p=check_and_normalize_probabilities(activity_probabilities))
-    return activity
-
-def is_fraudulent(behavior_type):
-    return behavioral_catalog[behavior_type]["fraudulent"]
-
-def extract_merchant(transaction):
+def check_and_normalize_catalog(behavior_catalog, output_file="src/normalized_catalog"):
+    #os.makedirs(output_dir, exist_ok=True)  # Ensure directory exists
     """
-    Extract a random merchant based on the transaction type and probabilities.
+    Function to check if each row of the transition probability matrix sums to one 
+    to prevent floating point issue in the sequence extraction.
+    The normalized catalog is saved as "normalized_catalog.json"
+    """
+    normalized_catalog = {}
     
-    Args:
-        transaction (str): The transaction type (e.g., 'purchase', 'deposit', 'withdrawal').
+    for behavior, data in behavior_catalog.items():
+        activities = data["activities"]
+        matrix = np.array(data["transition_matrix"])  
+
+        # Normalize each row
+        for i in range(matrix.shape[0]):
+            row_sum = np.sum(matrix[i])
+            if row_sum != 0:
+                matrix[i] = matrix[i] / row_sum
+
+        # Adjust for floating-point precision issues
+        for i in range(matrix.shape[0]):
+            row_sum = np.sum(matrix[i])
+            if abs(row_sum - 1) > 1e-6:
+                matrix[i, -1] += 1 - row_sum
+
+        normalized_catalog[behavior] = {
+            "activities": activities,
+            "transition_matrix": matrix.tolist(),
+            "time_limit": data["time_limit"]
+        }
+
+        # Save each behavior matrix as a JSON file
+        # Ensure output directory exists
+        #output_dir = "normalized_catalog"
+        #output_file = os.path.join(output_dir, f"{behavior}.json")
+        #print(normalized_catalog[behavior])
+    with open(f'{output_file}.json', "w") as f:
+        json.dump(normalized_catalog, f, indent=4)
+
+    print(f"Normalized transition matrices saved in {output_file}.json")
+    return normalized_catalog
+
+
+def simulate_markov_chain(start_time, behavior_type, n_activitiy=20):
+    activities = behavior_catalog[behavior_type]["activities"]
+    transition_matrix = behavior_catalog[behavior_type]["transition_matrix"]
+    time_limit = behavior_catalog[behavior_type]["time_limit"]
+    activity_sequence = []
+
+    current_activity = random.choice(list(activities.keys()))
+    transaction_range = activities[current_activity]
+    transaction_amount = 0 if transaction_range == (0, 0) else random.randint(*transaction_range)
+    timestamp = start_time
+
+    # Add the first activity to the sequence
+    activity_sequence.append({
+        "timestamp": timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+        "activity": current_activity,
+        "amount": transaction_amount
+    })
+
+    for _ in range(n_activitiy):
+        current_activity_index = list(activities.keys()).index(current_activity)
+        next_activity = np.random.choice(list(activities.keys()), p=transition_matrix[current_activity_index])
+        transaction_range = activities[next_activity]
+        transaction_amount = 0 if transaction_range == (0, 0) else random.randint(*transaction_range)
+        timestamp += timedelta(minutes=random.randint(1, time_limit * 60))
+
+        # Add the next activity to the sequence
+        activity_sequence.append({
+            "timestamp": timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+            "activity": str(next_activity),
+            "amount": transaction_amount
+        })
+
+        if next_activity == "Close Account":
+            break
         
-    Returns:
-        str: The selected merchant.
-    """
-    if transaction not in TRANSACTION_TYPE_MERCHANTS:
-        raise ValueError(f"Transaction type '{transaction}' is not recognized.")
-    merchants, probabilities = zip(*TRANSACTION_TYPE_MERCHANTS[transaction]) # Unzip the dictionary for the given transaction to get an array of merchants and an array of relative probabilities
-    merchant = np.random.choice(merchants, p=probabilities)
-    return merchant
+        current_activity = next_activity
+
+    return activity_sequence
+
+normalized_catalog = check_and_normalize_catalog(behavior_catalog)
 
 
-def check_and_normalize_probabilities(activity_probabilities):
-    total = sum(activity_probabilities)
-    if not np.isclose(total, 1.0):
-        # If the sum is not close to 1, normalize the array
-        activity_probabilities = [p / total for p in activity_probabilities]
-    return activity_probabilities
+#start_time = datetime.now()
+#result = simulate_markov_chain(start_time, "legitimate")
+#print(result)
 
 
 
+
+'''
+# Define behavior types and their corresponding activities
+behavior_activities = {
+    "normal": [
+        "Open Account", "Deposit Funds", "Make Purchase", "Pay Bills", 
+        "Transfer Funds", "Apply for Credit Card", "Apply for Loan", 
+        "Invest Money", "Review activitiyments", "Close Account"
+    ],
+    "identity_theft": [
+        "Failed Login", "Suspicious Login", "Change Password", "Change Email", 
+        "Change Phone", "Request New Card", "Unauthorized Transfer", "Close Account"
+    ],
+    "card_skimming": [
+        "ATM Withdrawal", "Online Purchase", "POS Purchase", "Balance Check", 
+        "Request New PIN", "Report Lost Card", "Close Account"
+    ]
+}
+
+# This code block can be used to create a catalog with random transition probabilities
+# Generate random transition matrices for each behavior. This use Dirichlet distribution to ensure that each row sum to one
+def generate_transition_matrix(activities):
+    num_activities = len(activities)
+    matrix = np.random.dirichlet(np.ones(num_activities), size=num_activities)  # Ensuring each row sums to 1
+    return matrix.tolist()
+
+# Create the behavior dictionary
+behavior_catalog = {
+    behavior: {
+        "activities": activities,
+        "transition_matrix": generate_transition_matrix(activities)
+    }
+    for behavior, activities in behavior_activities.items()
+}
+# Save to JSON file
+output_file = os.path.join(output_dir, "behavior_catalog.json")
+with open(output_file, "w") as f:
+    json.dump(behavior_catalog, f, indent=4)
+
+print(f"Behavior catalog saved to {output_file}")
+'''
