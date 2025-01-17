@@ -14,14 +14,14 @@ from extract_sequence import possible_transactions
 
 from agent import Agent  # Import the Agent class
 
-class Operation(Agent):
+class Activity(Agent):
     
     # Global dictionary for shared keys
-    OPERATION_DTYPE = {
+    activity_DTYPE = {
         "agent_id": "int16",
         "timestamp": "datetime64[ns]",
         "initial_balance": "float32",
-        "activity": "category",
+        "type": "category",
         "granted": "bool",
         "amount": "float32",
         "balance": "float32",
@@ -37,13 +37,13 @@ class Operation(Agent):
     def __init__(self, agent_id, initial_balance, timestamp):
         # Initialize the parent class (Agent)
         super().__init__(agent_id, initial_balance)
-        # Operation-specific attributes
+        # activity-specific attributes
         self.timestamp = timestamp
-        self.activity = ''
+        self.type = type
         #self.balance = self.initial_balance
         self.granted = True 
         self.amount = 0
-       #self.merchant =  extract_merchant(self.activity) if self.amount !=0 else ''
+       #self.merchant =  extract_merchant(self.type) if self.amount !=0 else ''
         self.location = np.random.choice(locations, p=location_weights)
         self.device = np.random.choice(devices, p=device_weights)
         self.network = np.random.choice(networks, p=network_weights)
@@ -65,13 +65,6 @@ class Operation(Agent):
             self.balance = self.balance + self.amount
         else:
             self.granted = False # Insufficient funds
-    
-
-    def __repr__(self):
-        return (
-            f"Operation(agent_id={self.agent_id}, type={self.action}, amount={self.amount}, "
-            f"balance={self.balance}, fraud={self.fraudulent}, timestamp={self.timestamp})"
-        )
 
     '''
     def extract_merchant(transaction):

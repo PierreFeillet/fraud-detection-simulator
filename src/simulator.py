@@ -21,7 +21,7 @@ from IPython import embed
 
 #from legitimate_agent import LegitimateCustomer
 #from fraudulentster_agent import fraudulentster
-from operation import Operation
+from activity import Activity
 from agent import Agent
 from bank import BankActivities
 from catalog import behavior_catalog, check_and_normalize_catalog
@@ -29,113 +29,57 @@ from catalog import behavior_catalog, check_and_normalize_catalog
 def generate_country():
     return random.choice(COUNTRIES)
 
-def run_simulation_with_activities(normalized_catalog, legitimate_agents, fraudulent_agents, bank, start_time, steps=100, flush_interval=100):
-    start_time = time.time()
+def run_simulation_with_activities(normalized_catalog, legitimate_agents, bank, start_time, steps=100, flush_interval=100):
+    #activity_time = datetime.fromtimestamp(start_time)
+    activity_time = start_time
     for step in range(steps):
-        if len(bank.operation_log) == bank.max_size:
+        if len(bank.activity_log) == bank.max_size:
             print(f"Target generation of {bank.max_size} activities reached")
             break
-
+        #Define the sequence start for each agent
+    
         # The following two for block can be unified if
         for agent in legitimate_agents:
-            activity_sequence = simulate_markov_chain(normalized_catalog=normalized_catalog, start_time=start_time, behavior_type='legitimate',)
-            df_sequence = pd.DataFrame(activity_sequence)
-            agent_operations = generate_agent_operations(agent, df_sequence)
-            print(agent_operations)
-            bank.add_operations(agent_operations)
-
-        for agent in fraudulent_agents:
-            fraudulent_behavior = get_random_fraud_behavior(normalized_catalog)
-            agent_operations = generate_agent_operations(agent.agent_id, behavior_type=fraudulent_behavior, timestamp=start_time,)
-            bank.add_operations(agent_operations)
+            behavior_type = 'legitimate' # Needs to be generalized extracting the behavior
+            activities = normalized_catalog[behavior_type]["activities"]
+            time_limit = normalized_catalog[behavior_type]["time_limit"]
+            transition_matrix = normalized_catalog[behavior_type]["transition_matrix"]
+            if step == 0: 
+                current_activity_type=random.choice(list(activities.keys()))
+                balance = round(random.uniform(1000, 5000), 2) # Initialize balance
+            if current_activity_type == "Close Account":
+                break
+            activity_time += timedelta(minutes=random.randint(0, time_limit * 60))
+            current_activity = Activity(agent_id=agent, initial_balance=balance, timestamp=activity_time.strftime("%Y-%m-%d %H:%M:%S"))
+            current_activity.type = current_activity_type
+            transaction_range = activities[current_activity_type]
+            current_activity.amount = 0 if transaction_range == (0, 0) else random.randint(*transaction_range)
+            current_activity.update_balance()
+            bank.add_activity(current_activity)
+            current_activity_type = extract_activity_markov_chain(current_activity.type, activities, transition_matrix)
 
         if step % flush_interval == 0:
-            bank.flush_transactions()
+            bank.flush_activities()
             print(f"Flushed transactions at step {step}")
 
-    bank.flush_transactions()
+    bank.flush_activities()
 
 def get_random_fraud_behavior(normalized_catalog):
     fraud_behaviors = [key for key in normalized_catalog.keys() if key != "legitimate"]
     return random.choice(fraud_behaviors)
 
-def simulate_markov_chain(normalized_catalog, start_time, behavior_type, n_activitiy=20):
-    activities = normalized_catalog[behavior_type]["activities"]
-    transition_matrix = normalized_catalog[behavior_type]["transition_matrix"]
-    time_limit = normalized_catalog[behavior_type]["time_limit"]
-    activity_sequence = []
+def extract_activity_markov_chain(current_activity, activities, transition_matrix):
+    current_activity_index = list(activities.keys()).index(current_activity)
+    next_activity_type = np.random.choice(list(activities.keys()), p=transition_matrix[current_activity_index])
+    return next_activity_type
 
-    current_activity = random.choice(list(activities.keys()))
-    transaction_range = activities[current_activity]
-    transaction_amount = 0 if transaction_range == (0, 0) else random.randint(*transaction_range)
-    timestamp = datetime.fromtimestamp(start_time)
-    
-    # Add the first activity to the sequence
-    activity_sequence.append({
-        "timestamp": timestamp.strftime("%Y-%m-%d %H:%M:%S"),
-        "activity": current_activity,
-        "amount": transaction_amount
-    })
-
-    for _ in range(n_activitiy):
-        current_activity_index = list(activities.keys()).index(current_activity)
-        next_activity = np.random.choice(list(activities.keys()), p=transition_matrix[current_activity_index])
-        transaction_range = activities[next_activity]
-        transaction_amount = 0 if transaction_range == (0, 0) else random.randint(*transaction_range)
-        timestamp += timedelta(minutes=random.randint(1, time_limit * 60))
-
-        # Add the next activity to the sequence
-        activity_sequence.append({
-            "timestamp": timestamp.strftime("%Y-%m-%d %H:%M:%S"),
-            "activity": str(next_activity),
-            "amount": transaction_amount
-        })
-
-        if next_activity == "Close Account":
-            break
-        
-        current_activity = next_activity
-
-    return activity_sequence
-
-
-
-def generate_agent_operations(agent_id, df):
-    operations = []
-    balance = round(random.uniform(1000, 5000), 2)
-    
-    # Iterate over the DataFrame, which contains the operations
-    for i, row in df.iterrows():
-        # Get timestamp and amount for the current operation
-        timestamp = pd.to_datetime(row['timestamp'])
-        amount = row['amount']
-        
-        # Create Operation instance with the given timestamp and amount
-        operation = Operation(
-            agent_id=agent_id, 
-            initial_balance=balance,
-            timestamp=timestamp,
-        )
-        operation.amount = amount
-        # Update balance based on the operation
-        operation.update_balance()
-       # operation.extract_merchant()
-        
-        # Record operation details
-        operation_data = {key: getattr(operation, key) for key in Operation.OPERATION_DTYPE.keys()}
-        operations.append(operation_data)
-        # Update balance for the next operation
-        balance = operation.balance
-    
-    return operations
-
-def extract_features(operation_log):
-    X = operation_log[["amount", "balance"]] #"risk_level"
-    y = operation_log["fraudulent"]
+def extract_features(activity_log):
+    X = activity_log[["amount", "balance"]] #"risk_level"
+    y = activity_log["fraudulent"]
     return X, y
 
-def benchmark_models(operation_log):
-    X, y = extract_features(operation_log)
+def benchmark_models(activity_log):
+    X, y = extract_features(activity_log)
 
     # Impute missing values
     imputer = SimpleImputer(strategy="mean")  # Replace NaNs with the mean of the column
@@ -189,11 +133,11 @@ def generate_dataset(nb_activities, nb_agents, data_folder, start_time, pr_fraud
     fraudulent_agents = [Agent(agent_id=i + nb_legitimate_agents, initial_balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_fraudulent_agents)]
 
     bank_with_activities = BankActivities(nb_activities)
-    run_simulation_with_activities(normalized_catalog=normalized_catalog, legitimate_agents=legitimate_agents, fraudulent_agents=fraudulent_agents, bank=bank_with_activities, start_time=start_time, steps=1000)
+    run_simulation_with_activities(normalized_catalog=normalized_catalog, legitimate_agents=legitimate_agents, bank=bank_with_activities, start_time=start_time, steps=1000)
     
-    operation_log_with_fraudulent_features = bank_with_activities.operation_log
+    activity_log_with_fraudulent_features = bank_with_activities.activity_log
     os.makedirs(data_folder, exist_ok=True)
-    operation_log_with_fraudulent_features.to_csv(f"{data_folder}/fraudulent_simulation_{format_number(nb_activities)}_activities.csv", index=True)
+    activity_log_with_fraudulent_features.to_csv(f"{data_folder}/fraudulent_simulation_{format_number(nb_activities)}_activities.csv", index=True)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -211,23 +155,25 @@ if __name__ == "__main__":
     pprint(cfg)
 
     # Generate/Read catalog wirh normalized probabilities
-    if os.path.exists('src/normalized_catalog.json'):
-        with open('src/normalized_catalog.json', "r") as f:
-            normalized_catalog = json.load(f)
-    else:
-        normalized_catalog = check_and_normalize_catalog(behavior_catalog)
+    #if os.path.exists('src/normalized_catalog.json'):
+    #    with open('src/normalized_catalog.json', "r") as f:
+    #        normalized_catalog = json.load(f)
+    #else:
+    #    normalized_catalog = check_and_normalize_catalog(behavior_catalog)
+    normalized_catalog = check_and_normalize_catalog(behavior_catalog) #better to regenerate it everytime in case some probabilitis are changed
 
     n_fraudulent_activities = int(cfg.nb_activities*cfg.pr_frauds)
     n_legitimate_activities = cfg.nb_activities - n_fraudulent_activities
     n_max_per_legitimate_A = int(n_legitimate_activities/cfg.n_legitimate_agent)
     n_max_per_fraudster_A = int(n_fraudulent_activities/cfg.n_fraudulent_agent)
-    embed()
-    operation_log_with_fraudulent_features = generate_dataset(nb_activities=cfg.nb_activities, nb_agents=cfg.nb_agents, data_folder=cfg.data_folder, pr_frauds=cfg.pr_frauds, start_time=cfg.start_time)
+    
+    nb_agents = 1
+    activity_log_with_fraudulent_features = generate_dataset(nb_activities=cfg.nb_activities, nb_agents=nb_agents, data_folder=cfg.data_folder, start_time=cfg.start_time)
     
 
     # Benchmark anomaly detection models
     if False:
-        results = benchmark_models(operation_log_with_fraudulent_features)
+        results = benchmark_models(activity_log_with_fraudulent_features)
         for model, metrics in results.items():
             print(f"Model: {model}")
             print(f"F1 Score: {metrics['F1 Score']}")

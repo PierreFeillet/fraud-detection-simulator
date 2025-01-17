@@ -58,7 +58,7 @@ device_weights = [0.3, 0.25, 0.2, 0.15, 0.05, 0.05]  # Weights representing how 
 networks = ["Home WiFi", "Public WiFi", "Mobile Network", "Corporate Network"]
 network_weights = [0.4, 0.3, 0.2, 0.1]  # Weights indicating the frequency of each network
 
-# List of transactions. If not in this list a certain operation is considered an activity
+# List of transactions. If not in this list a certain activity is considered an activity
 possible_transactions = ["withdrawal", "deposit", "purchase"]
 
 # Behavioral catalog for different fraudulent types

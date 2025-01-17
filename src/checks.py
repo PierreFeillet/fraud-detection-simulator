@@ -5,10 +5,10 @@ import numpy as np
 
 def validate_balance(csv_path):
     """
-    Validates the balance computation in a CSV file containing operation data.
+    Validates the balance computation in a CSV file containing activity data.
     
     Args:
-        csv_path (str): Path to the CSV file containing operation data.
+        csv_path (str): Path to the CSV file containing activity data.
         
     Returns:
         pd.DataFrame: A DataFrame containing rows where the balance computation is incorrect.
