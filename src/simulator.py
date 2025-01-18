@@ -29,33 +29,58 @@ from catalog import behavior_catalog, check_and_normalize_catalog
 def generate_country():
     return random.choice(COUNTRIES)
 
-def run_simulation_with_activities(normalized_catalog, legitimate_agents, bank, start_time, steps=100, flush_interval=100):
-    #activity_time = datetime.fromtimestamp(start_time)
+import random
+from datetime import timedelta
+
+def run_simulation_with_activities(normalized_catalog, agents, bank, start_time, steps=100, flush_interval=100):
     activity_time = start_time
+    active_agents = {agent.agent_id: random.choice(list(normalized_catalog.keys())) for agent in agents}
+
     for step in range(steps):
-        if len(bank.activity_log) == bank.max_size:
+        if len(bank.activity_log) >= bank.max_size:
             print(f"Target generation of {bank.max_size} activities reached")
-            break
-        #Define the sequence start for each agent
-    
-        # The following two for block can be unified if
-        for agent in legitimate_agents:
-            behavior_type = 'legitimate' # Needs to be generalized extracting the behavior
-            activities = normalized_catalog[behavior_type]["activities"]
-            time_limit = normalized_catalog[behavior_type]["time_limit"]
-            transition_matrix = normalized_catalog[behavior_type]["transition_matrix"]
+            break  # Stop simulation if log is full
+
+        for agent in list(agents):  # Iterate over active agents
+            if agent.agent_id not in active_agents:
+                continue  # Skip agents that closed their accounts
+
+            behavior_type = active_agents[agent.agent_id]
+            print(f"Processing agent {agent.agent_id} with behavior {behavior_type}")
+            behavior = normalized_catalog[behavior_type]
+            activities = behavior["activities"]
+            time_limit = behavior["time_limit"]
+            transition_matrix = behavior["transition_matrix"]
+
+            # Select initial activity (excluding "Close Account")
             if step == 0: 
-                current_activity_type=random.choice(list(activities.keys()))
-                balance = round(random.uniform(1000, 5000), 2) # Initialize balance
-            if current_activity_type == "Close Account":
-                break
-            activity_time += timedelta(minutes=random.randint(0, time_limit * 60))
-            current_activity = Activity(agent_id=agent, initial_balance=balance, timestamp=activity_time.strftime("%Y-%m-%d %H:%M:%S"))
+                valid_activities = [act for act in activities.keys() if act != "Close Account"]
+                current_activity_type = random.choice(valid_activities) if valid_activities else None
+                balance = round(random.uniform(1000, 5000), 2)
+
+            if current_activity_type is None:
+                continue  # Skip if no valid activities exist
+
+            delta = timedelta(minutes=random.randint(0, time_limit))
+            activity_time += delta
+            current_activity = Activity(
+                agent_id=agent.agent_id, 
+                initial_balance=balance, 
+                timestamp=activity_time.strftime("%Y-%m-%d %H:%M:%S")
+            )
             current_activity.type = current_activity_type
             transaction_range = activities[current_activity_type]
             current_activity.amount = 0 if transaction_range == (0, 0) else random.randint(*transaction_range)
             current_activity.update_balance()
+            print(f"Agent {agent.agent_id} performed {current_activity_type}")
             bank.add_activity(current_activity)
+
+            if current_activity_type == "Close Account":
+                print(f"Agent {agent.agent_id} closed their account. Removing from future steps.")
+                del active_agents[agent.agent_id]  # Remove agent from future iterations
+                continue  # Skip Markov chain transition
+
+            # Only update activity if the agent is still active
             current_activity_type = extract_activity_markov_chain(current_activity.type, activities, transition_matrix)
 
         if step % flush_interval == 0:
@@ -63,6 +88,8 @@ def run_simulation_with_activities(normalized_catalog, legitimate_agents, bank, 
             print(f"Flushed transactions at step {step}")
 
     bank.flush_activities()
+
+
 
 def get_random_fraud_behavior(normalized_catalog):
     fraud_behaviors = [key for key in normalized_catalog.keys() if key != "legitimate"]
@@ -129,11 +156,11 @@ def generate_dataset(nb_activities, nb_agents, data_folder, start_time, pr_fraud
     nb_fraudulent_agents = int(pr_fraudulent * nb_agents)
     nb_legitimate_agents = nb_agents - nb_fraudulent_agents
 
-    legitimate_agents = [Agent(agent_id=i, initial_balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_legitimate_agents)]
+    agents = [Agent(agent_id=i, initial_balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_legitimate_agents)]
     fraudulent_agents = [Agent(agent_id=i + nb_legitimate_agents, initial_balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_fraudulent_agents)]
 
     bank_with_activities = BankActivities(nb_activities)
-    run_simulation_with_activities(normalized_catalog=normalized_catalog, legitimate_agents=legitimate_agents, bank=bank_with_activities, start_time=start_time, steps=1000)
+    run_simulation_with_activities(normalized_catalog=normalized_catalog, agents=agents, bank=bank_with_activities, start_time=start_time, steps=1000)
     
     activity_log_with_fraudulent_features = bank_with_activities.activity_log
     os.makedirs(data_folder, exist_ok=True)
@@ -167,7 +194,7 @@ if __name__ == "__main__":
     n_max_per_legitimate_A = int(n_legitimate_activities/cfg.n_legitimate_agent)
     n_max_per_fraudster_A = int(n_fraudulent_activities/cfg.n_fraudulent_agent)
     
-    nb_agents = 1
+    nb_agents = 2
     activity_log_with_fraudulent_features = generate_dataset(nb_activities=cfg.nb_activities, nb_agents=nb_agents, data_folder=cfg.data_folder, start_time=cfg.start_time)
     
 
