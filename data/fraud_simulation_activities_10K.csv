@@ -1,0 +1,986 @@
+,agent_id,timestamp,initial_balance,type,granted,amount,balance,location,device,network,compromised_device,compromised_network
+0,0,2025-01-19 21:59:05,3095.65,Change Email,True,0.0,3095.65,"Tokyo, Japan",Android,Home WiFi,0,0
+1,1,2025-01-19 22:06:05,3576.95,Unauthorized Transfer,True,-179.0,3397.95,"London, UK",Android,Mobile Network,0,0
+2,2,2025-01-19 23:08:05,4142.37,Invest in Assets,False,-11876.0,4142.37,"Paris, France",Windows Laptop,Home WiFi,0,0
+3,3,2025-01-20 00:55:05,3531.43,Open Account,True,0.0,3531.43,"Paris, France",iPhone,Public WiFi,0,0
+4,4,2025-01-20 00:57:05,3813.84,Report Lost Card,True,0.0,3813.84,"London, UK",iPad,Public WiFi,0,0
+5,5,2025-01-20 00:58:05,1571.75,Failed Login,True,0.0,1571.75,"Paris, France",iPhone,Home WiFi,0,0
+6,6,2025-01-20 01:31:05,4071.66,Apply for Loan,True,0.0,4071.66,"Los Angeles, USA",iPhone,Corporate Network,1,0
+7,7,2025-01-20 01:38:05,2623.54,Change Email,True,0.0,2623.54,"Los Angeles, USA",Android,Public WiFi,0,0
+8,8,2025-01-20 01:39:05,1119.54,Request New Card,True,0.0,1119.54,"Berlin, Germany",Android,Home WiFi,0,0
+9,9,2025-01-20 01:48:05,1915.38,Unauthorized Transfer,False,-4213.0,1915.38,"Paris, France",Android,Corporate Network,0,0
+10,10,2025-01-20 03:13:05,4416.11,Open Account,True,0.0,4416.11,"Tokyo, Japan",Windows Laptop,Home WiFi,0,0
+11,11,2025-01-20 03:13:05,1089.01,Suspicious Login,True,0.0,1089.01,"Los Angeles, USA",MacBook,Home WiFi,0,1
+12,12,2025-01-20 03:20:05,2903.14,POS Purchase,True,-718.0,2185.14,"Los Angeles, USA",iPhone,Mobile Network,0,0
+13,13,2025-01-20 05:04:05,3410.19,Purchase Luxury Goods,False,-46754.0,3410.19,"Berlin, Germany",iPhone,Home WiFi,1,0
+14,14,2025-01-20 07:45:05,4189.31,Deposit Funds,True,5699.0,9888.31,"New York, USA",iPhone,Mobile Network,0,0
+15,15,2025-01-20 08:02:05,4920.85,Purchase Luxury Goods,False,-22893.0,4920.85,"Los Angeles, USA",Linux PC,Public WiFi,0,0
+16,16,2025-01-20 08:16:05,2916.61,Create Fake Identity,True,0.0,2916.61,"Los Angeles, USA",iPhone,Home WiFi,0,0
+17,17,2025-01-20 08:58:05,3353.45,Withdraw Funds,True,-2689.0,664.45,"New York, USA",Windows Laptop,Public WiFi,0,1
+18,18,2025-01-20 09:16:05,3594.37,Cash Withdrawal,False,-4667.0,3594.37,"Berlin, Germany",Android,Home WiFi,0,0
+19,19,2025-01-20 09:24:05,2334.72,Cash Withdrawal,False,-3458.0,2334.72,"New York, USA",Android,Home WiFi,0,0
+20,20,2025-01-20 10:08:05,3643.08,Open Account,True,0.0,3643.08,"London, UK",iPhone,Public WiFi,0,0
+21,21,2025-01-20 10:38:05,4158.22,Failed Login,True,0.0,4158.22,"New York, USA",MacBook,Home WiFi,0,0
+22,22,2025-01-20 10:52:05,4974.68,Request New PIN,True,0.0,4974.68,"New York, USA",MacBook,Public WiFi,0,0
+23,0,2025-01-20 11:01:05,3095.65,Change Email,True,0.0,3095.65,"New York, USA",Windows Laptop,Mobile Network,0,0
+24,1,2025-01-20 11:27:05,3397.95,Unauthorized Transfer,True,-2635.0,762.95,"Los Angeles, USA",Android,Corporate Network,1,0
+25,2,2025-01-20 13:25:05,4142.37,Purchase Luxury Goods,False,-97359.0,4142.37,"New York, USA",Windows Laptop,Mobile Network,1,0
+26,3,2025-01-20 14:16:05,3531.43,Deposit Funds,True,5560.0,9091.43,"Los Angeles, USA",Android,Public WiFi,1,0
+27,4,2025-01-20 14:22:05,3813.84,Report Lost Card,True,0.0,3813.84,"New York, USA",Linux PC,Mobile Network,0,0
+28,5,2025-01-20 14:26:05,1571.75,Suspicious Login,True,0.0,1571.75,"New York, USA",Windows Laptop,Public WiFi,0,0
+29,6,2025-01-20 14:50:05,4071.66,Deposit Funds,True,2779.0,6850.66,"Tokyo, Japan",iPhone,Public WiFi,0,0
+30,7,2025-01-20 14:54:05,2623.54,Change Phone,True,0.0,2623.54,"New York, USA",MacBook,Mobile Network,0,0
+31,8,2025-01-20 15:12:05,1119.54,Suspicious Login,True,0.0,1119.54,"Tokyo, Japan",iPad,Public WiFi,0,0
+32,9,2025-01-20 15:15:05,1915.38,Change Phone,True,0.0,1915.38,"London, UK",iPhone,Public WiFi,1,0
+33,10,2025-01-20 15:48:05,4416.11,Wire Transfer,False,-44333.0,4416.11,"Los Angeles, USA",iPhone,Public WiFi,0,0
+34,11,2025-01-20 15:53:05,1089.01,Failed Login,True,0.0,1089.01,"Tokyo, Japan",Linux PC,Home WiFi,0,0
+35,12,2025-01-20 16:05:05,2185.14,POS Purchase,True,-445.0,1740.14,"London, UK",iPhone,Mobile Network,0,0
+36,13,2025-01-20 18:00:05,3410.19,Purchase Luxury Goods,False,-68845.0,3410.19,"Berlin, Germany",iPad,Mobile Network,0,0
+37,14,2025-01-20 18:03:05,9888.31,Deposit Funds,True,7499.0,17387.31,"Berlin, Germany",Android,Public WiFi,0,0
+38,15,2025-01-20 19:36:05,4920.85,Purchase Luxury Goods,False,-30404.0,4920.85,"New York, USA",Android,Home WiFi,0,0
+39,16,2025-01-20 19:59:05,2916.61,Open Account,True,0.0,2916.61,"Tokyo, Japan",Android,Mobile Network,0,0
+40,17,2025-01-20 20:29:05,664.45,Create Fake Identity,True,0.0,664.45,"New York, USA",iPhone,Public WiFi,0,0
+41,18,2025-01-20 21:59:05,3594.37,Purchase Luxury Goods,False,-88386.0,3594.37,"New York, USA",iPhone,Corporate Network,0,0
+42,19,2025-01-20 22:46:05,2334.72,Cash Withdrawal,False,-3171.0,2334.72,"Los Angeles, USA",iPhone,Home WiFi,0,0
+43,20,2025-01-20 23:45:05,3643.08,Deposit Funds,True,9726.0,13369.08,"Los Angeles, USA",MacBook,Home WiFi,0,0
+44,21,2025-01-20 23:56:05,4158.22,Failed Login,True,0.0,4158.22,"New York, USA",iPhone,Home WiFi,0,0
+45,22,2025-01-20 23:59:05,4974.68,Request New PIN,True,0.0,4974.68,"New York, USA",iPhone,Home WiFi,1,0
+46,0,2025-01-20 23:59:05,3095.65,Change Email,True,0.0,3095.65,"Los Angeles, USA",Android,Public WiFi,0,0
+47,1,2025-01-21 00:04:05,762.95,Request New Card,True,0.0,762.95,"Tokyo, Japan",iPad,Public WiFi,1,0
+48,2,2025-01-21 00:46:05,4142.37,Purchase Luxury Goods,False,-47242.0,4142.37,"Los Angeles, USA",iPhone,Public WiFi,0,0
+49,3,2025-01-21 00:58:05,9091.43,Make Purchase,True,-619.0,8472.43,"Tokyo, Japan",Windows Laptop,Mobile Network,0,0
+50,4,2025-01-21 01:13:05,3813.84,POS Purchase,True,-174.0,3639.84,"Los Angeles, USA",Android,Public WiFi,0,0
+51,5,2025-01-21 01:29:05,1571.75,Suspicious Login,True,0.0,1571.75,"New York, USA",Android,Mobile Network,0,0
+52,6,2025-01-21 03:51:05,6850.66,Make Purchase,True,-369.0,6481.66,"Tokyo, Japan",iPhone,Public WiFi,0,0
+53,7,2025-01-21 03:59:05,2623.54,Change Phone,True,0.0,2623.54,"New York, USA",Android,Public WiFi,0,1
+54,8,2025-01-21 04:08:05,1119.54,Suspicious Login,True,0.0,1119.54,"New York, USA",Windows Laptop,Home WiFi,0,0
+55,9,2025-01-21 04:34:05,1915.38,Change Phone,True,0.0,1915.38,"Tokyo, Japan",Windows Laptop,Mobile Network,0,0
+56,10,2025-01-21 05:26:05,4416.11,Deposit Funds,True,8553.0,12969.11,"Los Angeles, USA",iPhone,Public WiFi,0,0
+57,11,2025-01-21 05:29:05,1089.01,Suspicious Login,True,0.0,1089.01,"Paris, France",iPhone,Mobile Network,1,0
+58,12,2025-01-21 05:39:05,1740.14,Balance Check,True,0.0,1740.14,"Tokyo, Japan",Android,Public WiFi,0,0
+59,13,2025-01-21 05:41:05,3410.19,Cash Withdrawal,True,-177.0,3233.19,"London, UK",Windows Laptop,Mobile Network,0,1
+60,14,2025-01-21 06:41:05,17387.31,Pay Bills,True,-4450.0,12937.31,"Berlin, Germany",iPad,Home WiFi,0,0
+61,15,2025-01-21 08:16:05,4920.85,Invest in Assets,False,-13314.0,4920.85,"London, UK",Android,Mobile Network,0,0
+62,16,2025-01-21 08:28:05,2916.61,Apply for Loan,True,0.0,2916.61,"New York, USA",Windows Laptop,Home WiFi,0,0
+63,17,2025-01-21 09:27:05,664.45,Apply for Loan,True,0.0,664.45,"Los Angeles, USA",MacBook,Home WiFi,0,0
+64,18,2025-01-21 10:03:05,3594.37,Cash Withdrawal,True,-571.0,3023.37,"London, UK",MacBook,Corporate Network,0,0
+65,19,2025-01-21 10:58:05,2334.72,Close Account,True,0.0,2334.72,"Tokyo, Japan",Android,Home WiFi,0,1
+66,20,2025-01-21 11:17:05,13369.08,Purchase Luxury Goods,False,-66843.0,13369.08,"Tokyo, Japan",iPhone,Home WiFi,0,0
+67,21,2025-01-21 11:45:05,4158.22,Failed Login,True,0.0,4158.22,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+68,22,2025-01-21 11:53:05,4974.68,Online Purchase,True,-80.0,4894.68,"Paris, France",iPhone,Mobile Network,0,0
+69,0,2025-01-21 12:06:05,3095.65,Change Phone,True,0.0,3095.65,"Berlin, Germany",iPhone,Home WiFi,0,0
+70,1,2025-01-21 12:29:05,762.95,Request New Card,True,0.0,762.95,"Tokyo, Japan",Android,Corporate Network,0,0
+71,2,2025-01-21 13:42:05,4142.37,Purchase Luxury Goods,False,-43311.0,4142.37,"Berlin, Germany",Linux PC,Public WiFi,0,0
+72,3,2025-01-21 13:55:05,8472.43,Make Purchase,True,-664.0,7808.43,"New York, USA",iPhone,Public WiFi,0,0
+73,4,2025-01-21 13:55:05,3639.84,Online Purchase,True,-468.0,3171.84,"Berlin, Germany",Android,Public WiFi,0,0
+74,5,2025-01-21 14:14:05,1571.75,Suspicious Login,True,0.0,1571.75,"London, UK",iPhone,Home WiFi,0,0
+75,6,2025-01-21 15:18:05,6481.66,Make Purchase,True,-519.0,5962.66,"Los Angeles, USA",iPhone,Home WiFi,0,0
+76,7,2025-01-21 15:43:05,2623.54,Change Phone,True,0.0,2623.54,"Tokyo, Japan",Android,Public WiFi,0,0
+77,8,2025-01-21 15:50:05,1119.54,Change Password,True,0.0,1119.54,"London, UK",Android,Public WiFi,0,0
+78,9,2025-01-21 15:59:05,1915.38,Change Phone,True,0.0,1915.38,"Tokyo, Japan",Windows Laptop,Public WiFi,1,0
+79,10,2025-01-21 17:08:05,12969.11,Deposit Funds,True,7873.0,20842.11,"New York, USA",MacBook,Home WiFi,0,0
+80,11,2025-01-21 17:08:05,1089.01,Suspicious Login,True,0.0,1089.01,"New York, USA",Windows Laptop,Home WiFi,0,0
+81,12,2025-01-21 17:22:05,1740.14,POS Purchase,True,-48.0,1692.14,"New York, USA",MacBook,Public WiFi,0,0
+82,13,2025-01-21 19:22:05,3233.19,Invest in Assets,False,-5891.0,3233.19,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+83,14,2025-01-21 21:38:05,12937.31,Pay Bills,True,-1722.0,11215.31,"Tokyo, Japan",iPhone,Public WiFi,0,1
+84,15,2025-01-21 23:18:05,4920.85,Invest in Assets,False,-30247.0,4920.85,"New York, USA",Android,Home WiFi,0,0
+85,16,2025-01-21 23:50:05,2916.61,Apply for Loan,True,0.0,2916.61,"New York, USA",iPhone,Mobile Network,0,0
+86,17,2025-01-22 00:30:05,664.45,Open Account,True,0.0,664.45,"London, UK",iPhone,Mobile Network,0,0
+87,18,2025-01-22 01:00:05,3023.37,Close Account,True,0.0,3023.37,"Paris, France",Windows Laptop,Mobile Network,0,0
+88,20,2025-01-22 02:55:05,13369.08,Deposit Funds,True,7106.0,20475.08,"Tokyo, Japan",MacBook,Mobile Network,0,0
+89,21,2025-01-22 02:55:05,4158.22,Suspicious Login,True,0.0,4158.22,"New York, USA",Android,Home WiFi,0,0
+90,22,2025-01-22 03:09:05,4894.68,Request New PIN,True,0.0,4894.68,"Los Angeles, USA",iPhone,Corporate Network,0,0
+91,0,2025-01-22 03:30:05,3095.65,Change Phone,True,0.0,3095.65,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+92,1,2025-01-22 03:35:05,762.95,Change Phone,True,0.0,762.95,"London, UK",Linux PC,Home WiFi,0,0
+93,2,2025-01-22 04:13:05,4142.37,Wire Transfer,True,-3309.0,833.37,"Tokyo, Japan",Windows Laptop,Home WiFi,0,0
+94,3,2025-01-22 05:09:05,7808.43,Transfer Funds,True,-4099.0,3709.43,"New York, USA",iPhone,Corporate Network,1,0
+95,4,2025-01-22 05:21:05,3171.84,Close Account,True,0.0,3171.84,"Paris, France",Windows Laptop,Public WiFi,0,0
+96,5,2025-01-22 05:42:05,1571.75,Failed Login,True,0.0,1571.75,"New York, USA",MacBook,Home WiFi,0,0
+97,6,2025-01-22 07:50:05,5962.66,Pay Bills,True,-4987.0,975.66,"Los Angeles, USA",iPhone,Corporate Network,0,0
+98,7,2025-01-22 08:13:05,2623.54,Change Phone,True,0.0,2623.54,"Tokyo, Japan",Windows Laptop,Home WiFi,0,0
+99,8,2025-01-22 08:23:05,1119.54,Suspicious Login,True,0.0,1119.54,"Los Angeles, USA",Windows Laptop,Public WiFi,0,0
+100,9,2025-01-22 08:41:05,1915.38,Change Email,True,0.0,1915.38,"Berlin, Germany",Android,Public WiFi,1,0
+101,10,2025-01-22 09:58:05,20842.11,Deposit Funds,True,4380.0,25222.11,"Tokyo, Japan",Windows Laptop,Public WiFi,0,0
+102,11,2025-01-22 10:17:05,1089.01,Change Password,True,0.0,1089.01,"Tokyo, Japan",Android,Home WiFi,0,0
+103,12,2025-01-22 10:32:05,1692.14,Online Purchase,True,-215.0,1477.14,"Los Angeles, USA",iPhone,Public WiFi,0,0
+104,13,2025-01-22 11:09:05,3233.19,Close Account,True,0.0,3233.19,"London, UK",iPhone,Public WiFi,0,0
+105,14,2025-01-22 12:55:05,11215.31,Deposit Funds,True,4786.0,16001.31,"Tokyo, Japan",iPhone,Corporate Network,0,0
+106,15,2025-01-22 13:19:05,4920.85,Invest in Assets,True,-1777.0,3143.85,"Los Angeles, USA",MacBook,Home WiFi,0,0
+107,16,2025-01-22 13:47:05,2916.61,Apply for Loan,True,0.0,2916.61,"New York, USA",iPhone,Corporate Network,0,0
+108,17,2025-01-22 13:49:05,664.45,Create Fake Identity,True,0.0,664.45,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+109,20,2025-01-22 14:49:05,20475.08,Purchase Luxury Goods,False,-49975.0,20475.08,"Paris, France",iPad,Mobile Network,0,0
+110,21,2025-01-22 15:10:05,4158.22,Failed Login,True,0.0,4158.22,"Tokyo, Japan",Android,Home WiFi,0,0
+111,22,2025-01-22 15:23:05,4894.68,Request New PIN,True,0.0,4894.68,"London, UK",iPhone,Public WiFi,0,0
+112,0,2025-01-22 15:30:05,3095.65,Change Password,True,0.0,3095.65,"London, UK",Android,Home WiFi,0,0
+113,1,2025-01-22 15:51:05,762.95,Change Phone,True,0.0,762.95,"Los Angeles, USA",Android,Home WiFi,0,0
+114,2,2025-01-22 17:13:05,833.37,Deposit Funds,True,5629.0,6462.37,"Los Angeles, USA",MacBook,Public WiFi,1,0
+115,3,2025-01-22 18:33:05,3709.43,Deposit Funds,True,107.0,3816.43,"Berlin, Germany",iPhone,Public WiFi,0,0
+116,5,2025-01-22 18:59:05,1571.75,Change Password,True,0.0,1571.75,"New York, USA",Linux PC,Mobile Network,0,0
+117,6,2025-01-22 19:57:05,975.66,Pay Bills,True,-399.0,576.66,"Tokyo, Japan",Android,Mobile Network,0,0
+118,7,2025-01-22 20:05:05,2623.54,Change Phone,True,0.0,2623.54,"London, UK",Android,Home WiFi,1,0
+119,8,2025-01-22 20:13:05,1119.54,Change Password,True,0.0,1119.54,"Los Angeles, USA",iPad,Public WiFi,0,0
+120,9,2025-01-22 20:16:05,1915.38,Request New Card,True,0.0,1915.38,"London, UK",Windows Laptop,Home WiFi,0,0
+121,10,2025-01-22 21:29:05,25222.11,Deposit Funds,True,6746.0,31968.11,"New York, USA",iPad,Mobile Network,0,0
+122,11,2025-01-22 21:59:05,1089.01,Change Password,True,0.0,1089.01,"New York, USA",iPhone,Home WiFi,0,0
+123,12,2025-01-22 22:01:05,1477.14,POS Purchase,True,-846.0,631.14,"London, UK",iPad,Home WiFi,0,0
+124,14,2025-01-22 22:42:05,16001.31,Deposit Funds,True,9063.0,25064.31,"Paris, France",iPhone,Public WiFi,0,0
+125,15,2025-01-23 00:27:05,3143.85,Cash Withdrawal,True,-112.0,3031.85,"Los Angeles, USA",MacBook,Public WiFi,0,0
+126,16,2025-01-23 00:43:05,2916.61,Apply for Loan,True,0.0,2916.61,"London, UK",Windows Laptop,Public WiFi,0,0
+127,17,2025-01-23 01:23:05,664.45,Create Fake Identity,True,0.0,664.45,"New York, USA",iPhone,Public WiFi,0,0
+128,20,2025-01-23 01:37:05,20475.08,Cash Withdrawal,True,-1425.0,19050.08,"Tokyo, Japan",Android,Mobile Network,0,0
+129,21,2025-01-23 01:58:05,4158.22,Change Password,True,0.0,4158.22,"Tokyo, Japan",Android,Public WiFi,1,0
+130,22,2025-01-23 02:02:05,4894.68,Request New PIN,True,0.0,4894.68,"New York, USA",Android,Public WiFi,0,0
+131,0,2025-01-23 02:16:05,3095.65,Change Password,True,0.0,3095.65,"New York, USA",iPhone,Home WiFi,0,0
+132,1,2025-01-23 02:46:05,762.95,Change Password,True,0.0,762.95,"Paris, France",MacBook,Home WiFi,0,0
+133,2,2025-01-23 03:19:05,6462.37,Invest in Assets,False,-12894.0,6462.37,"London, UK",iPhone,Home WiFi,0,0
+134,3,2025-01-23 03:47:05,3816.43,Deposit Funds,True,4130.0,7946.43,"Tokyo, Japan",MacBook,Public WiFi,0,0
+135,5,2025-01-23 04:00:05,1571.75,Change Email,True,0.0,1571.75,"Paris, France",Linux PC,Home WiFi,0,0
+136,6,2025-01-23 04:18:05,576.66,Pay Bills,False,-4714.0,576.66,"Tokyo, Japan",iPhone,Corporate Network,0,0
+137,7,2025-01-23 04:30:05,2623.54,Change Phone,True,0.0,2623.54,"Tokyo, Japan",Windows Laptop,Home WiFi,0,0
+138,8,2025-01-23 04:32:05,1119.54,Change Password,True,0.0,1119.54,"New York, USA",Android,Home WiFi,0,0
+139,9,2025-01-23 04:47:05,1915.38,Request New Card,True,0.0,1915.38,"Tokyo, Japan",Windows Laptop,Home WiFi,0,0
+140,10,2025-01-23 05:30:05,31968.11,Purchase Luxury Goods,False,-82176.0,31968.11,"Paris, France",iPhone,Public WiFi,0,0
+141,11,2025-01-23 05:35:05,1089.01,Change Password,True,0.0,1089.01,"Berlin, Germany",Android,Home WiFi,0,0
+142,12,2025-01-23 05:40:05,631.14,Balance Check,True,0.0,631.14,"New York, USA",iPhone,Mobile Network,0,0
+143,14,2025-01-23 05:42:05,25064.31,Deposit Funds,True,5242.0,30306.31,"London, UK",Android,Corporate Network,0,0
+144,15,2025-01-23 05:58:05,3031.85,Purchase Luxury Goods,False,-59437.0,3031.85,"Paris, France",iPhone,Public WiFi,0,0
+145,16,2025-01-23 06:58:05,2916.61,Apply for Loan,True,0.0,2916.61,"London, UK",Windows Laptop,Home WiFi,0,0
+146,17,2025-01-23 07:31:05,664.45,Create Fake Identity,True,0.0,664.45,"New York, USA",Linux PC,Mobile Network,0,0
+147,20,2025-01-23 08:01:05,19050.08,Purchase Luxury Goods,True,-13198.0,5852.08,"Los Angeles, USA",iPad,Home WiFi,0,0
+148,21,2025-01-23 08:15:05,4158.22,Change Email,True,0.0,4158.22,"Los Angeles, USA",iPhone,Public WiFi,0,0
+149,22,2025-01-23 08:20:05,4894.68,Close Account,True,0.0,4894.68,"Berlin, Germany",Android,Home WiFi,0,0
+150,0,2025-01-23 08:30:05,3095.65,Unauthorized Transfer,False,-3869.0,3095.65,"Berlin, Germany",Linux PC,Corporate Network,0,0
+151,1,2025-01-23 08:50:05,762.95,Change Password,True,0.0,762.95,"Berlin, Germany",iPad,Home WiFi,1,0
+152,2,2025-01-23 09:17:05,6462.37,Cash Withdrawal,True,-4840.0,1622.37,"New York, USA",Android,Home WiFi,0,0
+153,3,2025-01-23 09:33:05,7946.43,Deposit Funds,True,3407.0,11353.43,"Los Angeles, USA",Android,Home WiFi,0,0
+154,5,2025-01-23 09:57:05,1571.75,Change Password,True,0.0,1571.75,"Los Angeles, USA",iPhone,Mobile Network,0,0
+155,6,2025-01-23 10:43:05,576.66,Pay Bills,False,-2343.0,576.66,"Los Angeles, USA",iPhone,Home WiFi,0,0
+156,7,2025-01-23 10:55:05,2623.54,Change Password,True,0.0,2623.54,"Los Angeles, USA",iPhone,Mobile Network,0,1
+157,8,2025-01-23 11:16:05,1119.54,Suspicious Login,True,0.0,1119.54,"Los Angeles, USA",iPhone,Corporate Network,0,0
+158,9,2025-01-23 11:20:05,1915.38,Unauthorized Transfer,False,-7054.0,1915.38,"New York, USA",Windows Laptop,Public WiFi,0,0
+159,10,2025-01-23 11:39:05,31968.11,Purchase Luxury Goods,False,-39043.0,31968.11,"New York, USA",Android,Mobile Network,0,0
+160,11,2025-01-23 11:52:05,1089.01,Request New Card,True,0.0,1089.01,"Paris, France",Windows Laptop,Public WiFi,0,0
+161,12,2025-01-23 12:07:05,631.14,Close Account,True,0.0,631.14,"Paris, France",iPhone,Home WiFi,0,1
+162,14,2025-01-23 12:40:05,30306.31,Pay Bills,True,-3032.0,27274.31,"New York, USA",Android,Public WiFi,0,0
+163,15,2025-01-23 13:12:05,3031.85,Deposit Funds,True,3836.0,6867.85,"Berlin, Germany",iPad,Home WiFi,0,0
+164,16,2025-01-23 13:15:05,2916.61,Apply for Loan,True,0.0,2916.61,"London, UK",iPhone,Public WiFi,0,0
+165,17,2025-01-23 13:30:05,664.45,Create Fake Identity,True,0.0,664.45,"New York, USA",Windows Laptop,Mobile Network,0,0
+166,20,2025-01-23 14:46:05,5852.08,Wire Transfer,False,-10814.0,5852.08,"New York, USA",Windows Laptop,Home WiFi,0,0
+167,21,2025-01-23 14:57:05,4158.22,Change Phone,True,0.0,4158.22,"Berlin, Germany",iPhone,Mobile Network,0,0
+168,0,2025-01-23 15:27:05,3095.65,Unauthorized Transfer,False,-5528.0,3095.65,"Berlin, Germany",MacBook,Public WiFi,1,0
+169,1,2025-01-23 15:49:05,762.95,Unauthorized Transfer,False,-9860.0,762.95,"Los Angeles, USA",iPhone,Home WiFi,0,0
+170,2,2025-01-23 16:50:05,1622.37,Cash Withdrawal,False,-4287.0,1622.37,"Los Angeles, USA",iPhone,Home WiFi,1,0
+171,3,2025-01-23 18:49:05,11353.43,Apply for Credit Card,True,0.0,11353.43,"London, UK",iPhone,Home WiFi,0,0
+172,5,2025-01-23 19:01:05,1571.75,Suspicious Login,True,0.0,1571.75,"Los Angeles, USA",Android,Home WiFi,1,0
+173,6,2025-01-23 21:55:05,576.66,Make Purchase,False,-678.0,576.66,"Los Angeles, USA",MacBook,Public WiFi,0,0
+174,7,2025-01-23 22:13:05,2623.54,Change Password,True,0.0,2623.54,"Tokyo, Japan",Windows Laptop,Public WiFi,0,0
+175,8,2025-01-23 22:34:05,1119.54,Change Password,True,0.0,1119.54,"New York, USA",Windows Laptop,Home WiFi,1,0
+176,9,2025-01-23 22:48:05,1915.38,Request New Card,True,0.0,1915.38,"Tokyo, Japan",iPhone,Home WiFi,0,1
+177,10,2025-01-23 23:04:05,31968.11,Invest in Assets,True,-10399.0,21569.11,"Tokyo, Japan",Android,Home WiFi,0,0
+178,11,2025-01-23 23:33:05,1089.01,Request New Card,True,0.0,1089.01,"Tokyo, Japan",Android,Public WiFi,0,0
+179,14,2025-01-24 01:06:05,27274.31,Pay Bills,True,-3351.0,23923.31,"Tokyo, Japan",Android,Public WiFi,0,0
+180,15,2025-01-24 01:35:05,6867.85,Deposit Funds,True,3375.0,10242.85,"Paris, France",Windows Laptop,Public WiFi,0,0
+181,16,2025-01-24 02:23:05,2916.61,Apply for Credit Card,True,0.0,2916.61,"New York, USA",Android,Public WiFi,0,0
+182,17,2025-01-24 02:51:05,664.45,Open Account,True,0.0,664.45,"New York, USA",Android,Mobile Network,0,0
+183,20,2025-01-24 04:24:05,5852.08,Deposit Funds,True,6402.0,12254.08,"London, UK",iPhone,Home WiFi,0,0
+184,21,2025-01-24 04:27:05,4158.22,Change Email,True,0.0,4158.22,"Los Angeles, USA",MacBook,Home WiFi,0,0
+185,0,2025-01-24 04:47:05,3095.65,Unauthorized Transfer,True,-463.0,2632.65,"Berlin, Germany",MacBook,Mobile Network,0,0
+186,1,2025-01-24 04:49:05,762.95,Unauthorized Transfer,False,-8062.0,762.95,"London, UK",Windows Laptop,Public WiFi,1,0
+187,2,2025-01-24 06:47:05,1622.37,Deposit Funds,True,8373.0,9995.37,"New York, USA",Android,Public WiFi,0,0
+188,3,2025-01-24 07:15:05,11353.43,Apply for Credit Card,True,0.0,11353.43,"Tokyo, Japan",Android,Public WiFi,0,0
+189,5,2025-01-24 07:33:05,1571.75,Failed Login,True,0.0,1571.75,"Los Angeles, USA",Android,Mobile Network,0,0
+190,6,2025-01-24 10:07:05,576.66,Make Purchase,False,-675.0,576.66,"New York, USA",MacBook,Public WiFi,0,0
+191,7,2025-01-24 10:13:05,2623.54,Unauthorized Transfer,False,-5865.0,2623.54,"Los Angeles, USA",Android,Public WiFi,0,0
+192,8,2025-01-24 10:41:05,1119.54,Change Password,True,0.0,1119.54,"London, UK",iPhone,Public WiFi,0,0
+193,9,2025-01-24 11:01:05,1915.38,Change Email,True,0.0,1915.38,"Berlin, Germany",Linux PC,Home WiFi,0,0
+194,10,2025-01-24 11:50:05,21569.11,Invest in Assets,False,-32210.0,21569.11,"London, UK",Android,Public WiFi,0,0
+195,11,2025-01-24 12:11:05,1089.01,Request New Card,True,0.0,1089.01,"Los Angeles, USA",Windows Laptop,Mobile Network,0,0
+196,14,2025-01-24 13:15:05,23923.31,Pay Bills,True,-4237.0,19686.31,"New York, USA",MacBook,Public WiFi,0,0
+197,15,2025-01-24 14:30:05,10242.85,Purchase Luxury Goods,True,-6263.0,3979.85,"New York, USA",MacBook,Corporate Network,0,1
+198,16,2025-01-24 14:41:05,2916.61,Create Fake Identity,True,0.0,2916.61,"Paris, France",iPhone,Home WiFi,0,0
+199,17,2025-01-24 14:41:05,664.45,Apply for Credit Card,True,0.0,664.45,"Paris, France",Windows Laptop,Public WiFi,0,0
+200,20,2025-01-24 14:49:05,12254.08,Wire Transfer,True,-11884.0,370.08,"Los Angeles, USA",Android,Mobile Network,0,0
+201,21,2025-01-24 14:55:05,4158.22,Change Phone,True,0.0,4158.22,"New York, USA",iPad,Corporate Network,0,0
+202,0,2025-01-24 15:11:05,2632.65,Unauthorized Transfer,False,-6924.0,2632.65,"New York, USA",MacBook,Public WiFi,0,0
+203,1,2025-01-24 15:17:05,762.95,Unauthorized Transfer,True,-200.0,562.95,"Los Angeles, USA",Android,Home WiFi,0,0
+204,2,2025-01-24 16:23:05,9995.37,Purchase Luxury Goods,False,-91760.0,9995.37,"Tokyo, Japan",Android,Home WiFi,0,0
+205,3,2025-01-24 17:33:05,11353.43,Transfer Funds,True,-3241.0,8112.43,"New York, USA",iPhone,Mobile Network,0,0
+206,5,2025-01-24 17:52:05,1571.75,Suspicious Login,True,0.0,1571.75,"New York, USA",iPhone,Mobile Network,0,0
+207,6,2025-01-24 18:19:05,576.66,Make Purchase,True,-497.0,79.66,"Paris, France",Linux PC,Public WiFi,0,0
+208,7,2025-01-24 18:41:05,2623.54,Unauthorized Transfer,False,-8530.0,2623.54,"Tokyo, Japan",Linux PC,Home WiFi,1,0
+209,8,2025-01-24 18:46:05,1119.54,Change Password,True,0.0,1119.54,"New York, USA",iPhone,Mobile Network,0,1
+210,9,2025-01-24 19:00:05,1915.38,Change Email,True,0.0,1915.38,"Tokyo, Japan",Android,Public WiFi,0,0
+211,10,2025-01-24 20:12:05,21569.11,Invest in Assets,False,-30739.0,21569.11,"Tokyo, Japan",Android,Public WiFi,0,0
+212,11,2025-01-24 20:12:05,1089.01,Request New Card,True,0.0,1089.01,"Los Angeles, USA",iPhone,Public WiFi,0,0
+213,14,2025-01-24 23:03:05,19686.31,Transfer Funds,True,-197.0,19489.31,"Tokyo, Japan",MacBook,Home WiFi,0,0
+214,15,2025-01-24 23:10:05,3979.85,Purchase Luxury Goods,False,-9302.0,3979.85,"Los Angeles, USA",iPhone,Public WiFi,0,0
+215,16,2025-01-24 23:10:05,2916.61,Make Purchase,False,-48810.0,2916.61,"Paris, France",iPhone,Public WiFi,0,0
+216,17,2025-01-24 23:57:05,664.45,Apply for Credit Card,True,0.0,664.45,"New York, USA",MacBook,Public WiFi,0,0
+217,20,2025-01-25 00:41:05,370.08,Wire Transfer,False,-14413.0,370.08,"London, UK",Android,Mobile Network,0,0
+218,21,2025-01-25 00:49:05,4158.22,Change Email,True,0.0,4158.22,"Tokyo, Japan",iPhone,Mobile Network,0,0
+219,0,2025-01-25 01:02:05,2632.65,Unauthorized Transfer,False,-6440.0,2632.65,"Tokyo, Japan",iPhone,Public WiFi,0,0
+220,1,2025-01-25 01:24:05,562.95,Unauthorized Transfer,False,-4677.0,562.95,"New York, USA",iPhone,Public WiFi,0,0
+221,2,2025-01-25 03:03:05,9995.37,Close Account,True,0.0,9995.37,"Tokyo, Japan",MacBook,Public WiFi,0,0
+222,3,2025-01-25 03:21:05,8112.43,Apply for Loan,True,0.0,8112.43,"New York, USA",MacBook,Home WiFi,0,0
+223,5,2025-01-25 03:22:05,1571.75,Change Password,True,0.0,1571.75,"New York, USA",iPad,Public WiFi,0,1
+224,6,2025-01-25 04:36:05,79.66,Make Purchase,False,-295.0,79.66,"New York, USA",Windows Laptop,Public WiFi,0,0
+225,7,2025-01-25 04:57:05,2623.54,Change Email,True,0.0,2623.54,"New York, USA",Android,Home WiFi,1,0
+226,8,2025-01-25 05:24:05,1119.54,Suspicious Login,True,0.0,1119.54,"Paris, France",Android,Home WiFi,0,0
+227,9,2025-01-25 05:47:05,1915.38,Change Phone,True,0.0,1915.38,"Los Angeles, USA",iPhone,Home WiFi,0,0
+228,10,2025-01-25 06:41:05,21569.11,Purchase Luxury Goods,False,-75392.0,21569.11,"Paris, France",iPhone,Mobile Network,0,1
+229,11,2025-01-25 06:53:05,1089.01,Change Phone,True,0.0,1089.01,"New York, USA",Linux PC,Public WiFi,0,0
+230,14,2025-01-25 09:09:05,19489.31,Make Purchase,True,-829.0,18660.31,"New York, USA",Android,Public WiFi,0,0
+231,15,2025-01-25 09:58:05,3979.85,Cash Withdrawal,True,-2843.0,1136.85,"Tokyo, Japan",iPad,Public WiFi,0,0
+232,16,2025-01-25 10:27:05,2916.61,Create Fake Identity,True,0.0,2916.61,"Los Angeles, USA",iPad,Corporate Network,0,1
+233,17,2025-01-25 10:34:05,664.45,Apply for Loan,True,0.0,664.45,"Tokyo, Japan",MacBook,Corporate Network,0,0
+234,20,2025-01-25 10:54:05,370.08,Wire Transfer,False,-10980.0,370.08,"Berlin, Germany",iPhone,Home WiFi,0,1
+235,21,2025-01-25 11:02:05,4158.22,Change Email,True,0.0,4158.22,"New York, USA",Android,Mobile Network,0,0
+236,0,2025-01-25 11:32:05,2632.65,Unauthorized Transfer,False,-7793.0,2632.65,"Tokyo, Japan",iPhone,Public WiFi,0,0
+237,1,2025-01-25 11:46:05,562.95,Unauthorized Transfer,True,-481.0,81.95,"Tokyo, Japan",Windows Laptop,Public WiFi,0,0
+238,3,2025-01-25 11:54:05,8112.43,Apply for Loan,True,0.0,8112.43,"New York, USA",iPhone,Mobile Network,0,0
+239,5,2025-01-25 12:17:05,1571.75,Suspicious Login,True,0.0,1571.75,"Paris, France",iPhone,Home WiFi,0,0
+240,6,2025-01-25 15:14:05,79.66,Pay Bills,False,-2499.0,79.66,"Los Angeles, USA",MacBook,Corporate Network,0,0
+241,7,2025-01-25 15:26:05,2623.54,Change Email,True,0.0,2623.54,"Tokyo, Japan",Windows Laptop,Public WiFi,0,0
+242,8,2025-01-25 15:35:05,1119.54,Suspicious Login,True,0.0,1119.54,"Tokyo, Japan",Android,Home WiFi,1,0
+243,9,2025-01-25 15:45:05,1915.38,Change Phone,True,0.0,1915.38,"Tokyo, Japan",iPhone,Mobile Network,0,1
+244,10,2025-01-25 15:57:05,21569.11,Deposit Funds,True,2525.0,24094.11,"Tokyo, Japan",Windows Laptop,Public WiFi,0,0
+245,11,2025-01-25 16:10:05,1089.01,Unauthorized Transfer,False,-7485.0,1089.01,"Tokyo, Japan",MacBook,Home WiFi,0,0
+246,14,2025-01-25 19:00:05,18660.31,Transfer Funds,True,-2406.0,16254.31,"Tokyo, Japan",Windows Laptop,Public WiFi,0,0
+247,15,2025-01-25 20:38:05,1136.85,Deposit Funds,True,9869.0,11005.85,"New York, USA",Windows Laptop,Mobile Network,0,0
+248,16,2025-01-25 20:39:05,2916.61,Create Fake Identity,True,0.0,2916.61,"Berlin, Germany",iPhone,Corporate Network,0,0
+249,17,2025-01-25 21:31:05,664.45,Open Account,True,0.0,664.45,"Los Angeles, USA",Android,Home WiFi,0,0
+250,20,2025-01-25 21:41:05,370.08,Close Account,True,0.0,370.08,"London, UK",MacBook,Corporate Network,0,0
+251,21,2025-01-25 22:05:05,4158.22,Change Email,True,0.0,4158.22,"New York, USA",Android,Mobile Network,0,0
+252,0,2025-01-25 22:26:05,2632.65,Change Phone,True,0.0,2632.65,"London, UK",Windows Laptop,Mobile Network,0,0
+253,1,2025-01-25 22:55:05,81.95,Unauthorized Transfer,False,-1768.0,81.95,"Los Angeles, USA",Linux PC,Public WiFi,0,0
+254,3,2025-01-26 00:08:05,8112.43,Invest Money,False,-15970.0,8112.43,"New York, USA",Windows Laptop,Mobile Network,0,0
+255,5,2025-01-26 00:26:05,1571.75,Change Password,True,0.0,1571.75,"London, UK",MacBook,Home WiFi,0,0
+256,6,2025-01-26 01:24:05,79.66,Pay Bills,False,-3476.0,79.66,"Tokyo, Japan",Windows Laptop,Mobile Network,0,0
+257,7,2025-01-26 01:54:05,2623.54,Change Phone,True,0.0,2623.54,"Los Angeles, USA",iPhone,Public WiFi,0,0
+258,8,2025-01-26 02:03:05,1119.54,Change Email,True,0.0,1119.54,"Tokyo, Japan",iPhone,Mobile Network,0,0
+259,9,2025-01-26 02:11:05,1915.38,Change Phone,True,0.0,1915.38,"New York, USA",MacBook,Home WiFi,0,0
+260,10,2025-01-26 03:21:05,24094.11,Deposit Funds,True,6855.0,30949.11,"New York, USA",Windows Laptop,Corporate Network,0,0
+261,11,2025-01-26 03:35:05,1089.01,Unauthorized Transfer,False,-8202.0,1089.01,"Tokyo, Japan",MacBook,Home WiFi,0,0
+262,14,2025-01-26 04:48:05,16254.31,Transfer Funds,True,-1064.0,15190.31,"London, UK",iPad,Public WiFi,0,0
+263,15,2025-01-26 05:29:05,11005.85,Purchase Luxury Goods,False,-64466.0,11005.85,"Los Angeles, USA",iPhone,Public WiFi,0,0
+264,16,2025-01-26 06:22:05,2916.61,Open Account,True,0.0,2916.61,"Tokyo, Japan",iPhone,Home WiFi,0,0
+265,17,2025-01-26 06:54:05,664.45,Create Fake Identity,True,0.0,664.45,"London, UK",iPad,Mobile Network,0,0
+266,21,2025-01-26 06:58:05,4158.22,Change Email,True,0.0,4158.22,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+267,0,2025-01-26 07:28:05,2632.65,Change Phone,True,0.0,2632.65,"Paris, France",Android,Public WiFi,0,0
+268,1,2025-01-26 07:30:05,81.95,Unauthorized Transfer,False,-7636.0,81.95,"Los Angeles, USA",MacBook,Home WiFi,0,0
+269,3,2025-01-26 09:50:05,8112.43,Invest Money,False,-31560.0,8112.43,"New York, USA",iPhone,Home WiFi,0,0
+270,5,2025-01-26 10:20:05,1571.75,Change Email,True,0.0,1571.75,"New York, USA",Windows Laptop,Public WiFi,0,0
+271,6,2025-01-26 12:04:05,79.66,Pay Bills,False,-1630.0,79.66,"New York, USA",iPhone,Mobile Network,0,0
+272,7,2025-01-26 12:23:05,2623.54,Change Email,True,0.0,2623.54,"New York, USA",Linux PC,Home WiFi,0,0
+273,8,2025-01-26 12:50:05,1119.54,Change Email,True,0.0,1119.54,"New York, USA",MacBook,Public WiFi,0,0
+274,9,2025-01-26 13:02:05,1915.38,Change Phone,True,0.0,1915.38,"Los Angeles, USA",MacBook,Public WiFi,0,0
+275,10,2025-01-26 14:21:05,30949.11,Wire Transfer,True,-18535.0,12414.11,"New York, USA",Android,Mobile Network,0,0
+276,11,2025-01-26 14:45:05,1089.01,Unauthorized Transfer,False,-8317.0,1089.01,"Berlin, Germany",iPhone,Home WiFi,0,0
+277,14,2025-01-26 15:05:05,15190.31,Transfer Funds,True,-126.0,15064.31,"Berlin, Germany",MacBook,Mobile Network,0,0
+278,15,2025-01-26 15:33:05,11005.85,Deposit Funds,True,8181.0,19186.85,"Tokyo, Japan",Windows Laptop,Home WiFi,0,0
+279,16,2025-01-26 15:42:05,2916.61,Apply for Credit Card,True,0.0,2916.61,"Tokyo, Japan",MacBook,Mobile Network,0,0
+280,17,2025-01-26 16:00:05,664.45,Make Purchase,False,-39749.0,664.45,"Tokyo, Japan",Windows Laptop,Public WiFi,0,0
+281,21,2025-01-26 16:01:05,4158.22,Suspicious Login,True,0.0,4158.22,"Los Angeles, USA",Android,Public WiFi,1,0
+282,0,2025-01-26 16:21:05,2632.65,Change Phone,True,0.0,2632.65,"New York, USA",iPhone,Home WiFi,0,0
+283,1,2025-01-26 16:41:05,81.95,Unauthorized Transfer,False,-2335.0,81.95,"Berlin, Germany",Linux PC,Corporate Network,0,0
+284,3,2025-01-26 17:05:05,8112.43,Invest Money,False,-22797.0,8112.43,"New York, USA",Windows Laptop,Public WiFi,0,0
+285,5,2025-01-26 17:28:05,1571.75,Change Email,True,0.0,1571.75,"New York, USA",iPhone,Home WiFi,0,0
+286,6,2025-01-26 18:07:05,79.66,Deposit Funds,True,8755.0,8834.66,"New York, USA",Android,Home WiFi,0,0
+287,7,2025-01-26 18:34:05,2623.54,Request New Card,True,0.0,2623.54,"Los Angeles, USA",iPhone,Public WiFi,0,0
+288,8,2025-01-26 18:52:05,1119.54,Change Phone,True,0.0,1119.54,"Los Angeles, USA",Android,Public WiFi,0,0
+289,9,2025-01-26 19:07:05,1915.38,Change Phone,True,0.0,1915.38,"Tokyo, Japan",iPhone,Public WiFi,0,0
+290,10,2025-01-26 21:05:05,12414.11,Wire Transfer,False,-19732.0,12414.11,"New York, USA",iPhone,Home WiFi,0,0
+291,11,2025-01-26 21:21:05,1089.01,Unauthorized Transfer,False,-2067.0,1089.01,"New York, USA",iPhone,Mobile Network,0,0
+292,14,2025-01-27 00:12:05,15064.31,Transfer Funds,True,-1080.0,13984.31,"London, UK",iPhone,Home WiFi,0,0
+293,15,2025-01-27 00:50:05,19186.85,Close Account,True,0.0,19186.85,"Paris, France",Android,Home WiFi,0,0
+294,16,2025-01-27 01:45:05,2916.61,Apply for Credit Card,True,0.0,2916.61,"Los Angeles, USA",iPhone,Corporate Network,0,0
+295,17,2025-01-27 01:45:05,664.45,Make Purchase,False,-33354.0,664.45,"London, UK",Windows Laptop,Public WiFi,0,0
+296,21,2025-01-27 01:49:05,4158.22,Suspicious Login,True,0.0,4158.22,"New York, USA",iPhone,Home WiFi,0,0
+297,0,2025-01-27 02:04:05,2632.65,Request New Card,True,0.0,2632.65,"Paris, France",Android,Corporate Network,0,0
+298,1,2025-01-27 02:20:05,81.95,Close Account,True,0.0,81.95,"Berlin, Germany",Android,Public WiFi,0,0
+299,3,2025-01-27 04:45:05,8112.43,Invest Money,False,-21031.0,8112.43,"Los Angeles, USA",iPhone,Home WiFi,0,0
+300,5,2025-01-27 05:14:05,1571.75,Request New Card,True,0.0,1571.75,"Los Angeles, USA",iPhone,Corporate Network,0,0
+301,6,2025-01-27 07:57:05,8834.66,Deposit Funds,True,3596.0,12430.66,"Berlin, Germany",iPhone,Home WiFi,1,0
+302,7,2025-01-27 07:57:05,2623.54,Close Account,True,0.0,2623.54,"Berlin, Germany",Android,Home WiFi,0,0
+303,8,2025-01-27 08:27:05,1119.54,Change Phone,True,0.0,1119.54,"London, UK",Linux PC,Corporate Network,1,0
+304,9,2025-01-27 08:36:05,1915.38,Change Phone,True,0.0,1915.38,"Berlin, Germany",iPhone,Corporate Network,0,0
+305,10,2025-01-27 09:39:05,12414.11,Wire Transfer,True,-6213.0,6201.11,"Los Angeles, USA",MacBook,Home WiFi,0,0
+306,11,2025-01-27 09:55:05,1089.01,Unauthorized Transfer,False,-7876.0,1089.01,"London, UK",iPhone,Public WiFi,0,0
+307,14,2025-01-27 12:01:05,13984.31,Transfer Funds,True,-1345.0,12639.31,"New York, USA",Linux PC,Public WiFi,0,0
+308,16,2025-01-27 12:54:05,2916.61,Open Account,True,0.0,2916.61,"Tokyo, Japan",iPhone,Mobile Network,0,0
+309,17,2025-01-27 13:49:05,664.45,Make Purchase,False,-12880.0,664.45,"London, UK",Android,Mobile Network,0,0
+310,21,2025-01-27 14:19:05,4158.22,Change Password,True,0.0,4158.22,"Paris, France",iPhone,Corporate Network,0,0
+311,0,2025-01-27 14:41:05,2632.65,Request New Card,True,0.0,2632.65,"Los Angeles, USA",iPhone,Public WiFi,1,0
+312,3,2025-01-27 16:52:05,8112.43,Deposit Funds,True,8550.0,16662.43,"London, UK",iPhone,Mobile Network,0,0
+313,5,2025-01-27 16:55:05,1571.75,Unauthorized Transfer,False,-6473.0,1571.75,"New York, USA",MacBook,Public WiFi,0,0
+314,6,2025-01-27 18:13:05,12430.66,Pay Bills,True,-2013.0,10417.66,"Tokyo, Japan",iPhone,Corporate Network,0,0
+315,8,2025-01-27 18:23:05,1119.54,Change Password,True,0.0,1119.54,"Los Angeles, USA",Android,Public WiFi,0,0
+316,9,2025-01-27 18:28:05,1915.38,Change Phone,True,0.0,1915.38,"New York, USA",Android,Home WiFi,0,0
+317,10,2025-01-27 20:26:05,6201.11,Close Account,True,0.0,6201.11,"Paris, France",Windows Laptop,Home WiFi,0,0
+318,11,2025-01-27 20:30:05,1089.01,Unauthorized Transfer,False,-7933.0,1089.01,"Los Angeles, USA",iPhone,Mobile Network,0,0
+319,14,2025-01-27 23:24:05,12639.31,Review activityments,True,0.0,12639.31,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+320,16,2025-01-27 23:46:05,2916.61,Apply for Credit Card,True,0.0,2916.61,"New York, USA",MacBook,Home WiFi,0,0
+321,17,2025-01-28 00:05:05,664.45,Make Purchase,False,-3115.0,664.45,"London, UK",MacBook,Mobile Network,0,0
+322,21,2025-01-28 00:09:05,4158.22,Change Email,True,0.0,4158.22,"Tokyo, Japan",iPhone,Public WiFi,1,0
+323,0,2025-01-28 00:23:05,2632.65,Change Email,True,0.0,2632.65,"Los Angeles, USA",Android,Home WiFi,0,0
+324,3,2025-01-28 01:07:05,16662.43,Deposit Funds,True,414.0,17076.43,"Tokyo, Japan",Android,Mobile Network,0,0
+325,5,2025-01-28 01:16:05,1571.75,Unauthorized Transfer,False,-3327.0,1571.75,"New York, USA",Windows Laptop,Home WiFi,0,0
+326,6,2025-01-28 03:14:05,10417.66,Pay Bills,True,-4409.0,6008.66,"Los Angeles, USA",Windows Laptop,Mobile Network,0,0
+327,8,2025-01-28 03:35:05,1119.54,Change Email,True,0.0,1119.54,"Berlin, Germany",iPhone,Corporate Network,0,0
+328,9,2025-01-28 03:54:05,1915.38,Change Email,True,0.0,1915.38,"New York, USA",iPhone,Home WiFi,0,0
+329,11,2025-01-28 03:59:05,1089.01,Unauthorized Transfer,False,-5579.0,1089.01,"Paris, France",iPhone,Home WiFi,0,0
+330,14,2025-01-28 05:28:05,12639.31,Review activityments,True,0.0,12639.31,"London, UK",Android,Mobile Network,0,0
+331,16,2025-01-28 06:05:05,2916.61,Apply for Credit Card,True,0.0,2916.61,"Los Angeles, USA",Android,Mobile Network,0,1
+332,17,2025-01-28 06:42:05,664.45,Create Fake Identity,True,0.0,664.45,"New York, USA",MacBook,Home WiFi,0,0
+333,21,2025-01-28 07:02:05,4158.22,Change Phone,True,0.0,4158.22,"Los Angeles, USA",MacBook,Home WiFi,0,0
+334,0,2025-01-28 07:17:05,2632.65,Change Email,True,0.0,2632.65,"London, UK",Windows Laptop,Public WiFi,0,0
+335,3,2025-01-28 07:43:05,17076.43,Transfer Funds,True,-2016.0,15060.43,"New York, USA",iPhone,Home WiFi,0,0
+336,5,2025-01-28 08:04:05,1571.75,Unauthorized Transfer,True,-115.0,1456.75,"Tokyo, Japan",Android,Home WiFi,0,1
+337,6,2025-01-28 08:30:05,6008.66,Deposit Funds,True,4029.0,10037.66,"London, UK",Windows Laptop,Mobile Network,0,0
+338,8,2025-01-28 08:56:05,1119.54,Change Email,True,0.0,1119.54,"Tokyo, Japan",iPhone,Corporate Network,0,0
+339,9,2025-01-28 09:09:05,1915.38,Change Email,True,0.0,1915.38,"London, UK",iPad,Public WiFi,0,0
+340,11,2025-01-28 09:23:05,1089.01,Unauthorized Transfer,False,-5692.0,1089.01,"New York, USA",MacBook,Home WiFi,0,0
+341,14,2025-01-28 11:47:05,12639.31,Make Purchase,True,-333.0,12306.31,"Los Angeles, USA",MacBook,Home WiFi,0,0
+342,16,2025-01-28 12:17:05,2916.61,Apply for Credit Card,True,0.0,2916.61,"Tokyo, Japan",iPhone,Mobile Network,0,0
+343,17,2025-01-28 13:12:05,664.45,Create Fake Identity,True,0.0,664.45,"New York, USA",iPad,Home WiFi,0,0
+344,21,2025-01-28 13:32:05,4158.22,Change Phone,True,0.0,4158.22,"Berlin, Germany",Windows Laptop,Home WiFi,0,0
+345,0,2025-01-28 13:34:05,2632.65,Change Email,True,0.0,2632.65,"London, UK",Android,Home WiFi,0,0
+346,3,2025-01-28 15:35:05,15060.43,Deposit Funds,True,1050.0,16110.43,"Los Angeles, USA",iPhone,Corporate Network,0,0
+347,5,2025-01-28 16:05:05,1456.75,Change Phone,True,0.0,1456.75,"New York, USA",Windows Laptop,Public WiFi,0,0
+348,6,2025-01-28 18:37:05,10037.66,Deposit Funds,True,5190.0,15227.66,"New York, USA",iPhone,Corporate Network,1,0
+349,8,2025-01-28 19:00:05,1119.54,Change Email,True,0.0,1119.54,"Berlin, Germany",Android,Home WiFi,0,0
+350,9,2025-01-28 19:24:05,1915.38,Change Password,True,0.0,1915.38,"New York, USA",Android,Public WiFi,0,0
+351,11,2025-01-28 19:39:05,1089.01,Unauthorized Transfer,False,-7567.0,1089.01,"Los Angeles, USA",iPhone,Mobile Network,0,0
+352,14,2025-01-28 21:57:05,12306.31,Make Purchase,True,-191.0,12115.31,"London, UK",iPhone,Public WiFi,0,0
+353,16,2025-01-28 22:00:05,2916.61,Make Purchase,False,-33396.0,2916.61,"New York, USA",iPhone,Public WiFi,0,0
+354,17,2025-01-28 22:47:05,664.45,Create Fake Identity,True,0.0,664.45,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+355,21,2025-01-28 22:48:05,4158.22,Change Phone,True,0.0,4158.22,"Los Angeles, USA",Android,Home WiFi,0,0
+356,0,2025-01-28 23:13:05,2632.65,Change Email,True,0.0,2632.65,"Los Angeles, USA",Windows Laptop,Public WiFi,0,0
+357,3,2025-01-29 01:49:05,16110.43,Deposit Funds,True,4515.0,20625.43,"Paris, France",Android,Home WiFi,0,0
+358,5,2025-01-29 02:04:05,1456.75,Change Email,True,0.0,1456.75,"New York, USA",Android,Home WiFi,0,1
+359,6,2025-01-29 02:26:05,15227.66,Make Purchase,True,-732.0,14495.66,"New York, USA",Android,Mobile Network,0,0
+360,8,2025-01-29 02:37:05,1119.54,Change Email,True,0.0,1119.54,"New York, USA",Android,Public WiFi,0,0
+361,9,2025-01-29 02:50:05,1915.38,Change Email,True,0.0,1915.38,"New York, USA",MacBook,Home WiFi,0,0
+362,11,2025-01-29 02:56:05,1089.01,Unauthorized Transfer,False,-6466.0,1089.01,"Tokyo, Japan",Windows Laptop,Mobile Network,0,0
+363,14,2025-01-29 04:53:05,12115.31,Make Purchase,True,-215.0,11900.31,"Tokyo, Japan",Linux PC,Public WiFi,0,0
+364,16,2025-01-29 05:45:05,2916.61,Max Out Credit,False,-3473.0,2916.61,"Los Angeles, USA",Android,Corporate Network,0,0
+365,17,2025-01-29 05:46:05,664.45,Apply for Credit Card,True,0.0,664.45,"Tokyo, Japan",iPhone,Public WiFi,0,0
+366,21,2025-01-29 06:00:05,4158.22,Change Email,True,0.0,4158.22,"Los Angeles, USA",iPhone,Home WiFi,0,0
+367,0,2025-01-29 06:29:05,2632.65,Change Phone,True,0.0,2632.65,"Tokyo, Japan",MacBook,Home WiFi,0,0
+368,3,2025-01-29 09:10:05,20625.43,Make Purchase,True,-409.0,20216.43,"London, UK",Windows Laptop,Public WiFi,1,0
+369,5,2025-01-29 09:23:05,1456.75,Change Email,True,0.0,1456.75,"London, UK",Linux PC,Public WiFi,0,0
+370,6,2025-01-29 09:29:05,14495.66,Pay Bills,True,-3306.0,11189.66,"Los Angeles, USA",iPhone,Mobile Network,0,0
+371,8,2025-01-29 09:42:05,1119.54,Change Password,True,0.0,1119.54,"Tokyo, Japan",iPhone,Home WiFi,1,0
+372,9,2025-01-29 10:09:05,1915.38,Change Email,True,0.0,1915.38,"London, UK",MacBook,Public WiFi,0,0
+373,11,2025-01-29 10:14:05,1089.01,Unauthorized Transfer,False,-2503.0,1089.01,"Los Angeles, USA",Android,Mobile Network,1,0
+374,14,2025-01-29 12:30:05,11900.31,Pay Bills,True,-1013.0,10887.31,"Tokyo, Japan",Windows Laptop,Public WiFi,0,0
+375,16,2025-01-29 12:48:05,2916.61,Apply for Loan,True,0.0,2916.61,"Berlin, Germany",Android,Mobile Network,0,0
+376,17,2025-01-29 13:03:05,664.45,Create Fake Identity,True,0.0,664.45,"Paris, France",MacBook,Public WiFi,0,0
+377,21,2025-01-29 13:29:05,4158.22,Change Email,True,0.0,4158.22,"London, UK",Windows Laptop,Public WiFi,0,0
+378,0,2025-01-29 13:51:05,2632.65,Change Password,True,0.0,2632.65,"Berlin, Germany",iPhone,Public WiFi,0,0
+379,3,2025-01-29 14:25:05,20216.43,Make Purchase,True,-989.0,19227.43,"Los Angeles, USA",Windows Laptop,Public WiFi,0,0
+380,5,2025-01-29 14:50:05,1456.75,Request New Card,True,0.0,1456.75,"Los Angeles, USA",iPhone,Mobile Network,0,0
+381,6,2025-01-29 17:24:05,11189.66,Make Purchase,True,-49.0,11140.66,"Los Angeles, USA",MacBook,Public WiFi,0,0
+382,8,2025-01-29 17:31:05,1119.54,Change Password,True,0.0,1119.54,"London, UK",iPhone,Home WiFi,0,0
+383,9,2025-01-29 17:44:05,1915.38,Change Email,True,0.0,1915.38,"Los Angeles, USA",Android,Public WiFi,0,0
+384,11,2025-01-29 18:02:05,1089.01,Request New Card,True,0.0,1089.01,"Tokyo, Japan",Android,Mobile Network,0,0
+385,14,2025-01-29 18:57:05,10887.31,Review activityments,True,0.0,10887.31,"Los Angeles, USA",Android,Home WiFi,0,0
+386,16,2025-01-29 18:58:05,2916.61,Open Account,True,0.0,2916.61,"New York, USA",iPad,Public WiFi,0,0
+387,17,2025-01-29 19:29:05,664.45,Apply for Loan,True,0.0,664.45,"Tokyo, Japan",Linux PC,Home WiFi,0,0
+388,21,2025-01-29 19:49:05,4158.22,Change Email,True,0.0,4158.22,"Paris, France",MacBook,Home WiFi,0,0
+389,0,2025-01-29 20:09:05,2632.65,Change Password,True,0.0,2632.65,"Tokyo, Japan",iPhone,Public WiFi,0,0
+390,3,2025-01-29 20:40:05,19227.43,Apply for Credit Card,True,0.0,19227.43,"New York, USA",Windows Laptop,Public WiFi,0,0
+391,5,2025-01-29 21:03:05,1456.75,Change Email,True,0.0,1456.75,"London, UK",Android,Corporate Network,0,0
+392,6,2025-01-29 22:47:05,11140.66,Apply for Loan,True,0.0,11140.66,"New York, USA",iPhone,Home WiFi,0,0
+393,8,2025-01-29 23:17:05,1119.54,Change Password,True,0.0,1119.54,"Los Angeles, USA",Android,Home WiFi,0,0
+394,9,2025-01-29 23:23:05,1915.38,Suspicious Login,True,0.0,1915.38,"Tokyo, Japan",Android,Corporate Network,0,0
+395,11,2025-01-29 23:46:05,1089.01,Request New Card,True,0.0,1089.01,"Paris, France",Android,Home WiFi,0,0
+396,14,2025-01-30 01:07:05,10887.31,Apply for Loan,True,0.0,10887.31,"New York, USA",Windows Laptop,Home WiFi,0,0
+397,16,2025-01-30 01:22:05,2916.61,Open Account,True,0.0,2916.61,"Los Angeles, USA",Linux PC,Home WiFi,0,1
+398,17,2025-01-30 01:41:05,664.45,Open Account,True,0.0,664.45,"New York, USA",Android,Home WiFi,0,0
+399,21,2025-01-30 02:04:05,4158.22,Change Password,True,0.0,4158.22,"New York, USA",MacBook,Home WiFi,0,0
+400,0,2025-01-30 02:10:05,2632.65,Change Password,True,0.0,2632.65,"Berlin, Germany",iPhone,Mobile Network,0,0
+401,3,2025-01-30 04:15:05,19227.43,Transfer Funds,True,-3309.0,15918.43,"New York, USA",Android,Public WiFi,0,0
+402,5,2025-01-30 04:40:05,1456.75,Request New Card,True,0.0,1456.75,"Tokyo, Japan",Android,Public WiFi,0,0
+403,6,2025-01-30 06:39:05,11140.66,Apply for Credit Card,True,0.0,11140.66,"Los Angeles, USA",Linux PC,Corporate Network,0,0
+404,8,2025-01-30 06:49:05,1119.54,Suspicious Login,True,0.0,1119.54,"New York, USA",iPhone,Public WiFi,0,0
+405,9,2025-01-30 07:11:05,1915.38,Change Password,True,0.0,1915.38,"Paris, France",Windows Laptop,Mobile Network,0,0
+406,11,2025-01-30 07:20:05,1089.01,Request New Card,True,0.0,1089.01,"New York, USA",iPhone,Corporate Network,0,0
+407,14,2025-01-30 08:15:05,10887.31,Pay Bills,True,-4947.0,5940.31,"Tokyo, Japan",MacBook,Public WiFi,0,0
+408,16,2025-01-30 08:36:05,2916.61,Open Account,True,0.0,2916.61,"Berlin, Germany",MacBook,Home WiFi,0,0
+409,17,2025-01-30 09:34:05,664.45,Apply for Loan,True,0.0,664.45,"London, UK",iPhone,Mobile Network,0,0
+410,21,2025-01-30 10:00:05,4158.22,Change Password,True,0.0,4158.22,"Los Angeles, USA",Android,Public WiFi,1,0
+411,0,2025-01-30 10:04:05,2632.65,Unauthorized Transfer,True,-724.0,1908.65,"Los Angeles, USA",Windows Laptop,Home WiFi,1,0
+412,3,2025-01-30 12:27:05,15918.43,Transfer Funds,True,-1751.0,14167.43,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+413,5,2025-01-30 12:54:05,1456.75,Request New Card,True,0.0,1456.75,"Berlin, Germany",Windows Laptop,Home WiFi,0,0
+414,6,2025-01-30 14:14:05,11140.66,Transfer Funds,True,-2778.0,8362.66,"London, UK",iPhone,Mobile Network,1,0
+415,8,2025-01-30 14:21:05,1119.54,Suspicious Login,True,0.0,1119.54,"Tokyo, Japan",Android,Home WiFi,0,0
+416,9,2025-01-30 14:37:05,1915.38,Change Phone,True,0.0,1915.38,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+417,11,2025-01-30 14:43:05,1089.01,Unauthorized Transfer,False,-2280.0,1089.01,"New York, USA",Windows Laptop,Mobile Network,0,0
+418,14,2025-01-30 14:58:05,5940.31,Pay Bills,True,-341.0,5599.31,"Los Angeles, USA",MacBook,Mobile Network,0,0
+419,16,2025-01-30 15:28:05,2916.61,Open Account,True,0.0,2916.61,"London, UK",iPhone,Home WiFi,0,0
+420,17,2025-01-30 15:28:05,664.45,Create Fake Identity,True,0.0,664.45,"Paris, France",Windows Laptop,Corporate Network,0,0
+421,21,2025-01-30 15:48:05,4158.22,Change Email,True,0.0,4158.22,"New York, USA",MacBook,Home WiFi,0,0
+422,0,2025-01-30 16:07:05,1908.65,Unauthorized Transfer,False,-4245.0,1908.65,"New York, USA",Windows Laptop,Mobile Network,1,0
+423,3,2025-01-30 17:28:05,14167.43,Deposit Funds,True,7102.0,21269.43,"London, UK",Windows Laptop,Home WiFi,0,0
+424,5,2025-01-30 17:36:05,1456.75,Request New Card,True,0.0,1456.75,"Berlin, Germany",Windows Laptop,Corporate Network,0,0
+425,6,2025-01-30 20:23:05,8362.66,Make Purchase,True,-322.0,8040.66,"Los Angeles, USA",Windows Laptop,Corporate Network,0,0
+426,8,2025-01-30 20:40:05,1119.54,Change Password,True,0.0,1119.54,"Los Angeles, USA",iPhone,Public WiFi,0,0
+427,9,2025-01-30 21:03:05,1915.38,Change Password,True,0.0,1915.38,"New York, USA",Windows Laptop,Public WiFi,0,0
+428,11,2025-01-30 21:13:05,1089.01,Change Phone,True,0.0,1089.01,"Los Angeles, USA",Android,Public WiFi,0,0
+429,14,2025-01-31 00:02:05,5599.31,Make Purchase,True,-873.0,4726.31,"New York, USA",Windows Laptop,Public WiFi,0,0
+430,16,2025-01-31 01:02:05,2916.61,Open Account,True,0.0,2916.61,"London, UK",Windows Laptop,Home WiFi,0,0
+431,17,2025-01-31 01:42:05,664.45,Open Account,True,0.0,664.45,"New York, USA",Windows Laptop,Public WiFi,0,0
+432,21,2025-01-31 02:11:05,4158.22,Change Email,True,0.0,4158.22,"Paris, France",Linux PC,Home WiFi,0,0
+433,0,2025-01-31 02:17:05,1908.65,Change Phone,True,0.0,1908.65,"New York, USA",iPhone,Home WiFi,0,0
+434,3,2025-01-31 03:20:05,21269.43,Deposit Funds,True,9682.0,30951.43,"New York, USA",Android,Home WiFi,0,0
+435,5,2025-01-31 03:42:05,1456.75,Request New Card,True,0.0,1456.75,"Tokyo, Japan",iPhone,Mobile Network,1,0
+436,6,2025-01-31 05:00:05,8040.66,Deposit Funds,True,6236.0,14276.66,"London, UK",MacBook,Public WiFi,0,1
+437,8,2025-01-31 05:01:05,1119.54,Suspicious Login,True,0.0,1119.54,"Los Angeles, USA",iPhone,Mobile Network,0,0
+438,9,2025-01-31 05:15:05,1915.38,Suspicious Login,True,0.0,1915.38,"Los Angeles, USA",MacBook,Mobile Network,0,0
+439,11,2025-01-31 05:17:05,1089.01,Change Email,True,0.0,1089.01,"New York, USA",iPad,Home WiFi,0,0
+440,14,2025-01-31 05:17:05,4726.31,Make Purchase,True,-41.0,4685.31,"New York, USA",MacBook,Public WiFi,0,0
+441,16,2025-01-31 05:57:05,2916.61,Create Fake Identity,True,0.0,2916.61,"London, UK",Android,Home WiFi,0,0
+442,17,2025-01-31 06:05:05,664.45,Apply for Credit Card,True,0.0,664.45,"New York, USA",Windows Laptop,Public WiFi,0,0
+443,21,2025-01-31 06:15:05,4158.22,Request New Card,True,0.0,4158.22,"London, UK",iPhone,Home WiFi,0,0
+444,0,2025-01-31 06:17:05,1908.65,Change Phone,True,0.0,1908.65,"Los Angeles, USA",Windows Laptop,Public WiFi,0,0
+445,3,2025-01-31 08:42:05,30951.43,Make Purchase,True,-934.0,30017.43,"Tokyo, Japan",iPhone,Mobile Network,0,0
+446,5,2025-01-31 08:51:05,1456.75,Unauthorized Transfer,False,-1911.0,1456.75,"Paris, France",Android,Home WiFi,0,0
+447,6,2025-01-31 09:53:05,14276.66,Make Purchase,True,-364.0,13912.66,"New York, USA",iPhone,Public WiFi,0,0
+448,8,2025-01-31 10:03:05,1119.54,Suspicious Login,True,0.0,1119.54,"Paris, France",Android,Home WiFi,0,0
+449,9,2025-01-31 10:20:05,1915.38,Unauthorized Transfer,True,-491.0,1424.38,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+450,11,2025-01-31 10:42:05,1089.01,Change Password,True,0.0,1089.01,"Berlin, Germany",Android,Mobile Network,0,0
+451,14,2025-01-31 12:21:05,4685.31,Make Purchase,True,-951.0,3734.31,"Los Angeles, USA",Android,Home WiFi,1,0
+452,16,2025-01-31 12:28:05,2916.61,Make Purchase,True,-2178.0,738.61,"New York, USA",Windows Laptop,Home WiFi,0,0
+453,17,2025-01-31 12:50:05,664.45,Apply for Credit Card,True,0.0,664.45,"Tokyo, Japan",Linux PC,Public WiFi,0,0
+454,21,2025-01-31 13:03:05,4158.22,Request New Card,True,0.0,4158.22,"Paris, France",iPhone,Home WiFi,0,0
+455,0,2025-01-31 13:31:05,1908.65,Change Email,True,0.0,1908.65,"New York, USA",MacBook,Home WiFi,0,0
+456,3,2025-01-31 14:02:05,30017.43,Make Purchase,True,-364.0,29653.43,"New York, USA",Android,Home WiFi,0,0
+457,5,2025-01-31 14:08:05,1456.75,Close Account,True,0.0,1456.75,"Los Angeles, USA",Windows Laptop,Public WiFi,0,0
+458,6,2025-01-31 16:53:05,13912.66,Make Purchase,True,-775.0,13137.66,"London, UK",iPhone,Home WiFi,0,0
+459,8,2025-01-31 16:58:05,1119.54,Unauthorized Transfer,False,-5928.0,1119.54,"New York, USA",Android,Mobile Network,0,1
+460,9,2025-01-31 17:00:05,1424.38,Unauthorized Transfer,False,-9094.0,1424.38,"New York, USA",Linux PC,Mobile Network,0,0
+461,11,2025-01-31 17:06:05,1089.01,Change Password,True,0.0,1089.01,"Paris, France",Android,Home WiFi,0,0
+462,14,2025-01-31 18:24:05,3734.31,Make Purchase,True,-94.0,3640.31,"New York, USA",Android,Mobile Network,0,0
+463,16,2025-01-31 19:15:05,738.61,Make Purchase,False,-23198.0,738.61,"Paris, France",MacBook,Public WiFi,0,0
+464,17,2025-01-31 19:31:05,664.45,Open Account,True,0.0,664.45,"London, UK",MacBook,Mobile Network,0,0
+465,21,2025-01-31 19:37:05,4158.22,Unauthorized Transfer,True,-613.0,3545.22,"New York, USA",Android,Mobile Network,0,0
+466,0,2025-01-31 19:46:05,1908.65,Change Email,True,0.0,1908.65,"London, UK",Android,Mobile Network,0,0
+467,3,2025-01-31 20:42:05,29653.43,Pay Bills,True,-3777.0,25876.43,"London, UK",Android,Mobile Network,0,0
+468,6,2025-01-31 21:30:05,13137.66,Make Purchase,True,-877.0,12260.66,"New York, USA",Android,Public WiFi,0,0
+469,8,2025-01-31 21:48:05,1119.54,Change Phone,True,0.0,1119.54,"Berlin, Germany",iPhone,Home WiFi,0,0
+470,9,2025-01-31 22:15:05,1424.38,Unauthorized Transfer,False,-1867.0,1424.38,"Los Angeles, USA",Windows Laptop,Mobile Network,0,0
+471,11,2025-01-31 22:39:05,1089.01,Suspicious Login,True,0.0,1089.01,"Los Angeles, USA",MacBook,Public WiFi,0,0
+472,14,2025-01-31 23:29:05,3640.31,Make Purchase,True,-892.0,2748.31,"Los Angeles, USA",iPhone,Home WiFi,0,0
+473,16,2025-01-31 23:44:05,738.61,Open Account,True,0.0,738.61,"Los Angeles, USA",Windows Laptop,Public WiFi,0,0
+474,17,2025-01-31 23:55:05,664.45,Open Account,True,0.0,664.45,"New York, USA",MacBook,Home WiFi,0,0
+475,21,2025-02-01 00:05:05,3545.22,Close Account,True,0.0,3545.22,"Tokyo, Japan",iPhone,Public WiFi,0,0
+476,0,2025-02-01 00:14:05,1908.65,Change Email,True,0.0,1908.65,"London, UK",MacBook,Public WiFi,0,0
+477,3,2025-02-01 02:20:05,25876.43,Pay Bills,True,-3003.0,22873.43,"Berlin, Germany",Android,Public WiFi,0,0
+478,6,2025-02-01 03:55:05,12260.66,Make Purchase,True,-332.0,11928.66,"Los Angeles, USA",Windows Laptop,Public WiFi,0,0
+479,8,2025-02-01 03:56:05,1119.54,Change Phone,True,0.0,1119.54,"Paris, France",Android,Corporate Network,0,0
+480,9,2025-02-01 03:57:05,1424.38,Unauthorized Transfer,False,-7922.0,1424.38,"London, UK",iPhone,Mobile Network,0,0
+481,11,2025-02-01 04:07:05,1089.01,Suspicious Login,True,0.0,1089.01,"Berlin, Germany",Android,Home WiFi,0,0
+482,14,2025-02-01 06:55:05,2748.31,Make Purchase,True,-291.0,2457.31,"New York, USA",Android,Home WiFi,0,0
+483,16,2025-02-01 07:00:05,738.61,Create Fake Identity,True,0.0,738.61,"London, UK",iPhone,Mobile Network,0,0
+484,17,2025-02-01 07:34:05,664.45,Open Account,True,0.0,664.45,"New York, USA",MacBook,Home WiFi,0,0
+485,0,2025-02-01 07:51:05,1908.65,Request New Card,True,0.0,1908.65,"Los Angeles, USA",Android,Home WiFi,0,0
+486,3,2025-02-01 09:28:05,22873.43,Pay Bills,True,-3349.0,19524.43,"Berlin, Germany",iPhone,Public WiFi,0,0
+487,6,2025-02-01 11:01:05,11928.66,Make Purchase,True,-848.0,11080.66,"Los Angeles, USA",Android,Mobile Network,0,0
+488,8,2025-02-01 11:06:05,1119.54,Change Phone,True,0.0,1119.54,"London, UK",Windows Laptop,Home WiFi,0,0
+489,9,2025-02-01 11:24:05,1424.38,Close Account,True,0.0,1424.38,"New York, USA",iPhone,Public WiFi,0,0
+490,11,2025-02-01 11:43:05,1089.01,Unauthorized Transfer,False,-7956.0,1089.01,"New York, USA",Android,Mobile Network,0,0
+491,14,2025-02-01 14:18:05,2457.31,Apply for Credit Card,True,0.0,2457.31,"New York, USA",Android,Home WiFi,0,0
+492,16,2025-02-01 14:18:05,738.61,Create Fake Identity,True,0.0,738.61,"Paris, France",Windows Laptop,Mobile Network,0,0
+493,17,2025-02-01 15:07:05,664.45,Create Fake Identity,True,0.0,664.45,"London, UK",Windows Laptop,Mobile Network,0,0
+494,0,2025-02-01 15:17:05,1908.65,Request New Card,True,0.0,1908.65,"Berlin, Germany",Windows Laptop,Public WiFi,0,0
+495,3,2025-02-01 17:12:05,19524.43,Transfer Funds,True,-4302.0,15222.43,"New York, USA",Android,Home WiFi,0,0
+496,6,2025-02-01 18:22:05,11080.66,Apply for Credit Card,True,0.0,11080.66,"London, UK",Android,Home WiFi,0,0
+497,8,2025-02-01 18:47:05,1119.54,Change Phone,True,0.0,1119.54,"Tokyo, Japan",iPhone,Public WiFi,0,1
+498,11,2025-02-01 19:02:05,1089.01,Unauthorized Transfer,False,-7065.0,1089.01,"Los Angeles, USA",iPad,Public WiFi,0,0
+499,14,2025-02-01 19:39:05,2457.31,Review activityments,True,0.0,2457.31,"New York, USA",MacBook,Home WiFi,0,0
+500,16,2025-02-01 20:00:05,738.61,Create Fake Identity,True,0.0,738.61,"Paris, France",MacBook,Home WiFi,0,0
+501,17,2025-02-01 20:11:05,664.45,Open Account,True,0.0,664.45,"Tokyo, Japan",Android,Corporate Network,0,0
+502,0,2025-02-01 20:40:05,1908.65,Unauthorized Transfer,True,-406.0,1502.65,"London, UK",iPhone,Mobile Network,0,0
+503,3,2025-02-01 23:27:05,15222.43,Apply for Credit Card,True,0.0,15222.43,"New York, USA",iPhone,Home WiFi,0,0
+504,6,2025-02-02 01:20:05,11080.66,Deposit Funds,True,4940.0,16020.66,"Tokyo, Japan",MacBook,Mobile Network,0,0
+505,8,2025-02-02 01:34:05,1119.54,Change Email,True,0.0,1119.54,"Paris, France",Android,Public WiFi,0,0
+506,11,2025-02-02 02:00:05,1089.01,Unauthorized Transfer,False,-4552.0,1089.01,"New York, USA",Android,Home WiFi,0,0
+507,14,2025-02-02 03:44:05,2457.31,Transfer Funds,True,-2329.0,128.31,"New York, USA",iPhone,Mobile Network,0,0
+508,16,2025-02-02 03:51:05,738.61,Apply for Credit Card,True,0.0,738.61,"Tokyo, Japan",Android,Corporate Network,0,0
+509,17,2025-02-02 04:47:05,664.45,Apply for Credit Card,True,0.0,664.45,"Tokyo, Japan",iPhone,Public WiFi,0,1
+510,0,2025-02-02 05:10:05,1502.65,Unauthorized Transfer,False,-7823.0,1502.65,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+511,3,2025-02-02 05:52:05,15222.43,Deposit Funds,True,2821.0,18043.43,"London, UK",iPhone,Home WiFi,0,0
+512,6,2025-02-02 07:48:05,16020.66,Deposit Funds,True,903.0,16923.66,"Los Angeles, USA",iPhone,Home WiFi,0,0
+513,8,2025-02-02 07:56:05,1119.54,Change Email,True,0.0,1119.54,"New York, USA",Windows Laptop,Home WiFi,0,0
+514,11,2025-02-02 08:06:05,1089.01,Unauthorized Transfer,False,-8560.0,1089.01,"Los Angeles, USA",iPhone,Home WiFi,0,0
+515,14,2025-02-02 10:22:05,128.31,Transfer Funds,False,-4876.0,128.31,"Los Angeles, USA",Windows Laptop,Corporate Network,0,0
+516,16,2025-02-02 11:18:05,738.61,Make Purchase,False,-3221.0,738.61,"Tokyo, Japan",iPhone,Mobile Network,0,0
+517,17,2025-02-02 11:49:05,664.45,Open Account,True,0.0,664.45,"Tokyo, Japan",Windows Laptop,Public WiFi,0,0
+518,0,2025-02-02 11:59:05,1502.65,Close Account,True,0.0,1502.65,"New York, USA",Windows Laptop,Public WiFi,0,0
+519,3,2025-02-02 14:43:05,18043.43,Deposit Funds,True,6531.0,24574.43,"New York, USA",Android,Public WiFi,0,0
+520,6,2025-02-02 16:24:05,16923.66,Apply for Loan,True,0.0,16923.66,"Paris, France",Linux PC,Mobile Network,0,1
+521,8,2025-02-02 16:33:05,1119.54,Change Phone,True,0.0,1119.54,"London, UK",iPhone,Public WiFi,0,0
+522,11,2025-02-02 16:53:05,1089.01,Close Account,True,0.0,1089.01,"London, UK",Android,Mobile Network,0,0
+523,14,2025-02-02 19:37:05,128.31,Transfer Funds,False,-2749.0,128.31,"London, UK",iPad,Home WiFi,0,0
+524,16,2025-02-02 20:23:05,738.61,Close Account,True,0.0,738.61,"London, UK",MacBook,Public WiFi,0,0
+525,17,2025-02-02 21:09:05,664.45,Create Fake Identity,True,0.0,664.45,"New York, USA",Windows Laptop,Mobile Network,0,0
+526,3,2025-02-02 23:49:05,24574.43,Transfer Funds,True,-2506.0,22068.43,"Berlin, Germany",Android,Home WiFi,0,1
+527,6,2025-02-03 01:02:05,16923.66,Apply for Loan,True,0.0,16923.66,"New York, USA",Android,Home WiFi,0,0
+528,8,2025-02-03 01:15:05,1119.54,Change Phone,True,0.0,1119.54,"Paris, France",Android,Public WiFi,0,0
+529,14,2025-02-03 04:08:05,128.31,Make Purchase,False,-759.0,128.31,"New York, USA",iPhone,Public WiFi,1,0
+530,17,2025-02-03 04:11:05,664.45,Create Fake Identity,True,0.0,664.45,"Paris, France",Android,Public WiFi,0,0
+531,3,2025-02-03 06:02:05,22068.43,Deposit Funds,True,1614.0,23682.43,"Los Angeles, USA",iPhone,Home WiFi,0,0
+532,6,2025-02-03 07:43:05,16923.66,Make Purchase,True,-308.0,16615.66,"Los Angeles, USA",Android,Home WiFi,0,0
+533,8,2025-02-03 07:46:05,1119.54,Change Password,True,0.0,1119.54,"Tokyo, Japan",Windows Laptop,Public WiFi,0,0
+534,14,2025-02-03 09:13:05,128.31,Make Purchase,False,-921.0,128.31,"Los Angeles, USA",MacBook,Public WiFi,0,0
+535,17,2025-02-03 09:39:05,664.45,Max Out Credit,False,-8420.0,664.45,"Los Angeles, USA",Android,Mobile Network,0,0
+536,3,2025-02-03 11:08:05,23682.43,Make Purchase,True,-548.0,23134.43,"Berlin, Germany",iPad,Mobile Network,0,0
+537,6,2025-02-03 11:43:05,16615.66,Make Purchase,True,-520.0,16095.66,"Tokyo, Japan",iPhone,Home WiFi,0,0
+538,8,2025-02-03 11:53:05,1119.54,Change Phone,True,0.0,1119.54,"Paris, France",Android,Home WiFi,1,0
+539,14,2025-02-03 14:48:05,128.31,Pay Bills,False,-1139.0,128.31,"London, UK",Android,Home WiFi,0,0
+540,17,2025-02-03 15:18:05,664.45,Make Purchase,False,-7561.0,664.45,"Paris, France",Windows Laptop,Home WiFi,0,0
+541,3,2025-02-03 16:55:05,23134.43,Transfer Funds,True,-4500.0,18634.43,"New York, USA",MacBook,Home WiFi,0,0
+542,6,2025-02-03 17:45:05,16095.66,Make Purchase,True,-803.0,15292.66,"Los Angeles, USA",MacBook,Home WiFi,0,0
+543,8,2025-02-03 18:10:05,1119.54,Change Password,True,0.0,1119.54,"New York, USA",iPhone,Public WiFi,0,0
+544,14,2025-02-03 18:47:05,128.31,Deposit Funds,True,5617.0,5745.31,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+545,17,2025-02-03 19:21:05,664.45,Withdraw Funds,False,-2455.0,664.45,"Los Angeles, USA",Windows Laptop,Public WiFi,0,0
+546,3,2025-02-03 22:15:05,18634.43,Invest Money,False,-35211.0,18634.43,"Los Angeles, USA",iPhone,Home WiFi,0,0
+547,6,2025-02-04 00:37:05,15292.66,Deposit Funds,True,4162.0,19454.66,"New York, USA",iPhone,Home WiFi,0,0
+548,8,2025-02-04 00:55:05,1119.54,Change Email,True,0.0,1119.54,"New York, USA",Android,Home WiFi,0,0
+549,14,2025-02-04 02:07:05,5745.31,Transfer Funds,True,-2606.0,3139.31,"Los Angeles, USA",iPhone,Home WiFi,0,0
+550,17,2025-02-04 02:40:05,664.45,Apply for Credit Card,True,0.0,664.45,"Paris, France",iPad,Home WiFi,0,0
+551,3,2025-02-04 03:08:05,18634.43,Invest Money,False,-34447.0,18634.43,"New York, USA",iPhone,Mobile Network,0,0
+552,6,2025-02-04 06:02:05,19454.66,Close Account,True,0.0,19454.66,"New York, USA",iPhone,Home WiFi,0,0
+553,8,2025-02-04 06:14:05,1119.54,Change Email,True,0.0,1119.54,"Tokyo, Japan",Android,Mobile Network,0,0
+554,14,2025-02-04 09:14:05,3139.31,Make Purchase,True,-697.0,2442.31,"New York, USA",iPhone,Public WiFi,0,0
+555,17,2025-02-04 10:01:05,664.45,Create Fake Identity,True,0.0,664.45,"New York, USA",Windows Laptop,Home WiFi,0,0
+556,3,2025-02-04 10:47:05,18634.43,Review activityments,True,0.0,18634.43,"New York, USA",MacBook,Corporate Network,0,0
+557,8,2025-02-04 11:02:05,1119.54,Change Email,True,0.0,1119.54,"New York, USA",iPad,Public WiFi,0,0
+558,14,2025-02-04 11:13:05,2442.31,Make Purchase,True,-67.0,2375.31,"New York, USA",Windows Laptop,Mobile Network,0,0
+559,17,2025-02-04 11:42:05,664.45,Create Fake Identity,True,0.0,664.45,"New York, USA",Windows Laptop,Home WiFi,0,0
+560,3,2025-02-04 12:34:05,18634.43,Review activityments,True,0.0,18634.43,"Los Angeles, USA",Windows Laptop,Mobile Network,0,0
+561,8,2025-02-04 12:48:05,1119.54,Change Email,True,0.0,1119.54,"Tokyo, Japan",Android,Public WiFi,1,0
+562,14,2025-02-04 13:03:05,2375.31,Make Purchase,True,-654.0,1721.31,"New York, USA",iPhone,Public WiFi,0,0
+563,17,2025-02-04 13:19:05,664.45,Close Account,True,0.0,664.45,"Tokyo, Japan",iPhone,Public WiFi,0,0
+564,3,2025-02-04 14:24:05,18634.43,Review activityments,True,0.0,18634.43,"Berlin, Germany",Windows Laptop,Public WiFi,0,0
+565,8,2025-02-04 14:44:05,1119.54,Change Email,True,0.0,1119.54,"Paris, France",iPhone,Public WiFi,0,0
+566,14,2025-02-04 16:57:05,1721.31,Make Purchase,True,-669.0,1052.31,"New York, USA",Windows Laptop,Mobile Network,0,0
+567,3,2025-02-04 19:45:05,18634.43,Transfer Funds,True,-2969.0,15665.43,"New York, USA",Android,Home WiFi,0,0
+568,8,2025-02-04 19:58:05,1119.54,Change Email,True,0.0,1119.54,"London, UK",Windows Laptop,Mobile Network,0,1
+569,14,2025-02-04 22:24:05,1052.31,Pay Bills,False,-4036.0,1052.31,"Los Angeles, USA",Android,Home WiFi,0,0
+570,3,2025-02-04 23:12:05,15665.43,Transfer Funds,True,-2446.0,13219.43,"Los Angeles, USA",iPhone,Corporate Network,0,0
+571,8,2025-02-04 23:14:05,1119.54,Change Phone,True,0.0,1119.54,"London, UK",iPhone,Home WiFi,0,0
+572,14,2025-02-05 02:05:05,1052.31,Make Purchase,True,-726.0,326.31,"London, UK",Windows Laptop,Corporate Network,0,0
+573,3,2025-02-05 02:33:05,13219.43,Pay Bills,True,-2656.0,10563.43,"New York, USA",MacBook,Public WiFi,0,0
+574,8,2025-02-05 02:54:05,1119.54,Change Email,True,0.0,1119.54,"Berlin, Germany",Windows Laptop,Public WiFi,0,0
+575,14,2025-02-05 05:53:05,326.31,Make Purchase,True,-61.0,265.31,"Tokyo, Japan",MacBook,Mobile Network,0,0
+576,3,2025-02-05 08:03:05,10563.43,Pay Bills,True,-124.0,10439.43,"London, UK",Windows Laptop,Mobile Network,0,0
+577,8,2025-02-05 08:19:05,1119.54,Change Password,True,0.0,1119.54,"London, UK",MacBook,Home WiFi,0,0
+578,14,2025-02-05 09:58:05,265.31,Transfer Funds,True,-170.0,95.31,"Los Angeles, USA",Android,Home WiFi,0,0
+579,3,2025-02-05 10:44:05,10439.43,Pay Bills,True,-3717.0,6722.43,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+580,8,2025-02-05 10:55:05,1119.54,Change Password,True,0.0,1119.54,"Paris, France",iPhone,Corporate Network,0,0
+581,14,2025-02-05 13:39:05,95.31,Transfer Funds,False,-4295.0,95.31,"London, UK",Android,Home WiFi,0,0
+582,3,2025-02-05 14:30:05,6722.43,Make Purchase,True,-323.0,6399.43,"Paris, France",iPhone,Home WiFi,0,0
+583,8,2025-02-05 14:39:05,1119.54,Change Email,True,0.0,1119.54,"Tokyo, Japan",MacBook,Home WiFi,1,0
+584,14,2025-02-05 14:44:05,95.31,Make Purchase,False,-326.0,95.31,"Tokyo, Japan",Linux PC,Public WiFi,0,0
+585,3,2025-02-05 16:15:05,6399.43,Pay Bills,True,-536.0,5863.43,"Tokyo, Japan",Android,Home WiFi,0,0
+586,8,2025-02-05 16:33:05,1119.54,Change Password,True,0.0,1119.54,"London, UK",Windows Laptop,Public WiFi,0,0
+587,14,2025-02-05 17:04:05,95.31,Apply for Loan,True,0.0,95.31,"Tokyo, Japan",iPhone,Public WiFi,0,0
+588,3,2025-02-05 19:14:05,5863.43,Make Purchase,True,-567.0,5296.43,"London, UK",iPhone,Public WiFi,0,0
+589,8,2025-02-05 19:44:05,1119.54,Change Email,True,0.0,1119.54,"Berlin, Germany",Android,Mobile Network,0,0
+590,14,2025-02-05 21:11:05,95.31,Invest Money,False,-44133.0,95.31,"Paris, France",iPhone,Home WiFi,0,0
+591,3,2025-02-05 22:43:05,5296.43,Make Purchase,True,-422.0,4874.43,"Tokyo, Japan",Android,Public WiFi,0,0
+592,8,2025-02-05 22:49:05,1119.54,Change Email,True,0.0,1119.54,"Tokyo, Japan",Android,Mobile Network,0,0
+593,14,2025-02-05 22:49:05,95.31,Review activityments,True,0.0,95.31,"New York, USA",Android,Home WiFi,0,0
+594,3,2025-02-06 01:12:05,4874.43,Transfer Funds,True,-4500.0,374.43,"Tokyo, Japan",iPhone,Public WiFi,0,0
+595,8,2025-02-06 01:33:05,1119.54,Change Email,True,0.0,1119.54,"Los Angeles, USA",Windows Laptop,Home WiFi,1,0
+596,14,2025-02-06 02:04:05,95.31,Review activityments,True,0.0,95.31,"Berlin, Germany",iPhone,Home WiFi,0,0
+597,3,2025-02-06 02:08:05,374.43,Make Purchase,True,-261.0,113.43,"Tokyo, Japan",Windows Laptop,Mobile Network,0,0
+598,8,2025-02-06 02:26:05,1119.54,Request New Card,True,0.0,1119.54,"Los Angeles, USA",iPhone,Home WiFi,0,0
+599,14,2025-02-06 02:31:05,95.31,Review activityments,True,0.0,95.31,"Paris, France",iPad,Mobile Network,0,0
+600,3,2025-02-06 03:03:05,113.43,Make Purchase,False,-712.0,113.43,"Tokyo, Japan",iPhone,Home WiFi,0,0
+601,8,2025-02-06 03:22:05,1119.54,Unauthorized Transfer,False,-4575.0,1119.54,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+602,14,2025-02-06 05:47:05,95.31,Review activityments,True,0.0,95.31,"Tokyo, Japan",iPhone,Home WiFi,0,0
+603,3,2025-02-06 05:58:05,113.43,Apply for Credit Card,True,0.0,113.43,"Los Angeles, USA",iPhone,Mobile Network,0,0
+604,8,2025-02-06 06:01:05,1119.54,Unauthorized Transfer,False,-4690.0,1119.54,"Berlin, Germany",MacBook,Home WiFi,0,0
+605,14,2025-02-06 06:47:05,95.31,Review activityments,True,0.0,95.31,"Los Angeles, USA",Android,Public WiFi,0,0
+606,3,2025-02-06 07:22:05,113.43,Apply for Credit Card,True,0.0,113.43,"New York, USA",Windows Laptop,Public WiFi,0,0
+607,8,2025-02-06 07:48:05,1119.54,Change Phone,True,0.0,1119.54,"London, UK",MacBook,Public WiFi,0,0
+608,14,2025-02-06 08:40:05,95.31,Review activityments,True,0.0,95.31,"New York, USA",iPhone,Public WiFi,0,0
+609,3,2025-02-06 10:15:05,113.43,Apply for Credit Card,True,0.0,113.43,"New York, USA",Android,Public WiFi,0,0
+610,8,2025-02-06 10:42:05,1119.54,Request New Card,True,0.0,1119.54,"Tokyo, Japan",iPhone,Public WiFi,0,0
+611,14,2025-02-06 12:08:05,95.31,Make Purchase,False,-258.0,95.31,"Tokyo, Japan",MacBook,Mobile Network,0,0
+612,3,2025-02-06 12:42:05,113.43,Apply for Credit Card,True,0.0,113.43,"Los Angeles, USA",Android,Home WiFi,0,0
+613,8,2025-02-06 13:04:05,1119.54,Request New Card,True,0.0,1119.54,"New York, USA",Android,Home WiFi,0,0
+614,14,2025-02-06 15:05:05,95.31,Transfer Funds,False,-3756.0,95.31,"New York, USA",Android,Mobile Network,0,0
+615,3,2025-02-06 18:00:05,113.43,Make Purchase,False,-362.0,113.43,"Berlin, Germany",Android,Home WiFi,0,0
+616,8,2025-02-06 18:26:05,1119.54,Request New Card,True,0.0,1119.54,"New York, USA",iPhone,Corporate Network,0,0
+617,14,2025-02-06 19:11:05,95.31,Transfer Funds,False,-3957.0,95.31,"Berlin, Germany",iPhone,Home WiFi,0,0
+618,3,2025-02-06 21:22:05,113.43,Make Purchase,False,-142.0,113.43,"Tokyo, Japan",iPhone,Public WiFi,1,0
+619,8,2025-02-06 21:52:05,1119.54,Unauthorized Transfer,False,-2032.0,1119.54,"London, UK",Android,Home WiFi,0,0
+620,14,2025-02-07 00:51:05,95.31,Make Purchase,False,-138.0,95.31,"Berlin, Germany",Windows Laptop,Home WiFi,0,0
+621,3,2025-02-07 02:37:05,113.43,Pay Bills,False,-3441.0,113.43,"New York, USA",Android,Public WiFi,0,0
+622,8,2025-02-07 02:48:05,1119.54,Unauthorized Transfer,False,-9880.0,1119.54,"Berlin, Germany",Android,Public WiFi,0,0
+623,14,2025-02-07 03:38:05,95.31,Make Purchase,False,-778.0,95.31,"Tokyo, Japan",iPhone,Public WiFi,0,0
+624,3,2025-02-07 04:06:05,113.43,Apply for Credit Card,True,0.0,113.43,"Paris, France",Windows Laptop,Public WiFi,0,0
+625,8,2025-02-07 04:26:05,1119.54,Unauthorized Transfer,False,-3176.0,1119.54,"Los Angeles, USA",Linux PC,Mobile Network,0,0
+626,14,2025-02-07 06:08:05,95.31,Make Purchase,False,-281.0,95.31,"Paris, France",Android,Corporate Network,0,0
+627,3,2025-02-07 09:02:05,113.43,Transfer Funds,False,-983.0,113.43,"Tokyo, Japan",iPhone,Home WiFi,0,0
+628,8,2025-02-07 09:20:05,1119.54,Unauthorized Transfer,False,-5695.0,1119.54,"Tokyo, Japan",MacBook,Public WiFi,0,0
+629,14,2025-02-07 09:50:05,95.31,Make Purchase,True,-94.0,1.31,"Los Angeles, USA",Android,Mobile Network,0,0
+630,3,2025-02-07 10:50:05,113.43,Deposit Funds,True,1178.0,1291.43,"New York, USA",Windows Laptop,Public WiFi,0,1
+631,8,2025-02-07 11:18:05,1119.54,Unauthorized Transfer,False,-7304.0,1119.54,"Paris, France",Android,Home WiFi,0,0
+632,14,2025-02-07 13:45:05,1.31,Pay Bills,False,-2668.0,1.31,"New York, USA",iPhone,Public WiFi,1,0
+633,3,2025-02-07 14:32:05,1291.43,Deposit Funds,True,1255.0,2546.43,"London, UK",Android,Home WiFi,0,1
+634,8,2025-02-07 14:32:05,1119.54,Unauthorized Transfer,True,-394.0,725.54,"Paris, France",iPhone,Home WiFi,0,0
+635,14,2025-02-07 14:54:05,1.31,Pay Bills,False,-1280.0,1.31,"Los Angeles, USA",Linux PC,Home WiFi,1,0
+636,3,2025-02-07 15:37:05,2546.43,Deposit Funds,True,198.0,2744.43,"New York, USA",Windows Laptop,Public WiFi,0,0
+637,8,2025-02-07 15:53:05,725.54,Unauthorized Transfer,False,-1539.0,725.54,"Tokyo, Japan",iPhone,Mobile Network,0,0
+638,14,2025-02-07 18:02:05,1.31,Pay Bills,False,-4356.0,1.31,"Paris, France",iPhone,Home WiFi,1,0
+639,3,2025-02-07 19:50:05,2744.43,Deposit Funds,True,8053.0,10797.43,"Los Angeles, USA",Android,Mobile Network,0,0
+640,8,2025-02-07 20:06:05,725.54,Unauthorized Transfer,False,-3298.0,725.54,"New York, USA",iPhone,Home WiFi,0,0
+641,14,2025-02-07 22:42:05,1.31,Pay Bills,False,-2795.0,1.31,"Los Angeles, USA",Linux PC,Public WiFi,0,0
+642,3,2025-02-08 00:47:05,10797.43,Deposit Funds,True,9633.0,20430.43,"Paris, France",Windows Laptop,Public WiFi,0,0
+643,8,2025-02-08 00:53:05,725.54,Request New Card,True,0.0,725.54,"Tokyo, Japan",Windows Laptop,Home WiFi,0,0
+644,14,2025-02-08 01:07:05,1.31,Pay Bills,False,-4563.0,1.31,"Tokyo, Japan",iPhone,Public WiFi,0,0
+645,3,2025-02-08 01:45:05,20430.43,Deposit Funds,True,3044.0,23474.43,"Tokyo, Japan",iPhone,Home WiFi,0,1
+646,8,2025-02-08 02:10:05,725.54,Request New Card,True,0.0,725.54,"New York, USA",iPad,Corporate Network,0,0
+647,14,2025-02-08 03:31:05,1.31,Pay Bills,False,-1260.0,1.31,"Berlin, Germany",Windows Laptop,Public WiFi,0,0
+648,3,2025-02-08 05:45:05,23474.43,Pay Bills,True,-3214.0,20260.43,"Los Angeles, USA",Android,Public WiFi,0,0
+649,8,2025-02-08 06:13:05,725.54,Request New Card,True,0.0,725.54,"Tokyo, Japan",MacBook,Mobile Network,0,0
+650,14,2025-02-08 09:13:05,1.31,Make Purchase,False,-719.0,1.31,"Paris, France",Android,Home WiFi,0,0
+651,3,2025-02-08 10:51:05,20260.43,Transfer Funds,True,-1183.0,19077.43,"Los Angeles, USA",iPhone,Public WiFi,0,0
+652,8,2025-02-08 10:57:05,725.54,Request New Card,True,0.0,725.54,"New York, USA",iPhone,Home WiFi,0,0
+653,14,2025-02-08 13:51:05,1.31,Deposit Funds,True,9524.0,9525.31,"Paris, France",Windows Laptop,Public WiFi,0,0
+654,3,2025-02-08 15:11:05,19077.43,Deposit Funds,True,4212.0,23289.43,"New York, USA",MacBook,Mobile Network,0,0
+655,8,2025-02-08 15:21:05,725.54,Close Account,True,0.0,725.54,"New York, USA",Android,Public WiFi,0,0
+656,14,2025-02-08 18:00:05,9525.31,Deposit Funds,True,2729.0,12254.31,"New York, USA",MacBook,Public WiFi,0,0
+657,3,2025-02-08 18:42:05,23289.43,Make Purchase,True,-8.0,23281.43,"Berlin, Germany",MacBook,Home WiFi,0,1
+658,14,2025-02-08 20:48:05,12254.31,Deposit Funds,True,5196.0,17450.31,"New York, USA",Android,Public WiFi,0,0
+659,3,2025-02-08 21:30:05,23281.43,Deposit Funds,True,6423.0,29704.43,"Paris, France",iPhone,Home WiFi,0,0
+660,14,2025-02-08 22:17:05,17450.31,Deposit Funds,True,4821.0,22271.31,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+661,3,2025-02-09 01:17:05,29704.43,Apply for Loan,True,0.0,29704.43,"Tokyo, Japan",Windows Laptop,Home WiFi,0,0
+662,14,2025-02-09 03:42:05,22271.31,Deposit Funds,True,3395.0,25666.31,"Tokyo, Japan",Android,Public WiFi,0,0
+663,3,2025-02-09 04:29:05,29704.43,Transfer Funds,True,-4950.0,24754.43,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+664,14,2025-02-09 05:54:05,25666.31,Make Purchase,True,-404.0,25262.31,"Paris, France",Android,Home WiFi,1,0
+665,3,2025-02-09 06:23:05,24754.43,Deposit Funds,True,4721.0,29475.43,"Los Angeles, USA",MacBook,Home WiFi,0,0
+666,14,2025-02-09 07:44:05,25262.31,Transfer Funds,True,-2362.0,22900.31,"London, UK",MacBook,Mobile Network,0,0
+667,3,2025-02-09 09:12:05,29475.43,Deposit Funds,True,4895.0,34370.43,"Paris, France",iPhone,Public WiFi,0,0
+668,14,2025-02-09 09:28:05,22900.31,Deposit Funds,True,2508.0,25408.31,"Berlin, Germany",iPhone,Public WiFi,0,0
+669,3,2025-02-09 12:15:05,34370.43,Make Purchase,True,-98.0,34272.43,"New York, USA",iPhone,Public WiFi,0,0
+670,14,2025-02-09 13:51:05,25408.31,Deposit Funds,True,9649.0,35057.31,"Tokyo, Japan",Windows Laptop,Public WiFi,0,0
+671,3,2025-02-09 16:37:05,34272.43,Transfer Funds,True,-801.0,33471.43,"Berlin, Germany",Windows Laptop,Home WiFi,0,0
+672,14,2025-02-09 17:33:05,35057.31,Deposit Funds,True,3440.0,38497.31,"Los Angeles, USA",Android,Public WiFi,0,0
+673,3,2025-02-09 17:44:05,33471.43,Transfer Funds,True,-4964.0,28507.43,"Tokyo, Japan",Android,Public WiFi,0,0
+674,14,2025-02-09 20:02:05,38497.31,Deposit Funds,True,1457.0,39954.31,"New York, USA",Windows Laptop,Home WiFi,0,0
+675,3,2025-02-09 22:55:05,28507.43,Deposit Funds,True,7170.0,35677.43,"Berlin, Germany",MacBook,Public WiFi,0,0
+676,14,2025-02-10 00:05:05,39954.31,Pay Bills,True,-1360.0,38594.31,"New York, USA",MacBook,Corporate Network,0,0
+677,3,2025-02-10 00:34:05,35677.43,Deposit Funds,True,4582.0,40259.43,"Los Angeles, USA",Windows Laptop,Public WiFi,0,0
+678,14,2025-02-10 01:38:05,38594.31,Pay Bills,True,-398.0,38196.31,"London, UK",Windows Laptop,Home WiFi,0,0
+679,3,2025-02-10 02:19:05,40259.43,Pay Bills,True,-4823.0,35436.43,"Berlin, Germany",Android,Home WiFi,0,0
+680,14,2025-02-10 04:41:05,38196.31,Pay Bills,True,-630.0,37566.31,"Los Angeles, USA",iPhone,Home WiFi,0,0
+681,3,2025-02-10 05:45:05,35436.43,Invest Money,True,-28258.0,7178.43,"New York, USA",iPhone,Home WiFi,0,0
+682,14,2025-02-10 08:39:05,37566.31,Make Purchase,True,-57.0,37509.31,"Los Angeles, USA",Linux PC,Mobile Network,0,0
+683,3,2025-02-10 09:45:05,7178.43,Invest Money,False,-40042.0,7178.43,"Paris, France",iPhone,Mobile Network,0,1
+684,14,2025-02-10 10:38:05,37509.31,Pay Bills,True,-1013.0,36496.31,"New York, USA",Linux PC,Mobile Network,0,0
+685,3,2025-02-10 12:55:05,7178.43,Review activityments,True,0.0,7178.43,"Tokyo, Japan",MacBook,Public WiFi,0,0
+686,14,2025-02-10 14:45:05,36496.31,Transfer Funds,True,-2008.0,34488.31,"New York, USA",Android,Home WiFi,0,0
+687,3,2025-02-10 16:24:05,7178.43,Pay Bills,True,-4252.0,2926.43,"Los Angeles, USA",MacBook,Public WiFi,0,0
+688,14,2025-02-10 17:16:05,34488.31,Make Purchase,True,-582.0,33906.31,"New York, USA",Windows Laptop,Corporate Network,0,0
+689,3,2025-02-10 17:40:05,2926.43,Pay Bills,True,-377.0,2549.43,"Berlin, Germany",MacBook,Home WiFi,1,0
+690,14,2025-02-10 19:17:05,33906.31,Pay Bills,True,-1248.0,32658.31,"New York, USA",Android,Home WiFi,0,0
+691,3,2025-02-10 21:47:05,2549.43,Pay Bills,True,-1869.0,680.43,"London, UK",Android,Mobile Network,0,0
+692,14,2025-02-11 00:12:05,32658.31,Make Purchase,True,-892.0,31766.31,"New York, USA",Android,Home WiFi,0,0
+693,3,2025-02-11 02:59:05,680.43,Deposit Funds,True,4231.0,4911.43,"New York, USA",iPhone,Public WiFi,0,0
+694,14,2025-02-11 04:07:05,31766.31,Apply for Credit Card,True,0.0,31766.31,"New York, USA",Windows Laptop,Public WiFi,0,1
+695,3,2025-02-11 06:53:05,4911.43,Make Purchase,True,-702.0,4209.43,"Tokyo, Japan",iPhone,Home WiFi,0,0
+696,14,2025-02-11 09:12:05,31766.31,Deposit Funds,True,4067.0,35833.31,"Los Angeles, USA",Android,Mobile Network,0,0
+697,3,2025-02-11 09:21:05,4209.43,Pay Bills,False,-4635.0,4209.43,"Tokyo, Japan",iPhone,Home WiFi,0,0
+698,14,2025-02-11 11:50:05,35833.31,Transfer Funds,True,-3382.0,32451.31,"Paris, France",Windows Laptop,Corporate Network,0,0
+699,3,2025-02-11 14:03:05,4209.43,Pay Bills,False,-4352.0,4209.43,"Berlin, Germany",iPhone,Public WiFi,0,0
+700,14,2025-02-11 14:23:05,32451.31,Make Purchase,True,-434.0,32017.31,"Berlin, Germany",iPad,Public WiFi,0,0
+701,3,2025-02-11 15:00:05,4209.43,Pay Bills,False,-4284.0,4209.43,"New York, USA",MacBook,Mobile Network,0,0
+702,14,2025-02-11 15:08:05,32017.31,Make Purchase,True,-685.0,31332.31,"Los Angeles, USA",MacBook,Public WiFi,0,0
+703,3,2025-02-11 17:26:05,4209.43,Make Purchase,True,-72.0,4137.43,"New York, USA",Windows Laptop,Home WiFi,0,0
+704,14,2025-02-11 20:01:05,31332.31,Pay Bills,True,-1668.0,29664.31,"Los Angeles, USA",iPhone,Home WiFi,0,1
+705,3,2025-02-11 20:17:05,4137.43,Apply for Credit Card,True,0.0,4137.43,"Tokyo, Japan",iPhone,Mobile Network,0,0
+706,14,2025-02-11 21:45:05,29664.31,Pay Bills,True,-2923.0,26741.31,"Berlin, Germany",Android,Public WiFi,0,0
+707,3,2025-02-11 23:13:05,4137.43,Transfer Funds,False,-4962.0,4137.43,"New York, USA",Android,Home WiFi,0,1
+708,14,2025-02-12 01:11:05,26741.31,Make Purchase,True,-380.0,26361.31,"New York, USA",iPhone,Public WiFi,0,0
+709,3,2025-02-12 03:39:05,4137.43,Pay Bills,True,-704.0,3433.43,"Los Angeles, USA",iPhone,Corporate Network,0,0
+710,14,2025-02-12 04:08:05,26361.31,Review activityments,True,0.0,26361.31,"London, UK",Linux PC,Public WiFi,0,0
+711,3,2025-02-12 06:03:05,3433.43,Transfer Funds,False,-4789.0,3433.43,"New York, USA",iPhone,Home WiFi,0,0
+712,14,2025-02-12 07:09:05,26361.31,Pay Bills,True,-2381.0,23980.31,"Tokyo, Japan",MacBook,Corporate Network,0,0
+713,3,2025-02-12 09:48:05,3433.43,Transfer Funds,True,-480.0,2953.43,"New York, USA",MacBook,Corporate Network,0,0
+714,14,2025-02-12 10:03:05,23980.31,Pay Bills,True,-2149.0,21831.31,"Berlin, Germany",Linux PC,Home WiFi,0,0
+715,3,2025-02-12 12:56:05,2953.43,Make Purchase,True,-304.0,2649.43,"Tokyo, Japan",iPhone,Corporate Network,0,0
+716,14,2025-02-12 15:37:05,21831.31,Transfer Funds,True,-4533.0,17298.31,"New York, USA",Windows Laptop,Public WiFi,0,0
+717,3,2025-02-12 17:59:05,2649.43,Transfer Funds,False,-2775.0,2649.43,"London, UK",iPhone,Corporate Network,0,0
+718,14,2025-02-12 19:37:05,17298.31,Make Purchase,True,-682.0,16616.31,"Paris, France",iPhone,Home WiFi,0,0
+719,3,2025-02-12 20:38:05,2649.43,Transfer Funds,False,-3278.0,2649.43,"Berlin, Germany",iPhone,Home WiFi,0,0
+720,14,2025-02-12 23:35:05,16616.31,Pay Bills,True,-447.0,16169.31,"Los Angeles, USA",iPad,Home WiFi,0,0
+721,3,2025-02-13 00:57:05,2649.43,Make Purchase,True,-113.0,2536.43,"Tokyo, Japan",Android,Home WiFi,0,0
+722,14,2025-02-13 01:21:05,16169.31,Make Purchase,True,-890.0,15279.31,"New York, USA",iPhone,Public WiFi,0,0
+723,3,2025-02-13 04:14:05,2536.43,Make Purchase,True,-168.0,2368.43,"Tokyo, Japan",Android,Public WiFi,0,0
+724,14,2025-02-13 05:50:05,15279.31,Transfer Funds,True,-2701.0,12578.31,"London, UK",iPad,Public WiFi,0,0
+725,3,2025-02-13 06:37:05,2368.43,Make Purchase,True,-29.0,2339.43,"New York, USA",iPhone,Public WiFi,0,0
+726,14,2025-02-13 08:06:05,12578.31,Make Purchase,True,-907.0,11671.31,"Tokyo, Japan",Windows Laptop,Corporate Network,0,0
+727,3,2025-02-13 10:57:05,2339.43,Transfer Funds,False,-3940.0,2339.43,"New York, USA",MacBook,Mobile Network,0,0
+728,14,2025-02-13 11:03:05,11671.31,Transfer Funds,True,-3738.0,7933.31,"Los Angeles, USA",iPhone,Public WiFi,0,0
+729,3,2025-02-13 13:10:05,2339.43,Pay Bills,True,-2101.0,238.43,"Los Angeles, USA",iPad,Mobile Network,0,0
+730,14,2025-02-13 14:42:05,7933.31,Transfer Funds,True,-2360.0,5573.31,"Tokyo, Japan",MacBook,Home WiFi,0,0
+731,3,2025-02-13 17:32:05,238.43,Make Purchase,False,-978.0,238.43,"Paris, France",Windows Laptop,Mobile Network,0,0
+732,14,2025-02-13 19:28:05,5573.31,Apply for Credit Card,True,0.0,5573.31,"Paris, France",iPhone,Public WiFi,0,0
+733,3,2025-02-13 19:56:05,238.43,Pay Bills,False,-460.0,238.43,"Paris, France",iPhone,Home WiFi,0,0
+734,14,2025-02-13 22:31:05,5573.31,Apply for Credit Card,True,0.0,5573.31,"Berlin, Germany",Android,Mobile Network,0,0
+735,3,2025-02-14 01:25:05,238.43,Pay Bills,False,-816.0,238.43,"New York, USA",Android,Home WiFi,0,0
+736,14,2025-02-14 03:57:05,5573.31,Pay Bills,True,-2894.0,2679.31,"New York, USA",MacBook,Public WiFi,0,0
+737,3,2025-02-14 06:57:05,238.43,Pay Bills,False,-939.0,238.43,"Tokyo, Japan",Android,Mobile Network,0,0
+738,14,2025-02-14 09:11:05,2679.31,Transfer Funds,False,-3496.0,2679.31,"New York, USA",Android,Corporate Network,0,0
+739,3,2025-02-14 12:09:05,238.43,Invest Money,False,-21400.0,238.43,"New York, USA",iPhone,Corporate Network,0,0
+740,14,2025-02-14 12:29:05,2679.31,Transfer Funds,True,-1518.0,1161.31,"Berlin, Germany",iPhone,Home WiFi,0,0
+741,3,2025-02-14 13:39:05,238.43,Review activityments,True,0.0,238.43,"Paris, France",Linux PC,Corporate Network,0,0
+742,14,2025-02-14 16:26:05,1161.31,Make Purchase,True,-860.0,301.31,"Tokyo, Japan",iPhone,Home WiFi,0,0
+743,3,2025-02-14 17:41:05,238.43,Review activityments,True,0.0,238.43,"Los Angeles, USA",Android,Public WiFi,0,0
+744,14,2025-02-14 19:41:05,301.31,Make Purchase,False,-417.0,301.31,"New York, USA",Windows Laptop,Public WiFi,0,0
+745,3,2025-02-14 21:56:05,238.43,Transfer Funds,False,-984.0,238.43,"Los Angeles, USA",iPhone,Home WiFi,0,0
+746,14,2025-02-14 22:33:05,301.31,Pay Bills,False,-4705.0,301.31,"Paris, France",iPhone,Public WiFi,0,0
+747,3,2025-02-15 00:02:05,238.43,Transfer Funds,False,-1038.0,238.43,"London, UK",iPhone,Mobile Network,0,0
+748,14,2025-02-15 02:55:05,301.31,Make Purchase,False,-694.0,301.31,"New York, USA",iPhone,Public WiFi,0,0
+749,3,2025-02-15 05:51:05,238.43,Make Purchase,True,-20.0,218.43,"New York, USA",Windows Laptop,Public WiFi,0,0
+750,14,2025-02-15 07:54:05,301.31,Make Purchase,False,-784.0,301.31,"Los Angeles, USA",Android,Public WiFi,0,0
+751,3,2025-02-15 08:11:05,218.43,Transfer Funds,False,-4829.0,218.43,"Berlin, Germany",MacBook,Public WiFi,0,0
+752,14,2025-02-15 10:12:05,301.31,Transfer Funds,False,-3058.0,301.31,"Berlin, Germany",Android,Home WiFi,0,0
+753,3,2025-02-15 12:19:05,218.43,Deposit Funds,True,2488.0,2706.43,"New York, USA",Android,Home WiFi,0,0
+754,14,2025-02-15 13:31:05,301.31,Deposit Funds,True,2632.0,2933.31,"Los Angeles, USA",iPhone,Mobile Network,0,0
+755,3,2025-02-15 13:46:05,2706.43,Make Purchase,True,-125.0,2581.43,"London, UK",iPhone,Public WiFi,0,0
+756,14,2025-02-15 15:36:05,2933.31,Deposit Funds,True,6595.0,9528.31,"Los Angeles, USA",iPhone,Mobile Network,0,0
+757,3,2025-02-15 16:29:05,2581.43,Make Purchase,True,-710.0,1871.43,"Tokyo, Japan",Android,Mobile Network,0,0
+758,14,2025-02-15 17:14:05,9528.31,Deposit Funds,True,9950.0,19478.31,"New York, USA",Android,Corporate Network,0,0
+759,3,2025-02-15 18:33:05,1871.43,Deposit Funds,True,6808.0,8679.43,"New York, USA",Android,Home WiFi,0,0
+760,14,2025-02-15 20:54:05,19478.31,Review activityments,True,0.0,19478.31,"New York, USA",Windows Laptop,Home WiFi,0,0
+761,3,2025-02-15 21:37:05,8679.43,Transfer Funds,True,-3059.0,5620.43,"Los Angeles, USA",iPhone,Public WiFi,0,0
+762,14,2025-02-15 23:11:05,19478.31,Review activityments,True,0.0,19478.31,"New York, USA",Android,Public WiFi,0,0
+763,3,2025-02-16 02:01:05,5620.43,Make Purchase,True,-762.0,4858.43,"Berlin, Germany",MacBook,Public WiFi,0,0
+764,14,2025-02-16 02:50:05,19478.31,Pay Bills,True,-4067.0,15411.31,"New York, USA",Android,Home WiFi,0,0
+765,3,2025-02-16 04:51:05,4858.43,Pay Bills,True,-4306.0,552.43,"London, UK",iPhone,Public WiFi,0,0
+766,14,2025-02-16 05:24:05,15411.31,Pay Bills,True,-4689.0,10722.31,"Los Angeles, USA",Android,Mobile Network,0,0
+767,3,2025-02-16 06:07:05,552.43,Pay Bills,False,-3359.0,552.43,"Paris, France",Linux PC,Home WiFi,0,0
+768,14,2025-02-16 07:37:05,10722.31,Transfer Funds,True,-379.0,10343.31,"New York, USA",Android,Public WiFi,0,0
+769,3,2025-02-16 10:21:05,552.43,Pay Bills,False,-3968.0,552.43,"Berlin, Germany",iPhone,Home WiFi,0,0
+770,14,2025-02-16 10:59:05,10343.31,Make Purchase,True,-38.0,10305.31,"Los Angeles, USA",Windows Laptop,Public WiFi,0,0
+771,3,2025-02-16 13:03:05,552.43,Pay Bills,False,-2369.0,552.43,"New York, USA",Linux PC,Public WiFi,0,0
+772,14,2025-02-16 15:18:05,10305.31,Deposit Funds,True,5841.0,16146.31,"Tokyo, Japan",Android,Public WiFi,0,0
+773,3,2025-02-16 16:41:05,552.43,Pay Bills,True,-399.0,153.43,"Tokyo, Japan",Android,Mobile Network,0,0
+774,14,2025-02-16 17:57:05,16146.31,Make Purchase,True,-304.0,15842.31,"London, UK",MacBook,Home WiFi,0,0
+775,3,2025-02-16 20:12:05,153.43,Transfer Funds,False,-3350.0,153.43,"New York, USA",Linux PC,Corporate Network,0,0
+776,14,2025-02-16 20:13:05,15842.31,Make Purchase,True,-140.0,15702.31,"Tokyo, Japan",Windows Laptop,Corporate Network,0,0
+777,3,2025-02-16 21:14:05,153.43,Deposit Funds,True,4480.0,4633.43,"Paris, France",Windows Laptop,Public WiFi,0,0
+778,14,2025-02-16 22:06:05,15702.31,Pay Bills,True,-2657.0,13045.31,"Berlin, Germany",iPad,Mobile Network,0,0
+779,3,2025-02-17 00:41:05,4633.43,Deposit Funds,True,9329.0,13962.43,"Tokyo, Japan",Windows Laptop,Public WiFi,0,0
+780,14,2025-02-17 01:09:05,13045.31,Pay Bills,True,-4420.0,8625.31,"New York, USA",iPhone,Public WiFi,0,0
+781,3,2025-02-17 04:08:05,13962.43,Make Purchase,True,-209.0,13753.43,"London, UK",iPhone,Home WiFi,0,0
+782,14,2025-02-17 06:34:05,8625.31,Pay Bills,True,-1118.0,7507.31,"Paris, France",Android,Public WiFi,0,0
+783,3,2025-02-17 07:02:05,13753.43,Deposit Funds,True,1085.0,14838.43,"New York, USA",MacBook,Corporate Network,0,0
+784,14,2025-02-17 07:42:05,7507.31,Pay Bills,True,-1214.0,6293.31,"Los Angeles, USA",iPhone,Home WiFi,0,0
+785,3,2025-02-17 09:44:05,14838.43,Transfer Funds,True,-3001.0,11837.43,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+786,14,2025-02-17 12:20:05,6293.31,Pay Bills,True,-4167.0,2126.31,"London, UK",Android,Corporate Network,0,1
+787,3,2025-02-17 14:37:05,11837.43,Transfer Funds,True,-3464.0,8373.43,"New York, USA",Android,Public WiFi,0,0
+788,14,2025-02-17 16:42:05,2126.31,Invest Money,False,-17832.0,2126.31,"Los Angeles, USA",iPhone,Public WiFi,0,0
+789,3,2025-02-17 19:15:05,8373.43,Make Purchase,True,-643.0,7730.43,"New York, USA",Android,Public WiFi,0,0
+790,14,2025-02-17 20:27:05,2126.31,Close Account,True,0.0,2126.31,"New York, USA",Android,Home WiFi,0,0
+791,3,2025-02-17 21:50:05,7730.43,Make Purchase,True,-820.0,6910.43,"Paris, France",MacBook,Mobile Network,0,0
+792,3,2025-02-17 22:12:05,6910.43,Make Purchase,True,-547.0,6363.43,"Berlin, Germany",Android,Public WiFi,0,0
+793,3,2025-02-18 00:40:05,6363.43,Make Purchase,True,-979.0,5384.43,"New York, USA",iPhone,Home WiFi,0,0
+794,3,2025-02-18 03:06:05,5384.43,Transfer Funds,True,-859.0,4525.43,"Los Angeles, USA",Linux PC,Mobile Network,0,0
+795,3,2025-02-18 03:10:05,4525.43,Deposit Funds,True,5725.0,10250.43,"Los Angeles, USA",Windows Laptop,Corporate Network,0,0
+796,3,2025-02-18 04:34:05,10250.43,Pay Bills,True,-3085.0,7165.43,"New York, USA",Android,Corporate Network,0,0
+797,3,2025-02-18 07:06:05,7165.43,Pay Bills,True,-766.0,6399.43,"Berlin, Germany",Linux PC,Home WiFi,0,0
+798,3,2025-02-18 08:06:05,6399.43,Make Purchase,True,-599.0,5800.43,"Tokyo, Japan",Windows Laptop,Home WiFi,0,0
+799,3,2025-02-18 09:11:05,5800.43,Pay Bills,True,-3850.0,1950.43,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+800,3,2025-02-18 09:40:05,1950.43,Make Purchase,True,-408.0,1542.43,"Tokyo, Japan",iPad,Home WiFi,0,0
+801,3,2025-02-18 11:32:05,1542.43,Make Purchase,True,-659.0,883.43,"London, UK",iPhone,Public WiFi,0,0
+802,3,2025-02-18 12:38:05,883.43,Make Purchase,True,-484.0,399.43,"Tokyo, Japan",Android,Mobile Network,0,0
+803,3,2025-02-18 12:51:05,399.43,Make Purchase,False,-748.0,399.43,"Tokyo, Japan",iPhone,Public WiFi,0,0
+804,3,2025-02-18 15:37:05,399.43,Make Purchase,True,-123.0,276.43,"New York, USA",iPad,Mobile Network,0,0
+805,3,2025-02-18 17:48:05,276.43,Deposit Funds,True,8569.0,8845.43,"Los Angeles, USA",iPhone,Public WiFi,0,0
+806,3,2025-02-18 19:48:05,8845.43,Deposit Funds,True,730.0,9575.43,"Los Angeles, USA",Android,Public WiFi,0,0
+807,3,2025-02-18 22:37:05,9575.43,Pay Bills,True,-2041.0,7534.43,"Los Angeles, USA",Android,Home WiFi,0,0
+808,3,2025-02-18 23:20:05,7534.43,Pay Bills,True,-4744.0,2790.43,"New York, USA",iPhone,Home WiFi,0,0
+809,3,2025-02-18 23:20:05,2790.43,Make Purchase,True,-275.0,2515.43,"London, UK",Windows Laptop,Home WiFi,0,0
+810,3,2025-02-19 01:11:05,2515.43,Make Purchase,True,-879.0,1636.43,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+811,3,2025-02-19 02:53:05,1636.43,Transfer Funds,False,-4512.0,1636.43,"Paris, France",Windows Laptop,Public WiFi,0,0
+812,3,2025-02-19 03:22:05,1636.43,Deposit Funds,True,3504.0,5140.43,"New York, USA",Windows Laptop,Public WiFi,0,0
+813,3,2025-02-19 04:34:05,5140.43,Deposit Funds,True,5955.0,11095.43,"New York, USA",iPhone,Home WiFi,0,0
+814,3,2025-02-19 05:04:05,11095.43,Invest Money,False,-24502.0,11095.43,"London, UK",iPhone,Mobile Network,0,0
+815,3,2025-02-19 05:32:05,11095.43,Invest Money,False,-27118.0,11095.43,"London, UK",iPhone,Home WiFi,0,0
+816,3,2025-02-19 07:38:05,11095.43,Transfer Funds,True,-3138.0,7957.43,"New York, USA",Windows Laptop,Corporate Network,0,0
+817,3,2025-02-19 09:46:05,7957.43,Transfer Funds,True,-3308.0,4649.43,"New York, USA",iPad,Mobile Network,0,0
+818,3,2025-02-19 11:23:05,4649.43,Pay Bills,True,-702.0,3947.43,"London, UK",Android,Home WiFi,0,0
+819,3,2025-02-19 12:51:05,3947.43,Pay Bills,True,-507.0,3440.43,"New York, USA",Windows Laptop,Home WiFi,0,0
+820,3,2025-02-19 15:16:05,3440.43,Make Purchase,True,-889.0,2551.43,"Los Angeles, USA",Android,Public WiFi,1,0
+821,3,2025-02-19 15:52:05,2551.43,Make Purchase,True,-359.0,2192.43,"Los Angeles, USA",iPhone,Home WiFi,0,0
+822,3,2025-02-19 16:29:05,2192.43,Make Purchase,True,-218.0,1974.43,"London, UK",MacBook,Home WiFi,0,0
+823,3,2025-02-19 18:31:05,1974.43,Make Purchase,True,-755.0,1219.43,"London, UK",Android,Public WiFi,0,0
+824,3,2025-02-19 20:45:05,1219.43,Transfer Funds,False,-2560.0,1219.43,"New York, USA",Linux PC,Home WiFi,0,0
+825,3,2025-02-19 22:53:05,1219.43,Make Purchase,True,-918.0,301.43,"New York, USA",MacBook,Public WiFi,0,0
+826,3,2025-02-19 23:23:05,301.43,Pay Bills,False,-2237.0,301.43,"London, UK",Android,Home WiFi,0,0
+827,3,2025-02-20 02:11:05,301.43,Pay Bills,False,-776.0,301.43,"New York, USA",iPhone,Home WiFi,0,0
+828,3,2025-02-20 03:25:05,301.43,Transfer Funds,False,-2650.0,301.43,"Paris, France",iPhone,Mobile Network,0,0
+829,3,2025-02-20 03:59:05,301.43,Make Purchase,True,-70.0,231.43,"Los Angeles, USA",Android,Home WiFi,0,0
+830,3,2025-02-20 05:24:05,231.43,Deposit Funds,True,3254.0,3485.43,"Tokyo, Japan",Linux PC,Home WiFi,0,0
+831,3,2025-02-20 08:15:05,3485.43,Deposit Funds,True,2085.0,5570.43,"Tokyo, Japan",Android,Home WiFi,0,0
+832,3,2025-02-20 09:09:05,5570.43,Make Purchase,True,-742.0,4828.43,"New York, USA",Android,Home WiFi,1,0
+833,3,2025-02-20 09:24:05,4828.43,Pay Bills,True,-2909.0,1919.43,"Paris, France",iPhone,Public WiFi,0,0
+834,3,2025-02-20 12:11:05,1919.43,Pay Bills,True,-1715.0,204.43,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+835,3,2025-02-20 14:17:05,204.43,Make Purchase,False,-963.0,204.43,"London, UK",iPhone,Public WiFi,0,0
+836,3,2025-02-20 16:06:05,204.43,Make Purchase,True,-39.0,165.43,"Tokyo, Japan",MacBook,Corporate Network,0,0
+837,3,2025-02-20 18:09:05,165.43,Make Purchase,False,-579.0,165.43,"New York, USA",Android,Home WiFi,0,0
+838,3,2025-02-20 19:29:05,165.43,Make Purchase,False,-215.0,165.43,"New York, USA",iPhone,Corporate Network,1,0
+839,3,2025-02-20 21:26:05,165.43,Make Purchase,True,-28.0,137.43,"Los Angeles, USA",MacBook,Corporate Network,0,0
+840,3,2025-02-20 22:52:05,137.43,Make Purchase,True,-18.0,119.43,"Tokyo, Japan",iPad,Home WiFi,0,0
+841,3,2025-02-20 23:36:05,119.43,Make Purchase,False,-993.0,119.43,"London, UK",MacBook,Public WiFi,0,0
+842,3,2025-02-21 00:55:05,119.43,Transfer Funds,False,-3543.0,119.43,"Tokyo, Japan",Android,Mobile Network,0,0
+843,3,2025-02-21 03:30:05,119.43,Deposit Funds,True,5044.0,5163.43,"Los Angeles, USA",Android,Home WiFi,0,0
+844,3,2025-02-21 06:17:05,5163.43,Deposit Funds,True,521.0,5684.43,"New York, USA",iPhone,Public WiFi,0,0
+845,3,2025-02-21 07:27:05,5684.43,Transfer Funds,True,-100.0,5584.43,"New York, USA",Android,Home WiFi,0,0
+846,3,2025-02-21 07:50:05,5584.43,Deposit Funds,True,2196.0,7780.43,"London, UK",iPhone,Public WiFi,0,0
+847,3,2025-02-21 10:47:05,7780.43,Deposit Funds,True,2344.0,10124.43,"Berlin, Germany",iPhone,Public WiFi,0,0
+848,3,2025-02-21 12:46:05,10124.43,Apply for Credit Card,True,0.0,10124.43,"London, UK",iPhone,Public WiFi,0,0
+849,3,2025-02-21 15:01:05,10124.43,Apply for Credit Card,True,0.0,10124.43,"Tokyo, Japan",Windows Laptop,Home WiFi,0,1
+850,3,2025-02-21 17:24:05,10124.43,Transfer Funds,True,-2085.0,8039.43,"New York, USA",MacBook,Home WiFi,0,0
+851,3,2025-02-21 20:11:05,8039.43,Transfer Funds,True,-4368.0,3671.43,"Los Angeles, USA",Windows Laptop,Public WiFi,0,0
+852,3,2025-02-21 21:41:05,3671.43,Make Purchase,True,-829.0,2842.43,"Paris, France",Windows Laptop,Home WiFi,0,0
+853,3,2025-02-21 22:03:05,2842.43,Pay Bills,False,-4308.0,2842.43,"London, UK",Android,Public WiFi,0,0
+854,3,2025-02-21 23:23:05,2842.43,Pay Bills,False,-2849.0,2842.43,"Los Angeles, USA",iPhone,Public WiFi,1,0
+855,3,2025-02-22 00:56:05,2842.43,Pay Bills,True,-2701.0,141.43,"Tokyo, Japan",Android,Home WiFi,0,0
+856,3,2025-02-22 03:25:05,141.43,Apply for Loan,True,0.0,141.43,"London, UK",Android,Home WiFi,0,0
+857,3,2025-02-22 05:01:05,141.43,Apply for Loan,True,0.0,141.43,"New York, USA",Android,Mobile Network,0,0
+858,3,2025-02-22 06:53:05,141.43,Invest Money,False,-4645.0,141.43,"New York, USA",iPhone,Mobile Network,0,0
+859,3,2025-02-22 09:12:05,141.43,Pay Bills,False,-2882.0,141.43,"New York, USA",MacBook,Public WiFi,1,0
+860,3,2025-02-22 11:08:05,141.43,Pay Bills,False,-604.0,141.43,"Berlin, Germany",MacBook,Home WiFi,0,0
+861,3,2025-02-22 11:50:05,141.43,Pay Bills,False,-4152.0,141.43,"London, UK",iPhone,Public WiFi,0,0
+862,3,2025-02-22 13:05:05,141.43,Pay Bills,False,-1844.0,141.43,"Tokyo, Japan",Android,Public WiFi,0,0
+863,3,2025-02-22 13:58:05,141.43,Deposit Funds,True,1065.0,1206.43,"New York, USA",Android,Home WiFi,0,0
+864,3,2025-02-22 14:18:05,1206.43,Pay Bills,False,-3066.0,1206.43,"Los Angeles, USA",Android,Home WiFi,0,0
+865,3,2025-02-22 15:48:05,1206.43,Make Purchase,True,-826.0,380.43,"New York, USA",MacBook,Public WiFi,0,0
+866,3,2025-02-22 18:47:05,380.43,Transfer Funds,False,-1848.0,380.43,"Paris, France",MacBook,Public WiFi,0,0
+867,3,2025-02-22 21:33:05,380.43,Transfer Funds,False,-1530.0,380.43,"London, UK",Linux PC,Home WiFi,0,0
+868,3,2025-02-22 23:07:05,380.43,Transfer Funds,False,-3680.0,380.43,"New York, USA",Android,Home WiFi,0,0
+869,3,2025-02-23 00:00:05,380.43,Deposit Funds,True,6674.0,7054.43,"New York, USA",Android,Mobile Network,0,0
+870,3,2025-02-23 01:33:05,7054.43,Deposit Funds,True,897.0,7951.43,"New York, USA",Android,Public WiFi,1,0
+871,3,2025-02-23 01:54:05,7951.43,Make Purchase,True,-866.0,7085.43,"New York, USA",iPhone,Home WiFi,0,0
+872,3,2025-02-23 02:49:05,7085.43,Make Purchase,True,-425.0,6660.43,"New York, USA",Android,Public WiFi,0,0
+873,3,2025-02-23 05:13:05,6660.43,Make Purchase,True,-923.0,5737.43,"New York, USA",iPhone,Corporate Network,0,0
+874,3,2025-02-23 06:40:05,5737.43,Make Purchase,True,-628.0,5109.43,"New York, USA",iPhone,Mobile Network,0,0
+875,3,2025-02-23 06:46:05,5109.43,Deposit Funds,True,1496.0,6605.43,"London, UK",iPhone,Home WiFi,0,0
+876,3,2025-02-23 07:46:05,6605.43,Apply for Loan,True,0.0,6605.43,"Los Angeles, USA",Windows Laptop,Mobile Network,0,0
+877,3,2025-02-23 08:29:05,6605.43,Make Purchase,True,-138.0,6467.43,"New York, USA",MacBook,Mobile Network,0,0
+878,3,2025-02-23 11:28:05,6467.43,Transfer Funds,True,-4921.0,1546.43,"Tokyo, Japan",Windows Laptop,Public WiFi,0,0
+879,3,2025-02-23 11:56:05,1546.43,Transfer Funds,False,-2642.0,1546.43,"New York, USA",Android,Corporate Network,0,0
+880,3,2025-02-23 12:16:05,1546.43,Make Purchase,True,-152.0,1394.43,"New York, USA",iPhone,Mobile Network,0,0
+881,3,2025-02-23 14:02:05,1394.43,Make Purchase,True,-456.0,938.43,"Los Angeles, USA",MacBook,Public WiFi,0,0
+882,3,2025-02-23 16:45:05,938.43,Pay Bills,False,-1889.0,938.43,"Tokyo, Japan",Android,Home WiFi,0,0
+883,3,2025-02-23 17:27:05,938.43,Make Purchase,False,-971.0,938.43,"New York, USA",MacBook,Public WiFi,0,0
+884,3,2025-02-23 18:53:05,938.43,Transfer Funds,False,-1542.0,938.43,"Tokyo, Japan",Windows Laptop,Mobile Network,0,1
+885,3,2025-02-23 19:08:05,938.43,Make Purchase,True,-720.0,218.43,"Tokyo, Japan",Android,Home WiFi,0,0
+886,3,2025-02-23 19:56:05,218.43,Pay Bills,False,-3454.0,218.43,"Los Angeles, USA",Linux PC,Public WiFi,0,0
+887,3,2025-02-23 21:25:05,218.43,Apply for Credit Card,True,0.0,218.43,"Paris, France",Windows Laptop,Mobile Network,0,0
+888,3,2025-02-23 21:47:05,218.43,Transfer Funds,False,-2404.0,218.43,"Los Angeles, USA",iPad,Home WiFi,0,0
+889,3,2025-02-23 23:05:05,218.43,Transfer Funds,False,-1752.0,218.43,"Tokyo, Japan",iPhone,Mobile Network,0,0
+890,3,2025-02-24 01:33:05,218.43,Make Purchase,False,-232.0,218.43,"London, UK",iPad,Home WiFi,0,0
+891,3,2025-02-24 02:06:05,218.43,Make Purchase,False,-504.0,218.43,"Paris, France",Android,Public WiFi,0,0
+892,3,2025-02-24 04:27:05,218.43,Make Purchase,False,-297.0,218.43,"New York, USA",iPhone,Mobile Network,0,0
+893,3,2025-02-24 07:16:05,218.43,Apply for Credit Card,True,0.0,218.43,"Los Angeles, USA",MacBook,Mobile Network,0,0
+894,3,2025-02-24 09:14:05,218.43,Make Purchase,True,-5.0,213.43,"Tokyo, Japan",MacBook,Home WiFi,0,0
+895,3,2025-02-24 10:02:05,213.43,Deposit Funds,True,4814.0,5027.43,"New York, USA",iPhone,Public WiFi,0,0
+896,3,2025-02-24 12:20:05,5027.43,Make Purchase,True,-232.0,4795.43,"Los Angeles, USA",Windows Laptop,Mobile Network,0,1
+897,3,2025-02-24 13:00:05,4795.43,Make Purchase,True,-847.0,3948.43,"Paris, France",Linux PC,Public WiFi,0,0
+898,3,2025-02-24 15:47:05,3948.43,Make Purchase,True,-144.0,3804.43,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+899,3,2025-02-24 17:46:05,3804.43,Apply for Credit Card,True,0.0,3804.43,"New York, USA",iPhone,Home WiFi,0,0
+900,3,2025-02-24 19:19:05,3804.43,Transfer Funds,True,-770.0,3034.43,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+901,3,2025-02-24 21:29:05,3034.43,Pay Bills,True,-2167.0,867.43,"Tokyo, Japan",Android,Public WiFi,0,0
+902,3,2025-02-25 00:13:05,867.43,Pay Bills,False,-3497.0,867.43,"London, UK",Windows Laptop,Mobile Network,0,0
+903,3,2025-02-25 01:47:05,867.43,Pay Bills,False,-2789.0,867.43,"New York, USA",iPhone,Mobile Network,0,0
+904,3,2025-02-25 03:20:05,867.43,Make Purchase,True,-747.0,120.43,"London, UK",MacBook,Public WiFi,0,0
+905,3,2025-02-25 06:03:05,120.43,Apply for Loan,True,0.0,120.43,"London, UK",iPad,Mobile Network,0,0
+906,3,2025-02-25 08:19:05,120.43,Pay Bills,False,-4636.0,120.43,"New York, USA",Linux PC,Home WiFi,0,0
+907,3,2025-02-25 09:13:05,120.43,Pay Bills,False,-2045.0,120.43,"New York, USA",iPhone,Mobile Network,0,0
+908,3,2025-02-25 09:32:05,120.43,Pay Bills,False,-3002.0,120.43,"London, UK",Windows Laptop,Public WiFi,0,0
+909,3,2025-02-25 10:44:05,120.43,Make Purchase,True,-61.0,59.43,"Paris, France",Windows Laptop,Mobile Network,0,0
+910,3,2025-02-25 11:22:05,59.43,Make Purchase,False,-275.0,59.43,"New York, USA",iPhone,Home WiFi,0,0
+911,3,2025-02-25 13:27:05,59.43,Make Purchase,False,-547.0,59.43,"New York, USA",Windows Laptop,Public WiFi,0,0
+912,3,2025-02-25 15:21:05,59.43,Make Purchase,False,-190.0,59.43,"Los Angeles, USA",iPhone,Home WiFi,0,0
+913,3,2025-02-25 17:29:05,59.43,Invest Money,False,-4873.0,59.43,"Los Angeles, USA",Android,Home WiFi,0,0
+914,3,2025-02-25 19:29:05,59.43,Invest Money,False,-26848.0,59.43,"New York, USA",Windows Laptop,Home WiFi,0,0
+915,3,2025-02-25 21:25:05,59.43,Invest Money,False,-2430.0,59.43,"London, UK",MacBook,Public WiFi,0,0
+916,3,2025-02-25 22:58:05,59.43,Invest Money,False,-48060.0,59.43,"Los Angeles, USA",Windows Laptop,Public WiFi,0,0
+917,3,2025-02-26 00:07:05,59.43,Invest Money,False,-2619.0,59.43,"Paris, France",Android,Home WiFi,0,0
+918,3,2025-02-26 00:14:05,59.43,Pay Bills,False,-1206.0,59.43,"Paris, France",Windows Laptop,Home WiFi,0,0
+919,3,2025-02-26 02:47:05,59.43,Pay Bills,False,-3158.0,59.43,"New York, USA",iPhone,Mobile Network,0,0
+920,3,2025-02-26 02:50:05,59.43,Pay Bills,False,-529.0,59.43,"Los Angeles, USA",Linux PC,Public WiFi,0,0
+921,3,2025-02-26 04:40:05,59.43,Pay Bills,False,-313.0,59.43,"Paris, France",Windows Laptop,Home WiFi,0,0
+922,3,2025-02-26 05:18:05,59.43,Pay Bills,False,-2116.0,59.43,"New York, USA",Windows Laptop,Public WiFi,0,0
+923,3,2025-02-26 07:25:05,59.43,Apply for Credit Card,True,0.0,59.43,"New York, USA",iPhone,Public WiFi,0,0
+924,3,2025-02-26 09:17:05,59.43,Pay Bills,False,-4084.0,59.43,"Los Angeles, USA",MacBook,Home WiFi,0,0
+925,3,2025-02-26 09:46:05,59.43,Pay Bills,False,-718.0,59.43,"Berlin, Germany",iPhone,Mobile Network,0,0
+926,3,2025-02-26 10:46:05,59.43,Pay Bills,False,-294.0,59.43,"Tokyo, Japan",Windows Laptop,Public WiFi,0,0
+927,3,2025-02-26 10:57:05,59.43,Transfer Funds,False,-2021.0,59.43,"Los Angeles, USA",Windows Laptop,Home WiFi,0,0
+928,3,2025-02-26 13:39:05,59.43,Make Purchase,True,-33.0,26.43,"New York, USA",Windows Laptop,Corporate Network,0,0
+929,3,2025-02-26 15:28:05,26.43,Apply for Loan,True,0.0,26.43,"New York, USA",MacBook,Mobile Network,0,0
+930,3,2025-02-26 17:44:05,26.43,Make Purchase,False,-985.0,26.43,"London, UK",Android,Mobile Network,0,0
+931,3,2025-02-26 20:07:05,26.43,Make Purchase,False,-672.0,26.43,"Berlin, Germany",MacBook,Mobile Network,0,0
+932,3,2025-02-26 21:58:05,26.43,Make Purchase,False,-553.0,26.43,"Tokyo, Japan",MacBook,Home WiFi,0,0
+933,3,2025-02-27 00:57:05,26.43,Deposit Funds,True,6426.0,6452.43,"Paris, France",Windows Laptop,Public WiFi,0,0
+934,3,2025-02-27 02:18:05,6452.43,Deposit Funds,True,6208.0,12660.43,"Berlin, Germany",iPhone,Public WiFi,0,0
+935,3,2025-02-27 05:13:05,12660.43,Transfer Funds,True,-1575.0,11085.43,"London, UK",Android,Public WiFi,0,0
+936,3,2025-02-27 06:50:05,11085.43,Make Purchase,True,-619.0,10466.43,"Los Angeles, USA",Android,Corporate Network,0,0
+937,3,2025-02-27 09:44:05,10466.43,Make Purchase,True,-445.0,10021.43,"New York, USA",iPhone,Home WiFi,0,0
+938,3,2025-02-27 10:19:05,10021.43,Apply for Credit Card,True,0.0,10021.43,"London, UK",Android,Home WiFi,0,0
+939,3,2025-02-27 12:36:05,10021.43,Deposit Funds,True,6855.0,16876.43,"New York, USA",iPad,Home WiFi,0,0
+940,3,2025-02-27 15:31:05,16876.43,Apply for Loan,True,0.0,16876.43,"Paris, France",Android,Home WiFi,0,0
+941,3,2025-02-27 16:26:05,16876.43,Apply for Loan,True,0.0,16876.43,"Berlin, Germany",iPhone,Home WiFi,0,0
+942,3,2025-02-27 16:54:05,16876.43,Transfer Funds,True,-1670.0,15206.43,"Los Angeles, USA",MacBook,Mobile Network,0,0
+943,3,2025-02-27 18:15:05,15206.43,Apply for Loan,True,0.0,15206.43,"London, UK",Windows Laptop,Home WiFi,0,0
+944,3,2025-02-27 19:49:05,15206.43,Apply for Loan,True,0.0,15206.43,"Tokyo, Japan",iPad,Home WiFi,1,0
+945,3,2025-02-27 19:56:05,15206.43,Apply for Loan,True,0.0,15206.43,"New York, USA",MacBook,Corporate Network,0,0
+946,3,2025-02-27 21:18:05,15206.43,Deposit Funds,True,9085.0,24291.43,"London, UK",iPhone,Corporate Network,0,0
+947,3,2025-02-27 22:04:05,24291.43,Deposit Funds,True,4465.0,28756.43,"Tokyo, Japan",iPhone,Public WiFi,0,0
+948,3,2025-02-27 22:06:05,28756.43,Pay Bills,True,-3432.0,25324.43,"Tokyo, Japan",Android,Public WiFi,0,0
+949,3,2025-02-28 00:48:05,25324.43,Pay Bills,True,-2125.0,23199.43,"Berlin, Germany",Android,Mobile Network,0,0
+950,3,2025-02-28 03:47:05,23199.43,Deposit Funds,True,7469.0,30668.43,"New York, USA",MacBook,Home WiFi,0,0
+951,3,2025-02-28 04:40:05,30668.43,Transfer Funds,True,-3642.0,27026.43,"Tokyo, Japan",Android,Public WiFi,0,0
+952,3,2025-02-28 05:15:05,27026.43,Transfer Funds,True,-4973.0,22053.43,"Los Angeles, USA",Android,Public WiFi,0,0
+953,3,2025-02-28 07:27:05,22053.43,Deposit Funds,True,8721.0,30774.43,"Los Angeles, USA",Android,Home WiFi,0,0
+954,3,2025-02-28 08:06:05,30774.43,Apply for Credit Card,True,0.0,30774.43,"London, UK",iPhone,Corporate Network,0,0
+955,3,2025-02-28 09:54:05,30774.43,Apply for Loan,True,0.0,30774.43,"New York, USA",Android,Mobile Network,0,0
+956,3,2025-02-28 12:40:05,30774.43,Apply for Loan,True,0.0,30774.43,"Tokyo, Japan",Android,Public WiFi,0,0
+957,3,2025-02-28 14:08:05,30774.43,Make Purchase,True,-282.0,30492.43,"Paris, France",Windows Laptop,Mobile Network,0,0
+958,3,2025-02-28 15:20:05,30492.43,Make Purchase,True,-589.0,29903.43,"New York, USA",MacBook,Home WiFi,0,0
+959,3,2025-02-28 17:28:05,29903.43,Make Purchase,True,-32.0,29871.43,"Tokyo, Japan",Android,Home WiFi,0,0
+960,3,2025-02-28 17:49:05,29871.43,Deposit Funds,True,7790.0,37661.43,"New York, USA",iPhone,Home WiFi,0,0
+961,3,2025-02-28 20:11:05,37661.43,Review activityments,True,0.0,37661.43,"New York, USA",MacBook,Mobile Network,0,0
+962,3,2025-02-28 22:17:05,37661.43,Make Purchase,True,-724.0,36937.43,"New York, USA",iPhone,Mobile Network,0,0
+963,3,2025-03-01 00:41:05,36937.43,Make Purchase,True,-626.0,36311.43,"Tokyo, Japan",Android,Home WiFi,0,0
+964,3,2025-03-01 00:57:05,36311.43,Apply for Credit Card,True,0.0,36311.43,"Los Angeles, USA",Linux PC,Home WiFi,0,0
+965,3,2025-03-01 01:10:05,36311.43,Apply for Credit Card,True,0.0,36311.43,"New York, USA",iPhone,Mobile Network,0,0
+966,3,2025-03-01 01:34:05,36311.43,Transfer Funds,True,-41.0,36270.43,"Los Angeles, USA",Android,Public WiFi,0,0
+967,3,2025-03-01 03:37:05,36270.43,Apply for Loan,True,0.0,36270.43,"Tokyo, Japan",iPhone,Home WiFi,0,0
+968,3,2025-03-01 06:04:05,36270.43,Apply for Loan,True,0.0,36270.43,"London, UK",iPhone,Public WiFi,0,0
+969,3,2025-03-01 06:57:05,36270.43,Review activityments,True,0.0,36270.43,"Paris, France",Linux PC,Home WiFi,0,0
+970,3,2025-03-01 09:45:05,36270.43,Invest Money,True,-20010.0,16260.43,"London, UK",Android,Public WiFi,0,0
+971,3,2025-03-01 11:24:05,16260.43,Invest Money,True,-5262.0,10998.43,"London, UK",MacBook,Mobile Network,0,0
+972,3,2025-03-01 11:37:05,10998.43,Pay Bills,True,-2645.0,8353.43,"New York, USA",Windows Laptop,Home WiFi,0,0
+973,3,2025-03-01 12:41:05,8353.43,Transfer Funds,True,-1454.0,6899.43,"Tokyo, Japan",Windows Laptop,Public WiFi,0,0
+974,3,2025-03-01 14:27:05,6899.43,Deposit Funds,True,3299.0,10198.43,"London, UK",Android,Mobile Network,0,0
+975,3,2025-03-01 15:29:05,10198.43,Apply for Credit Card,True,0.0,10198.43,"New York, USA",iPad,Home WiFi,0,0
+976,3,2025-03-01 16:49:05,10198.43,Invest Money,False,-37846.0,10198.43,"New York, USA",iPad,Home WiFi,0,0
+977,3,2025-03-01 19:46:05,10198.43,Invest Money,False,-21606.0,10198.43,"Los Angeles, USA",iPhone,Public WiFi,0,0
+978,3,2025-03-01 22:30:05,10198.43,Invest Money,False,-37188.0,10198.43,"Tokyo, Japan",iPhone,Home WiFi,0,0
+979,3,2025-03-01 22:48:05,10198.43,Deposit Funds,True,4714.0,14912.43,"New York, USA",iPhone,Home WiFi,0,0
+980,3,2025-03-02 00:28:05,14912.43,Deposit Funds,True,3009.0,17921.43,"New York, USA",iPhone,Home WiFi,0,0
+981,3,2025-03-02 00:33:05,17921.43,Deposit Funds,True,410.0,18331.43,"Los Angeles, USA",MacBook,Home WiFi,0,0
+982,3,2025-03-02 03:20:05,18331.43,Make Purchase,True,-831.0,17500.43,"New York, USA",MacBook,Public WiFi,0,0
+983,3,2025-03-02 04:15:05,17500.43,Transfer Funds,True,-2916.0,14584.43,"Tokyo, Japan",iPhone,Home WiFi,0,1
+984,3,2025-03-02 04:57:05,14584.43,Close Account,True,0.0,14584.43,"New York, USA",Linux PC,Home WiFi,0,0
