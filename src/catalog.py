@@ -80,7 +80,7 @@ behavior_catalog = {
     "money_laundering": {
         "activities": {
             "Open Account": (0, 0),                  # No transaction at account opening
-            "Deposit Funds": (10000, 100),           # Deposits can vary, but negative when spent
+            "Deposit Funds": (100, 10000),           # Deposits can vary, but negative when spent
             "Wire Transfer": (-50000, -100),         # Wire transfers are negative (money sent)
             "Purchase Luxury Goods": (-100000, -500), # Luxury goods are negative (money spent)
             "Cash Withdrawal": (-5000, -100),         # Withdrawals are negative (money taken out)
@@ -110,15 +110,16 @@ behavior_catalog = {
             "Withdraw Funds": (-5000, -100),         # Withdrawals are negative (money taken out)
             "Close Account": (0, 0)                  # No transaction at account closure
         },
-        "transition_matrix": [
-            [0.4, 0.3, 0.1, 0.1, 0.05, 0.01, 0.01],
-            [0.3, 0.3, 0.2, 0.1, 0.05, 0.01, 0.01],
-            [0.2, 0.3, 0.3, 0.1, 0.05, 0.02, 0.02],
-            [0.1, 0.2, 0.2, 0.4, 0.1, 0.02, 0.02],
-            [0.1, 0.1, 0.2, 0.1, 0.3, 0.1, 0.1],
-            [0.05, 0.05, 0.1, 0.1, 0.2, 0.3, 0.1],
-            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
-        ],
+       "transition_matrix": [
+        [0.4, 0.3, 0.1, 0.1, 0.05, 0.01, 0.01, 0.03],  # From Create Fake Identity
+        [0.3, 0.3, 0.2, 0.1, 0.05, 0.01, 0.01, 0.01],  # From Open Account
+        [0.2, 0.3, 0.3, 0.1, 0.05, 0.02, 0.02, 0.02],  # From Apply for Credit Card
+        [0.1, 0.2, 0.2, 0.4, 0.1, 0.02, 0.02, 0.02],  # From Apply for Loan
+        [0.1, 0.1, 0.2, 0.1, 0.3, 0.1, 0.1, 0.1],     # From Make Purchase
+        [0.05, 0.05, 0.1, 0.1, 0.2, 0.3, 0.1, 0.1],   # From Max Out Credit
+        [0.05, 0.05, 0.1, 0.1, 0.1, 0.2, 0.3, 0.1],   # From Withdraw Funds
+        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]      # From Close Account (End of activity)
+    ],
         "time_limit": 60  # Faster spending to exploit identity
     }
 }
