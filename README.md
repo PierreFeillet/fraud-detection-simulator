@@ -18,7 +18,7 @@ Behaviours are captured in the catalog file and represent several known patterns
 
 They capture a simplified sequence of activities and can be endlessly improved to better refect state of real activities and fraud evolutions.
 
-# What is a fraud?
+## What is a fraud?
 Fraud in a banking system refers to any intentional deception or misrepresentation carried out by individuals or entities to gain unauthorized access to financial resources, manipulate transactions, or exploit banking services for unlawful profit. 
 It undermines the integrity of financial institutions, leads to significant financial losses, and erodes trust among customers and stakeholders.
 
