@@ -17,6 +17,12 @@ behaviors are captured in the catalog file and represent several known patterns 
 * card_skimming
 
 They capture a simplified sequence of activities and can be endlessly improved to better refect state of real activities and fraud evolutions.
+
+## What is a fraud?
+Fraud in a banking system refers to any intentional deception or misrepresentation carried out by individuals or entities to gain unauthorized access to financial resources, manipulate transactions, or exploit banking services for unlawful profit. 
+It undermines the integrity of financial institutions, leads to significant financial losses, and erodes trust among customers and stakeholders.
+
+This simulator aims to generate banking activities including transactions following known fraud patterns. Even if deviating from these known patterns, new emerging frauds should be detected as anomalies in comparison of the activites observed in normal bevahiour, or at minimal be scored with an higher risk. In a nutshell there is a normal business, frauds following known patterns and the unknown.
     
 ## Features
 * agent_id: id of the acting agent

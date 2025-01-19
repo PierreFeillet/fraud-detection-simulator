@@ -3,7 +3,11 @@ from dash import dcc, html, dash_table
 from dash.dependencies import Input, Output
 import pandas as pd
 import plotly.express as px
+
 import argparse
+import base64
+import io
+
 
 # Initialize the app
 external_stylesheets = [
@@ -30,12 +34,14 @@ df['timestamp'] = pd.to_datetime(df['timestamp'])
 # App layout
 app.layout = html.Div([
     html.H1("Fraud Detection Dashboard", style={'font-family': 'IBM Plex Sans'}),
+
     html.Div(id='summary-stats', style={'font-family': 'IBM Plex Sans'}),
     dcc.Dropdown(id='agent-dropdown', placeholder='Select Agent ID', style={'font-family': 'IBM Plex Sans'}),
     dcc.Tabs([
         dcc.Tab(label='Transaction Types', children=[
             dcc.Graph(id='transaction-type-graph'),
             html.Div(id='transaction-behavior-graphs', style={'margin-top': '20px'})
+
         ], style={'font-family': 'IBM Plex Sans'}),
         dcc.Tab(label='Fraud by Device/Network', children=[
             dcc.Graph(id='fraud-device-graph'),
@@ -62,6 +68,7 @@ def update_dropdown(selected_agent):
      Output('transaction-type-graph', 'figure'),
      Output('fraud-device-graph', 'figure'),
      Output('fraud-network-graph', 'figure'),
+
      Output('time-series-graph', 'figure'),
      Output('transaction-behavior-graphs', 'children')],
     [Input('agent-dropdown', 'value')]
@@ -76,6 +83,7 @@ def update_dashboard(selected_agent):
     # Summary statistics
     total_transactions = len(filtered_df)
     total_fraud = filtered_df['fraud'].sum()
+
     fraud_rate = (total_fraud / total_transactions) * 100 if total_transactions > 0 else 0
     summary = html.Div([
         html.H4(f"Total Transactions: {total_transactions}"),
@@ -122,3 +130,4 @@ def update_dashboard(selected_agent):
 
 if __name__ == "__main__":
     app.run_server(debug=True, use_reloader=False)  # Disable reloader to avoid multiple runs
+
