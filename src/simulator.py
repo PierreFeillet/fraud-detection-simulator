@@ -2,8 +2,12 @@ import random
 import pandas as pd
 import numpy as np
 import time
+import argparse
+from pprint import pprint
+import os
+import json
 
-from datetime import datetime, timedelta
+
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score, accuracy_score, classification_report
@@ -11,136 +15,114 @@ from sklearn.ensemble import IsolationForest
 from sklearn.neighbors import LocalOutlierFactor
 from sklearn.svm import OneClassSVM
 from sklearn.impute import SimpleImputer
+from datetime import datetime, timedelta
 
-from legitimate_agent import LegitimateCustomer
-from fraudster_agent import Fraudster
+from IPython import embed
 
-from catalog import behavioral_catalog, MERCHANT_TRANSACTION_TYPES
-
+#from legitimate_agent import LegitimateCustomer
+#from fraudulentster_agent import fraudulentster
+from activity import Activity
+from agent import Agent
+from bank import BankActivities
+from catalog import behavior_catalog, check_and_normalize_catalog
 # Function to generate a random country
 def generate_country():
     return random.choice(COUNTRIES)
 
-class BankActivities:
-    def __init__(self, max_size):
-        # Define all columns initially, even if empty
-        self.dtypes = {
-            "agent_id": "int16",
-            "timestamp": "datetime64[ns]",
-            "type": "category",
-            "amount": "float32",
-            "balance": "float32",
-            "merchant": "category",
-            "location": "category",
-            "device": "category",
-            "network": "category",
-            "compromised_device": "int8",
-            "compromised_network": "int8",
-            "fraud": "int8"}
-        
-        # Pre-define DataFrame with specified dtypes
-        self.transaction_log = pd.DataFrame(columns=self.dtypes.keys()).astype(self.dtypes)
-        self.current_time = datetime.now()
-        self.transactions_buffer = []  # Buffer for temporary transactions
-        self.max_size = max_size
+import random
+from datetime import timedelta
 
-    def process_transaction(self, transaction):
-        # Check if we are at max size
-        if len(self.transaction_log) >= self.max_size - 1:
-            return  # Stop processing if max size is reached
+def run_simulation_with_activities(normalized_catalog, agents, bank, start_time, steps=100, flush_interval=100):
+    activity_time = start_time
+    # Initialize active agents and their behavior types, and store the initial balance for each agent
+    active_agents = {agent.agent_id: {
+        "behavior": random.choice(list(normalized_catalog.keys())),
+        "balance": round(random.uniform(1000, 5000), 2),
+        "last_activity": None  # Store the last activity performed by the agent
+    } for agent in agents}
 
-        transaction["timestamp"] = self.current_time
-        self.moveCurrentTime()
-        self.transactions_buffer.append(transaction)  # Append to buffer
-
-    def process_activity(self, activity):
-        # Check if we are at max size
-        if len(self.transaction_log) >= self.max_size - 1:
-            return  # Stop processing if max size is reached
-
-        activity.setdefault("amount", 0)
-        activity["timestamp"] = self.current_time
-        self.moveCurrentTime()
-        self.transactions_buffer.append(activity)  # Append to buffer
-
-    def moveCurrentTime(self):
-        self.current_time += timedelta(seconds=random.randint(1, 30))
-        print("Current time now: " + str(self.current_time))
-
-    def flush_transactions(self):
-        """Consolidate buffered transactions."""
-        """Optimize the code as Panda concat does not scale in performances."""
-        """It now allows a more stable TPS."""
-        if self.transactions_buffer:
-            try:
-                new_data = pd.DataFrame(self.transactions_buffer, columns=self.dtypes.keys()).astype(self.dtypes)
-
-                # Check if adding new_data would exceed max_size
-                if len(self.transaction_log) + len(new_data) > self.max_size - 1:
-                    # Truncate new_data to fit the remaining space in transaction_log
-                    remaining_space = self.max_size - len(self.transaction_log) - 1
-                    new_data = new_data.iloc[:remaining_space]
-
-                # Add new data to transaction log
-                self.transaction_log = pd.concat([self.transaction_log, new_data], ignore_index=True)
-                self.transactions_buffer = []  # Clear buffer
-
-            except pd.errors.OutOfBoundsDatetime as e:
-                print("Error:", e)
-
-
-def run_simulation_with_activities(legitimate_agents, fraudster_agents, bank, steps=100, flush_interval=100):
-    groupFactor = 10
-    start_time = time.time()
     for step in range(steps):
-        if step == 0:
-            print(f"step: {step}")
-            start_time = time.time()
+        if len(bank.activity_log) >= bank.max_size:
+            print(f"Target generation of {bank.max_size} activities reached")
+            break  # Stop simulation if log is full
 
-        if step != 0 and step % groupFactor == 0:
-            end_time = time.time()
-            print(f"step: {step}")
+        for agent in list(agents):  # Iterate over active agents
+            if agent.agent_id not in active_agents:
+                continue  # Skip agents that closed their accounts
 
-            # Calculate the duration
-            duration = end_time - start_time
-            tps = groupFactor / duration
-            print(f"TPS: {tps}")
-            start_time = time.time()
+            behavior_type = active_agents[agent.agent_id]["behavior"]
+            current_balance = active_agents[agent.agent_id]["balance"]
+            print(f"Processing agent {agent.agent_id} with behavior {behavior_type}")
+            behavior = normalized_catalog[behavior_type]
+            activities = behavior["activities"]
+            time_limit = behavior["time_limit"]
+            transition_matrix = behavior["transition_matrix"]
 
-        # Interrupt the generation when the targeted number of activities has been reached
-        if len(bank.transaction_log) >= bank.max_size - 1:
-            print("Target generation of " + str(bank.max_size) + " actvities reached")
-            break
+            # Select initial activity (excluding "Close Account") for step 0
+            if step == 0 or active_agents[agent.agent_id]["last_activity"] is None:
+                valid_activities = [act for act in activities.keys() if act != "Close Account"]
+                current_activity_type = random.choice(valid_activities) if valid_activities else None
+            else:
+                # Predict the next activity for this agent using the Markov chain
+                current_activity_type = extract_activity_markov_chain(
+                    active_agents[agent.agent_id]["last_activity"], activities, transition_matrix
+                )
+            
+            if current_activity_type is None:
+                continue  # Skip if no valid activities exist
 
-        for agent in legitimate_agents:
-            transaction = agent.generate_transaction()
-            bank.process_transaction(transaction)
-            if random.random() < 0.2:
-                activity = agent.account_activity()
-                bank.process_activity(activity)
+            delta = timedelta(minutes=random.randint(0, time_limit))
+            activity_time += delta
+            current_activity = Activity(
+                agent_id=agent.agent_id, 
+                initial_balance=current_balance, 
+                timestamp=activity_time.strftime("%Y-%m-%d %H:%M:%S")
+            )
+            current_activity.type = current_activity_type
+            transaction_range = activities[current_activity_type]
+            print(transaction_range)
+            current_activity.amount = 0 if transaction_range == (0, 0) else random.randint(*transaction_range)
+            current_activity.update_balance()
 
-        for fraudster in fraudster_agents:
-            fraud_type = random.choice(list(behavioral_catalog.keys()))
-            fraud = fraudster.commit_fraud(fraud_type)
-            bank.process_transaction(fraud)
-            if random.random() < 0.5:
-                activity = fraudster.account_activity(fraud_type)
-                bank.process_activity(activity)
+            # Update the agent's balance after the activity is performed
+            active_agents[agent.agent_id]["balance"] = current_activity.balance
 
-        # Flush transactions to the DataFrame every `flush_interval` steps
+            # Store the last activity performed by the agent
+            active_agents[agent.agent_id]["last_activity"] = current_activity_type
+
+            print(f"Agent {agent.agent_id} performed {current_activity_type} with new balance {current_activity.balance}")
+            bank.add_activity(current_activity)
+
+            if current_activity_type == "Close Account":
+                print(f"Agent {agent.agent_id} closed their account. Removing from future steps.")
+                del active_agents[agent.agent_id]  # Remove agent from future iterations
+                continue  # Skip Markov chain transition
+
         if step % flush_interval == 0:
-            bank.flush_transactions()
+            bank.flush_activities()
+            print(f"Flushed transactions at step {step}")
 
-    # Final flush after the loop
-    bank.flush_transactions()
+    bank.flush_activities()
 
-def extract_features(transaction_log):
-    X = transaction_log[["amount", "balance"]] #"risk_level"
-    y = transaction_log["fraud"]
+
+
+
+def get_random_fraud_behavior(normalized_catalog):
+    fraud_behaviors = [key for key in normalized_catalog.keys() if key != "legitimate"]
+    return random.choice(fraud_behaviors)
+
+def extract_activity_markov_chain(current_activity, activities, transition_matrix):
+    current_activity_index = list(activities.keys()).index(current_activity)
+    next_activity_type = np.random.choice(list(activities.keys()), p=transition_matrix[current_activity_index])
+    return next_activity_type
+
+def extract_features(activity_log):
+    X = activity_log[["amount", "balance"]] #"risk_level"
+    y = activity_log["fraudulent"]
     return X, y
 
-def benchmark_models(transaction_log):
-    X, y = extract_features(transaction_log)
+def benchmark_models(activity_log):
+    X, y = extract_features(activity_log)
 
     # Impute missing values
     imputer = SimpleImputer(strategy="mean")  # Replace NaNs with the mean of the column
@@ -186,27 +168,52 @@ def format_number(nb_global_activities):
     formated_number = f"{int(value) if value.is_integer() else round(value, 1)}{suffix}"
     return formated_number
 
-def generate_dataset(nb_activities):
-    nb_legitimate_agents = nb_activities // 10
-    nb_fraudster_agents = nb_activities // 30
-    legitimate_agents = [LegitimateCustomer(agent_id=i, balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_legitimate_agents)]
-    fraudster_agents = [Fraudster(agent_id=i+100, balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_fraudster_agents)]
+def generate_dataset(nb_activities, nb_agents, data_folder, start_time, pr_fraudulent=0.3):
+    agents = [Agent(agent_id=i, initial_balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_agents)]
+    #fraudulent_agents = [Agent(agent_id=i + nb_legitimate_agents, initial_balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_fraudulent_agents)]
+
     bank_with_activities = BankActivities(nb_activities)
-    run_simulation_with_activities(legitimate_agents, fraudster_agents, bank_with_activities, steps=1000)
+    run_simulation_with_activities(normalized_catalog=normalized_catalog, agents=agents, bank=bank_with_activities, start_time=start_time, steps=1000)
     
-    transaction_log_with_fraud_features = bank_with_activities.transaction_log
-    transaction_log_with_fraud_features.to_csv("data/fraud_simulation_" + format_number(nb_activities) + "_activities.csv", index=False, chunksize=10000)
+    activity_log_with_fraudulent_features = bank_with_activities.activity_log
+    os.makedirs(data_folder, exist_ok=True)
+    activity_log_with_fraudulent_features.to_csv(f"{data_folder}/fraudulent_simulation_{format_number(nb_activities)}_activities.csv", index=True)
 
 if __name__ == "__main__":
-    generate_dataset(100)
-    generate_dataset(1000)
-    generate_dataset(10000)
-    generate_dataset(100000)
-    generate_dataset(500000)
+    parser = argparse.ArgumentParser(
+        description='Script for generating the dataset',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument('--nb_activities', help='Total number of activities to be generated', type=int, required=True)
+    parser.add_argument('--n_legitimate_agent', help='Number of legitimate agents', type=int, default=2)
+    parser.add_argument('--n_fraudulent_agent', help='Number of fraudulent agents', type=int, default=2)
+    parser.add_argument('--pr_frauds', help='Percentage of frauds wanted in the dataset', type=float, default=0.01)
+    parser.add_argument('--data_folder', help='Where to save produced data', type=str, default='data')
+    parser.add_argument('--start_time', help='Initial timestamp value for the generating the series (ISO 8601 format, example: "2025-01-06T12:00:00")', default=datetime.now())
+    # Example: python src/simulator.py --nb_activities 1000 --nb_agents 10 --pr_fraudulent 0.3
+    cfg = parser.parse_args()
+    pprint(cfg)
+
+    # Generate/Read catalog wirh normalized probabilities
+    #if os.path.exists('src/normalized_catalog.json'):
+    #    with open('src/normalized_catalog.json', "r") as f:
+    #        normalized_catalog = json.load(f)
+    #else:
+    #    normalized_catalog = check_and_normalize_catalog(behavior_catalog)
+    normalized_catalog = check_and_normalize_catalog(behavior_catalog) #better to regenerate it everytime in case some probabilitis are changed
+
+    n_fraudulent_activities = int(cfg.nb_activities*cfg.pr_frauds)
+    n_legitimate_activities = cfg.nb_activities - n_fraudulent_activities
+    n_max_per_legitimate_A = int(n_legitimate_activities/cfg.n_legitimate_agent)
+    n_max_per_fraudster_A = int(n_fraudulent_activities/cfg.n_fraudulent_agent)
+    
+    nb_agents = cfg.n_legitimate_agent + cfg.n_fraudulent_agent
+    activity_log_with_fraudulent_features = generate_dataset(nb_activities=cfg.nb_activities, nb_agents=nb_agents, data_folder=cfg.data_folder, start_time=cfg.start_time)
+    
 
     # Benchmark anomaly detection models
     if False:
-        results = benchmark_models(transaction_log_with_fraud_features)
+        results = benchmark_models(activity_log_with_fraudulent_features)
         for model, metrics in results.items():
             print(f"Model: {model}")
             print(f"F1 Score: {metrics['F1 Score']}")

@@ -4,12 +4,12 @@
 ## Overview
 This project simulates both legitimate and fraudulent transactions in a banking system in a multi-agent architecture. The simulation includes geographical information, merchants, devices, networks, and analyzes whether devices or networks are compromised.
 
-Nominal and fraudulent behaviours are modeled in a catalog as Marhov chains. Each chain is a time sequence of activities with an associated probability.
+Nominal and fraudulent behaviors are modeled in a catalog as Markov chains. Each chain is a time sequence of activities with an associated probability.
 Each beahviour is described through a descriptor in the - [catalog](catalog.py)
 All activities participating to nominal and fraudulent behavioral sequences are meshed into a unique dataset and timeline.
 
-## Models for fraudulent and normal behaviours
-Behaviours are captured in the catalog file and represent several known patterns of normal or fraudulent activities:
+## Models for fraudulent and normal behaviors
+behaviors are captured in the catalog file and represent several known patterns of normal or fraudulent activities:
 * normal
 * identity_theft
 * money_laundering
@@ -25,7 +25,7 @@ It undermines the integrity of financial institutions, leads to significant fina
 This simulator aims to generate banking activities including transactions following known fraud patterns. Even if deviating from these known patterns, new emerging frauds should be detected as anomalies in comparison of the activites observed in normal bevahiour, or at minimal be scored with an higher risk. In a nutshell there is a normal business, frauds following known patterns and the unknown.
     
 ## Features
-* agent_id: if of the acting agent
+* agent_id: id of the acting agent
 * timestamp: instant of the activity in ms
 * type: nature of the activity
 * amount: amount for the transactions, or no value for other activities
@@ -39,13 +39,21 @@ This simulator aims to generate banking activities including transactions follow
 * fraud: the label identicating if the activity is part of a fraud or not
 
 ## How to Run
-1. Install the required Python dependencies:
+1. To avoid project conflicts, create a virtual environment `fraud_env`(necessary only the first time you run the code):
+    ```
+    python -m venv fraud_env
+    ```
+2. Activate the environment (always):
+    ```
+    source fraud_env/bin/activate
+    ```
+2. Install the required Python dependencies (necessary only the first time you run the code):
     ```
     pip install -r requirements.txt
     ```
-2. Run the simulator by executing the `simulator.py` script:
+3. Run the simulator by executing the `simulator.py` script wiht the specified inputs (number of activities, number of agents (fraudulent+legitimate), proportion of fraudulent agents):
     ```
-    python src/simulator.py
+    python src/simulator.py --nb_activities 1000 --nb_agents 10 --pr_fraudulent 0.3
     ```
 
 ## Data

@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+src/__pycache__
 
 # C extensions
 *.so
@@ -129,6 +130,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+fraud_env/
 
 # Spyder project settings
 .spyderproject
