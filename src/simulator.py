@@ -17,7 +17,7 @@ from sklearn.svm import OneClassSVM
 from sklearn.impute import SimpleImputer
 from datetime import datetime, timedelta
 
-from IPython import embed
+#from IPython import embed
 
 #from legitimate_agent import LegitimateCustomer
 #from fraudulentster_agent import fraudulentster
@@ -177,7 +177,7 @@ def generate_dataset(nb_activities, nb_agents, data_folder, start_time, pr_fraud
     
     activity_log_with_fraudulent_features = bank_with_activities.activity_log
     os.makedirs(data_folder, exist_ok=True)
-    activity_log_with_fraudulent_features.to_csv(f"{data_folder}/fraudulent_simulation_{format_number(nb_activities)}_activities.csv", index=True)
+    activity_log_with_fraudulent_features.to_csv(f"{data_folder}/fraud_simulation_activities_{format_number(nb_activities)}.csv", index=True)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -190,7 +190,7 @@ if __name__ == "__main__":
     parser.add_argument('--pr_frauds', help='Percentage of frauds wanted in the dataset', type=float, default=0.01)
     parser.add_argument('--data_folder', help='Where to save produced data', type=str, default='data')
     parser.add_argument('--start_time', help='Initial timestamp value for the generating the series (ISO 8601 format, example: "2025-01-06T12:00:00")', default=datetime.now())
-    # Example: python src/simulator.py --nb_activities 1000 --nb_agents 10 --pr_fraudulent 0.3
+    # Example: python src/simulator.py --nb_activities 1000 --n_legitimate_agent 3 --n_fraudulent_agent 1 --pr_fraud 0.3
     cfg = parser.parse_args()
     pprint(cfg)
 
