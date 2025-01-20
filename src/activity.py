@@ -20,6 +20,7 @@ class Activity(Agent):
     activity_DTYPE = {
         "agent_id": "int16",
         "timestamp": "datetime64[ns]",
+        "behavior": "category",
         "initial_balance": "float32",
         "type": "category",
         "granted": "bool",
@@ -31,14 +32,15 @@ class Activity(Agent):
         "network": "category",
         "compromised_device": "int8",
         "compromised_network": "int8",
-      #  "fraudulent": "int8"
+        "fraud": "int8"
     }
 
-    def __init__(self, agent_id, initial_balance, timestamp):
+    def __init__(self, agent_id, initial_balance, timestamp, behavior):
         # Initialize the parent class (Agent)
         super().__init__(agent_id, initial_balance)
         # activity-specific attributes
         self.timestamp = timestamp
+        self.behavior = behavior
         self.type = type
         #self.balance = self.initial_balance
         self.granted = True 
@@ -49,6 +51,7 @@ class Activity(Agent):
         self.network = np.random.choice(networks, p=network_weights)
         self.compromised_device = self.is_compromised()
         self.compromised_network = self.is_compromised()
+        self.fraud = 0 
 
     def is_compromised(self, probability=0.05):
         """

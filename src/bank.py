@@ -16,9 +16,7 @@ class BankActivities:
         if len(self.activity_log) == self.max_size:
             return
         self.buffer.append(vars(activity))
-
-    
-
+        
     def flush_activities(self):
         if self.buffer:
             try:
