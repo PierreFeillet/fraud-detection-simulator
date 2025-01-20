@@ -164,7 +164,8 @@
                 1.0
             ]
         ],
-        "time_limit": 180
+        "time_limit": 180,
+        "fraud": 0
     },
     "identity_theft": {
         "activities": {
@@ -283,7 +284,8 @@
                 1.0
             ]
         ],
-        "time_limit": 30
+        "time_limit": 30,
+        "fraud": 1
     },
     "card_skimming": {
         "activities": {
@@ -381,7 +383,8 @@
                 1.0
             ]
         ],
-        "time_limit": 15
+        "time_limit": 15,
+        "fraud": 1
     },
     "money_laundering": {
         "activities": {
@@ -479,7 +482,8 @@
                 1.0
             ]
         ],
-        "time_limit": 120
+        "time_limit": 120,
+        "fraud": 1
     },
     "synthetic_identity_fraud": {
         "activities": {
@@ -598,6 +602,7 @@
                 1.0
             ]
         ],
-        "time_limit": 60
+        "time_limit": 60,
+        "fraud": 1
     }
 }

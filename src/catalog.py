@@ -28,7 +28,8 @@ behavior_catalog = {
             [0.0, 0.05, 0.05, 0.1, 0.1, 0.02, 0.03, 0.05, 0.5, 0.1],
             [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
         ],
-        "time_limit": 180  # Maximum 3 hours between events
+        "time_limit": 180,  # Maximum 3 hours between events
+        "fraud": 0,
     },
 
     "identity_theft": {
@@ -52,7 +53,8 @@ behavior_catalog = {
             [0.0, 0.01, 0.02, 0.05, 0.1, 0.1, 0.6, 0.12],
             [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
         ],
-        "time_limit": 30  # Shorter time between suspicious activity
+        "time_limit": 30,  # Shorter time between suspicious activity
+        "fraud": 1,
     },
 
     "card_skimming": {
@@ -74,7 +76,8 @@ behavior_catalog = {
             [0.0, 0.05, 0.05, 0.05, 0.2, 0.5, 0.15],
             [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
         ],
-        "time_limit": 15  # Rapid transactions typical in skimming
+        "time_limit": 15,  # Rapid transactions typical in skimming
+        "fraud": 1,
     },
 
     "money_laundering": {
@@ -96,7 +99,8 @@ behavior_catalog = {
             [0.0, 0.1, 0.1, 0.2, 0.1, 0.4, 0.1],
             [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
         ],
-        "time_limit": 120  # Frequent but spread-out transactions
+        "time_limit": 120,  # Frequent but spread-out transactions
+        "fraud": 1,
     },
 
     "synthetic_identity_fraud": {
@@ -120,7 +124,8 @@ behavior_catalog = {
         [0.05, 0.05, 0.1, 0.1, 0.1, 0.2, 0.3, 0.1],   # From Withdraw Funds
         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]      # From Close Account (End of activity)
     ],
-        "time_limit": 60  # Faster spending to exploit identity
+        "time_limit": 60,  # Faster spending to exploit identity
+        "fraud": 1,
     }
 }
 
@@ -153,7 +158,8 @@ def check_and_normalize_catalog(behavior_catalog, output_file="src/normalized_ca
         normalized_catalog[behavior] = {
             "activities": activities,
             "transition_matrix": matrix.tolist(),
-            "time_limit": data["time_limit"]
+            "time_limit": data["time_limit"],
+            "fraud": data["fraud"]
         }
 
         # Save each behavior matrix as a JSON file

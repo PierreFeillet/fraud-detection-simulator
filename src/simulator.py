@@ -76,13 +76,15 @@ def run_simulation_with_activities(normalized_catalog, agents, bank, start_time,
             current_activity = Activity(
                 agent_id=agent.agent_id, 
                 initial_balance=current_balance, 
-                timestamp=activity_time.strftime("%Y-%m-%d %H:%M:%S")
+                timestamp=activity_time.strftime("%Y-%m-%d %H:%M:%S"),
+                behavior=behavior_type
             )
             current_activity.type = current_activity_type
+            current_activity.behavior= behavior_type
             transaction_range = activities[current_activity_type]
-            print(transaction_range)
             current_activity.amount = 0 if transaction_range == (0, 0) else random.randint(*transaction_range)
             current_activity.update_balance()
+            current_activity.fraud = behavior['fraud']
 
             # Update the agent's balance after the activity is performed
             active_agents[agent.agent_id]["balance"] = current_activity.balance
@@ -185,9 +187,11 @@ if __name__ == "__main__":
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument('--nb_activities', help='Total number of activities to be generated', type=int, required=True)
-    parser.add_argument('--n_legitimate_agent', help='Number of legitimate agents', type=int, default=2)
-    parser.add_argument('--n_fraudulent_agent', help='Number of fraudulent agents', type=int, default=2)
-    parser.add_argument('--pr_frauds', help='Percentage of frauds wanted in the dataset', type=float, default=0.01)
+    parser.add_argument('--nb_agents', help='Number of legitimate agents', type=int, default=40)
+    # Following arguments aren't used now
+    #parser.add_argument('--n_legitimate_agent', help='Number of legitimate agents', type=int, default=2)
+    #parser.add_argument('--n_fraudulent_agent', help='Number of fraudulent agents', type=int, default=2)
+    #parser.add_argument('--pr_frauds', help='Percentage of frauds wanted in the dataset', type=float, default=0.01)
     parser.add_argument('--data_folder', help='Where to save produced data', type=str, default='data')
     parser.add_argument('--start_time', help='Initial timestamp value for the generating the series (ISO 8601 format, example: "2025-01-06T12:00:00")', default=datetime.now())
     # Example: python src/simulator.py --nb_activities 1000 --n_legitimate_agent 3 --n_fraudulent_agent 1 --pr_fraud 0.3
@@ -202,13 +206,12 @@ if __name__ == "__main__":
     #    normalized_catalog = check_and_normalize_catalog(behavior_catalog)
     normalized_catalog = check_and_normalize_catalog(behavior_catalog) #better to regenerate it everytime in case some probabilitis are changed
 
-    n_fraudulent_activities = int(cfg.nb_activities*cfg.pr_frauds)
-    n_legitimate_activities = cfg.nb_activities - n_fraudulent_activities
-    n_max_per_legitimate_A = int(n_legitimate_activities/cfg.n_legitimate_agent)
-    n_max_per_fraudster_A = int(n_fraudulent_activities/cfg.n_fraudulent_agent)
+    #n_fraudulent_activities = int(cfg.nb_activities*cfg.pr_frauds)
+    #n_legitimate_activities = cfg.nb_activities - n_fraudulent_activities
+    #n_max_per_legitimate_A = int(n_legitimate_activities/cfg.n_legitimate_agent)
+    #n_max_per_fraudster_A = int(n_fraudulent_activities/cfg.n_fraudulent_agent)
     
-    nb_agents = cfg.n_legitimate_agent + cfg.n_fraudulent_agent
-    activity_log_with_fraudulent_features = generate_dataset(nb_activities=cfg.nb_activities, nb_agents=nb_agents, data_folder=cfg.data_folder, start_time=cfg.start_time)
+    activity_log_with_fraudulent_features = generate_dataset(nb_activities=cfg.nb_activities, nb_agents=cfg.nb_agents, data_folder=cfg.data_folder, start_time=cfg.start_time)
     
 
     # Benchmark anomaly detection models

@@ -24,7 +24,7 @@ parser = argparse.ArgumentParser(
     description='Script for generating the dataset',
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
-parser.add_argument('--input_file', help='CSV Input file for producing the dashboard', type=str, default='/home/molocco/fraud-detection-simulator/data/fraud_simulation_1K_activities.csv')
+parser.add_argument('--input_file', help='CSV Input file for producing the dashboard', type=str,)
 args = parser.parse_args()
 
 # Load data using the input file argument
@@ -38,9 +38,9 @@ app.layout = html.Div([
     html.Div(id='summary-stats', style={'font-family': 'IBM Plex Sans'}),
     dcc.Dropdown(id='agent-dropdown', placeholder='Select Agent ID', style={'font-family': 'IBM Plex Sans'}),
     dcc.Tabs([
-        dcc.Tab(label='Transaction Types', children=[
-            dcc.Graph(id='transaction-type-graph'),
-            html.Div(id='transaction-behavior-graphs', style={'margin-top': '20px'})
+        dcc.Tab(label='activity Types', children=[
+            dcc.Graph(id='activity-type-graph'),
+            html.Div(id='activity-behavior-graphs', style={'margin-top': '20px'})
 
         ], style={'font-family': 'IBM Plex Sans'}),
         dcc.Tab(label='Fraud by Device/Network', children=[
@@ -65,12 +65,12 @@ def update_dropdown(selected_agent):
 
 @app.callback(
     [Output('summary-stats', 'children'),
-     Output('transaction-type-graph', 'figure'),
+     Output('activity-type-graph', 'figure'),
      Output('fraud-device-graph', 'figure'),
      Output('fraud-network-graph', 'figure'),
 
      Output('time-series-graph', 'figure'),
-     Output('transaction-behavior-graphs', 'children')],
+     Output('activity-behavior-graphs', 'children')],
     [Input('agent-dropdown', 'value')]
 )
 def update_dashboard(selected_agent):
@@ -81,18 +81,18 @@ def update_dashboard(selected_agent):
         filtered_df = df[df['agent_id'] == selected_agent]
 
     # Summary statistics
-    total_transactions = len(filtered_df)
+    total_activities = len(filtered_df)
     total_fraud = filtered_df['fraud'].sum()
 
-    fraud_rate = (total_fraud / total_transactions) * 100 if total_transactions > 0 else 0
+    fraud_rate = (total_fraud / total_activities) * 100 if total_activities > 0 else 0
     summary = html.Div([
-        html.H4(f"Total Transactions: {total_transactions}"),
-        html.H4(f"Fraudulent Transactions: {total_fraud}"),
+        html.H4(f"Total activities: {total_activities}"),
+        html.H4(f"Fraudulent activities: {total_fraud}"),
         html.H4(f"Fraud Rate: {fraud_rate:.2f}%")
     ], style={'font-family': 'IBM Plex Sans'})
     
-    # Transaction Types Distribution
-    type_fig = px.histogram(filtered_df, x='action', color='fraud', barmode='group', histnorm='probability', title='Transaction Types Distribution')
+    # activity Types Distribution
+    type_fig = px.histogram(filtered_df, x='type', color='fraud', barmode='group', histnorm='probability', title='Activity Types Distribution by fraud (1)/not fraud(0)')
     
     # Fraud by Device
     device_fig = px.histogram(filtered_df, x='device', color='fraud', barmode='group', histnorm='probability', title='Fraud Occurrence by Device')
@@ -102,8 +102,9 @@ def update_dashboard(selected_agent):
     
     # Time Series Analysis per Agent ID
     time_fig = px.line(filtered_df.groupby(filtered_df['timestamp'].dt.floor('s')).size().reset_index(name='count'),
-                       x='timestamp', y='count', title=f'Transactions Over Time for Agent {selected_agent if selected_agent != "all" else "All"}')
+                       x='timestamp', y='count', title=f'Activities Over Time for Agent {selected_agent if selected_agent != "all" else "All"}')
     
+
     # Normalized Histograms for each behavior type
     behavior_figs = []
     unique_behaviors = filtered_df['behavior'].unique()
@@ -111,21 +112,37 @@ def update_dashboard(selected_agent):
         behavior_df = filtered_df[filtered_df['behavior'] == behavior]
         behavior_fig = px.histogram(
             behavior_df,
-            x='action',
+            x='type',
             color='fraud',
             barmode='group',
             histnorm='probability',  # Normalize to show frequencies
-            title=f"Normalized Action Distribution for Behavior: {behavior}"
+            title=f"Normalized Activity Type Distribution for Behavior: {behavior}"
         )
         behavior_fig.update_layout(
             yaxis_title='Frequency',  # Update the y-axis label for clarity
-            xaxis_title='Action'
+            xaxis_title='Activity type'
         )
         behavior_figs.append(html.Div([
             dcc.Graph(figure=behavior_fig)
         ], style={'margin-bottom': '20px'}))
     
-    return summary, type_fig, device_fig, network_fig, time_fig, behavior_figs
+    # Overlaid activity Types Distribution by Behavior
+    overlay_fig = px.histogram(
+        filtered_df,
+        x='type',
+        color='behavior',  # Different colors for each behavior
+        barmode='group',  # Overlay histograms
+        histnorm='probability',  # Normalize to show frequencies
+        title='Activity Types by Behavior'
+    )
+    overlay_fig.update_layout(
+        xaxis_title='activity Type',
+        yaxis_title='Frequency',
+        legend_title='Behavior'
+    )
+
+    return summary, type_fig, device_fig, network_fig, time_fig, [dcc.Graph(figure=overlay_fig)] + behavior_figs
+
 
 
 if __name__ == "__main__":
