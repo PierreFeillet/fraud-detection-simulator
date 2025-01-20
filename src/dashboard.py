@@ -101,6 +101,23 @@ def update_dashboard(selected_agent):
     network_fig = px.histogram(filtered_df, x='network', color='fraud', barmode='group', histnorm='probability', title='Fraud Occurrence by Network')
     
     # Time Series Analysis per Agent ID
+    # Time Series Analysis per Agent ID, with separate lines for each behavior
+    time_series_df = filtered_df.groupby(['timestamp', 'behavior']).size().reset_index(name='count')
+
+    time_fig = px.line(
+        time_series_df,
+        x='timestamp',
+        y='count',
+        color='behavior',  # Different line for each behavior
+        title=f'Activities Over Time for Agent {selected_agent if selected_agent != "all" else "All"}'
+    )
+
+    time_fig.update_layout(
+        xaxis_title='Time',
+        yaxis_title='Activity Count',
+        legend_title='Behavior'
+    )
+
     time_fig = px.line(filtered_df.groupby(filtered_df['timestamp'].dt.floor('s')).size().reset_index(name='count'),
                        x='timestamp', y='count', title=f'Activities Over Time for Agent {selected_agent if selected_agent != "all" else "All"}')
     
@@ -108,6 +125,7 @@ def update_dashboard(selected_agent):
     # Normalized Histograms for each behavior type
     behavior_figs = []
     unique_behaviors = filtered_df['behavior'].unique()
+    '''
     for behavior in unique_behaviors:
         behavior_df = filtered_df[filtered_df['behavior'] == behavior]
         behavior_fig = px.histogram(
@@ -125,7 +143,7 @@ def update_dashboard(selected_agent):
         behavior_figs.append(html.Div([
             dcc.Graph(figure=behavior_fig)
         ], style={'margin-bottom': '20px'}))
-    
+    '''
     # Overlaid activity Types Distribution by Behavior
     overlay_fig = px.histogram(
         filtered_df,
@@ -136,11 +154,11 @@ def update_dashboard(selected_agent):
         title='Activity Types by Behavior'
     )
     overlay_fig.update_layout(
-        xaxis_title='activity Type',
+        xaxis_title='Activity Type',
         yaxis_title='Frequency',
         legend_title='Behavior'
     )
-
+    
     return summary, type_fig, device_fig, network_fig, time_fig, [dcc.Graph(figure=overlay_fig)] + behavior_figs
 
 
