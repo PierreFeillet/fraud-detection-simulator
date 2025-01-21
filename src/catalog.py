@@ -131,7 +131,7 @@ behavior_catalog = {
 
 # Example fraud rates by country (percent of fraudulent transactions)
 fraud_rates_by_country = {
-    "Nigeria": 0.25,      # 25% probability of an agent being fraudulent
+    "Nigeria": 0.25,      # 25% probability of an activity being fraudulent
     "Russia": 0.20,       # 20%
     "China": 0.18,        # 18%
     "India": 0.15,        # 15%
@@ -142,6 +142,10 @@ fraud_rates_by_country = {
     "France": 0.04,       # 4%
     "Canada": 0.03        # 3%
 }
+# Location:
+locations = ["USA", "UK", "China", "Japan", "France", "Germany"]
+# Define location weights (if you want some locations to appear more frequently)
+location_weights = [0.3, 0.2, 0.15, 0.15, 0.1, 0.1]  # Adjust these weights as needed
 
 # Devices and device weights
 devices = ["iPhone", "Android", "Windows Laptop", "MacBook", "Linux PC", "iPad"]

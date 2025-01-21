@@ -7,7 +7,6 @@ from catalog import devices
 from catalog import device_weights
 from catalog import networks
 from catalog import network_weights
-from catalog import possible_transactions
 
 from agent import Agent  # Import the Agent class
 
@@ -32,9 +31,9 @@ class Activity(Agent):
         "fraud": "int8"
     }
 
-    def __init__(self, agent_id, initial_balance, timestamp, behavior, country):
+    def __init__(self, agent_id, initial_balance, timestamp, behavior, residence_country):
         # Initialize the parent class (Agent)
-        super().__init__(agent_id, initial_balance)
+        super().__init__(agent_id, initial_balance, residence_country)
         # activity-specific attributes
         self.timestamp = timestamp
         self.behavior = behavior
@@ -43,7 +42,6 @@ class Activity(Agent):
         self.granted = True 
         self.amount = 0
        #self.merchant =  extract_merchant(self.activity_type) if self.amount !=0 else ''
-        self.country = country
         self.device = np.random.choice(devices, p=device_weights)
         self.network = np.random.choice(networks, p=network_weights)
         self.compromised_device = self.is_compromised()
