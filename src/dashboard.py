@@ -24,7 +24,7 @@ parser = argparse.ArgumentParser(
     description='Script for generating the dataset',
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
-parser.add_argument('--input_file', help='CSV Input file for producing the dashboard', activity_type=str,)
+parser.add_argument('--input_file', help='CSV Input file for producing the dashboard', type=str,)
 args = parser.parse_args()
 
 # Load data using the input file argument
@@ -38,7 +38,7 @@ app.layout = html.Div([
     html.Div(id='summary-stats', style={'font-family': 'IBM Plex Sans'}),
     dcc.Dropdown(id='agent-dropdown', placeholder='Select Agent ID', style={'font-family': 'IBM Plex Sans'}),
     dcc.Tabs([
-        dcc.Tab(label='activity activity_types', children=[
+        dcc.Tab(label='activity', children=[
             dcc.Graph(id='activity-activity_type-graph'),
             html.Div(id='activity-behavior-graphs', style={'margin-top': '20px'})
 
@@ -91,8 +91,8 @@ def update_dashboard(selected_agent):
         html.H4(f"Fraud Rate: {fraud_rate:.2f}%")
     ], style={'font-family': 'IBM Plex Sans'})
     
-    # activity activity_types Distribution
-    activity_type_fig = px.histogram(filtered_df, x='activity_type', color='fraud', barmode='group', histnorm='probability', title='Activity activity_types Distribution by fraud (1)/not fraud(0)')
+    # activity  Distribution
+    activity_type_fig = px.histogram(filtered_df, x='activity_type', color='fraud', barmode='group', histnorm='probability', title='Activity Distribution by fraud (1)/not fraud(0)')
     
     # Fraud by Device
     device_fig = px.histogram(filtered_df, x='device', color='fraud', barmode='group', histnorm='probability', title='Fraud Occurrence by Device')
@@ -144,14 +144,14 @@ def update_dashboard(selected_agent):
             dcc.Graph(figure=behavior_fig)
         ], style={'margin-bottom': '20px'}))
     '''
-    # Overlaid activity activity_types Distribution by Behavior
+    # Overlaid activity  Distribution by Behavior
     overlay_fig = px.histogram(
         filtered_df,
         x='activity_type',
         color='behavior',  # Different colors for each behavior
         barmode='group',  # Overlay histograms
         histnorm='probability',  # Normalize to show frequencies
-        title='Activity activity_types by Behavior'
+        title='Activity by Behavior'
     )
     overlay_fig.update_layout(
         xaxis_title='Activity activity_type',
