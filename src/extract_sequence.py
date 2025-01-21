@@ -28,8 +28,8 @@ LOCATIONS = {
 }
 
 # Merchants
-# Define allowed transaction types for each merchant
-TRANSACTION_TYPE_MERCHANTS = {
+# Define allowed transaction activity_types for each merchant
+TRANSACTION_activity_type_MERCHANTS = {
     "purchase": [
         ("Walmart", 0.15),
         ("Best Buy", 0.2),
@@ -61,5 +61,5 @@ network_weights = [0.4, 0.3, 0.2, 0.1]  # Weights indicating the frequency of ea
 # List of transactions. If not in this list a certain activity is considered an activity
 possible_transactions = ["withdrawal", "deposit", "purchase"]
 
-# Behavioral catalog for different fraudulent types
+# Behavioral catalog for different fraudulent activity_types
 

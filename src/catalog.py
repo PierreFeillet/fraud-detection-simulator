@@ -174,10 +174,10 @@ def check_and_normalize_catalog(behavior_catalog, output_file="src/normalized_ca
     return normalized_catalog
 
 
-def simulate_markov_chain(start_time, behavior_type, n_activitiy=20):
-    activities = behavior_catalog[behavior_type]["activities"]
-    transition_matrix = behavior_catalog[behavior_type]["transition_matrix"]
-    time_limit = behavior_catalog[behavior_type]["time_limit"]
+def simulate_markov_chain(start_time, behavior_activity_type, n_activitiy=20):
+    activities = behavior_catalog[behavior_activity_type]["activities"]
+    transition_matrix = behavior_catalog[behavior_activity_type]["transition_matrix"]
+    time_limit = behavior_catalog[behavior_activity_type]["time_limit"]
     activity_sequence = []
 
     current_activity = random.choice(list(activities.keys()))
@@ -224,7 +224,7 @@ normalized_catalog = check_and_normalize_catalog(behavior_catalog)
 
 
 '''
-# Define behavior types and their corresponding activities
+# Define behavior activity_types and their corresponding activities
 behavior_activities = {
     "normal": [
         "Open Account", "Deposit Funds", "Make Purchase", "Pay Bills", 

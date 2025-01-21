@@ -1,4 +1,4 @@
-,agent_id,timestamp,initial_balance,type,granted,amount,balance,location,device,network,compromised_device,compromised_network
+,agent_id,timestamp,initial_balance,activity_type,granted,amount,balance,location,device,network,compromised_device,compromised_network
 0,0,2025-01-19 21:52:28,4134.1,Suspicious Login,True,0.0,4134.1,"New York, USA",Android,Public WiFi,0,0
 1,1,2025-01-19 21:55:28,2385.53,Online Purchase,True,-476.0,1909.53,"London, UK",Linux PC,Home WiFi,0,0
 2,2,2025-01-19 22:20:28,3637.48,Deposit Funds,True,6361.0,9998.48,"New York, USA",MacBook,Mobile Network,0,0

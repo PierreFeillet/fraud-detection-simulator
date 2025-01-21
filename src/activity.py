@@ -17,12 +17,12 @@ from agent import Agent  # Import the Agent class
 class Activity(Agent):
     
     # Global dictionary for shared keys
-    activity_DTYPE = {
+    activity_Dactivity_type = {
         "agent_id": "int16",
         "timestamp": "datetime64[ns]",
         "behavior": "category",
         "initial_balance": "float32",
-        "type": "category",
+        "activity_type": "category",
         "granted": "bool",
         "amount": "float32",
         "balance": "float32",
@@ -41,11 +41,11 @@ class Activity(Agent):
         # activity-specific attributes
         self.timestamp = timestamp
         self.behavior = behavior
-        self.type = type
+        self.activity_type = activity_type
         #self.balance = self.initial_balance
         self.granted = True 
         self.amount = 0
-       #self.merchant =  extract_merchant(self.type) if self.amount !=0 else ''
+       #self.merchant =  extract_merchant(self.activity_type) if self.amount !=0 else ''
         self.location = np.random.choice(locations, p=location_weights)
         self.device = np.random.choice(devices, p=device_weights)
         self.network = np.random.choice(networks, p=network_weights)
@@ -62,7 +62,7 @@ class Activity(Agent):
 
     def update_balance(self):
         """
-        Update the agent's balance based on the transaction type and amount.
+        Update the agent's balance based on the transaction activity_type and amount.
         """
         if self.amount>=0 or (self.amount<0 and self.balance>=abs(self.amount)):
             self.balance = self.balance + self.amount
@@ -72,17 +72,17 @@ class Activity(Agent):
     '''
     def extract_merchant(transaction):
     """
-    Extract a random merchant based on the transaction type and probabilities.
+    Extract a random merchant based on the transaction activity_type and probabilities.
     
     Args:
-        transaction (str): The transaction type (e.g., 'purchase', 'deposit', 'withdrawal').
+        transaction (str): The transaction activity_type (e.g., 'purchase', 'deposit', 'withdrawal').
         
     Returns:
         str: The selected merchant.
     """
-    if transaction not in TRANSACTION_TYPE_MERCHANTS:
-        raise ValueError(f"Transaction type '{transaction}' is not recognized.")
-    merchants, probabilities = zip(*TRANSACTION_TYPE_MERCHANTS[transaction]) # Unzip the dictionary for the given transaction to get an array of merchants and an array of relative probabilities
+    if transaction not in TRANSACTION_activity_type_MERCHANTS:
+        raise ValueError(f"Transaction activity_type '{transaction}' is not recognized.")
+    merchants, probabilities = zip(*TRANSACTION_activity_type_MERCHANTS[transaction]) # Unzip the dictionary for the given transaction to get an array of merchants and an array of relative probabilities
     merchant = np.random.choice(merchants, p=probabilities)
     return merchant
     '''

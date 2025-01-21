@@ -27,7 +27,7 @@ This simulator aims to generate banking activities including transactions follow
 ## Features
 * agent_id: id of the acting agent
 * timestamp: instant of the activity in ms
-* type: nature of the activity
+* activity_type: nature of the activity
 * amount: amount for the transactions, or no value for other activities
 * balance: balance of the account for transactions, or no value for other activities
 * merchant: Transactions are associated with realistic merchants like Amazon, Walmart, etc.

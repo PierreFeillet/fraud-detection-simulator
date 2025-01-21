@@ -34,7 +34,7 @@ from datetime import timedelta
 
 def run_simulation_with_activities(normalized_catalog, agents, bank, start_time, steps=100, flush_interval=100):
     activity_time = start_time
-    # Initialize active agents and their behavior types, and store the initial balance for each agent
+    # Initialize active agents and their behavior activity_types, and store the initial balance for each agent
     active_agents = {agent.agent_id: {
         "behavior": random.choice(list(normalized_catalog.keys())),
         "balance": round(random.uniform(1000, 5000), 2),
@@ -50,10 +50,10 @@ def run_simulation_with_activities(normalized_catalog, agents, bank, start_time,
             if agent.agent_id not in active_agents:
                 continue  # Skip agents that closed their accounts
 
-            behavior_type = active_agents[agent.agent_id]["behavior"]
+            behavior_activity_type = active_agents[agent.agent_id]["behavior"]
             current_balance = active_agents[agent.agent_id]["balance"]
-            print(f"Processing agent {agent.agent_id} with behavior {behavior_type}")
-            behavior = normalized_catalog[behavior_type]
+            print(f"Processing agent {agent.agent_id} with behavior {behavior_activity_type}")
+            behavior = normalized_catalog[behavior_activity_type]
             activities = behavior["activities"]
             time_limit = behavior["time_limit"]
             transition_matrix = behavior["transition_matrix"]
@@ -77,10 +77,10 @@ def run_simulation_with_activities(normalized_catalog, agents, bank, start_time,
                 agent_id=agent.agent_id, 
                 initial_balance=current_balance, 
                 timestamp=activity_time.strftime("%Y-%m-%d %H:%M:%S"),
-                behavior=behavior_type
+                behavior=behavior_activity_type
             )
-            current_activity.type = current_activity_type
-            current_activity.behavior= behavior_type
+            current_activity.activity_type = current_activity_type
+            current_activity.behavior= behavior_activity_type
             transaction_range = activities[current_activity_type]
             current_activity.amount = 0 if transaction_range == (0, 0) else random.randint(*transaction_range)
             current_activity.update_balance()
@@ -186,13 +186,13 @@ if __name__ == "__main__":
         description='Script for generating the dataset',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument('--nb_activities', help='Total number of activities to be generated', type=int, required=True)
-    parser.add_argument('--nb_agents', help='Number of legitimate agents', type=int, default=40)
+    parser.add_argument('--nb_activities', help='Total number of activities to be generated', activity_type=int, required=True)
+    parser.add_argument('--nb_agents', help='Number of legitimate agents', activity_type=int, default=40)
     # Following arguments aren't used now
-    #parser.add_argument('--n_legitimate_agent', help='Number of legitimate agents', type=int, default=2)
-    #parser.add_argument('--n_fraudulent_agent', help='Number of fraudulent agents', type=int, default=2)
-    #parser.add_argument('--pr_frauds', help='Percentage of frauds wanted in the dataset', type=float, default=0.01)
-    parser.add_argument('--data_folder', help='Where to save produced data', type=str, default='data')
+    #parser.add_argument('--n_legitimate_agent', help='Number of legitimate agents', activity_type=int, default=2)
+    #parser.add_argument('--n_fraudulent_agent', help='Number of fraudulent agents', activity_type=int, default=2)
+    #parser.add_argument('--pr_frauds', help='Percentage of frauds wanted in the dataset', activity_type=float, default=0.01)
+    parser.add_argument('--data_folder', help='Where to save produced data', activity_type=str, default='data')
     parser.add_argument('--start_time', help='Initial timestamp value for the generating the series (ISO 8601 format, example: "2025-01-06T12:00:00")', default=datetime.now())
     # Example: python src/simulator.py --nb_activities 1000 --n_legitimate_agent 3 --n_fraudulent_agent 1 --pr_fraud 0.3
     cfg = parser.parse_args()

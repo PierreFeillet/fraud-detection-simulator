@@ -1,4 +1,4 @@
-,agent_id,timestamp,initial_balance,type,granted,amount,balance,location,device,network,compromised_device,compromised_network
+,agent_id,timestamp,initial_balance,activity_type,granted,amount,balance,location,device,network,compromised_device,compromised_network
 0,0,2025-01-19 22:00:49,3726.3,Request New Card,True,0.0,3726.3,"New York, USA",Android,Public WiFi,0,0
 1,1,2025-01-19 22:44:49,2552.17,Max Out Credit,False,-5652.0,2552.17,"Los Angeles, USA",iPhone,Home WiFi,0,0
 2,2,2025-01-19 23:48:49,2730.26,Open Account,True,0.0,2730.26,"New York, USA",MacBook,Home WiFi,0,0

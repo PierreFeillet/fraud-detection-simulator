@@ -1,4 +1,4 @@
-,agent_id,timestamp,behavior,initial_balance,type,granted,amount,balance,location,device,network,compromised_device,compromised_network,fraud
+,agent_id,timestamp,behavior,initial_balance,activity_type,granted,amount,balance,location,device,network,compromised_device,compromised_network,fraud
 0,0,2025-01-20 17:40:06,legitimate,4037.6,Apply for Credit Card,True,0.0,4037.6,"Paris, France",MacBook,Public WiFi,0,1,0
 1,1,2025-01-20 18:00:06,synthetic_identity_fraud,1012.41,Apply for Credit Card,True,0.0,1012.41,"Tokyo, Japan",Windows Laptop,Public WiFi,0,0,1
 2,2,2025-01-20 18:13:06,identity_theft,1194.49,Change Phone,True,0.0,1194.49,"London, UK",Windows Laptop,Mobile Network,0,0,1

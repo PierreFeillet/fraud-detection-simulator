@@ -6,7 +6,7 @@
     "configurations": [
         {
             "name": "Python: Current File",
-            "type": "debugpy",
+            "activity_type": "debugpy",
             "request": "launch",
             "program": "${cwd}/src/simulator.py",
             "console": "integratedTerminal",
