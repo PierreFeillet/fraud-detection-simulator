@@ -3,21 +3,18 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 
-
-from extract_sequence import locations
-from extract_sequence import location_weights
-from extract_sequence import devices
-from extract_sequence import device_weights
-from extract_sequence import networks
-from extract_sequence import network_weights
-from extract_sequence import possible_transactions
+from catalog import devices
+from catalog import device_weights
+from catalog import networks
+from catalog import network_weights
+from catalog import possible_transactions
 
 from agent import Agent  # Import the Agent class
 
 class Activity(Agent):
     
     # Global dictionary for shared keys
-    activity_Dactivity_type = {
+    ACTIVITY_DTYPES = {
         "agent_id": "int16",
         "timestamp": "datetime64[ns]",
         "behavior": "category",
@@ -27,7 +24,7 @@ class Activity(Agent):
         "amount": "float32",
         "balance": "float32",
         #"merchant": "category",
-        "location": "category",
+        "country": "category",
         "device": "category",
         "network": "category",
         "compromised_device": "int8",
@@ -35,18 +32,18 @@ class Activity(Agent):
         "fraud": "int8"
     }
 
-    def __init__(self, agent_id, initial_balance, timestamp, behavior):
+    def __init__(self, agent_id, initial_balance, timestamp, behavior, country):
         # Initialize the parent class (Agent)
         super().__init__(agent_id, initial_balance)
         # activity-specific attributes
         self.timestamp = timestamp
         self.behavior = behavior
-        self.activity_type = activity_type
+        self.activity_type = ''
         #self.balance = self.initial_balance
         self.granted = True 
         self.amount = 0
        #self.merchant =  extract_merchant(self.activity_type) if self.amount !=0 else ''
-        self.location = np.random.choice(locations, p=location_weights)
+        self.country = country
         self.device = np.random.choice(devices, p=device_weights)
         self.network = np.random.choice(networks, p=network_weights)
         self.compromised_device = self.is_compromised()

@@ -7,8 +7,8 @@ from activity import Activity
 
 class BankActivities:
     def __init__(self, max_size):
-        self.dactivity_types = Activity.activity_Dactivity_type
-        self.activity_log = pd.DataFrame(columns=self.dactivity_types.keys()).asactivity_type(self.dactivity_types)
+        self.dtypes = Activity.ACTIVITY_DTYPES
+        self.activity_log = pd.DataFrame(columns=self.dtypes.keys()).astype(self.dtypes)
         self.buffer = []
         self.max_size = max_size
 
@@ -20,7 +20,7 @@ class BankActivities:
     def flush_activities(self):
         if self.buffer:
             try:
-                new_data = pd.DataFrame(self.buffer, columns=self.dactivity_types.keys()).asactivity_type(self.dactivity_types)
+                new_data = pd.DataFrame(self.buffer, columns=self.dtypes.keys()).astype(self.dtypes)
                 if len(self.activity_log) + len(new_data) > self.max_size:
                     remaining_space = self.max_size - len(self.activity_log)
                     new_data = new_data.iloc[:remaining_space]
