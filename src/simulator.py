@@ -6,6 +6,8 @@ import argparse
 from pprint import pprint
 import os
 import json
+import random
+from datetime import timedelta
 
 
 from sklearn.preprocessing import StandardScaler
@@ -17,94 +19,109 @@ from sklearn.svm import OneClassSVM
 from sklearn.impute import SimpleImputer
 from datetime import datetime, timedelta
 
-#from IPython import embed
+from IPython import embed
 
 #from legitimate_agent import LegitimateCustomer
 #from fraudulentster_agent import fraudulentster
 from activity import Activity
 from agent import Agent
 from bank import BankActivities
-from catalog import behavior_catalog, check_and_normalize_catalog
-# Function to generate a random country
-def generate_country():
-    return random.choice(COUNTRIES)
+from catalog import behavior_catalog, check_and_normalize_catalog, fraud_rates_by_country, locations,location_weights
 
-import random
-from datetime import timedelta
+def assign_agent_countries(agents):
+    """Assign agents to countries based on a predefined distribution."""
+    country_distribution = list(fraud_rates_by_country.keys())
+    country_weights = [1 / fraud_rates_by_country[c] for c in country_distribution]  # Inverse fraud rate
+    total_weight = sum(country_weights)
+    country_probabilities = [w / total_weight for w in country_weights]
 
-def run_simulation_with_activities(normalized_catalog, agents, bank, start_time, steps=100, flush_interval=100):
+    agent_countries = {
+        agent.agent_id: random.choices(country_distribution, country_probabilities)[0] for agent in agents
+    }
+    return agent_countries
+
+def run_simulation(fraudster_rate, normalized_catalog, agents, bank, start_time, steps=100, flush_interval=100, target_size=10**6):
+    
     activity_time = start_time
-    # Initialize active agents and their behavior types, and store the initial balance for each agent
-    active_agents = {agent.agent_id: {
-        "behavior": random.choice(list(normalized_catalog.keys())),
-        "balance": round(random.uniform(1000, 5000), 2),
-        "last_activity": None  # Store the last activity performed by the agent
-    } for agent in agents}
+    #agent_countries = assign_agent_countries(agents)  # Assign initial countries
+    active_agents = {}
+
+    # Initialize active agents
+    for agent in agents:
+        #country = agent_countries[agent.agent_id]
+        #fraud_probability = fraud_rates_by_country[country]
+        is_fraudulent = random.random() < fraudster_rate
+        behavior_type = get_random_fraud_behavior(normalized_catalog) if is_fraudulent else "legitimate"
+
+        active_agents[agent.agent_id] = {
+            "behavior": behavior_type,
+            #"residence_country": agent.residence_country, #will be used to extract probabilities of an activity made in a certain location
+            "balance": agent.initial_balance,
+            "last_activity": None
+        }
 
     for step in range(steps):
-        if len(bank.activity_log) >= bank.max_size:
-            print(f"Target generation of {bank.max_size} activities reached")
-            break  # Stop simulation if log is full
+        if len(bank.activity_log) >= target_size:
+            print(f"Target generation of {target_size} activities reached")
+            break
 
-        for agent in list(agents):  # Iterate over active agents
+        for agent in list(agents):  # Iterate over agents
             if agent.agent_id not in active_agents:
-                continue  # Skip agents that closed their accounts
+                continue  # Skip closed accounts
 
             behavior_type = active_agents[agent.agent_id]["behavior"]
-            current_balance = active_agents[agent.agent_id]["balance"]
-            print(f"Processing agent {agent.agent_id} with behavior {behavior_type}")
+            #country = active_agents[agent.agent_id]["country"]
+            #fraud_status = active_agents[agent.agent_id]["fraud"]
+
             behavior = normalized_catalog[behavior_type]
             activities = behavior["activities"]
             time_limit = behavior["time_limit"]
             transition_matrix = behavior["transition_matrix"]
 
-            # Select initial activity (excluding "Close Account") for step 0
-            if step == 0 or active_agents[agent.agent_id]["last_activity"] is None:
+            # Select an initial activity
+            if active_agents[agent.agent_id]["last_activity"] is None:
                 valid_activities = [act for act in activities.keys() if act != "Close Account"]
                 current_activity_type = random.choice(valid_activities) if valid_activities else None
             else:
-                # Predict the next activity for this agent using the Markov chain
                 current_activity_type = extract_activity_markov_chain(
                     active_agents[agent.agent_id]["last_activity"], activities, transition_matrix
                 )
-            
+
             if current_activity_type is None:
-                continue  # Skip if no valid activities exist
+                continue  
 
             delta = timedelta(minutes=random.randint(0, time_limit))
             activity_time += delta
             current_activity = Activity(
-                agent_id=agent.agent_id, 
-                initial_balance=current_balance, 
+                agent_id=agent.agent_id,
+                initial_balance=active_agents[agent.agent_id]["balance"],
                 timestamp=activity_time.strftime("%Y-%m-%d %H:%M:%S"),
-                behavior=behavior_type
+                behavior=behavior_type,
+                residence_country=agent.residence_country
             )
-            current_activity.type = current_activity_type
-            current_activity.behavior= behavior_type
+            current_activity.activity_type = current_activity_type
             transaction_range = activities[current_activity_type]
             current_activity.amount = 0 if transaction_range == (0, 0) else random.randint(*transaction_range)
             current_activity.update_balance()
-            current_activity.fraud = behavior['fraud']
+            current_activity.fraud = normalized_catalog[behavior_type]['fraud']
 
-            # Update the agent's balance after the activity is performed
             active_agents[agent.agent_id]["balance"] = current_activity.balance
-
-            # Store the last activity performed by the agent
             active_agents[agent.agent_id]["last_activity"] = current_activity_type
-
-            print(f"Agent {agent.agent_id} performed {current_activity_type} with new balance {current_activity.balance}")
             bank.add_activity(current_activity)
 
+            # If the agent closes their account, remove them from active agents
             if current_activity_type == "Close Account":
-                print(f"Agent {agent.agent_id} closed their account. Removing from future steps.")
-                del active_agents[agent.agent_id]  # Remove agent from future iterations
-                continue  # Skip Markov chain transition
+                del active_agents[agent.agent_id]
 
-        if step % flush_interval == 0:
+        # Check if the buffer size has reached 100 and flush if necessary
+        if len(bank.buffer) >= flush_interval:
             bank.flush_activities()
             print(f"Flushed transactions at step {step}")
-
+    
+    bank.last_activity_time = activity_time
+    # Final flush after simulation ends
     bank.flush_activities()
+    print(f"Final flush completed.")
 
 
 
@@ -170,16 +187,29 @@ def format_number(nb_global_activities):
     formated_number = f"{int(value) if value.is_integer() else round(value, 1)}{suffix}"
     return formated_number
 
-def generate_dataset(nb_activities, nb_agents, data_folder, start_time, pr_fraudulent=0.3):
-    agents = [Agent(agent_id=i, initial_balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_agents)]
+def generate_dataset(fraudster_rate, nb_activities, min_n_agents, data_folder, start_time, target_size):
+    initial_agents = [Agent(agent_id=i, initial_balance=round(random.uniform(1000, 5000), 2), residence_country=np.random.choice(locations, p=location_weights)) for i in range(min_n_agents)]
     #fraudulent_agents = [Agent(agent_id=i + nb_legitimate_agents, initial_balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_fraudulent_agents)]
-
     bank_with_activities = BankActivities(nb_activities)
-    run_simulation_with_activities(normalized_catalog=normalized_catalog, agents=agents, bank=bank_with_activities, start_time=start_time, steps=1000)
-    
-    activity_log_with_fraudulent_features = bank_with_activities.activity_log
+    run_simulation(fraudster_rate=fraudster_rate, normalized_catalog=normalized_catalog, agents=initial_agents, bank=bank_with_activities, start_time=start_time, target_size=nb_activities)
+    last_activity_time = pd.to_datetime(bank_with_activities.last_activity_time)
+    # Check if we need to generate new agents
+    count = 1
+    print(f"Generated number of actitivities: {len(bank_with_activities.activity_log)}, required {target_size}")
+    while(len(bank_with_activities.activity_log)<target_size):
+        print(f"Generating new agents to reach the target size")
+        print(f"Restarting loop over steps..")
+        # Get last activity timestamp
+        new_agents = [Agent(agent_id=min_n_agents + i, initial_balance=round(random.uniform(1000, 5000), 2), residence_country=np.random.choice(locations, p=location_weights)) for i in range(min_n_agents)]
+        run_simulation(fraudster_rate=fraudster_rate,normalized_catalog=normalized_catalog, agents=new_agents, bank=bank_with_activities, start_time=last_activity_time, target_size=nb_activities)
+        count = count +1
+        print(f"Had to generate {count*min_n_agents} new agents iterating {count} times over the minimum number of agents. \nConsider increasing the minimum number of agents if too many agents are created.")
+        print(f"Generated number of actitivities: {len(bank_with_activities.activity_log)}, required {target_size}")
+
     os.makedirs(data_folder, exist_ok=True)
-    activity_log_with_fraudulent_features.to_csv(f"{data_folder}/fraud_simulation_activities_{format_number(nb_activities)}.csv", index=True)
+    file_name= f'fraud_simulation_activities_{format_number(nb_activities)}.csv'
+    bank_with_activities.activity_log.to_csv(f"{data_folder}/{file_name}", index=True)
+    print(f"Data file saved as {data_folder}/{file_name} ")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -187,11 +217,11 @@ if __name__ == "__main__":
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument('--nb_activities', help='Total number of activities to be generated', type=int, required=True)
-    parser.add_argument('--nb_agents', help='Number of legitimate agents', type=int, default=40)
-    # Following arguments aren't used now
-    #parser.add_argument('--n_legitimate_agent', help='Number of legitimate agents', type=int, default=2)
-    #parser.add_argument('--n_fraudulent_agent', help='Number of fraudulent agents', type=int, default=2)
-    #parser.add_argument('--pr_frauds', help='Percentage of frauds wanted in the dataset', type=float, default=0.01)
+    parser.add_argument('--min_n_agents', help='Number of legitimate agents', type=int, default=40)
+    parser.add_argument('--fraudster_rate', help='Rate of fraudulent agents', type=float, default=0.1) # Default is High Risk
+    #Low-Fraud Environment (Highly Secure Banking System): 0.5% - 2% fraudsters.
+    #Moderate Fraud Risk (General Banking, E-commerce): 2% - 5% fraudsters.
+    #High-Risk Scenarios (Less Secure Systems, Money Laundering Simulations): 5% - 10% fraudsters.
     parser.add_argument('--data_folder', help='Where to save produced data', type=str, default='data')
     parser.add_argument('--start_time', help='Initial timestamp value for the generating the series (ISO 8601 format, example: "2025-01-06T12:00:00")', default=datetime.now())
     # Example: python src/simulator.py --nb_activities 1000 --n_legitimate_agent 3 --n_fraudulent_agent 1 --pr_fraud 0.3
@@ -211,7 +241,7 @@ if __name__ == "__main__":
     #n_max_per_legitimate_A = int(n_legitimate_activities/cfg.n_legitimate_agent)
     #n_max_per_fraudster_A = int(n_fraudulent_activities/cfg.n_fraudulent_agent)
     
-    activity_log_with_fraudulent_features = generate_dataset(nb_activities=cfg.nb_activities, nb_agents=cfg.nb_agents, data_folder=cfg.data_folder, start_time=cfg.start_time)
+    activity_log_with_fraudulent_features = generate_dataset(fraudster_rate=cfg.fraudster_rate, nb_activities=cfg.nb_activities, min_n_agents=cfg.min_n_agents, data_folder=cfg.data_folder, start_time=cfg.start_time, target_size=cfg.nb_activities)
     
 
     # Benchmark anomaly detection models

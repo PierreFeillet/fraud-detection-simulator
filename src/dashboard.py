@@ -38,8 +38,8 @@ app.layout = html.Div([
     html.Div(id='summary-stats', style={'font-family': 'IBM Plex Sans'}),
     dcc.Dropdown(id='agent-dropdown', placeholder='Select Agent ID', style={'font-family': 'IBM Plex Sans'}),
     dcc.Tabs([
-        dcc.Tab(label='activity Types', children=[
-            dcc.Graph(id='activity-type-graph'),
+        dcc.Tab(label='activity', children=[
+            dcc.Graph(id='activity-activity_type-graph'),
             html.Div(id='activity-behavior-graphs', style={'margin-top': '20px'})
 
         ], style={'font-family': 'IBM Plex Sans'}),
@@ -65,7 +65,7 @@ def update_dropdown(selected_agent):
 
 @app.callback(
     [Output('summary-stats', 'children'),
-     Output('activity-type-graph', 'figure'),
+     Output('activity-activity_type-graph', 'figure'),
      Output('fraud-device-graph', 'figure'),
      Output('fraud-network-graph', 'figure'),
 
@@ -91,8 +91,8 @@ def update_dashboard(selected_agent):
         html.H4(f"Fraud Rate: {fraud_rate:.2f}%")
     ], style={'font-family': 'IBM Plex Sans'})
     
-    # activity Types Distribution
-    type_fig = px.histogram(filtered_df, x='type', color='fraud', barmode='group', histnorm='probability', title='Activity Types Distribution by fraud (1)/not fraud(0)')
+    # activity  Distribution
+    activity_type_fig = px.histogram(filtered_df, x='activity_type', color='fraud', barmode='group', histnorm='probability', title='Activity Distribution by fraud (1)/not fraud(0)')
     
     # Fraud by Device
     device_fig = px.histogram(filtered_df, x='device', color='fraud', barmode='group', histnorm='probability', title='Fraud Occurrence by Device')
@@ -122,7 +122,7 @@ def update_dashboard(selected_agent):
                        x='timestamp', y='count', title=f'Activities Over Time for Agent {selected_agent if selected_agent != "all" else "All"}')
     
 
-    # Normalized Histograms for each behavior type
+    # Normalized Histograms for each behavior activity_type
     behavior_figs = []
     unique_behaviors = filtered_df['behavior'].unique()
     '''
@@ -130,36 +130,36 @@ def update_dashboard(selected_agent):
         behavior_df = filtered_df[filtered_df['behavior'] == behavior]
         behavior_fig = px.histogram(
             behavior_df,
-            x='type',
+            x='activity_type',
             color='fraud',
             barmode='group',
             histnorm='probability',  # Normalize to show frequencies
-            title=f"Normalized Activity Type Distribution for Behavior: {behavior}"
+            title=f"Normalized Activity activity_type Distribution for Behavior: {behavior}"
         )
         behavior_fig.update_layout(
             yaxis_title='Frequency',  # Update the y-axis label for clarity
-            xaxis_title='Activity type'
+            xaxis_title='Activity activity_type'
         )
         behavior_figs.append(html.Div([
             dcc.Graph(figure=behavior_fig)
         ], style={'margin-bottom': '20px'}))
     '''
-    # Overlaid activity Types Distribution by Behavior
+    # Overlaid activity  Distribution by Behavior
     overlay_fig = px.histogram(
         filtered_df,
-        x='type',
+        x='activity_type',
         color='behavior',  # Different colors for each behavior
         barmode='group',  # Overlay histograms
         histnorm='probability',  # Normalize to show frequencies
-        title='Activity Types by Behavior'
+        title='Activity by Behavior'
     )
     overlay_fig.update_layout(
-        xaxis_title='Activity Type',
+        xaxis_title='Activity activity_type',
         yaxis_title='Frequency',
         legend_title='Behavior'
     )
     
-    return summary, type_fig, device_fig, network_fig, time_fig, [dcc.Graph(figure=overlay_fig)] + behavior_figs
+    return summary, activity_type_fig, device_fig, network_fig, time_fig, [dcc.Graph(figure=overlay_fig)] + behavior_figs
 
 
 

@@ -16,7 +16,7 @@ def validate_balance(csv_path):
     # Read the CSV into a DataFrame
     df = pd.read_csv(csv_path)
 
-    # Ensure numerical columns are of correct types
+    # Ensure numerical columns are of correct activity_types
     numeric_columns = ["initial_balance", "amount", "balance"]
     for col in numeric_columns:
         df[col] = pd.to_numeric(df[col], errors="coerce")

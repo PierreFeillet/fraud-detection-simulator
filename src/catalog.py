@@ -129,6 +129,34 @@ behavior_catalog = {
     }
 }
 
+# Example fraud rates by country (percent of fraudulent transactions)
+fraud_rates_by_country = {
+    "Nigeria": 0.25,      # 25% probability of an activity being fraudulent
+    "Russia": 0.20,       # 20%
+    "China": 0.18,        # 18%
+    "India": 0.15,        # 15%
+    "Brazil": 0.12,       # 12%
+    "USA": 0.08,          # 8%
+    "UK": 0.06,           # 6%
+    "Germany": 0.05,      # 5%
+    "France": 0.04,       # 4%
+    "Canada": 0.03        # 3%
+}
+# Location:
+locations = ["USA", "UK", "China", "Japan", "France", "Germany"]
+# Define location weights (if you want some locations to appear more frequently)
+location_weights = [0.3, 0.2, 0.15, 0.15, 0.1, 0.1]  # Adjust these weights as needed
+
+# Devices and device weights
+devices = ["iPhone", "Android", "Windows Laptop", "MacBook", "Linux PC", "iPad"]
+device_weights = [0.3, 0.25, 0.2, 0.15, 0.05, 0.05]  # Weights representing how frequently each device is used
+
+# Networks and network weights
+networks = ["Home WiFi", "Public WiFi", "Mobile Network", "Corporate Network"]
+network_weights = [0.4, 0.3, 0.2, 0.1]  # Weights indicating the frequency of each network
+
+
+
 
 def check_and_normalize_catalog(behavior_catalog, output_file="src/normalized_catalog"):
     #os.makedirs(output_dir, exist_ok=True)  # Ensure directory exists
@@ -174,10 +202,10 @@ def check_and_normalize_catalog(behavior_catalog, output_file="src/normalized_ca
     return normalized_catalog
 
 
-def simulate_markov_chain(start_time, behavior_type, n_activitiy=20):
-    activities = behavior_catalog[behavior_type]["activities"]
-    transition_matrix = behavior_catalog[behavior_type]["transition_matrix"]
-    time_limit = behavior_catalog[behavior_type]["time_limit"]
+def simulate_markov_chain(start_time, behavior_activity_type, n_activitiy=20):
+    activities = behavior_catalog[behavior_activity_type]["activities"]
+    transition_matrix = behavior_catalog[behavior_activity_type]["transition_matrix"]
+    time_limit = behavior_catalog[behavior_activity_type]["time_limit"]
     activity_sequence = []
 
     current_activity = random.choice(list(activities.keys()))
@@ -224,7 +252,7 @@ normalized_catalog = check_and_normalize_catalog(behavior_catalog)
 
 
 '''
-# Define behavior types and their corresponding activities
+# Define behavior activity_types and their corresponding activities
 behavior_activities = {
     "normal": [
         "Open Account", "Deposit Funds", "Make Purchase", "Pay Bills", 

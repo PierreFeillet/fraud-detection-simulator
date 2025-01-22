@@ -1,3 +1,7 @@
+# Big files
+data/*M.csv
+data/fraud_simulation_activities_100K.csv
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -147,11 +151,11 @@ fraud_env/
 .dmypy.json
 dmypy.json
 
-# Pyre type checker
+# Pyre activity_type checker
 .pyre/
 
-# pytype static type analyzer
-.pytype/
+# pyactivity_type static activity_type analyzer
+.pyactivity_type/
 
 # Cython debug symbols
 cython_debug/

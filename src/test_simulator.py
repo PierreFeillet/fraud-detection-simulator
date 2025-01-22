@@ -7,13 +7,13 @@ class TestFraudDetectionSimulator(unittest.TestCase):
     def test_legitimate_customer_transaction(self):
         agent = LegitimateCustomer(agent_id=1, balance=1000)
         transaction = agent.generate_transaction()
-        self.assertIn(transaction['type'], ['deposit', 'withdrawal'])
+        self.assertIn(transaction['activity_type'], ['deposit', 'withdrawal'])
         self.assertGreaterEqual(agent.balance, 0)
 
     def test_fraudster_commit_fraud(self):
         agent = Fraudster(agent_id=3, balance=5000)
         fraud = agent.commit_fraud()
-        self.assertEqual(fraud['type'], 'fraud')
+        self.assertEqual(fraud['activity_type'], 'fraud')
         self.assertLess(agent.balance, 5000)  # Balance should decrease due to fraud
     
     def test_simulation_runs(self):
