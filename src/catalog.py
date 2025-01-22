@@ -31,7 +31,6 @@ behavior_catalog = {
         "time_limit": 180,  # Maximum 3 hours between events
         "fraud": 0,
     },
-
     "identity_theft": {
         "activities": {
             "Failed Login": (0, 0),                  # No transaction

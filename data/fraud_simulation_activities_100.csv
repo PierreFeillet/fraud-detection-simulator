@@ -1,101 +1,101 @@
-,agent_id,timestamp,behavior,initial_balance,activity_type,granted,amount,balance,country,device,network,compromised_device,compromised_network,fraud
-0,0,2025-01-21 23:07:40,legitimate,2678.26,Open Account,True,0.0,2678.26,,MacBook,Mobile Network,0,0,0
-1,1,2025-01-21 23:23:40,legitimate,4938.39,Review activityments,True,0.0,4938.39,,iPhone,Corporate Network,0,0,0
-2,2,2025-01-22 00:08:40,legitimate,4533.1,Apply for Loan,True,0.0,4533.1,,Linux PC,Public WiFi,0,0,0
-3,3,2025-01-22 01:39:40,legitimate,2695.49,Deposit Funds,True,3616.0,6311.49,,MacBook,Home WiFi,0,0,0
-4,4,2025-01-22 04:00:40,legitimate,1931.77,Apply for Credit Card,True,0.0,1931.77,,iPhone,Corporate Network,0,0,0
-5,5,2025-01-22 04:45:40,legitimate,2685.88,Review activityments,True,0.0,2685.88,,MacBook,Public WiFi,0,0,0
-6,6,2025-01-22 06:36:40,legitimate,4800.05,Apply for Loan,True,0.0,4800.05,,iPhone,Corporate Network,0,0,0
-7,7,2025-01-22 07:27:40,legitimate,2624.81,Invest Money,False,-6293.0,2624.81,,iPhone,Home WiFi,0,0,0
-8,8,2025-01-22 08:55:40,legitimate,2909.58,Invest Money,False,-29754.0,2909.58,,Windows Laptop,Public WiFi,0,0,0
-9,9,2025-01-22 09:43:40,legitimate,2738.25,Invest Money,False,-31501.0,2738.25,,Windows Laptop,Home WiFi,0,0,0
-10,10,2025-01-22 12:23:40,legitimate,2924.51,Apply for Credit Card,True,0.0,2924.51,,MacBook,Home WiFi,0,0,0
-11,11,2025-01-22 12:48:40,identity_theft,4223.5,Failed Login,True,0.0,4223.5,,Linux PC,Home WiFi,0,0,1
-12,12,2025-01-22 12:53:40,legitimate,2918.12,Transfer Funds,True,-1343.0,1575.12,,iPhone,Corporate Network,0,0,0
-13,13,2025-01-22 13:29:40,legitimate,2331.04,Make Purchase,True,-786.0,1545.04,,Android,Home WiFi,0,1,0
-14,14,2025-01-22 13:58:40,legitimate,3051.12,Deposit Funds,True,9971.0,13022.12,,Linux PC,Home WiFi,0,0,0
-15,15,2025-01-22 15:45:40,legitimate,3000.4,Apply for Loan,True,0.0,3000.4,,MacBook,Home WiFi,0,0,0
-16,16,2025-01-22 17:00:40,legitimate,1014.08,Transfer Funds,True,-783.0,231.08,,Windows Laptop,Home WiFi,0,0,0
-17,17,2025-01-22 19:40:40,legitimate,2563.42,Invest Money,False,-16817.0,2563.42,,iPad,Corporate Network,0,0,0
-18,18,2025-01-22 20:23:40,legitimate,1205.83,Transfer Funds,False,-4680.0,1205.83,,MacBook,Public WiFi,0,0,0
-19,19,2025-01-22 21:27:40,legitimate,3148.22,Open Account,True,0.0,3148.22,,MacBook,Public WiFi,0,0,0
-20,20,2025-01-22 23:53:40,legitimate,2178.87,Deposit Funds,True,2926.0,5104.87,,MacBook,Home WiFi,0,0,0
-21,21,2025-01-23 02:25:40,legitimate,2685.87,Review activityments,True,0.0,2685.87,,iPhone,Public WiFi,0,0,0
-22,22,2025-01-23 05:16:40,legitimate,3314.24,Transfer Funds,False,-4732.0,3314.24,,MacBook,Mobile Network,0,0,0
-23,23,2025-01-23 05:26:40,legitimate,1320.5,Transfer Funds,False,-1437.0,1320.5,,Linux PC,Home WiFi,0,0,0
-24,24,2025-01-23 06:16:40,legitimate,1083.11,Review activityments,True,0.0,1083.11,,Android,Home WiFi,0,0,0
-25,25,2025-01-23 08:04:40,legitimate,2672.45,Pay Bills,True,-1400.0,1272.45,,iPhone,Public WiFi,0,0,0
-26,26,2025-01-23 09:30:40,legitimate,1621.39,Apply for Credit Card,True,0.0,1621.39,,Windows Laptop,Public WiFi,1,0,0
-27,27,2025-01-23 09:43:40,legitimate,1112.91,Apply for Credit Card,True,0.0,1112.91,,iPhone,Home WiFi,0,0,0
-28,28,2025-01-23 10:34:40,legitimate,4322.94,Review activityments,True,0.0,4322.94,,iPhone,Public WiFi,0,0,0
-29,29,2025-01-23 12:20:40,legitimate,4267.17,Open Account,True,0.0,4267.17,,Windows Laptop,Public WiFi,0,0,0
-30,30,2025-01-23 13:05:40,legitimate,1525.85,Deposit Funds,True,1107.0,2632.85,,Windows Laptop,Home WiFi,1,0,0
-31,31,2025-01-23 13:44:40,synthetic_identity_fraud,4823.96,Apply for Loan,True,0.0,4823.96,,Android,Home WiFi,0,0,1
-32,32,2025-01-23 14:14:40,identity_theft,1981.29,Change Password,True,0.0,1981.29,,iPhone,Home WiFi,0,0,1
-33,33,2025-01-23 14:32:40,legitimate,2125.6,Make Purchase,True,-735.0,1390.6,,Android,Home WiFi,0,1,0
-34,34,2025-01-23 16:02:40,legitimate,3952.54,Transfer Funds,False,-4829.0,3952.54,,MacBook,Mobile Network,0,0,0
-35,35,2025-01-23 16:41:40,legitimate,3076.82,Review activityments,True,0.0,3076.82,,iPhone,Home WiFi,0,0,0
-36,36,2025-01-23 16:43:40,legitimate,4208.95,Make Purchase,True,-720.0,3488.95,,MacBook,Public WiFi,0,0,0
-37,37,2025-01-23 18:49:40,legitimate,1445.85,Apply for Credit Card,True,0.0,1445.85,,iPhone,Mobile Network,0,0,0
-38,38,2025-01-23 19:30:40,legitimate,1928.46,Review activityments,True,0.0,1928.46,,MacBook,Public WiFi,0,0,0
-39,39,2025-01-23 21:36:40,legitimate,4704.86,Transfer Funds,True,-86.0,4618.86,,iPhone,Mobile Network,0,0,0
-40,0,2025-01-23 22:58:40,legitimate,2678.26,Make Purchase,True,-974.0,1704.26,,Android,Home WiFi,1,0,0
-41,1,2025-01-24 00:43:40,legitimate,4938.39,Review activityments,True,0.0,4938.39,,iPhone,Public WiFi,0,0,0
-42,2,2025-01-24 02:51:40,legitimate,4533.1,Apply for Loan,True,0.0,4533.1,,iPhone,Mobile Network,0,0,0
-43,3,2025-01-24 04:48:40,legitimate,6311.49,Deposit Funds,True,7642.0,13953.49,,iPad,Home WiFi,0,0,0
-44,4,2025-01-24 06:29:40,legitimate,1931.77,Transfer Funds,False,-3428.0,1931.77,,Android,Home WiFi,0,0,0
-45,5,2025-01-24 08:51:40,legitimate,2685.88,Pay Bills,True,-906.0,1779.88,,Android,Public WiFi,0,0,0
-46,6,2025-01-24 10:42:40,legitimate,4800.05,Apply for Loan,True,0.0,4800.05,,Windows Laptop,Home WiFi,0,0,0
-47,7,2025-01-24 11:31:40,legitimate,2624.81,Transfer Funds,True,-1587.0,1037.81,,MacBook,Home WiFi,0,0,0
-48,8,2025-01-24 13:52:40,legitimate,2909.58,Invest Money,True,-1127.0,1782.58,,iPhone,Home WiFi,0,0,0
-49,9,2025-01-24 15:29:40,legitimate,2738.25,Review activityments,True,0.0,2738.25,,Windows Laptop,Public WiFi,0,0,0
-50,10,2025-01-24 16:44:40,legitimate,2924.51,Apply for Credit Card,True,0.0,2924.51,,MacBook,Public WiFi,0,0,0
-51,11,2025-01-24 16:48:40,identity_theft,4223.5,Failed Login,True,0.0,4223.5,,Android,Home WiFi,0,0,1
-52,12,2025-01-24 18:14:40,legitimate,1575.12,Make Purchase,True,-203.0,1372.12,,iPhone,Corporate Network,0,0,0
-53,13,2025-01-24 20:31:40,legitimate,1545.04,Make Purchase,True,-723.0,822.04,,Windows Laptop,Home WiFi,0,0,0
-54,14,2025-01-24 21:40:40,legitimate,13022.12,Make Purchase,True,-350.0,12672.12,,MacBook,Home WiFi,0,0,0
-55,15,2025-01-24 23:24:40,legitimate,3000.4,Transfer Funds,True,-494.0,2506.4,,iPhone,Public WiFi,0,0,0
-56,16,2025-01-25 00:59:40,legitimate,231.08,Pay Bills,False,-4834.0,231.08,,iPhone,Home WiFi,0,0,0
-57,17,2025-01-25 01:52:40,legitimate,2563.42,Invest Money,False,-45542.0,2563.42,,Android,Home WiFi,0,0,0
-58,18,2025-01-25 01:59:40,legitimate,1205.83,Pay Bills,False,-4834.0,1205.83,,iPhone,Mobile Network,0,0,0
-59,19,2025-01-25 03:15:40,legitimate,3148.22,Deposit Funds,True,1310.0,4458.22,,MacBook,Corporate Network,0,0,0
-60,20,2025-01-25 05:01:40,legitimate,5104.87,Deposit Funds,True,2049.0,7153.87,,Windows Laptop,Home WiFi,0,0,0
-61,21,2025-01-25 07:58:40,legitimate,2685.87,Review activityments,True,0.0,2685.87,,Android,Home WiFi,1,0,0
-62,22,2025-01-25 09:38:40,legitimate,3314.24,Deposit Funds,True,8445.0,11759.24,,Android,Mobile Network,0,0,0
-63,23,2025-01-25 11:14:40,legitimate,1320.5,Make Purchase,True,-489.0,831.5,,Windows Laptop,Public WiFi,0,0,0
-64,24,2025-01-25 12:57:40,legitimate,1083.11,Deposit Funds,True,8876.0,9959.11,,Windows Laptop,Public WiFi,0,0,0
-65,25,2025-01-25 13:22:40,legitimate,1272.45,Pay Bills,False,-3116.0,1272.45,,MacBook,Home WiFi,0,0,0
-66,26,2025-01-25 14:21:40,legitimate,1621.39,Pay Bills,False,-3908.0,1621.39,,Android,Public WiFi,0,0,0
-67,27,2025-01-25 16:54:40,legitimate,1112.91,Pay Bills,False,-3992.0,1112.91,,Linux PC,Public WiFi,0,0,0
-68,28,2025-01-25 19:01:40,legitimate,4322.94,Deposit Funds,True,864.0,5186.94,,iPhone,Home WiFi,0,0,0
-69,29,2025-01-25 20:56:40,legitimate,4267.17,Review activityments,True,0.0,4267.17,,Android,Mobile Network,0,0,0
-70,30,2025-01-25 23:03:40,legitimate,2632.85,Make Purchase,True,-694.0,1938.85,,MacBook,Home WiFi,0,0,0
-71,31,2025-01-25 23:08:40,synthetic_identity_fraud,4823.96,Apply for Loan,True,0.0,4823.96,,Linux PC,Mobile Network,0,0,1
-72,32,2025-01-25 23:27:40,identity_theft,1981.29,Suspicious Login,True,0.0,1981.29,,Windows Laptop,Home WiFi,0,0,1
-73,33,2025-01-26 01:09:40,legitimate,1390.6,Make Purchase,True,-693.0,697.6,,Android,Corporate Network,1,0,0
-74,34,2025-01-26 01:41:40,legitimate,3952.54,Pay Bills,True,-999.0,2953.54,,Android,Public WiFi,0,0,0
-75,35,2025-01-26 04:39:40,legitimate,3076.82,Review activityments,True,0.0,3076.82,,iPhone,Home WiFi,0,0,0
-76,36,2025-01-26 05:00:40,legitimate,3488.95,Make Purchase,True,-764.0,2724.95,,Windows Laptop,Mobile Network,0,0,0
-77,37,2025-01-26 06:26:40,legitimate,1445.85,Transfer Funds,False,-2393.0,1445.85,,MacBook,Home WiFi,0,0,0
-78,38,2025-01-26 09:21:40,legitimate,1928.46,Close Account,True,0.0,1928.46,,MacBook,Mobile Network,0,0,0
-79,39,2025-01-26 10:04:40,legitimate,4618.86,Apply for Credit Card,True,0.0,4618.86,,Android,Home WiFi,0,0,0
-80,0,2025-01-26 12:43:40,legitimate,1704.26,Transfer Funds,False,-1961.0,1704.26,,iPhone,Home WiFi,0,0,0
-81,1,2025-01-26 14:34:40,legitimate,4938.39,Pay Bills,True,-351.0,4587.39,,Windows Laptop,Home WiFi,0,0,0
-82,2,2025-01-26 17:29:40,legitimate,4533.1,Apply for Loan,True,0.0,4533.1,,MacBook,Home WiFi,0,0,0
-83,3,2025-01-26 18:21:40,legitimate,13953.49,Pay Bills,True,-573.0,13380.49,,Android,Home WiFi,0,0,0
-84,4,2025-01-26 21:20:40,legitimate,1931.77,Deposit Funds,True,7060.0,8991.77,,iPhone,Home WiFi,0,0,0
-85,5,2025-01-26 23:31:40,legitimate,1779.88,Pay Bills,True,-1709.0,70.88,,Linux PC,Public WiFi,0,0,0
-86,6,2025-01-27 01:22:40,legitimate,4800.05,Make Purchase,True,-2.0,4798.05,,iPhone,Home WiFi,0,0,0
-87,7,2025-01-27 03:53:40,legitimate,1037.81,Transfer Funds,False,-4167.0,1037.81,,Android,Mobile Network,0,0,0
-88,8,2025-01-27 06:43:40,legitimate,1782.58,Invest Money,False,-30558.0,1782.58,,Android,Public WiFi,1,0,0
-89,9,2025-01-27 07:19:40,legitimate,2738.25,Close Account,True,0.0,2738.25,,Linux PC,Public WiFi,1,0,0
-90,10,2025-01-27 10:16:40,legitimate,2924.51,Pay Bills,False,-3270.0,2924.51,,Android,Mobile Network,0,0,0
-91,11,2025-01-27 10:22:40,identity_theft,4223.5,Suspicious Login,True,0.0,4223.5,,MacBook,Public WiFi,0,0,1
-92,12,2025-01-27 10:29:40,legitimate,1372.12,Apply for Loan,True,0.0,1372.12,,Windows Laptop,Home WiFi,0,0,0
-93,13,2025-01-27 13:02:40,legitimate,822.04,Make Purchase,True,-759.0,63.04,,Android,Mobile Network,0,0,0
-94,14,2025-01-27 14:00:40,legitimate,12672.12,Apply for Loan,True,0.0,12672.12,,Windows Laptop,Home WiFi,0,1,0
-95,15,2025-01-27 14:04:40,legitimate,2506.4,Transfer Funds,True,-1851.0,655.4,,iPhone,Public WiFi,0,0,0
-96,16,2025-01-27 16:10:40,legitimate,231.08,Pay Bills,False,-1212.0,231.08,,Android,Public WiFi,0,0,0
-97,17,2025-01-27 16:53:40,legitimate,2563.42,Pay Bills,True,-650.0,1913.42,,MacBook,Corporate Network,0,0,0
-98,18,2025-01-27 18:44:40,legitimate,1205.83,Make Purchase,True,-843.0,362.83,,Android,Mobile Network,0,0,0
-99,19,2025-01-27 21:35:40,legitimate,4458.22,Review activityments,True,0.0,4458.22,,iPhone,Mobile Network,0,0,0
+agent_id,timestamp,behavior,initial_balance,activity_type,granted,amount,balance,residence_country,device,network,compromised_device,compromised_network,fraud
+0,2025-01-22 15:05:18,legitimate,2510.37,Open Account,True,0.0,2510.37,Japan,iPhone,Mobile Network,0,0,0
+1,2025-01-22 17:37:18,legitimate,1597.72,Apply for Credit Card,True,0.0,1597.72,USA,iPhone,Mobile Network,0,0,0
+2,2025-01-22 18:38:18,legitimate,4873.65,Transfer Funds,True,-2882.0,1991.65,UK,Windows Laptop,Public WiFi,0,0,0
+0,2025-01-22 20:24:18,legitimate,2510.37,Deposit Funds,True,3955.0,6465.37,Japan,iPhone,Home WiFi,0,0,0
+1,2025-01-22 21:23:18,legitimate,1597.72,Apply for Loan,True,0.0,1597.72,USA,Windows Laptop,Public WiFi,0,0,0
+2,2025-01-22 21:50:18,legitimate,1991.65,Deposit Funds,True,552.0,2543.65,UK,Windows Laptop,Home WiFi,0,0,0
+0,2025-01-22 22:39:18,legitimate,6465.37,Close Account,True,0.0,6465.37,Japan,Windows Laptop,Home WiFi,0,0,0
+1,2025-01-23 01:27:18,legitimate,1597.72,Apply for Loan,True,0.0,1597.72,USA,iPhone,Public WiFi,0,0,0
+2,2025-01-23 04:20:18,legitimate,2543.65,Deposit Funds,True,9861.0,12404.65,UK,Android,Corporate Network,0,0,0
+1,2025-01-23 07:12:18,legitimate,1597.72,Invest Money,False,-49175.0,1597.72,USA,MacBook,Home WiFi,1,0,0
+2,2025-01-23 09:49:18,legitimate,12404.65,Invest Money,False,-42686.0,12404.65,UK,Windows Laptop,Home WiFi,0,0,0
+1,2025-01-23 10:05:18,legitimate,1597.72,Apply for Loan,True,0.0,1597.72,USA,MacBook,Public WiFi,0,0,0
+2,2025-01-23 11:43:18,legitimate,12404.65,Transfer Funds,True,-4284.0,8120.65,UK,MacBook,Mobile Network,0,0,0
+1,2025-01-23 14:23:18,legitimate,1597.72,Close Account,True,0.0,1597.72,USA,Windows Laptop,Home WiFi,0,0,0
+2,2025-01-23 15:58:18,legitimate,8120.65,Transfer Funds,True,-758.0,7362.65,UK,Android,Mobile Network,0,0,0
+2,2025-01-23 17:46:18,legitimate,7362.65,Transfer Funds,True,-4088.0,3274.65,UK,Linux PC,Home WiFi,0,0,0
+2,2025-01-23 18:05:18,legitimate,3274.65,Transfer Funds,False,-4075.0,3274.65,UK,Android,Home WiFi,0,0,0
+2,2025-01-23 18:35:18,legitimate,3274.65,Transfer Funds,True,-2217.0,1057.65,UK,Windows Laptop,Public WiFi,0,0,0
+2,2025-01-23 19:31:18,legitimate,1057.65,Apply for Credit Card,True,0.0,1057.65,UK,Windows Laptop,Corporate Network,0,0,0
+2,2025-01-23 21:42:18,legitimate,1057.65,Apply for Credit Card,True,0.0,1057.65,UK,iPhone,Home WiFi,0,0,0
+2,2025-01-23 23:22:18,legitimate,1057.65,Pay Bills,False,-1110.0,1057.65,UK,Android,Home WiFi,0,0,0
+2,2025-01-24 01:06:18,legitimate,1057.65,Transfer Funds,False,-1383.0,1057.65,UK,iPhone,Home WiFi,0,0,0
+2,2025-01-24 01:18:18,legitimate,1057.65,Make Purchase,True,-598.0,459.65,UK,Windows Laptop,Home WiFi,0,0,0
+2,2025-01-24 01:19:18,legitimate,459.65,Make Purchase,False,-651.0,459.65,UK,Android,Home WiFi,0,0,0
+2,2025-01-24 01:30:18,legitimate,459.65,Make Purchase,False,-742.0,459.65,UK,iPhone,Public WiFi,0,0,0
+2,2025-01-24 02:14:18,legitimate,459.65,Pay Bills,False,-4445.0,459.65,UK,iPhone,Mobile Network,0,0,0
+2,2025-01-24 03:49:18,legitimate,459.65,Pay Bills,False,-2418.0,459.65,UK,Android,Mobile Network,0,0,0
+2,2025-01-24 06:24:18,legitimate,459.65,Invest Money,False,-39411.0,459.65,UK,iPhone,Home WiFi,0,0,0
+2,2025-01-24 07:51:18,legitimate,459.65,Invest Money,False,-17638.0,459.65,UK,iPhone,Home WiFi,0,0,0
+2,2025-01-24 08:37:18,legitimate,459.65,Close Account,True,0.0,459.65,UK,Android,Mobile Network,0,0,0
+3,2025-01-24 09:32:18,legitimate,1172.76,Apply for Loan,True,0.0,1172.76,China,MacBook,Home WiFi,0,0,0
+4,2025-01-24 11:36:18,legitimate,3988.91,Invest Money,False,-48028.0,3988.91,USA,Android,Public WiFi,0,0,0
+5,2025-01-24 13:54:18,legitimate,2135.39,Pay Bills,True,-1522.0,613.39,China,Windows Laptop,Home WiFi,0,0,0
+3,2025-01-24 14:43:18,legitimate,1172.76,Review activityments,True,0.0,1172.76,China,Android,Public WiFi,0,0,0
+4,2025-01-24 15:36:18,legitimate,3988.91,Invest Money,False,-15944.0,3988.91,USA,iPhone,Corporate Network,0,0,0
+5,2025-01-24 18:02:18,legitimate,613.39,Pay Bills,False,-2977.0,613.39,China,Windows Laptop,Public WiFi,0,0,0
+3,2025-01-24 20:41:18,legitimate,1172.76,Review activityments,True,0.0,1172.76,China,iPhone,Public WiFi,0,1,0
+4,2025-01-24 22:24:18,legitimate,3988.91,Invest Money,False,-48623.0,3988.91,USA,Windows Laptop,Mobile Network,0,0,0
+5,2025-01-24 22:48:18,legitimate,613.39,Transfer Funds,False,-4106.0,613.39,China,iPhone,Mobile Network,0,0,0
+3,2025-01-24 23:19:18,legitimate,1172.76,Make Purchase,True,-479.0,693.76,China,Windows Laptop,Mobile Network,0,0,0
+4,2025-01-25 01:56:18,legitimate,3988.91,Invest Money,False,-40061.0,3988.91,USA,MacBook,Public WiFi,0,0,0
+5,2025-01-25 02:29:18,legitimate,613.39,Deposit Funds,True,2363.0,2976.39,China,iPhone,Mobile Network,0,0,0
+3,2025-01-25 03:13:18,legitimate,693.76,Make Purchase,True,-306.0,387.76,China,MacBook,Home WiFi,0,0,0
+4,2025-01-25 03:14:18,legitimate,3988.91,Deposit Funds,True,9156.0,13144.91,USA,Android,Public WiFi,0,0,0
+5,2025-01-25 03:28:18,legitimate,2976.39,Transfer Funds,False,-3354.0,2976.39,China,iPad,Public WiFi,0,0,0
+3,2025-01-25 03:28:18,legitimate,387.76,Make Purchase,True,-120.0,267.76,China,MacBook,Public WiFi,0,0,0
+4,2025-01-25 03:55:18,legitimate,13144.91,Make Purchase,True,-352.0,12792.91,USA,Windows Laptop,Mobile Network,0,0,0
+5,2025-01-25 04:40:18,legitimate,2976.39,Deposit Funds,True,1431.0,4407.39,China,Windows Laptop,Public WiFi,0,0,0
+3,2025-01-25 07:14:18,legitimate,267.76,Pay Bills,False,-2621.0,267.76,China,iPhone,Public WiFi,0,0,0
+4,2025-01-25 09:14:18,legitimate,12792.91,Make Purchase,True,-105.0,12687.91,USA,iPhone,Home WiFi,0,0,0
+5,2025-01-25 11:04:18,legitimate,4407.39,Review activityments,True,0.0,4407.39,China,iPhone,Public WiFi,0,0,0
+3,2025-01-25 11:46:18,legitimate,267.76,Deposit Funds,True,8755.0,9022.76,China,MacBook,Mobile Network,0,0,0
+4,2025-01-25 14:31:18,legitimate,12687.91,Pay Bills,True,-1100.0,11587.91,USA,Windows Laptop,Public WiFi,0,0,0
+5,2025-01-25 17:28:18,legitimate,4407.39,Review activityments,True,0.0,4407.39,China,Windows Laptop,Home WiFi,0,0,0
+3,2025-01-25 17:34:18,legitimate,9022.76,Make Purchase,True,-52.0,8970.76,China,iPhone,Public WiFi,0,0,0
+4,2025-01-25 19:38:18,legitimate,11587.91,Deposit Funds,True,6985.0,18572.91,USA,Android,Corporate Network,0,0,0
+5,2025-01-25 21:33:18,legitimate,4407.39,Review activityments,True,0.0,4407.39,China,Android,Mobile Network,0,0,0
+3,2025-01-25 22:55:18,legitimate,8970.76,Make Purchase,True,-456.0,8514.76,China,iPad,Public WiFi,0,0,0
+4,2025-01-26 01:35:18,legitimate,18572.91,Deposit Funds,True,7171.0,25743.91,USA,Windows Laptop,Home WiFi,0,0,0
+5,2025-01-26 02:42:18,legitimate,4407.39,Review activityments,True,0.0,4407.39,China,iPhone,Home WiFi,0,0,0
+3,2025-01-26 04:45:18,legitimate,8514.76,Make Purchase,True,-482.0,8032.76,China,Linux PC,Home WiFi,0,0,0
+4,2025-01-26 04:56:18,legitimate,25743.91,Deposit Funds,True,7490.0,33233.91,USA,iPhone,Public WiFi,1,0,0
+5,2025-01-26 05:57:18,legitimate,4407.39,Review activityments,True,0.0,4407.39,China,iPhone,Public WiFi,0,0,0
+3,2025-01-26 06:03:18,legitimate,8032.76,Pay Bills,True,-2598.0,5434.76,China,Android,Corporate Network,0,0,0
+4,2025-01-26 07:56:18,legitimate,33233.91,Transfer Funds,True,-48.0,33185.91,USA,Android,Home WiFi,0,0,0
+5,2025-01-26 10:54:18,legitimate,4407.39,Review activityments,True,0.0,4407.39,China,iPhone,Home WiFi,0,0,0
+3,2025-01-26 13:15:18,legitimate,5434.76,Pay Bills,True,-4722.0,712.76,China,iPhone,Public WiFi,0,0,0
+4,2025-01-26 13:17:18,legitimate,33185.91,Deposit Funds,True,5326.0,38511.91,USA,iPhone,Mobile Network,1,0,0
+5,2025-01-26 13:17:18,legitimate,4407.39,Deposit Funds,True,7757.0,12164.39,China,Windows Laptop,Public WiFi,0,0,0
+3,2025-01-26 13:31:18,legitimate,712.76,Pay Bills,True,-200.0,512.76,China,Linux PC,Public WiFi,0,0,0
+4,2025-01-26 16:26:18,legitimate,38511.91,Make Purchase,True,-394.0,38117.91,USA,iPhone,Home WiFi,0,0,0
+5,2025-01-26 17:34:18,legitimate,12164.39,Deposit Funds,True,4028.0,16192.39,China,Windows Laptop,Home WiFi,0,0,0
+3,2025-01-26 19:01:18,legitimate,512.76,Pay Bills,False,-701.0,512.76,China,MacBook,Mobile Network,0,1,0
+4,2025-01-26 21:54:18,legitimate,38117.91,Pay Bills,True,-143.0,37974.91,USA,iPhone,Corporate Network,0,0,0
+5,2025-01-26 22:23:18,legitimate,16192.39,Deposit Funds,True,8721.0,24913.39,China,Linux PC,Mobile Network,0,0,0
+3,2025-01-26 23:31:18,legitimate,512.76,Pay Bills,True,-296.0,216.76,China,iPhone,Home WiFi,0,0,0
+4,2025-01-26 23:31:18,legitimate,37974.91,Transfer Funds,True,-4926.0,33048.91,USA,Windows Laptop,Home WiFi,0,0,0
+5,2025-01-26 23:42:18,legitimate,24913.39,Deposit Funds,True,6328.0,31241.39,China,iPhone,Public WiFi,0,0,0
+3,2025-01-27 01:06:18,legitimate,216.76,Apply for Credit Card,True,0.0,216.76,China,Windows Laptop,Home WiFi,0,0,0
+4,2025-01-27 03:53:18,legitimate,33048.91,Deposit Funds,True,7564.0,40612.91,USA,iPhone,Home WiFi,0,0,0
+5,2025-01-27 03:56:18,legitimate,31241.39,Deposit Funds,True,6508.0,37749.39,China,Android,Home WiFi,1,0,0
+3,2025-01-27 06:41:18,legitimate,216.76,Pay Bills,False,-2923.0,216.76,China,MacBook,Home WiFi,0,0,0
+4,2025-01-27 06:51:18,legitimate,40612.91,Make Purchase,True,-33.0,40579.91,USA,MacBook,Home WiFi,0,0,0
+5,2025-01-27 08:32:18,legitimate,37749.39,Make Purchase,True,-495.0,37254.39,China,iPhone,Public WiFi,0,0,0
+3,2025-01-27 08:49:18,legitimate,216.76,Review activityments,True,0.0,216.76,China,MacBook,Mobile Network,0,0,0
+4,2025-01-27 08:55:18,legitimate,40579.91,Make Purchase,True,-703.0,39876.91,USA,Windows Laptop,Mobile Network,0,0,0
+5,2025-01-27 10:53:18,legitimate,37254.39,Apply for Credit Card,True,0.0,37254.39,China,iPhone,Public WiFi,0,0,0
+3,2025-01-27 11:41:18,legitimate,216.76,Review activityments,True,0.0,216.76,China,iPhone,Home WiFi,0,0,0
+4,2025-01-27 13:43:18,legitimate,39876.91,Deposit Funds,True,9004.0,48880.91,USA,iPad,Public WiFi,0,0,0
+5,2025-01-27 16:33:18,legitimate,37254.39,Pay Bills,True,-658.0,36596.39,China,iPhone,Mobile Network,0,0,0
+3,2025-01-27 17:16:18,legitimate,216.76,Review activityments,True,0.0,216.76,China,iPhone,Mobile Network,0,0,0
+4,2025-01-27 19:12:18,legitimate,48880.91,Review activityments,True,0.0,48880.91,USA,iPhone,Home WiFi,0,0,0
+5,2025-01-27 20:26:18,legitimate,36596.39,Make Purchase,True,-884.0,35712.39,China,iPhone,Public WiFi,1,0,0
+3,2025-01-27 20:39:18,legitimate,216.76,Close Account,True,0.0,216.76,China,Windows Laptop,Corporate Network,0,0,0
+4,2025-01-27 20:44:18,legitimate,48880.91,Review activityments,True,0.0,48880.91,USA,MacBook,Home WiFi,0,0,0
+5,2025-01-27 22:53:18,legitimate,35712.39,Transfer Funds,True,-2815.0,32897.39,China,MacBook,Home WiFi,0,0,0
+4,2025-01-28 00:38:18,legitimate,48880.91,Invest Money,True,-38056.0,10824.91,USA,iPhone,Home WiFi,0,0,0
+5,2025-01-28 00:52:18,legitimate,32897.39,Make Purchase,True,-573.0,32324.39,China,iPhone,Home WiFi,0,0,0
+4,2025-01-28 02:01:18,legitimate,10824.91,Apply for Loan,True,0.0,10824.91,USA,iPhone,Public WiFi,0,0,0
+5,2025-01-28 04:41:18,legitimate,32324.39,Pay Bills,True,-3921.0,28403.39,China,Linux PC,Home WiFi,0,0,0

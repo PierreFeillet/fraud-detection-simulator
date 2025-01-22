@@ -20,6 +20,8 @@ from sklearn.impute import SimpleImputer
 from datetime import datetime, timedelta
 
 from IPython import embed
+from sklearn.preprocessing import StandardScaler
+
 
 #from legitimate_agent import LegitimateCustomer
 #from fraudulentster_agent import fraudulentster
@@ -208,8 +210,9 @@ def generate_dataset(fraudster_rate, nb_activities, min_n_agents, data_folder, s
 
     os.makedirs(data_folder, exist_ok=True)
     file_name= f'fraud_simulation_activities_{format_number(nb_activities)}.csv'
-    bank_with_activities.activity_log.to_csv(f"{data_folder}/{file_name}", index=True)
+    bank_with_activities.activity_log.to_csv(f"{data_folder}/{file_name}", index=False)
     print(f"Data file saved as {data_folder}/{file_name} ")
+    return bank_with_activities.activity_log
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -241,9 +244,16 @@ if __name__ == "__main__":
     #n_max_per_legitimate_A = int(n_legitimate_activities/cfg.n_legitimate_agent)
     #n_max_per_fraudster_A = int(n_fraudulent_activities/cfg.n_fraudulent_agent)
     
-    activity_log_with_fraudulent_features = generate_dataset(fraudster_rate=cfg.fraudster_rate, nb_activities=cfg.nb_activities, min_n_agents=cfg.min_n_agents, data_folder=cfg.data_folder, start_time=cfg.start_time, target_size=cfg.nb_activities)
-    
-
+    dataset = generate_dataset(fraudster_rate=cfg.fraudster_rate, nb_activities=cfg.nb_activities, min_n_agents=cfg.min_n_agents, data_folder=cfg.data_folder, start_time=cfg.start_time, target_size=cfg.nb_activities)
+    # Build sample for training ML clustering alghoritms
+    #columns_to_drop = ['behavior']
+    #dataset.drop(columns=columns_to_drop, inplace=True)
+    #
+#
+    ## Standardize data
+    #scaler = StandardScaler()
+    #data_scaled = scaler.fit_transform(data)
+#
     # Benchmark anomaly detection models
     if False:
         results = benchmark_models(activity_log_with_fraudulent_features)

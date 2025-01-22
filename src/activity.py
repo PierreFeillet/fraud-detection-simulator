@@ -23,7 +23,7 @@ class Activity(Agent):
         "amount": "float32",
         "balance": "float32",
         #"merchant": "category",
-        "country": "category",
+        "residence_country": "category",
         "device": "category",
         "network": "category",
         "compromised_device": "int8",
