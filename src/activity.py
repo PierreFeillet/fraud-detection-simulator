@@ -14,7 +14,8 @@ class Activity(Agent):
     
     # Global dictionary for shared keys
     ACTIVITY_DTYPES = {
-        "agent_id": "int16",
+        "real_id": "int16",
+        "virtual_id": "int16",
         "timestamp": "datetime64[ns]",
         "behavior": "category",
         "initial_balance": "float32",
@@ -23,20 +24,19 @@ class Activity(Agent):
         "amount": "float32",
         "balance": "float32",
         #"merchant": "category",
-        "country": "category",
+        "residence_country": "category",
         "device": "category",
         "network": "category",
         "compromised_device": "int8",
         "compromised_network": "int8",
-        "fraud": "int8"
+        "is_fraudster": "int8"
     }
 
-    def __init__(self, agent_id, initial_balance, timestamp, behavior, residence_country):
+    def __init__(self, real_id, virtual_id, is_fraudster, behavior, initial_balance, timestamp, residence_country):
         # Initialize the parent class (Agent)
-        super().__init__(agent_id, initial_balance, residence_country)
+        super().__init__(real_id, virtual_id, is_fraudster, behavior, initial_balance, residence_country)
         # activity-specific attributes
         self.timestamp = timestamp
-        self.behavior = behavior
         self.activity_type = ''
         #self.balance = self.initial_balance
         self.granted = True 
@@ -46,7 +46,6 @@ class Activity(Agent):
         self.network = np.random.choice(networks, p=network_weights)
         self.compromised_device = self.is_compromised()
         self.compromised_network = self.is_compromised()
-        self.fraud = 0 
 
     def is_compromised(self, probability=0.05):
         """

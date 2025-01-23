@@ -60,7 +60,7 @@ app.layout = html.Div([
 def update_dropdown(selected_agent):
     # Get unique agents from the dataframe and add an 'All' option
     agent_options = [{'label': 'All', 'value': 'all'}]  # 'All' option
-    agent_options += [{'label': str(agent), 'value': agent} for agent in df['agent_id'].unique()]
+    agent_options += [{'label': str(agent), 'value': agent} for agent in df['real_id'].unique()]
     return agent_options
 
 @app.callback(
@@ -78,7 +78,7 @@ def update_dashboard(selected_agent):
     if selected_agent == 'all' or selected_agent is None:
         filtered_df = df  # Show all agents if 'all' is selected
     else:
-        filtered_df = df[df['agent_id'] == selected_agent]
+        filtered_df = df[df['real_id'] == selected_agent]
 
     # Summary statistics
     total_activities = len(filtered_df)

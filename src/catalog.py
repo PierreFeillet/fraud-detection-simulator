@@ -12,7 +12,7 @@ behavior_catalog = {
             "Transfer Funds": (-5000, -1),           # Transfers are negative (money sent out)
             "Apply for Credit Card": (0, 0),         # No transaction, just an application
             "Apply for Loan": (0, 0),                # No transaction, just an application
-            "Invest Money": (-50000, -500),          # Investments are negative (money spent)
+            "Invest Money": (-5000, -500),          # Investments are negative (money spent)
             "Review activityments": (0, 0),          # No transaction, review only
             "Close Account": (0, 0)                  # No transaction at account closure
         },
@@ -31,11 +31,10 @@ behavior_catalog = {
         "time_limit": 180,  # Maximum 3 hours between events
         "fraud": 0,
     },
-
     "identity_theft": {
         "activities": {
             "Failed Login": (0, 0),                  # No transaction
-            "Suspicious Login": (0, 0),              # No transaction
+            "Suspicious Login": (0, 0),         # To be suspicious it should be accompanied by a weird location     # No transaction
             "Change Password": (0, 0),               # No transaction
             "Change Email": (0, 0),                  # No transaction
             "Change Phone": (0, 0),                  # No transaction
@@ -201,52 +200,6 @@ def check_and_normalize_catalog(behavior_catalog, output_file="src/normalized_ca
     print(f"Normalized transition matrices saved in {output_file}.json")
     return normalized_catalog
 
-
-def simulate_markov_chain(start_time, behavior_activity_type, n_activitiy=20):
-    activities = behavior_catalog[behavior_activity_type]["activities"]
-    transition_matrix = behavior_catalog[behavior_activity_type]["transition_matrix"]
-    time_limit = behavior_catalog[behavior_activity_type]["time_limit"]
-    activity_sequence = []
-
-    current_activity = random.choice(list(activities.keys()))
-    transaction_range = activities[current_activity]
-    transaction_amount = 0 if transaction_range == (0, 0) else random.randint(*transaction_range)
-    timestamp = start_time
-
-    # Add the first activity to the sequence
-    activity_sequence.append({
-        "timestamp": timestamp.strftime("%Y-%m-%d %H:%M:%S"),
-        "activity": current_activity,
-        "amount": transaction_amount
-    })
-
-    for _ in range(n_activitiy):
-        current_activity_index = list(activities.keys()).index(current_activity)
-        next_activity = np.random.choice(list(activities.keys()), p=transition_matrix[current_activity_index])
-        transaction_range = activities[next_activity]
-        transaction_amount = 0 if transaction_range == (0, 0) else random.randint(*transaction_range)
-        timestamp += timedelta(minutes=random.randint(1, time_limit * 60))
-
-        # Add the next activity to the sequence
-        activity_sequence.append({
-            "timestamp": timestamp.strftime("%Y-%m-%d %H:%M:%S"),
-            "activity": str(next_activity),
-            "amount": transaction_amount
-        })
-
-        if next_activity == "Close Account":
-            break
-        
-        current_activity = next_activity
-
-    return activity_sequence
-
-normalized_catalog = check_and_normalize_catalog(behavior_catalog)
-
-
-#start_time = datetime.now()
-#result = simulate_markov_chain(start_time, "legitimate")
-#print(result)
 
 
 
