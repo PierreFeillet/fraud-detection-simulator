@@ -1,4 +1,4 @@
-agent_id,timestamp,behavior,initial_balance,activity_type,granted,amount,balance,residence_country,device,network,compromised_device,compromised_network,fraud
+real_id,timestamp,behavior,initial_balance,activity_type,granted,amount,balance,residence_country,device,network,compromised_device,compromised_network,fraud
 0,2025-01-22 16:26:33,money_laundering,1283.48,Purchase Luxury Goods,True,-921.0,362.48,France,Android,Public WiFi,0,0,1
 1,2025-01-22 16:39:33,legitimate,2144.52,Deposit Funds,True,9181.0,11325.52,France,MacBook,Home WiFi,0,0,0
 2,2025-01-22 17:49:33,legitimate,2984.82,Apply for Credit Card,True,0.0,2984.82,Germany,iPhone,Public WiFi,0,0,0

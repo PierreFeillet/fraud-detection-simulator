@@ -1,4 +1,4 @@
-agent_id,timestamp,behavior,initial_balance,activity_type,granted,amount,balance,residence_country,device,network,compromised_device,compromised_network,fraud
+real_id,timestamp,behavior,initial_balance,activity_type,granted,amount,balance,residence_country,device,network,compromised_device,compromised_network,fraud
 0,2025-01-22 15:17:55,legitimate,1839.52,Apply for Credit Card,True,0.0,1839.52,UK,Android,Public WiFi,1,0,0
 1,2025-01-22 15:49:55,legitimate,4239.95,Make Purchase,True,-221.0,4018.95,USA,MacBook,Public WiFi,0,0,0
 2,2025-01-22 17:54:55,legitimate,1893.83,Transfer Funds,True,-1296.0,597.83,Japan,Windows Laptop,Corporate Network,0,0,0
