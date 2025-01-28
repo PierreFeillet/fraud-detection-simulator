@@ -182,20 +182,17 @@ def run_simulation_step(active_agents, normalized_catalog, agents, bank, start_t
 
             delta = timedelta(minutes=random.randint(0, time_limit))
             activity_time += delta
+
             current_activity = Activity(
-                real_id=agent.real_id,
-                virtual_id=agent.virtual_id,
-                is_fraudster=agent.is_fraudster,
-                behavior=agent.behavior,
+                agent=agent,
                 timestamp=activity_time.strftime("%Y-%m-%d %H:%M:%S"),
                 
             )
-            print(active_agents[agent.virtual_id]["balance"])
             current_activity.initial_balance = active_agents[agent.virtual_id]["balance"]
             current_activity.balance = active_agents[agent.virtual_id]["balance"]
-            print(current_activity.initial_balance)
             current_activity.activity_type = current_activity_type
             transaction_type = activities[current_activity_type]
+
             if transaction_type == "neutral":
                 current_activity.amount = 0
             else:
