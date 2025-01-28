@@ -23,8 +23,6 @@ from IPython import embed
 from sklearn.preprocessing import StandardScaler
 
 
-#from legitimate_agent import LegitimateCustomer
-#from fraudulentster_agent import fraudulentster
 from activity import Activity
 from agent import Agent
 from bank import BankActivities
@@ -119,7 +117,7 @@ def assign_behavior(fraudster_rate, normalized_catalog, exclude_identity_theft=F
 
     return is_fraudulent, behavior_type
 
-def generate_new_agents(min_index, max_index, agents, normalized_catalog, fraudster_rate, locations, location_weights,):
+def generate_new_agents(min_index, max_index, agents, active_agents, normalized_catalog, fraudster_rate, locations, location_weights,):
     print(f"Generating new agents: min_index={min_index}, max_index={max_index}")
     
     for i in range(min_index, max_index):
@@ -133,7 +131,7 @@ def generate_new_agents(min_index, max_index, agents, normalized_catalog, frauds
 
         # Identity Theft needs a legitimate victim
         if behavior_type == 'identity_theft':
-            legitimate_agents = [a for a in agents if not a.is_fraudster]  # Find all legit agents
+            legitimate_agents = [a for a in agents if not a.is_fraudster and a.real_id in active_agents]  # Find all legit agents
             if legitimate_agents:
                 victim_agent = random.choice(legitimate_agents)  # Pick a random legitimate victim
                 virtual_id = victim_agent.real_id  # Use the victim's real_id
@@ -145,26 +143,21 @@ def generate_new_agents(min_index, max_index, agents, normalized_catalog, frauds
         else:
             virtual_id = real_id  # Legitimate or other fraud types use their own ID
 
-        print(behavior_type)
-        print(real_id)
-        print(virtual_id)
+        
         initial_balance = round(random.uniform(1000, 100000), 2)
         residence_country = np.random.choice(locations, p=location_weights)
         
         # Create and add the agent to the list
         agents.append(Agent(real_id, virtual_id, is_fraudster, behavior_type, initial_balance, residence_country))
+        active_agents[real_id] = {
+            "balance": initial_balance,
+            "last_activity": None
+        }
 
     return agents
 
 def run_simulation_step(active_agents, normalized_catalog, agents, bank, start_time, distributions, steps=100, flush_interval=100, target_size=10**6):
     activity_time = start_time
-
-    # Initialize active agents
-    for agent in agents:
-        active_agents[agent.real_id] = {
-            "balance": agent.initial_balance,
-            "last_activity": None
-        }
 
     for step in range(steps):
         if len(bank.activity_log) >= target_size:
@@ -188,13 +181,6 @@ def run_simulation_step(active_agents, normalized_catalog, agents, bank, start_t
                 current_activity_type = extract_activity_markov_chain(
                     active_agents[agent.real_id]["last_activity"], activities, transition_matrix
                 )
-
-            print(agent.behavior)
-            #print(active_agents[agent.virtual_id])
-            print(agent.real_id)
-            print(agent.virtual_id)
-            print(active_agents[agent.virtual_id])
-            print(active_agents[agent.virtual_id]["balance"])
 
             delta = timedelta(minutes=random.randint(0, time_limit))
             activity_time += delta
@@ -251,7 +237,7 @@ def run_simulation_step(active_agents, normalized_catalog, agents, bank, start_t
     bank.last_activity_time = activity_time
     # Final flush after simulation ends
     bank.flush_activities()
-    print(f"Final flush completed.")
+    
 
 def run_full_simulation(normalized_catalog, fraudster_rate, min_n_agents, distributions, start_time, nb_activities, target_size, data_folder):
     count = 0
@@ -268,7 +254,7 @@ def run_full_simulation(normalized_catalog, fraudster_rate, min_n_agents, distri
         print(f"Generating activities to reach the target size. Iteration: {count}")
         
         # Generate new agents for this batch
-        agents = generate_new_agents(min_index, max_index, agents, normalized_catalog, fraudster_rate, locations, location_weights)
+        agents = generate_new_agents(min_index, max_index, agents, active_agents, normalized_catalog, fraudster_rate, locations, location_weights)
 
         
         # Run simulation step for the new agents
@@ -278,7 +264,6 @@ def run_full_simulation(normalized_catalog, fraudster_rate, min_n_agents, distri
         last_activity_time = pd.to_datetime(bank_with_activities.last_activity_time)
         count += 1
         print(f"Generated number of activities: {len(bank_with_activities.activity_log)}, required {target_size}")
-
 
     print(f"Simulation completed. Total generated activities: {len(bank_with_activities.activity_log)}")
 
