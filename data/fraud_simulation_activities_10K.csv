@@ -1,4 +1,4 @@
-real_id,virtual_id,timestamp,behavior,initial_balance,activity_type,granted,amount,balance,residence_country,device,network,compromised_device,compromised_network,is_fraudster
+real_id,virtual_id,timestamp,behavior,initial_balance,activity_type,granted,amount,balance,initial_country,device,network,compromised_device,compromised_network,is_fraudster
 0,0,2025-01-28 11:28:24,money_laundering,26423.43,Open Account,True,0.0,26423.43,China,Android,Home WiFi,0,0,1
 1,1,2025-01-28 11:54:24,synthetic_identity_fraud,87646.58,Max Out Credit,True,-3599.3184,84047.26,Germany,iPad,Home WiFi,0,1,1
 2,2,2025-01-28 14:37:24,legitimate,66336.34,Make Purchase,True,-364.90878,65971.43,China,Linux PC,Home WiFi,0,0,0

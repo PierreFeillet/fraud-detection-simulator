@@ -24,7 +24,7 @@ class Activity(Agent):
         "amount": "float32",
         "balance": "float32",
         #"merchant": "category",
-        "residence_country": "category",
+        "initial_country": "category",
         "device": "category",
         "network": "category",
         "compromised_device": "int8",
@@ -32,9 +32,9 @@ class Activity(Agent):
         "is_fraudster": "int8"
     }
 
-    def __init__(self, real_id, virtual_id, is_fraudster, behavior, initial_balance, timestamp, residence_country):
+    def __init__(self, real_id, virtual_id, is_fraudster, behavior, timestamp,):
         # Initialize the parent class (Agent)
-        super().__init__(real_id, virtual_id, is_fraudster, behavior, initial_balance, residence_country)
+        super().__init__(real_id, virtual_id, is_fraudster, behavior,)
         # activity-specific attributes
         self.timestamp = timestamp
         self.activity_type = ''

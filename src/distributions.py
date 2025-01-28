@@ -19,6 +19,7 @@ class TransactionDistributions:
         self.legit_amount_distribution = np.random.lognormal(mean=5, sigma=1, size=10000)
         self.fraud_amount_distribution = np.random.lognormal(mean=8, sigma=1.2, size=10000)
 
+    def plot_distributions(output_folder='data'):
         # Create subplots to display the distributions
         plt.figure(figsize=(12, 6))
         plt.subplot(1, 2, 1)
@@ -36,5 +37,5 @@ class TransactionDistributions:
         plt.title("Fraudulent Large Transactions")
 
         plt.tight_layout()
-        plt.savefig('data/transaction_distributions.png', dpi=300)
+        plt.savefig(f'{output_folder}/transaction_distributions.png', dpi=300)
         #plt.show()

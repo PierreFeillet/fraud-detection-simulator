@@ -142,15 +142,13 @@ def generate_new_agents(min_index, max_index, agents, active_agents, normalized_
                 virtual_id = real_id  # Default to self ID for non-identity-theft behaviors
         else:
             virtual_id = real_id  # Legitimate or other fraud types use their own ID
-
-        
-        initial_balance = round(random.uniform(1000, 100000), 2)
-        residence_country = np.random.choice(locations, p=location_weights)
         
         # Create and add the agent to the list
-        agents.append(Agent(real_id, virtual_id, is_fraudster, behavior_type, initial_balance, residence_country))
+        
+        agent = Agent(real_id, virtual_id, is_fraudster, behavior_type,)
+        agents.append(agent)
         active_agents[real_id] = {
-            "balance": initial_balance,
+            "balance": agent.initial_balance,
             "last_activity": None
         }
 
@@ -189,10 +187,13 @@ def run_simulation_step(active_agents, normalized_catalog, agents, bank, start_t
                 virtual_id=agent.virtual_id,
                 is_fraudster=agent.is_fraudster,
                 behavior=agent.behavior,
-                initial_balance=active_agents[agent.virtual_id]["balance"],
                 timestamp=activity_time.strftime("%Y-%m-%d %H:%M:%S"),
-                residence_country=agent.residence_country
+                
             )
+            print(active_agents[agent.virtual_id]["balance"])
+            current_activity.initial_balance = active_agents[agent.virtual_id]["balance"]
+            current_activity.balance = active_agents[agent.virtual_id]["balance"]
+            print(current_activity.initial_balance)
             current_activity.activity_type = current_activity_type
             transaction_type = activities[current_activity_type]
             if transaction_type == "neutral":
@@ -228,7 +229,7 @@ def run_simulation_step(active_agents, normalized_catalog, agents, bank, start_t
                 del active_agents[closed_id]
                 print(f"Agent {closed_id} closed their account and was removed.")
 
-        
+        #print(current_activity.initial_balance)
         # Check if the buffer size has reached flush_interval and flush if necessary
         if len(bank.buffer) >= flush_interval:
             bank.flush_activities()
@@ -299,10 +300,9 @@ if __name__ == "__main__":
     normalized_catalog = check_and_normalize_catalog(behavior_catalog) #better to regenerate it everytime in case some probabilitis are changed
     distributions = TransactionDistributions()
     distributions.generate()
-    #n_fraudulent_activities = int(cfg.nb_activities*cfg.pr_frauds)
-    #n_legitimate_activities = cfg.nb_activities - n_fraudulent_activities
-    #n_max_per_legitimate_A = int(n_legitimate_activities/cfg.n_legitimate_agent)
-    #n_max_per_fraudster_A = int(n_fraudulent_activities/cfg.n_fraudulent_agent)
+    # Plot log-norm distributions used for extracting transaction amount
+    #distributions.plot_distributions()
+
     dataset = run_full_simulation(fraudster_rate=cfg.fraudster_rate, nb_activities=cfg.nb_activities, min_n_agents=cfg.min_n_agents, normalized_catalog=normalized_catalog, distributions=distributions, data_folder=cfg.data_folder, start_time=cfg.start_time, target_size=cfg.nb_activities)
     #dataset = generate_dataset(fraudster_rate=cfg.fraudster_rate, normalized_catalog=normalized_catalog, nb_activities=cfg.nb_activities, min_n_agents=cfg.min_n_agents, data_folder=cfg.data_folder, start_time=cfg.start_time, target_size=cfg.nb_activities)
     # Build sample for training ML clustering alghoritms

@@ -160,7 +160,7 @@ if __name__ == "__main__":
     # Apply clustering algorithms
     # Identify numerical and categorical columns
     numerical_features = ['initial_balance', 'amount', 'balance', 'year', 'month', 'day', 'hour', 'minute', 'second']
-    categorical_features = ['activity_type', 'residence_country', 'device', 'network']
+    categorical_features = ['activity_type', 'initial_country', 'device', 'network']
 
     dbscan_labels, kmeans_labels, hierarchical_labels, isolation_forest_labels = apply_clustering(df=df, categorical_features=categorical_features, numerical_features=numerical_features )
     

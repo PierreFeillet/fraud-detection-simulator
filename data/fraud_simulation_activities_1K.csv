@@ -1,4 +1,4 @@
-real_id,virtual_id,timestamp,behavior,initial_balance,activity_type,granted,amount,balance,residence_country,device,network,compromised_device,compromised_network,is_fraudster
+real_id,virtual_id,timestamp,behavior,initial_balance,activity_type,granted,amount,balance,initial_country,device,network,compromised_device,compromised_network,is_fraudster
 0,0,2025-01-28 14:14:10,legitimate,22692.32,Transfer Funds,True,-17.85316,22674.467,USA,iPhone,Public WiFi,0,0,0
 1,1,2025-01-28 14:44:10,synthetic_identity_fraud,14291.25,Withdraw Funds,True,-1039.0508,13252.199,China,Windows Laptop,Mobile Network,0,0,1
 2,0,2025-01-28 15:01:10,identity_theft,22674.467,Change Phone,True,0.0,22674.467,USA,iPhone,Home WiFi,0,0,1
