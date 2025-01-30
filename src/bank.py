@@ -11,7 +11,7 @@ class BankActivities:
         self.activity_log = pd.DataFrame(columns=self.dtypes.keys()).astype(self.dtypes)
         self.buffer = []
         self.max_size = max_size
-        self.last_activity_time = datetime.now()
+        #self.last_activity_time = datetime.now()
 
     def add_activity(self, activity):
         # Add activity to buffer, flush if buffer exceeds flush_interval

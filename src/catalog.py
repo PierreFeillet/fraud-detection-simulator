@@ -36,7 +36,7 @@ behavior_catalog = {
             "Withdraw Funds": "negative"
                 },
             "transition_matrix": data["transition_matrix"],
-        "time_limit": 180,  # Maximum 3 hours between events
+        "time_limit": 60*180,  # Maximum 3 hours between events in seconds
         "fraud": 0,
     },
     "identity_theft": {
@@ -60,7 +60,7 @@ behavior_catalog = {
             [0.0, 0.01, 0.02, 0.05, 0.1, 0.1, 0.6, 0.12],
             [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
         ],
-        "time_limit": 30,  # Shorter time between suspicious activity
+        "time_limit": 60*30,  # Shorter time between suspicious activity
         "fraud": 1,
     },
 
@@ -83,7 +83,7 @@ behavior_catalog = {
             [0.0, 0.05, 0.05, 0.05, 0.2, 0.5, 0.15],
             [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
         ],
-        "time_limit": 15,  # Rapid transactions typical in skimming
+        "time_limit": 60*15,  # Rapid transactions typical in skimming
         "fraud": 1,
     },
 
@@ -92,7 +92,7 @@ behavior_catalog = {
             "Open Account": "neutral",                  # No transaction at account opening
             "Deposit Funds": "positive",           # Deposits can vary, but negative when spent
             "Wire Transfer": "negative",         # Wire transfers are negative (money sent)
-            "Purchase Luxury Goods": "negative", # Luxury goods are negative (money spent)
+            "Make Purchas": "negative", # Luxury goods are negative (money spent)
             "Cash Withdrawal": "negative",         # Withdrawals are negative (money taken out)
             "Invest in Assets": "negative",      # Investments are negative (money spent)
             "Close Account": "neutral"                  # No transaction at account closure
@@ -106,7 +106,7 @@ behavior_catalog = {
             [0.0, 0.1, 0.1, 0.2, 0.1, 0.4, 0.1],
             [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
         ],
-        "time_limit": 120,  # Frequent but spread-out transactions
+        "time_limit": 60*120,  # Frequent but spread-out transactions
         "fraud": 1,
     },
 
@@ -131,7 +131,7 @@ behavior_catalog = {
         [0.05, 0.05, 0.1, 0.1, 0.1, 0.2, 0.3, 0.1],   # From Withdraw Funds
         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]      # From Close Account (End of activity)
     ],
-        "time_limit": 60,  # Faster spending to exploit identity
+        "time_limit": 60*60,  # Faster spending to exploit identity
         "fraud": 1,
     }
 }

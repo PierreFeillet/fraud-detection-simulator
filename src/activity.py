@@ -17,6 +17,7 @@ class Activity(Agent):
         "real_id": "int16",
         "virtual_id": "int16",
         "timestamp": "datetime64[ns]",
+        "delta_time": "timedelta64[ns]",
         "behavior": "category",
         "initial_balance": "float32",
         "activity_type": "category",
@@ -39,6 +40,7 @@ class Activity(Agent):
         super().__init__(agent.real_id, agent.virtual_id, agent.is_fraudster, agent.behavior, agent.initial_time)
         # activity-specific attributes
         self.timestamp = agent.initial_time
+        self.delta_time = 0
         self.activity_type = ''
         #self.balance = self.initial_balance
         self.granted = True 
@@ -54,6 +56,7 @@ class Activity(Agent):
         self.update_location_probabilities()
         # Assign the transaction location for this activity
         self.location = self.assign_transaction_location()
+    
     
     def update_location_probabilities(self):
         """Adjusts probabilities based on agent type.
