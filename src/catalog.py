@@ -2,32 +2,40 @@ import numpy as np
 import json
 import random
 
+with open("normal_transition_matrix.json", "r") as f:
+    data = json.load(f)
+
 behavior_catalog = {
     "legitimate": {
         "activities": {
-            "Open Account": "neutral",                  # No transaction at the start
-            "Deposit Funds": "positive",             # Can vary from 0 to 10,000
-            "Make Purchase": "negative",            # Purchases are negative (money spent)
-            "Pay Bills": "negative",                 # Payments are negative (money spent)
-            "Transfer Funds": "negative",           # Transfers are negative (money sent out)
-            "Apply for Credit Card": "neutral",         # No transaction, just an application
-            "Apply for Loan": "neutral",                # No transaction, just an application
-            "Invest Money": "negative",          # Investments are negative (money spent)
-            "Review activityments": "neutral",          # No transaction, review only
-            "Close Account": "neutral"                  # No transaction at account closure
-        },
-        "transition_matrix": [
-            [0.0, 0.5, 0.2, 0.1, 0.1, 0.02, 0.02, 0.02, 0.03, 0.01],
-            [0.0, 0.4, 0.3, 0.1, 0.1, 0.03, 0.02, 0.02, 0.07, 0.01],
-            [0.0, 0.1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.01, 0.0],
-            [0.0, 0.1, 0.2, 0.5, 0.1, 0.03, 0.02, 0.02, 0.02, 0.0],
-            [0.0, 0.2, 0.3, 0.1, 0.3, 0.02, 0.02, 0.02, 0.02, 0.01],
-            [0.0, 0.1, 0.2, 0.2, 0.1, 0.3, 0.05, 0.02, 0.01, 0.01],
-            [0.0, 0.1, 0.1, 0.1, 0.1, 0.02, 0.4, 0.1, 0.05, 0.02],
-            [0.0, 0.05, 0.05, 0.1, 0.1, 0.02, 0.03, 0.5, 0.1, 0.05],
-            [0.0, 0.05, 0.05, 0.15, 0.14, 0.02, 0.03, 0.05, 0.5, 0.01],
-            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
-        ],
+            "Open Account": "neutral", 
+            "Deposit Funds": "positive", 
+            "Make Purchase": "negative", 
+            "Pay Bills": "negative", 
+            "Transfer Funds": "negative",
+            "Apply for Credit Card": "neutral", 
+            "Apply for Loan": "neutral", 
+            "Invest Money": "negative", 
+            "Review activities": "neutral",
+            "Failed Login": "neutral", 
+            "Suspicious Login": "neutral", 
+            "Change Password": "neutral", 
+            "Change Email": "neutral", 
+            "Change Phone": "neutral",
+            "Request New Card": "neutral", 
+            "ATM Withdrawal": "negative", 
+            "Online Purchase": "negative", 
+            "POS Purchase": "negative", 
+            "Balance Check": "neutral",
+            "Request New PIN": "neutral", 
+            "Report Lost Card": "neutral", 
+            "Wire Transfer": "negative", 
+            "Cash Withdrawal": "negative",
+            "Invest in Assets": "negative", 
+            "Max Out Credit": "neutral", 
+            "Withdraw Funds": "negative"
+                },
+            "transition_matrix": data["transition_matrix"],
         "time_limit": 180,  # Maximum 3 hours between events
         "fraud": 0,
     },

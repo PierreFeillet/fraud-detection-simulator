@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from IPython import embed
+import json
 # List of activities
 normal_activities = [
     "Open Account", "Deposit Funds", "Make Purchase", "Pay Bills", "Transfer Funds",
@@ -11,11 +12,11 @@ normal_activities = [
     "Invest in Assets", "Max Out Credit", "Withdraw Funds"
 ]
 
-# Define realistic transition probabilities
+# Initialize transition matrix
 num_activities = len(normal_activities)
 transition_matrix = np.zeros((num_activities, num_activities))
 
-# Define transition rules for a normal agent
+# Define transition rules
 for i, activity in enumerate(normal_activities):
     if activity == "Open Account":
         probs = {"Deposit Funds": 0.4, "Apply for Credit Card": 0.2, "Apply for Loan": 0.2, "Make Purchase": 0.2}
@@ -62,9 +63,9 @@ for i, activity in enumerate(normal_activities):
     elif activity == "Withdraw Funds":
         probs = {"Make Purchase": 0.4, "POS Purchase": 0.3, "Balance Check": 0.3}
     else:
-        probs = {activity: 1.0}  # Self-loop if undefined
+        probs = {activity: 1.0}  # Self-loop for undefined cases
 
-    # Convert probability dictionary to row vector
+    # Convert probabilities to transition matrix row
     for target_activity, prob in probs.items():
         j = normal_activities.index(target_activity)
         transition_matrix[i, j] = prob
@@ -72,40 +73,18 @@ for i, activity in enumerate(normal_activities):
 # Convert to DataFrame for better visualization
 transition_df = pd.DataFrame(transition_matrix, index=normal_activities, columns=normal_activities)
 print(transition_df)
-embed()
 
+transition_matrix_list = transition_matrix.tolist()
 
-''' to read file'''
-import json
-
-# Load transition matrix from file
-with open("transition_matrix.json", "r") as f:
-    data = json.load(f)
-
-# Extract activities and transition matrix
-activities = data["activities"]
-transition_matrix = data["transition_matrix"]
-
-# Define the behavior catalog and integrate the transition matrix
-behavior_catalog = {
-    "legitimate": {
-        "activities": {
-            activity: "neutral" if label == "neutral" else ("positive" if label == "positive" else "negative")
-            for activity, label in zip(activities, ["neutral", "positive", "negative", "negative", "negative",
-                                                    "neutral", "neutral", "negative", "neutral", "neutral",
-                                                    "neutral", "neutral", "neutral", "neutral", "neutral",
-                                                    "negative", "negative", "negative", "neutral", "neutral",
-                                                    "neutral", "negative", "negative", "negative", "negative",
-                                                    "negative"])
-        },
-        "transition_matrix": transition_matrix,
-        "time_limit": 180,  # Maximum 3 hours between events
-        "fraud": 0,
+# Save to JSON with both activity types and matrix
+output_data = {
+    
+        "transition_matrix": transition_matrix_list
     }
-}
 
-# Save updated behavior catalog to a new file
-with open("behavior_catalog.json", "w") as f:
-    json.dump(behavior_catalog, f, indent=4)
+with open("normal_transition_matrix.json", "w") as f:
+    json.dump(output_data, f, indent=4)
 
-print("Behavior catalog saved to 'behavior_catalog.json'.")
+print("Saved to 'normal_transition_matrix.json'.")
+
+
