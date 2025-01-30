@@ -185,9 +185,10 @@ def run_simulation_step(active_agents, normalized_catalog, agents, bank, distrib
             current_activity.balance = active_agents[agent.virtual_id]["balance"]
             current_activity.activity_type = current_activity_type
             transaction_type = activities[current_activity_type]
-            activity_time = active_agents[agent.virtual_id]["time"] + timedelta(seconds=random.randint(0, time_limit))
-            current_activity.timestamp = activity_time.strftime("%Y-%m-%d %H:%M:%S")
-
+            current_activity.delta_time = timedelta(seconds=random.randint(0, time_limit))
+            activity_time = active_agents[agent.virtual_id]["time"] + current_activity.delta_time
+            current_activity.timestamp = activity_time.strftime("%Y-%m-%d %H:%M:%S")  
+            #current_activity.delta_time=current_activity.delta_time.total_seconds()
             if transaction_type == "neutral":
                 current_activity.amount = 0
             else:
