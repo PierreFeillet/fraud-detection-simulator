@@ -34,11 +34,11 @@ class Activity(Agent):
         "is_fraudster": "int8"
     }
 
-    def __init__(self, agent, timestamp,):
+    def __init__(self, agent,):
         # Initialize the parent class (Agent)
-        super().__init__(agent.real_id, agent.virtual_id, agent.is_fraudster, agent.behavior,)
+        super().__init__(agent.real_id, agent.virtual_id, agent.is_fraudster, agent.behavior, agent.initial_time)
         # activity-specific attributes
-        self.timestamp = timestamp
+        self.timestamp = agent.initial_time
         self.activity_type = ''
         #self.balance = self.initial_balance
         self.granted = True 
