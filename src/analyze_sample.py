@@ -4,10 +4,13 @@ import argparse
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.ensemble import RandomForestClassifier
+from sklearn import tree
+import graphviz 
 from sklearn.metrics import classification_report, accuracy_score
 from IPython import embed
 import matplotlib.pyplot as plt
 import os
+import time
 
 
 
@@ -73,26 +76,41 @@ if __name__ == "__main__":
     print(classification_report(y_test, y_pred))
 
     # Get the feature importances from the trained classifier
-importances = clf.feature_importances_
+    importances = clf.feature_importances_
 
-# Create a DataFrame to view the feature importances
-feature_importance_df = pd.DataFrame({
-    'Feature': X.columns,
-    'Importance': importances
-})
+    # Create a DataFrame to view the feature importances
+    feature_importance_df = pd.DataFrame({
+        'Feature': X.columns,
+        'Importance': importances
+    })
 
-# Sort the DataFrame by importance
-feature_importance_df = feature_importance_df.sort_values(by='Importance', ascending=False)
+    # Sort the DataFrame by importance
+    feature_importance_df = feature_importance_df.sort_values(by='Importance', ascending=False)
 
-# Print the feature importances
-print(feature_importance_df)
+    # Print the feature importances
+    print(feature_importance_df)
 
-# Plotting the feature importances
-plt.figure(figsize=(10, 6))
-plt.barh(feature_importance_df['Feature'], feature_importance_df['Importance'])
-plt.xlabel('Importance')
-plt.title(f'Feature Importance for predicting label {target_col}')
-#os.make
-#plt.savefig(f"{output_dir}
-plt.show()
+    # Plotting the feature importances
+    plt.figure(figsize=(10, 6))
+    plt.barh(feature_importance_df['Feature'], feature_importance_df['Importance'])
+    plt.xlabel('Importance')
+    plt.title(f'Feature Importance for predicting label {target_col}')
+    os.makedirs('plots', exist_ok=True)
+    plt.savefig(f"plots/feature_importance.png")
 
+
+    # Try decision tree
+    features = X_train.columns
+    start_fit = time.time()
+    clf = tree.DecisionTreeClassifier(max_depth = 4,class_weight='balanced', ) #min_impurity_decrease=0.009
+    clf.fit(X_train, y_train)
+    print(f'Decision Tree training required: {round(time.time()-start_fit, 2)}s')
+    # Save to a .pkl file
+    #with open(f"{output_path}/decision_tree_model.pkl", "wb") as f:
+     #   pickle.dump(clf, f)
+    # Visualize the decision tree
+    #dot_data = tree.export_graphviz(clf,feature_names=features,class_names=list(particle_type.keys()),filled=True, rounded=True,special_characters=True) 
+    dot_data = tree.export_graphviz(clf,feature_names=features,filled=True, rounded=True, special_characters=True, proportion=True) 
+    graph = graphviz.Source(dot_data) 
+    graph.render(f"plots/treeSchema")
+    print("Model saved successfully!")
