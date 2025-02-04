@@ -3,6 +3,20 @@ from datetime import datetime, timedelta
 import json
 from IPython import embed
 import pandas as pd
+import re
+
+activity_mapping = {
+    "Deposit": "Deposit",
+    "Transfer": "Transfer",
+    "Withdrawal": "Withdraw",
+    "Purchase": "Purchase",
+    "Account Opening": "Open Account",
+    "Login": "Login",
+    "Phishing Attempt": "Phishing",
+    "Offshore Transfer": "Transfer",
+    "Luxury Spending": "Purchase"
+}
+
 
 def generate_agent_strategy(is_fraudster: bool, filename="agent_strategy_response.txt"):
     """Queries the LLM to generate a strategy for a fraudster or legitimate user and saves the response."""
@@ -19,15 +33,11 @@ def generate_agent_strategy(is_fraudster: bool, filename="agent_strategy_respons
     response = ollama.chat(model="mistral", messages=[{"role": "user", "content": prompt}])
     strategy = response['message']['content'].strip()
 
-    # ✅ Save the response to a text file
+    #  Save the response to a text file
     with open(filename, "w", encoding="utf-8") as file:
         file.write(strategy)
 
     return strategy
-
-
-import re
-import json
 
 def extract_json(text):
     """Extracts JSON content from a text response using regex, with fallback handling."""
@@ -52,33 +62,53 @@ def extract_json(text):
     print("Error: No valid JSON found in LLM response.")
     return None
 
-
-def generate_activity_sequence(strategy: str):
-    """Queries the LLM to generate a structured sequence of activities based on a strategy."""
+def generate_activity_sequence(strategy: str, initial_balance=10000):
+    """Queries the LLM to generate a structured sequence of activities based on a strategy, while tracking balance."""
     
     prompt = (
         f"You are an AI that generates structured financial activity sequences based on the following strategy:\n\n"
-        f"### Fraud/Legitimate Strategy:\n{strategy}\n\n"
+        f"### Strategy:\n{strategy}\n\n"
         f"### Instructions:\n"
         f"- Generate at least **5 activities** that align with the strategy.\n"
-        f"- Ensure timestamps are **realistic and sequential**.\n"
-        f"- If it's a **fraudster**, create a pattern of fraudulent transactions.\n"
-        f"- If it's a **legitimate user**, create typical everyday transactions.\n"
-        f"- **Return only valid JSON**, with no explanations, no formatting, and no markdown.\n"
-        f"- Your response **must start with `[` and end with `]`** (a valid JSON array).\n"
+        f"- Each activity must include `type`, `amount`, `location`, and `timestamp`.\n"
+        f"- The **amount must be 0** if the activity does not involve a financial transaction.\n"
+        f"- The **location must be aligned** with the agent's behavior (e.g., fraudsters use offshore locations, travelers move frequently).\n"
+        f"- Return JSON format **only** with no explanations.\n"
+        f"- Example format:\n"
+        f"```json\n"
+        f"[\n"
+        f"    {{\"type\": \"Deposit\", \"amount\": 5000, \"location\": \"USA\", \"timestamp\": \"2025-03-05 09:00:00\"}},\n"
+        f"    {{\"type\": \"Transfer\", \"amount\": 2000, \"location\": \"Cayman Islands\", \"timestamp\": \"2025-03-06 11:30:00\"}}\n"
+        f"]\n"
+        f"```"
     )
 
     response = ollama.chat(model="mistral", messages=[{"role": "user", "content": prompt}])
     raw_response = response['message']['content'].strip()
 
-    # Extract JSON safely
+    #  Extract JSON safely
     activity_sequence = extract_json(raw_response)
-
-    if activity_sequence:
-        return activity_sequence
-    else:
+    
+    if not activity_sequence:
         print("Error: Failed to generate a valid activity sequence.")
         return None
+
+    #  Convert activity names & track balance
+    balance = initial_balance
+    for activity in activity_sequence:
+        activity["type"] = activity_mapping.get(activity["type"], activity["type"])  # Shorten names
+
+        #  Balance update logic
+        if activity["amount"] > 0:
+            if activity["type"] == "Deposit":
+                balance += activity["amount"]  # Increase balance for deposits
+            else:
+                balance -= activity["amount"]  # Decrease balance for withdrawals, transfers, purchases
+
+        activity["balance"] = balance  # Track running balance
+
+    return activity_sequence
+
 
 def store_activities(activity_sequence):
     """Stores generated activities into a pandas DataFrame."""
