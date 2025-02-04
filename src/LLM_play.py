@@ -2,46 +2,104 @@ import ollama
 from datetime import datetime, timedelta
 import json
 from IPython import embed
+import pandas as pd
 
-# Sample agent data
-agent_type = "traveler"
-initial_country = "USA"
-behavior = "frequent traveler"
-is_fraudster = 0
-previous_activity = "purchase"
-previous_timestamp = datetime.now() - timedelta(hours=1, minutes=30)  # 1.5 hours ago
-previous_location = "France"
-previous_amount = 120.50  # USD
+def generate_agent_strategy(is_fraudster: bool, filename="agent_strategy_response.txt"):
+    """Queries the LLM to generate a strategy for a fraudster or legitimate user and saves the response."""
+    prompt = (
+        "You're in a simulation of " + ("fraudulent behavior" if is_fraudster else "normal financial behavior") + " in banking. "
+        "You are a " + ("clever fraudster" if is_fraudster else "legitimate bank customer") + ". "
+        "Describe your financial behavior and approach in detail.\n\n"
+        "Your response should be a well-structured explanation of your strategy, "
+        "such as how you spend money, transfer funds, or conduct fraud. "
+        "Provide a clear thought process, but do NOT return JSON."
+    )
 
-# Construct the LLM prompt
-prompt = (
-    f"You are a structured data generator. You must always return a response in strict JSON format, without any additional text. "
-    f"Given the following agent details, predict their next financial activity:\n\n"
-    f"Agent Type: {agent_type} (Options: 'traveler', 'static')\n"
-    f"Residence Country: {initial_country}\n"
-    f"Behavior Type: {behavior}\n"
-    f"Is Fraudster: {is_fraudster} (0 = Legitimate, 1 = Fraudster)\n"
-    f"Previous Activity: {previous_activity} (Options: 'withdrawal', 'deposit', 'purchase', 'login', 'account takeover', etc.)\n"
-    f"Previous Timestamp: {previous_timestamp.strftime('%Y-%m-%d %H:%M:%S')}\n"
-    f"Previous Location: {previous_location}\n"
-    f"Previous Amount: {previous_amount} (Use 0 for non-transaction activities)\n\n"
-    f"Constraints:\n"
-    f"- The predicted activity must align with the agent's **behavior**.\n"
-    f"- Timestamp must be after the previous timestamp, with a delay between **5 minutes and 2 hours**.\n"
-    f"- The activity must be consistent with past behavior and agent type.\n"
-    f"- If the activity is a **transaction**, predict a reasonable amount based on behavior (e.g., small purchases <$100, large withdrawals >$500).\n"
-    f"- If the agent is a **fraudster**, they are more likely to conduct suspicious activities such as high-value transactions, international transfers, or account takeovers.\n"
-    f"- Return **only** JSON format, like this:\n"
-    f"  {{\"activity\": \"...\", \"timestamp\": \"YYYY-MM-DD HH:MM:SS\", \"location\": \"...\", \"amount\": ...}}\n"
-)
+    # Send request to the LLM
+    response = ollama.chat(model="mistral", messages=[{"role": "user", "content": prompt}])
+    strategy = response['message']['content'].strip()
+
+    # ✅ Save the response to a text file
+    with open(filename, "w", encoding="utf-8") as file:
+        file.write(strategy)
+
+    return strategy
 
 
-# Send request to Ollama
-response = ollama.chat(model="deepseek-r1", messages=[{"role": "system", "content": "You are an AI trained to return structured JSON outputs. Always return valid JSON, nothing else."},{"role": "user", "content": prompt}])
-embed()
-# Parse the response
-try:
-    data = json.loads(response['message']['content'])
-    print("LLM Response:", data)
-except Exception as e:
-    print("Error parsing response:", str(e))
+import re
+import json
+
+def extract_json(text):
+    """Extracts JSON content from a text response using regex, with fallback handling."""
+    
+    # First Attempt: Direct JSON Parsing (Best case scenario)
+    try:
+        return json.loads(text.strip())  # If response is pure JSON, this works
+    except json.JSONDecodeError:
+        pass  # Fall back to regex extraction
+
+    # Second Attempt: Extract JSON Block (If LLM adds explanations)
+    match = re.search(r"\[.*\]", text, re.DOTALL)  # Look for a JSON array
+    if match:
+        json_data = match.group(0)  # Extract JSON content
+        try:
+            return json.loads(json_data)  # Convert to Python list
+        except json.JSONDecodeError:
+            print("Error: Extracted JSON is invalid.")
+            return None
+
+    # If all else fails
+    print("Error: No valid JSON found in LLM response.")
+    return None
+
+
+def generate_activity_sequence(strategy: str):
+    """Queries the LLM to generate a structured sequence of activities based on a strategy."""
+    
+    prompt = (
+        f"You are an AI that generates structured financial activity sequences based on the following strategy:\n\n"
+        f"### Fraud/Legitimate Strategy:\n{strategy}\n\n"
+        f"### Instructions:\n"
+        f"- Generate at least **5 activities** that align with the strategy.\n"
+        f"- Ensure timestamps are **realistic and sequential**.\n"
+        f"- If it's a **fraudster**, create a pattern of fraudulent transactions.\n"
+        f"- If it's a **legitimate user**, create typical everyday transactions.\n"
+        f"- **Return only valid JSON**, with no explanations, no formatting, and no markdown.\n"
+        f"- Your response **must start with `[` and end with `]`** (a valid JSON array).\n"
+    )
+
+    response = ollama.chat(model="mistral", messages=[{"role": "user", "content": prompt}])
+    raw_response = response['message']['content'].strip()
+
+    # Extract JSON safely
+    activity_sequence = extract_json(raw_response)
+
+    if activity_sequence:
+        return activity_sequence
+    else:
+        print("Error: Failed to generate a valid activity sequence.")
+        return None
+
+def store_activities(activity_sequence):
+    """Stores generated activities into a pandas DataFrame."""
+    df = pd.DataFrame(activity_sequence)
+    df["timestamp"] = pd.to_datetime(df["timestamp"])  # Ensure timestamps are datetime format
+    return df
+
+# Step 1: Generate an Agent Strategy
+is_fraudster = True  # Change to False for legitimate user
+strategy = generate_agent_strategy(is_fraudster)
+
+if strategy:
+    print(f"\nGenerated Strategy:\n{strategy}\n")
+
+    # Step 2: Generate an Activity Sequence
+    activities = generate_activity_sequence(strategy)
+
+    if activities:
+        # Step 3: Store in DataFrame
+        df = store_activities(activities)
+        print("\nGenerated Activity Sequence:")
+        print(df)
+        df.to_csv(f"generated_activities.csv", index=True)
+

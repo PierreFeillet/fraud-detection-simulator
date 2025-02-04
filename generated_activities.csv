@@ -1,0 +1,6 @@
+,timestamp,account_number,activity
+0,2023-01-01 09:00:00,123456789,Open account under a false identity with Bank A
+1,2023-01-03 14:00:00,123456789,Small deposit of $50 into account at Bank A
+2,2023-01-05 10:30:00,123456789,Transfer $200 from account at Bank A to account at Bank B
+3,2023-01-07 15:45:00,123456789,Withdraw $100 from account at Bank A
+4,2023-01-10 09:00:00,987654321,Account takeover of victim's account at Bank C
