@@ -5,6 +5,8 @@ import random
 with open("normal_transition_matrix.json", "r") as f:
     data = json.load(f)
 
+legitimate_catalog = ['high spender', 'frequent traveler', 'normal user',]
+fraudster_catalog = ['identity thief', 'card skimmer', 'money launder']
 behavior_catalog = {
     "legitimate": {
         "activities": {
