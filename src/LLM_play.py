@@ -104,13 +104,50 @@ def generate_activity_sequence(strategy: str, initial_balance=10000):
 
     return activity_sequence
 
-
-
 def store_activities(activity_sequence):
     """Stores generated activities into a pandas DataFrame."""
     df = pd.DataFrame(activity_sequence)
     df["timestamp"] = pd.to_datetime(df["timestamp"])  # Ensure timestamps are datetime format
     return df
+
+
+def evaluate_simulation(activity_sequence):
+    """Computes a fraud probability score based on time gaps, amount variance, location changes, and transaction failures."""
+
+    if len(activity_sequence) < 2:
+        return {"score": 0.5, "error": "Not enough data for evaluation"}  # Neutral score if too few transactions
+
+    df = pd.DataFrame(activity_sequence)
+    df["timestamp"] = pd.to_datetime(df["timestamp"])
+    
+    #  **Compute Time Gap Score**
+    df["time_diff"] = df["timestamp"].diff().dt.total_seconds().fillna(0)
+    avg_time_gap = df["time_diff"].mean()
+    time_score = min(1, avg_time_gap / 86400)  # Normalize (1 day gap = 1, <1 day = closer to 0)
+
+    #  **Compute Amount Variation Score**
+    amount_variance = np.var(df["amount"])
+    amount_score = min(1, 1 / (1 + amount_variance / 10000))  # Normalize variance (high variance → fraud)
+
+    #  **Compute Location Switching Score**
+    unique_locations = df["location"].nunique()
+    location_score = min(1, 1 / (1 + unique_locations / 5))  # More unique locations → Lower score
+
+    #  **Compute Denied Transaction Score**
+    denied_ratio = df[df["granted"] == False].shape[0] / df.shape[0]
+    denied_score = 1 - min(1, denied_ratio)  # More denied transactions → Lower score
+
+    #  **Final Score (Weighted)**
+    final_score = 0.3 * time_score + 0.3 * amount_score + 0.2 * location_score + 0.2 * denied_score
+
+    return {
+        "Time Gap Score": round(time_score, 2),
+        "Amount Stability Score": round(amount_score, 2),
+        "Location Stability Score": round(location_score, 2),
+        "Denied Transactions Score": round(denied_score, 2),
+        "Final Fraud Score": round(final_score, 2)
+    }
+
 
 # Step 1: Generate an Agent Strategy
 is_fraudster = True  # Change to False for legitimate user
@@ -129,3 +166,7 @@ if strategy:
         print(df)
         df.to_csv(f"generated_activities.csv", index=True)
 
+        # Step 4: Evaluate Fraud Score
+        scores = evaluate_simulation(activities)
+        print("\nFraud Evaluation Metrics:")
+        print(scores)
