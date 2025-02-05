@@ -11,14 +11,20 @@ def generate_agent_strategy(is_fraudster: bool, filename="agent_strategy_respons
     prompt = (
         "You're in a simulation of " + ("fraudulent behavior" if is_fraudster else "normal financial behavior") + " in banking. "
         "You are a " + ("clever fraudster" if is_fraudster else "legitimate bank customer") + ". "
-        "Describe your financial behavior and approach in detail.\n\n"
-        "Your response should be a well-structured explanation of your strategy, "
-        "such as how you spend money, transfer funds, or conduct fraud. "
+        "Describe your financial behavior and approach in detail but limited to what in practice a bank system would see. Your output strategy will be used to feed another LLM that must generates activities consistent with your startegy "
+        "Specifically, the next LLM will have to generate the sequence of activities to achieve teh goal you defined in your strategy. Since we are in a simulate banking system, we only care about the activites *relevant* to a bank (not if for example the fraudster goes to parties with bank operators)."
+        "The next agent will have to create a JSON file with the following information provided so be clear about the strategy for picking the right choices:"
+        f"- Example format:\n"
+        f"```json\n"
+        f"[\n"
+        f"    {{\"type\": \"Deposit\", \"amount\": 5000, \"location\": \"USA\", \"timestamp\": \"2025-03-05 09:00:00\", \"granted\": true}},\n"
+        f"    {{\"type\": \"Transfer\", \"amount\": 2000, \"location\": \"Cayman Islands\", \"timestamp\": \"2025-03-06 11:30:00\", \"granted\": true}}\n"
+        f"]\n" 
         "Provide a clear thought process, but do NOT return JSON."
     )
 
     # Send request to the LLM
-    response = ollama.chat(model="mistral", messages=[{"role": "user", "content": prompt}])
+    response = ollama.chat(model="deepseek-r1", messages=[{"role": "user", "content": prompt}])
     strategy = response['message']['content'].strip()
 
     #  Save the response to a text file
@@ -86,7 +92,7 @@ def generate_activity_sequence(strategy: str, initial_balance=10000):
     #  Convert activity names & track balance with overdraft protection
     balance = initial_balance
     for activity in activity_sequence:
-        activity["type"] = activity_mapping.get(activity["type"], activity["type"])  # Shorten names
+        #activity["type"] = activity_mapping.get(activity["type"], activity["type"])  # Shorten names
         activity["granted"] = True  # Default to granted
 
         if activity["amount"] > 0:

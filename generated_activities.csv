@@ -1,6 +1,0 @@
-,type,amount,location,timestamp,granted,balance
-0,Deposit,0,Cayman Islands,2025-03-01 10:00:00,True,10000
-1,Transfer,500,Offshore Bank A,2025-03-02 14:30:00,True,9500
-2,Purchase,100,Anonymous Payment Service,2025-03-03 09:00:00,True,9400
-3,Transfer,1000,Switzerland,2025-03-04 15:45:00,True,8400
-4,Investment,2000,Offshore Investment Firm,2025-03-05 10:30:00,True,6400
