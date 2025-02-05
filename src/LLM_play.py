@@ -5,18 +5,6 @@ from IPython import embed
 import pandas as pd
 import re
 
-activity_mapping = {
-    "Deposit": "Deposit",
-    "Transfer": "Transfer",
-    "Withdrawal": "Withdraw",
-    "Purchase": "Purchase",
-    "Account Opening": "Open Account",
-    "Login": "Login",
-    "Phishing Attempt": "Phishing",
-    "Offshore Transfer": "Transfer",
-    "Luxury Spending": "Purchase"
-}
-
 
 def generate_agent_strategy(is_fraudster: bool, filename="agent_strategy_response.txt"):
     """Queries the LLM to generate a strategy for a fraudster or legitimate user and saves the response."""
@@ -70,15 +58,17 @@ def generate_activity_sequence(strategy: str, initial_balance=10000):
         f"### Strategy:\n{strategy}\n\n"
         f"### Instructions:\n"
         f"- Generate at least **5 activities** that align with the strategy.\n"
-        f"- Each activity must include `type`, `amount`, `location`, and `timestamp`.\n"
+        f"- Each activity must include `type`, `amount`, `location`, `timestamp`.\n"
+        f"- **Ensure `type` is concise** (e.g., 'Deposit', 'Transfer', 'Withdraw', 'Purchase').\n"
         f"- The **amount must be 0** if the activity does not involve a financial transaction.\n"
         f"- The **location must be aligned** with the agent's behavior (e.g., fraudsters use offshore locations, travelers move frequently).\n"
-        f"- Return JSON format **only** with no explanations.\n"
+        f"- **If a transaction is not possible due to insufficient funds, mark `granted: false` and set `amount: 0`**.\n"
+        f"- Return JSON format **only**, with no explanations.\n"
         f"- Example format:\n"
         f"```json\n"
         f"[\n"
-        f"    {{\"type\": \"Deposit\", \"amount\": 5000, \"location\": \"USA\", \"timestamp\": \"2025-03-05 09:00:00\"}},\n"
-        f"    {{\"type\": \"Transfer\", \"amount\": 2000, \"location\": \"Cayman Islands\", \"timestamp\": \"2025-03-06 11:30:00\"}}\n"
+        f"    {{\"type\": \"Deposit\", \"amount\": 5000, \"location\": \"USA\", \"timestamp\": \"2025-03-05 09:00:00\", \"granted\": true}},\n"
+        f"    {{\"type\": \"Transfer\", \"amount\": 2000, \"location\": \"Cayman Islands\", \"timestamp\": \"2025-03-06 11:30:00\", \"granted\": true}}\n"
         f"]\n"
         f"```"
     )
@@ -93,21 +83,27 @@ def generate_activity_sequence(strategy: str, initial_balance=10000):
         print("Error: Failed to generate a valid activity sequence.")
         return None
 
-    #  Convert activity names & track balance
+    #  Convert activity names & track balance with overdraft protection
     balance = initial_balance
     for activity in activity_sequence:
         activity["type"] = activity_mapping.get(activity["type"], activity["type"])  # Shorten names
+        activity["granted"] = True  # Default to granted
 
-        #  Balance update logic
         if activity["amount"] > 0:
             if activity["type"] == "Deposit":
-                balance += activity["amount"]  # Increase balance for deposits
+                balance += activity["amount"]  #  Increase balance for deposits
             else:
-                balance -= activity["amount"]  # Decrease balance for withdrawals, transfers, purchases
+                #  Overdraft protection: Reject if insufficient funds
+                if balance >= activity["amount"]:
+                    balance -= activity["amount"]  #  Deduct balance normally
+                else:
+                    activity["granted"] = False  #  Mark as rejected
+                    activity["amount"] = 0  # Reset amount since the transaction failed
 
         activity["balance"] = balance  # Track running balance
 
     return activity_sequence
+
 
 
 def store_activities(activity_sequence):
@@ -129,7 +125,7 @@ if strategy:
     if activities:
         # Step 3: Store in DataFrame
         df = store_activities(activities)
-        print("\nGenerated Activity Sequence:")
+        print("\nGenerated Activity Sequence:\n")
         print(df)
         df.to_csv(f"generated_activities.csv", index=True)
 
