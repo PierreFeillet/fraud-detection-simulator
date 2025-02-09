@@ -32,11 +32,10 @@ import re
 import json
 
 def extract_json(text):
-    """Extracts the JSON block from a text response using custom markers JSON-START and JSON-STOP."""
+    """Extracts JSON from triple backticks (` ```json `) in the LLM response."""
     
-    # Search for JSON content between markers
-    match = re.search(r'JSON-START\n(.*?)\nJSON-STOP', text, re.DOTALL)
-    print(match)
+    # Match content between triple backticks and 'json' keyword
+    match = re.search(r'```json\s*(.*?)\s*```', text, re.DOTALL)
     
     if not match:
         print("⚠️ No valid JSON found in response.")
@@ -47,7 +46,7 @@ def extract_json(text):
         data = json.loads(json_text)  # Parse JSON string into a Python object
         return data if isinstance(data, list) else [data]  # Ensure it returns a list
     except json.JSONDecodeError as e:
-        print(f"Error parsing JSON: {e}")
+        print(f"❌ Error parsing JSON: {e}")
         return None
 
 
@@ -67,7 +66,8 @@ def generate_fraud_strategy(fraud_type=None, filename="strategies/fraud_strategy
     )
 
     prompt = (
-        "You're in a banking simulation. Your goal is to execute a fraudulent scheme. "
+        f"You're in a banking simulation where fraud checks can be immediate alerts for High-Risk Transactions (like a flagged large foreign withdrawal) and Continuous Monitoring of Activity Patterns to catch subtler fraud over time.\n"
+        f"Your goal is to execute a fraudulent scheme.\n"
         f"{fraud_description} "
         "Your strategy will be used by another LLM to generate a sequence of financial activities aligned with your plan. "
         "Provide:\n"
@@ -81,17 +81,9 @@ def generate_fraud_strategy(fraud_type=None, filename="strategies/fraud_strategy
     response = ollama.chat(model="deepseek-r1", messages=[{"role": "user", "content": prompt}])
     strategy_text = response['message']['content'].strip()
 
-    strategy_data = {
-        "fraud_type": fraud_type,
-        "fraud_strategy": strategy_text
-    }
-
-    # Save to JSON
-    with open(filename, "w", encoding="utf-8") as file:
-        json.dump(strategy_data, file, indent=4)
+    save_strategy_to_txt(fraud_type, strategy_text, "fraud_strategies.txt")
     
-    return strategy_data, strategy_text
-
+    return strategy_text
 
 def generate_legitimate_strategy(profile_type=None, filename="strategies/legitimate_strategy.json"):
     """Generates a legitimate banking strategy based on a customer profile type."""
@@ -107,7 +99,9 @@ def generate_legitimate_strategy(profile_type=None, filename="strategies/legitim
     )
 
     prompt = (
-        "You're in a banking simulation. You are a legitimate customer. "
+        f"You're in a banking simulation where fraud checks can be immediate alerts for High-Risk Transactions (like a flagged large foreign withdrawal) and Continuous Monitoring of Activity Patterns to catch subtler fraud over time"
+        f"Sometimes legitimate customer operation are not granted because of the bank alerts."
+        f"You are a legitimate customer. "
         f"{profile_description} "
         "Your strategy will be used by another LLM to generate a sequence of financial activities aligned with your plan. "
         "Provide:\n"
@@ -118,51 +112,78 @@ def generate_legitimate_strategy(profile_type=None, filename="strategies/legitim
         "Provide a clear thought process, but do NOT return JSON."
     )
 
-    response = ollama.chat(model="mistral", messages=[{"role": "user", "content": prompt}])
+    response = ollama.chat(model="deepseek-r1", messages=[{"role": "user", "content": prompt}])
     strategy_text = response['message']['content'].strip()
 
-    strategy_data = {
-        "profile_type": profile_type,
-        "legitimate_strategy": strategy_text
-    }
+    save_strategy_to_txt(profile_type, strategy_text, "legitimate_strategies.txt")
 
-    # Save to JSON
-    with open(filename, "w", encoding="utf-8") as file:
-        json.dump(strategy_data, file, indent=4)
-
-    return strategy_data, strategy_text
+    return strategy_text
 
 
 def generate_activity_sequence(strategy: str, initial_balance=10000, currency="USD",
                                log_text_file="activity_log.txt", log_json_file="activity_log.json"):
     """Generates structured financial activities, ensuring all fields are present, and saves reasoning and JSON logs."""
-
     prompt = (
-        f"You are an AI generating a **detailed timeline** of banking activities based on the strategy below.\n\n"
-        f"### Strategy:\n{strategy}\n\n"
-        f"### Instructions:\n"
-        f"- First, explain your reasoning step by step.\n"
-        f"- Then, generate only the structured JSON activity sequence.\n"
-        f"- The JSON must be enclosed within JSON-START and JSON-STOP. Don't generate anything which is not JSON in the middle.\n"
-        f"- Example format:\n"
-        f"Reasoning:\n"
-        f"--- START REASONING ---\n"
-        f"Here’s how I will create the sequence...\n"
-        f"--- END REASONING ---\n\n"
-        f"JSON-START\n"
-        f"[\n"
-        f"    {{\"transaction_id\": \"TXN00001\", \"timestamp\": \"2025-03-01 12:00:00\", \"type\": \"Login\", \"amount\": 0, \"currency\": \"{currency}\", \"account_id\": null, \"user_id\": \"USER789\", \"balance_before\": null, \"balance_after\": null, \"location\": \"New York, USA\", \"ip_address\": \"192.168.1.10\", \"device_id\": \"iPhone-14\", \"network_type\": \"Wi-Fi\", \"merchant_name\": null, \"recipient_id\": null, \"recipient_bank\": null, \"granted\": null, \"is_suspicious\": false, \"fraud_score\": 0.0}}\n"
-        f"]\n"
-        f"JSON-STOP\n"
+    f"You are an AI generating a **detailed timeline** of banking activities.\n"
+    f"You are in a banking simulation where fraud checks can be immediate alerts for High-Risk Transactions (like a flagged large foreign withdrawal) and Continuous Monitoring of Activity Patterns to catch subtler fraud over time.\n"
+    f"Sometimes legitimate customer operations are not granted because of bank alerts.\n"
+    f"You must generate activities based on the strategy below.\n\n"
+    f"### Strategy:\n{strategy}\n\n"
+    f"### Instructions:\n"
+    f"- First, explain your reasoning step by step.\n"
+    f"- Then, generate **only** the structured JSON activity sequence.\n"
+    f"- The JSON must be enclosed within **triple backticks** using the format ```json ... ```.\n"
+    f"- Do **not** add any text after the JSON block.\n"
+    f"- **If a transaction is not possible due to insufficient funds, mark `granted: false` and set `amount: 0`.**\n"
+    f"- The JSON output should follow this structure:\n"
+    f"```json\n"
+    f"[\n"
+    f"    {{\"transaction_id\": \"TXN00001\", \"timestamp\": \"2025-03-01 12:00:00\", \"type\": \"Login\", \"amount\": 0, \"currency\": \"{currency}\", \"account_id\": null, \"user_id\": \"USER789\", \"balance_before\": null, \"balance_after\": null, \"location\": \"New York, USA\", \"ip_address\": \"192.168.1.10\", \"device_id\": \"iPhone-14\", \"network_type\": \"Wi-Fi\", \"merchant_name\": null, \"recipient_id\": null, \"recipient_bank\": null, \"granted\": null, \"is_suspicious\": false, \"login_attempts\": 1, \"session_id\": \"SESSION123\", \"velocity\": null, \"distance_from_last_location\": null, \"device_trust_score\": 85, \"ip_reputation_score\": 10, \"compromised_device\": false, \"compromised_network\": false, \"is_repeat_location\": true, \"transaction_risk_score\": 5, \"fraud_label\": 0, \"behavior_type\": \"Student\" }}\n"
+    f"]\n"
+    f"```\n"
+    f"\n"
+    f"### Explanation of Each Field:\n"
+    f"- `transaction_id`: Unique identifier for the transaction.\n"
+    f"- `timestamp`: The date and time when the activity occurred.\n"
+    f"- `type`: The type of activity (e.g., Login, Withdrawal, Purchase, Transfer).\n"
+    f"- `amount`: The amount of money involved in the transaction.\n"
+    f"- `currency`: The currency of the transaction.\n"
+    f"- `account_id`: Identifier of the bank account involved.\n"
+    f"- `user_id`: Identifier for the user performing the transaction.\n"
+    f"- `balance_before`: The account balance before the transaction.\n"
+    f"- `balance_after`: The account balance after the transaction.\n"
+    f"- `location`: Geographic location of the activity.\n"
+    f"- `ip_address`: IP address used during the activity.\n"
+    f"- `device_id`: Device identifier (e.g., phone or computer model).\n"
+    f"- `network_type`: Type of network used (e.g., Wi-Fi, Mobile Data).\n"
+    f"- `merchant_name`: Name of the merchant if applicable.\n"
+    f"- `recipient_id`: Identifier of the recipient for transfers.\n"
+    f"- `recipient_bank`: Bank of the recipient.\n"
+    f"- `granted`: Indicates if the transaction was approved (`true`) or denied (`false`).\n"
+    f"- `is_suspicious`: Boolean flag indicating if the transaction is suspicious.\n"
+    f"- `login_attempts`: Number of login attempts in the session.\n"
+    f"- `session_id`: Unique identifier for the session grouping multiple activities.\n"
+    f"- `velocity`: Time difference from the previous transaction to detect rapid actions.\n"
+    f"- `distance_from_last_location`: Distance from the previous activity location to detect impossible travel.\n"
+    f"- `device_trust_score`: A score representing the trust level of the device based on its usage history.\n"
+    f"- `ip_reputation_score`: Score indicating the risk associated with the IP address.\n"
+    f"- `compromised_device`: Boolean flag indicating if the device is known to be compromised.\n"
+    f"- `compromised_network`: Boolean flag for risky networks (e.g., public Wi-Fi).\n"
+    f"- `is_repeat_location`: Boolean flag indicating if the transaction is from a familiar location.\n"
+    f"- `transaction_risk_score`: Overall risk score based on transaction features.\n"
+    f"- `fraud_label`: Ground truth label for supervised learning (`1` for fraud, `0` for legitimate).\n"
+    f"- `behavior_type`: Indicates whether the activity is part of a specific legitimate behavioral profile (e.g high frequency traveler, student, ) or a specific fraud type (e.g., Identity Theft, Money Laundering).\n"
     )
 
+
+
     # ✅ Send the request to the LLM
-    response = ollama.chat(model="mistral", messages=[{"role": "user", "content": prompt}])
+    response = ollama.chat(model="deepseek-r1", messages=[{"role": "user", "content": prompt}])
     raw_response = response['message']['content'].strip()
 
     # ✅ Extract Reasoning
-    reasoning_match = re.search(r'--- START REASONING ---\n(.*?)\n--- END REASONING ---', raw_response, re.DOTALL)
-    reasoning_text = reasoning_match.group(1).strip() if reasoning_match else "⚠️ No explicit reasoning found."
+    #reasoning_match = re.search(r'--- START REASONING ---\n(.*?)\n--- END REASONING ---', raw_response, re.DOTALL)
+    #reasoning_text = reasoning_match.group(1).strip() if reasoning_match else "⚠️ No explicit reasoning found."
     
     save_to_text(log_text_file, raw_response)
 
@@ -173,13 +194,19 @@ def generate_activity_sequence(strategy: str, initial_balance=10000, currency="U
         print("❌ Error: No valid activity sequence extracted.")
         return None
 
-    # ✅ Save reasoning & JSON to files
-    #save_to_text(log_text_file, reasoning_text, activity_sequence)
-    #save_to_json(log_json_file, reasoning_text, activity_sequence)
+    # ✅ Save to JSON 
+    save_to_json('activities.json', activity_sequence)
 
-    return activity_sequence, reasoning_text
+    return activity_sequence
 
-
+def save_strategy_to_txt(profile_type, strategy_text, filename):
+    os.makedirs("strategies", exist_ok=True)
+    with open(f"strategies/{filename}", "a") as file:
+        file.write(f"Profile Type: {profile_type}\n")
+        file.write("Strategy:\n")
+        file.write(f"{strategy_text}\n")
+        file.write("---\n")
+        
 import pandas as pd
 def activities_to_dataframe(activities, label):
     """Converts an activity sequence to a pandas DataFrame and adds a label for fraud/legit."""
@@ -188,11 +215,10 @@ def activities_to_dataframe(activities, label):
     df["timestamp"] = pd.to_datetime(df["timestamp"])  # Ensure timestamps are in datetime format
     return df
 
-def save_to_json(json_filename, reasoning_text, json_data):
+def save_to_json(json_filename, json_data):
     """Appends LLM reasoning and extracted JSON as structured JSON objects."""
     
     log_entry = {
-        "reasoning": reasoning_text,
         "activities": json_data
     }
 
@@ -207,15 +233,9 @@ def save_to_json(json_filename, reasoning_text, json_data):
     existing_data.append(log_entry)
 
     # Save back to file
-    with open(json_filename, "w", encoding="utf-8") as file:
+    with open(json_filename, "a", encoding="utf-8") as file:
         json.dump(existing_data, file, indent=4)
-
-#def save_to_text(log_filename, reasoning_text, json_data):
-#    """Appends LLM reasoning and extracted JSON to a shared text file."""
-#    with open(log_filename, "a", encoding="utf-8") as log_file:
-#        log_file.write(f"\n### LLM Chain of Thought ###\n\n{reasoning_text}\n\n")
-#        log_file.write(f"### Extracted JSON Sequence ###\n\n{json.dumps(json_data, indent=4)}\n")
-#        log_file.write("\n" + "=" * 80 + "\n")  # Separator for readability
+        
 
 def save_to_text(log_filename, reasoning_text):
     """Appends LLM reasoning and extracted JSON to a shared text file."""
@@ -225,13 +245,13 @@ def save_to_text(log_filename, reasoning_text):
 
 
 # Step 1: Generate Fraud & Legitimate Strategies
-fraud_strategy_data, fraud_strategy_text = generate_fraud_strategy()
-legit_strategy_data, legit_strategy_text = generate_legitimate_strategy()
+fraud_strategy_text = generate_fraud_strategy()
+legit_strategy_text = generate_legitimate_strategy()
 
 
 # Step 2: Generate Activity Sequences
-fraud_activities, fraud_reasoning = generate_activity_sequence(fraud_strategy_text, initial_balance=5000)
-legit_activities, legit_reasoning = generate_activity_sequence(legit_strategy_text, initial_balance=10000)
+fraud_activities = generate_activity_sequence(fraud_strategy_text, initial_balance=5000)
+legit_activities = generate_activity_sequence(legit_strategy_text, initial_balance=10000)
 
 # Step 3: Convert Activities to DataFrames
 fraud_df = activities_to_dataframe(fraud_activities, label="fraud")
