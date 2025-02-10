@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 import json
 import os
 import random
@@ -28,8 +28,8 @@ def generate_activity_sequence(strategy, currency="USD", fraud_label=0, profile_
         f"- Each activity must have two timestamps: `bank_timestamp` and `local_timestamp`.\n"
         f"    - `bank_timestamp` represents the time in the bank's time zone (UTC) and must be formatted as 'YYYY-MM-DDTHH:MM:SS+00:00'.\n"
         f"    - `local_timestamp` represents the time in the agent's local time zone and must include the local offset (e.g., 'YYYY-MM-DDTHH:MM:SS-05:00').\n"
-        f"- The `velocity` field must represent the time delta in minutes between the current activity's `bank_timestamp` and the previous activity's `bank_timestamp` in minutes. If it's the first transaction is a realistic random number.\n"
-        f"- The `distance_from_last_location` field must represent the distance in kilometers from the previous activity's `location` to the current activity's `location`. If it's the first transaction is a realistic random number.\n"
+        f"- The `velocity` field must be a numeric value representing the time delta in minutes between the current activity's `bank_timestamp` and the previous activity's `bank_timestamp`. Do not include code, just the computed number. If it's the first transaction is a realistic random number.\n"
+        f"- The `distance_from_last_location` must be a numeric value in kilometers, representing the distance between the current activity's location and the previous activity's location. If it's the first transaction is a realistic random number.\n"
         f"- Ensure that the timestamps are logically consistent and formatted according to ISO 8601 standards.\n"
         f"- The JSON output MUST follow this structure and HAVE the following fields:\n"
         f"```json\n"
@@ -55,8 +55,8 @@ def generate_activity_sequence(strategy, currency="USD", fraud_label=0, profile_
         f"        \"granted\": True,\n"
         f"        \"login_attempts\": 1,\n"
         f"        \"session_id\": \"SESSION123\",\n"
-        f"        \"velocity\": 15,\n"
-        f"        \"distance_from_last_location\": 20,\n"
+        f"        \"velocity\": 0.52,\n"
+        f"        \"distance_from_last_location\": 3.4,\n"
         f"        \"is_repeat_location\": true,\n"
         f"        \"fraud_label\": {fraud_label},\n"
         f"        \"behavior_type\": \"{profile_type}\"\n"
@@ -143,7 +143,7 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
     legitimate_strategies = load_existing_strategies("strategies/legitimate_strategies.json")
 
     # Global clock for the start of the simulation
-    global_clock = datetime.datetime.now(datetime.UTC).strftime('%Y-%m-%dT%H:%M:%S')
+    global_clock = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S')
 
     # Generate fraudulent activities for multiple agents
     fraud_activities_count = 0
