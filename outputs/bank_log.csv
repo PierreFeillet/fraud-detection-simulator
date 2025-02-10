@@ -1,0 +1,12 @@
+transaction_id,timestamp,type,amount,currency,account_id,user_id,balance_before,balance_after,location,ip_address,device_id,network_type,merchant_name,recipient_id,recipient_bank,granted,login_attempts,session_id,velocity,distance_from_last_location,is_repeat_location,fraud_label,behavior_type
+Agent_1_TXN00001,2025-03-01 12:00:00,Login,0,USD,,Agent_1,1000,1000,"New York, USA",192.168.1.10,iPhone-14,Wi-Fi,,,,True,1,SESSION123,,,False,0,Money Laundering
+Agent_1_TXN00002,2025-03-01 14:30:00,Transfer,50,USD,ACCOUNT_ID123,Agent_1,1000,950,"New York, USA",192.168.1.10,iPhone-14,Wi-Fi,Global Transfers,RECEipientID123,AB Bank,True,1,SESSION123,0.5,,False,1,Money Laundering
+Agent_1_TXN00003,2025-03-01 14:45:00,Transfer,75,USD,ACCOUNT_ID123,Agent_1,950,875,"London, UK",1.1.1.1,iPhone-14,CDN,Global Transfers,RECEipientID456,CD Bank,True,2,SESSION123,,2.5,False,1,Money Laundering
+Agent_1_TXN00004,2025-03-01 14:55:00,Transfer,25,USD,ACCOUNT_ID789,Agent_1,875,850,"Paris, France",2.2.2.2,iPhone-14,CDN,Global Transfers,RECEipientID789,EF Bank,True,3,SESSION123,,4.0,False,1,Money Laundering
+Agent_1_TXN00005,2025-03-01 15:00:00,Withdrawal,40,USD,,Agent_1,850,810,"Paris, France",2.2.2.2,iPhone-14,CDN,Expenses,,,True,3,SESSION123,,4.0,False,1,Money Laundering
+Agent_1_TXN00006,2025-03-01 15:10:00,Transfer,30,USD,ACCOUNT_ID456,Agent_1,810,780,"Sydney, Australia",3.3.3.3,iPhone-14,Wi-Fi,Global Transfers,RECEipientID890,GH Bank,True,2,SESSION123,,5.0,False,1,Money Laundering
+Agent_1_TXN00007,2025-03-01 15:20:00,Transfer,45,USD,,Agent_1,780,735,"Sydney, Australia",3.3.3.3,iPhone-14,Wi-Fi,Expenses,,,True,2,SESSION123,,5.0,False,1,Money Laundering
+Agent_1_TXN00008,2025-03-01 15:30:00,Withdrawal,20,USD,,Agent_1,735,715,"Sydney, Australia",3.3.3.3,iPhone-14,Wi-Fi,Expenses,,,True,2,SESSION123,,5.0,False,1,Money Laundering
+Agent_2_TXN00001,2025-03-01 12:00:00,Login,0,USD,,Agent_2,1000,1000,"New York, USA",192.168.1.10,iPhone-14,Wi-Fi,,,,True,1,SESSION123,,,True,0,Business Owner
+Agent_2_TXN00002,2025-03-01 12:01:00,Withdrawal,100,USD,,Agent_2,2400,2300,"New York, USA",192.168.1.10,iPhone-14,Wi-Fi,Local Store,,,True,2,SESSION123,60.0,,True,0,Business Owner
+Agent_2_TXN00003,2025-03-01 12:02:00,Transfer,50,USD,,Agent_2,2400,2350,"New York, USA",192.168.1.10,iPhone-14,Wi-Fi,,RecipientID,BankName,True,3,SESSION123,60.0,,True,0,Business Owner

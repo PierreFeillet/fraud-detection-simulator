@@ -89,7 +89,6 @@ def _find_first_json_block(text):
 
 def generate_fraud_strategy(fraud_type=None, filename="strategies/fraud_strategy.json"):
     """Generates a fraud strategy based on a specific fraud type (or picks one randomly)."""
-    os.makedirs('strategies', exist_ok=True)
     #  Pick a fraud type if none is provided
     if fraud_type is None:
         fraud_type = random.choice(TOP_10_FRAUD_TYPES)
@@ -123,9 +122,6 @@ def generate_fraud_strategy(fraud_type=None, filename="strategies/fraud_strategy
 
 def generate_legitimate_strategy(profile_type=None, filename="strategies/legitimate_strategy.json"):
     """Generates a legitimate banking strategy based on a customer profile type."""
-    os.makedirs('strategies', exist_ok=True)
-    os.makedirs('outputs', exist_ok=True)
-
 
     #  Pick a profile type if none is provided
     if profile_type is None:
@@ -240,7 +236,6 @@ def generate_activity_sequence(strategy: str, initial_balance=10000, currency="U
     return activity_sequence
 
 def save_strategy_to_txt(profile_type, strategy_text, filename):
-    os.makedirs("strategies", exist_ok=True)
     with open(f"strategies/{filename}", "a") as file:
         file.write(f"Profile Type: {profile_type}\n")
         file.write("Strategy:\n")
@@ -280,7 +275,8 @@ def save_to_text(log_filename, reasoning_text):
         log_file.write(f"\n### LLM Chain of Thought ###\n\n{reasoning_text}\n\n")
 
 
-
+os.makedirs('strategies', exist_ok=True)
+os.makedirs('outputs', exist_ok=True)
 # Step 1: Generate Fraud & Legitimate Strategies
 fraud_strategy_text = generate_fraud_strategy()
 #legit_strategy_text = generate_legitimate_strategy()
