@@ -216,7 +216,7 @@ def run_simulation_step(active_agents, normalized_catalog, agents, bank, distrib
                 valid_activities = [act for act in activities.keys() if act != "Close Account"]
                 current_activity_type = random.choice(valid_activities)
             else:
-                # Get the next activity from Ollama (replacing your markov chain logic)
+                # Get the next activity from Ollama (replacing markov chain logic)
                 agent_data = {
                     "agent_type": agent.behavior,
                     "initial_country": active_agents[agent.real_id]["initial_country"],  # Now dynamically populated

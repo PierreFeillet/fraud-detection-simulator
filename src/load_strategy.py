@@ -38,3 +38,9 @@ def load_strategies_from_txt(filename="strategies/fraud_strategies.txt"):
 fraud_strategies = load_strategies_from_txt(filename="strategies/fraud_strategies.txt")
 for fs in fraud_strategies:
     print(f"Profile Type: {fs['Profile Type']}\nStrategy:\n{fs['Strategy'][:100]}...\n")
+
+import pandas as pd 
+
+file_csv='/Users/molocco/IBM_secondment/fraud-detection-simulator/banking_activity_log.csv'
+
+df = pd.

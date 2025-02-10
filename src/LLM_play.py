@@ -4,6 +4,7 @@ import json
 from IPython import embed
 import pandas as pd
 import re
+import numpy as np
 
 
 def generate_agent_strategy(is_fraudster: bool, filename="agent_strategy_response.txt"):
