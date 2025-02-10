@@ -103,7 +103,7 @@ def generate_activity_sequence(strategy, currency="USD", fraud_label=0, profile_
 
 def save_to_text(log_filename, reasoning_text):
     """Appends LLM reasoning and extracted JSON to a shared text file."""
-    with open(log_filename, "a", encoding="utf-8") as log_file:
+    with open(log_filename, "w", encoding="utf-8") as log_file:
         log_file.write(f"\n### LLM Chain of Thought ###\n\n{reasoning_text}\n\n")
 
 def extract_json(text):
