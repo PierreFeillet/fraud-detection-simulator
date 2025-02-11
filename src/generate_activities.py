@@ -48,13 +48,13 @@ def build_generation_prompt(strategy, currency, fraud_label, profile_type, globa
         f"- `transaction_id`: string, A unique identifier for the transaction generated using UUID.\n"
         f"- `bank_timestamp`: string (ISO 8601 format), The UTC time when the activity occurred, formatted as 'YYYY-MM-DDTHH:MM:SS+00:00'.\n"
         f"- `local_timestamp`: string (ISO 8601 format), The local time of the activity with time zone offset (e.g., 'YYYY-MM-DDTHH:MM:SS-05:00').\n"
-        f"- `user_id`: string, A unique identifier for the user generated using UUID.\n"
+        f"- `user_id`: string, A unique identifier for the user generated using UUID. Given \n"
         f"- `account_id`: string, The identifier of the bank account involved in the transaction.\n"
         f"- `type`: string, The type of activity (e.g., Purchase, Withdrawal, Transfer).\n"
         f"- `amount`: flaot, The monetary amount involved in the transaction.\n"
         f"- `currency`: string, The currency of the transaction (e.g., 'USD').\n"
         f"- `balance_before`: flaot, The account balance before the transaction.\n"
-        f"- `balance_after`: flaot, The account balance after the transaction (adjusted based on the `amount`).\n"
+        f"- `balance_after`: flaot, The account balance after the transaction (adjusted based on the `amount`). If the generated transaction would make `balance_after`<0 then the field `granted` must be set to `false` and `balance_after`=`balance_before`\n"
         f"- `location`: string, The city and country where the transaction took place.\n"
         f"- `ip_address`: string, The IP address used during the activity.\n"
         f"- `device_id`: string, The device identifier (e.g., phone or computer model).\n"
@@ -86,6 +86,7 @@ def build_generation_prompt(strategy, currency, fraud_label, profile_type, globa
         f"- Ensure that timestamps are logically consistent and formatted according to ISO 8601 standards.\n"
         f"- Do **NOT** include comments or explanations in the JSON.\n"
         f"- End your response immediately after closing the JSON block.\n"
+        f"- **Do NOT modify the provided `fraud_label`, `profile_type`, `global_clock`, `user_id`. They must remain exactly as given: `{fraud_label},{profile_type}, {global_clock},{user_id}`.**\n"
         f"### Important:\n"
         f"- Ensure that the JSON is correctly formatted, with the correct formats and contains no additional explanations or code comments.\n"
         f"- **Do not use nested JSON structures. All fields must be flat (no nested objects).**\n"
@@ -147,7 +148,7 @@ def extract_json(text):
 
     return combined_activities if combined_activities else None
 
-def generate_activities(total_activities=1000, target_fraud_percentage=0.1, fraud_agents_count=5, legit_agents_count=20, buffer_size=100):
+def generate_activities(total_activities=1000, target_fraud_percentage=0.1, fraud_agents_count=5, legit_agents_count=20, buffer_size=5):
     """Generates a bank log with multiple fraudulent and legitimate agents using a memory-efficient buffer."""
 
     fraudulent_strategies = load_existing_strategies("strategies/fraud_strategies.json")
@@ -173,6 +174,18 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
         nonlocal header_written
         if buffer:
             df = pd.DataFrame(buffer)
+            # Ensure only expected columns are present
+            expected_columns = [
+                "transaction_id", "bank_timestamp", "local_timestamp", "user_id", "account_id",
+                "type", "amount", "currency", "balance_before", "balance_after",
+                "location", "ip_address", "device_id", "network_type", "merchant_name",
+                "recipient_id", "recipient_bank", "granted", "login_attempts", "session_id",
+                "velocity", "distance_from_last_location", "is_repeat_location",
+                "fraud_label", "behavior_type"
+            ]
+
+            # Drop any unexpected columns
+            df = df[[col for col in df.columns if col in expected_columns]]
             # Append to the CSV; write header only once
             df.to_csv(output_file, mode='a', index=False, header=not header_written)
             header_written = True  # Set header_written to True after the first write
