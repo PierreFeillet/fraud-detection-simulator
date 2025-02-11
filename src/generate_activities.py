@@ -8,100 +8,97 @@ from IPython import embed
 import pandas as pd
 import ollama
 
+def build_generation_prompt(strategy, currency, fraud_label, profile_type, global_clock, user_id):
+    """Builds the prompt for generating activity sequences with dynamic values and data schema."""
+    # JSON Template with Dynamic Values
+    json_template = f"""
+    ```json
+    [
+      {{
+        "transaction_id": "{uuid.uuid4()}",
+        "bank_timestamp": "{global_clock}+00:00",
+        "local_timestamp": "2025-03-01T07:00:00-05:00",
+        "user_id": "{user_id}",
+        "account_id": "ACC12345",
+        "type": "Purchase",
+        "amount": 150.75,
+        "currency": "{currency}",
+        "balance_before": 1000,
+        "balance_after": 849.25,
+        "location": "New York, USA",
+        "ip_address": "192.168.1.10",
+        "device_id": "iPhone-14",
+        "network_type": "Wi-Fi",
+        "merchant_name": "Amazon",
+        "recipient_id": null,
+        "recipient_bank": null,
+        "granted": true,
+        "login_attempts": 1,
+        "session_id": "SESSION123",
+        "velocity": 0.52,
+        "distance_from_last_location": 3.4,
+        "is_repeat_location": true,
+        "fraud_label": {fraud_label},
+        "behavior_type": "{profile_type}"
+      }}
+    ]
+    ```
+    """
+    field_explanation = """"
+        f"- `transaction_id`: string, A unique identifier for the transaction generated using UUID.\n"
+        f"- `bank_timestamp`: string (ISO 8601 format), The UTC time when the activity occurred, formatted as 'YYYY-MM-DDTHH:MM:SS+00:00'.\n"
+        f"- `local_timestamp`: string (ISO 8601 format), The local time of the activity with time zone offset (e.g., 'YYYY-MM-DDTHH:MM:SS-05:00').\n"
+        f"- `user_id`: string, A unique identifier for the user generated using UUID.\n"
+        f"- `account_id`: string, The identifier of the bank account involved in the transaction.\n"
+        f"- `type`: string, The type of activity (e.g., Purchase, Withdrawal, Transfer).\n"
+        f"- `amount`: flaot, The monetary amount involved in the transaction.\n"
+        f"- `currency`: string, The currency of the transaction (e.g., 'USD').\n"
+        f"- `balance_before`: flaot, The account balance before the transaction.\n"
+        f"- `balance_after`: flaot, The account balance after the transaction (adjusted based on the `amount`).\n"
+        f"- `location`: string, The city and country where the transaction took place.\n"
+        f"- `ip_address`: string, The IP address used during the activity.\n"
+        f"- `device_id`: string, The device identifier (e.g., phone or computer model).\n"
+        f"- `network_type`: string, Type of network used (e.g., Wi-Fi, Mobile Data).\n"
+        f"- `merchant_name`: string or null, Name of the merchant (if applicable, e.g., 'Amazon' otherwise, set to `null`).\n"
+        f"- `recipient_id`: string or null, The identifier of the recipient in case of transfers; otherwise, set to `null`.\n"
+        f"- `recipient_bank`: string or null, The bank of the recipient in case of transfers; otherwise, set to `null`.\n"
+        f"- `granted`: bool, Boolean indicating if the transaction was approved (`true`) or denied (`false`).\n"
+        f"- `login_attempts`: integer, Number of login attempts in the session.\n"
+        f"- `session_id`: string, Unique identifier for the session grouping multiple activities.\n"
+        f"- `velocity`: float, Numeric value representing the time delta in minutes between the current and previous `bank_timestamp`. Use a random value if it's the first transaction.\n"
+        f"- `distance_from_last_location`: float, Numeric value in kilometers indicating the distance from the previous activity's location. Use a random value if it's the first transaction.\n"
+        f"- `is_repeat_location`: bool, Boolean indicating if the transaction is from a previously used location.\n"
+        f"- `fraud_label`: integer, `1` for fraudulent transactions, `0` for legitimate ones.\n"
+        f"- `behavior_type`: string, Describes the behavioral profile (e.g., 'Account Takeover', 'Legitimate').\n\n"
+    """
+
+    # Final Prompt with Strategy and JSON Example
+    return (
+        f"You are an AI generating a **detailed timeline** of banking activities.\n"
+        f"Your task is to create a sequence of financial activities based on the predefined strategy below.\n\n"
+        f"### Strategy:\n{strategy}\n\n"
+        f"The financial activities must be generated as a JSON object."
+        f"### Required Fields in the JSON, with format specifications, don't add extra-fields:\n{field_explanation}\n\n"
+        f"- First, explain your reasoning step by step **without making examples**.\n"
+        f"- Then, generate **only** the structured JSON activity sequence as in the following JSON example: \n{json_template}\n"
+        f"- The JSON MUST be enclosed within **triple backticks** using the format ```json ... ```.\n"
+        f"- **Do NOT include any explanations after the JSON block.**\n"
+        f"- Ensure that timestamps are logically consistent and formatted according to ISO 8601 standards.\n"
+        f"- Do **NOT** include comments or explanations in the JSON.\n"
+        f"- End your response immediately after closing the JSON block.\n"
+        f"### Important:\n"
+        f"- Ensure that the JSON is correctly formatted, with the correct formats and contains no additional explanations or code comments.\n"
+        f"- **Do not use nested JSON structures. All fields must be flat (no nested objects).**\n"
+        f"- End your response after closing triple backticks.\n"
+        f"- Ensure all field values match the types and formats specified in the JSON field explanation. If the format is string, the string must be enclosed in "" or ''\n"
+    )
+
+
 
 def generate_activity_sequence(strategy, currency="USD", fraud_label=0, profile_type="Legitimate", global_clock=None, user_id=None, log_text_file="outputs/llm_chain_of_thought.txt"):
     """Generates structured financial activities based on the provided strategy."""
     while True:
-        prompt = (
-            f"You are an AI generating a **detailed timeline** of banking activities.\n"
-            f"Your task is to create a sequence of financial activities based on a predefined strategy.\n"
-            f"You must generate activities in JSON format based on the strategy below.\n\n"
-            f"You are only a generator of activities, not a fraud detector.\n"
-            f"You are in a banking simulation where fraud checks can be immediate alerts for High-Risk Transactions (like a flagged large foreign withdrawal) and Continuous Monitoring of Activity Patterns to catch subtler fraud over time.\n"
-            f"### Strategy:\n{strategy}\n\n"
-            f"### Instructions:\n"
-            f"- First, explain your reasoning step by step without making examples.\n"
-            f"- Then, generate **only** the structured JSON activity sequence.\n"
-            f"- Ensure the JSON contains no comments or explanations. Only valid JSON should be generated.\n"
-            f"- The JSON MUST be enclosed within **triple backticks** using the format ```json ... ```.\n"
-            f"- Do **not** add any text after the JSON block.\n"
-            f"- **Do NOT repeat the example JSON in your reasoning.**\n"
-            f"- **If a transaction is not possible due to insufficient funds, mark `granted: false` and set `amount: 0`.**\n"
-            f"- `balance_before` must be initialized with a realistic value if it's the first time generating the activity sequence for that `account_id`.\n"
-            f"- `balance_after` must be updated according to the transaction type and the amount of the transaction.\n"
-            f"- Each activity must have two timestamps: `bank_timestamp` and `local_timestamp`.\n"
-            f"    - `bank_timestamp` represents the time in the bank's time zone (UTC) and must be formatted as 'YYYY-MM-DDTHH:MM:SS+00:00'.\n"
-            f"    - `local_timestamp` represents the time in the agent's local time zone and must include the local offset (e.g., 'YYYY-MM-DDTHH:MM:SS-05:00').\n"
-            f"- The `velocity` field must be a numeric value representing the time delta in minutes between the current activity's `bank_timestamp` and the previous activity's `bank_timestamp`. Do not include code, just the computed number. If it's the first transaction is a realistic random number.\n"
-            f"- The `distance_from_last_location` must be a numeric value in kilometers, representing the distance between the current activity's location and the previous activity's location. If it's the first transaction is a realistic random number.\n"
-            f"- Ensure that the timestamps are logically consistent and formatted according to ISO 8601 standards.\n"
-            f"- Don't make any JSON examples in your reasoning.\n"
-            f"- The JSON output MUST follow this structure and HAVE the following fields:\n"
-            f"```json\n"
-            f"[\n"
-            f"    {{\n"
-            f"        \"transaction_id\":  \"{uuid.uuid4()}\",\n"
-            f"        \"bank_timestamp\": \"{global_clock}+00:00\",\n"
-            f"        \"local_timestamp\": \"2025-03-01T07:00:00-05:00\",\n"
-            f"        \"user_id\": \"{user_id}\",\n"
-            f"        \"account_id\": ACC12345,\n"
-            f"        \"type\": \"Purchase\",\n"
-            f"        \"amount\": 150.75,\n"
-            f"        \"currency\": \"{currency}\",\n"
-            f"        \"balance_before\": 1000,\n"
-            f"        \"balance_after\": 849.25,\n"
-            f"        \"location\": \"New York, USA\",\n"
-            f"        \"ip_address\": \"192.168.1.10\",\n"
-            f"        \"device_id\": \"iPhone-14\",\n"
-            f"        \"network_type\": \"Wi-Fi\",\n"
-            f"        \"merchant_name\": Amazon,\n"
-            f"        \"recipient_id\": null,\n"
-            f"        \"recipient_bank\": null,\n"
-            f"        \"granted\": True,\n"
-            f"        \"login_attempts\": 1,\n"
-            f"        \"session_id\": \"SESSION123\",\n"
-            f"        \"velocity\": 0.52,\n"
-            f"        \"distance_from_last_location\": 3.4,\n"
-            f"        \"is_repeat_location\": true,\n"
-            f"        \"fraud_label\": {fraud_label},\n"
-            f"        \"behavior_type\": \"{profile_type}\"\n"
-            f"    }}\n"
-            f"]\n"
-            f"```\n"
-            f"\n"
-            f"### Explanation of Each Field:\n"
-            f"- `transaction_id`: Unique identifier for the transaction generated using UUID.\n"
-            f"- `user_id`: Unique identifier for the user generated using UUID.\n"
-            f"- `bank_timestamp`: The date and time when the activity occurred in UTC, formatted as 'YYYY-MM-DDTHH:MM:SS+00:00'.\n"
-            f"- `local_timestamp`: The date and time when the activity occurred in the local time zone, including the time zone offset.\n"
-            f"- `type`: The type of activity (e.g., Login, Withdrawal, Purchase, Transfer).\n"
-            f"- `amount`: The amount of money involved in the transaction.\n"
-            f"- `currency`: The currency of the transaction.\n"
-            f"- `account_id`: Identifier of the bank account involved.\n"
-            f"- `user_id`: Identifier for the user performing the transaction.\n"
-            f"- `balance_before`: The account balance before the transaction.\n"
-            f"- `balance_after`: The account balance after the transaction.\n"
-            f"- `location`: Geographic location of the activity.\n"
-            f"- `ip_address`: IP address used during the activity.\n"
-            f"- `device_id`: Device identifier (e.g., phone or computer model).\n"
-            f"- `network_type`: Type of network used (e.g., Wi-Fi, Mobile Data).\n"
-            f"- `merchant_name`: Name of the merchant if applicable.\n"
-            f"- `recipient_id`: Identifier of the recipient for transfers.\n"
-            f"- `recipient_bank`: Bank of the recipient.\n"
-            f"- `granted`: Indicates if the transaction was approved (`true`) or denied (`false`).\n"
-            f"- `login_attempts`: Number of login attempts in the session.\n"
-            f"- `session_id`: Unique identifier for the session grouping multiple activities.\n"
-            f"- `velocity`: Time difference from the previous transaction to detect rapid actions.\n"
-            f"- `distance_from_last_location`: Distance in km from the previous activity location to detect impossible travel.\n"
-            f"- `is_repeat_location`: Boolean flag indicating if the transaction is from a familiar location.\n"
-            f"- `fraud_label`: Ground truth label for supervised learning (`1` for fraud, `0` for legitimate).\n"
-            f"- `behavior_type`: Indicates the behavioral profile the activity sequence belongs to (e.g., Identity Theft, High Frequency Traveler, Student, Card Skimming).\n"
-            f"### Important:\n"
-            f"- **Do not generate any explanation or text after the JSON block.**\n"
-            f"- **End your task immediately after closing the JSON block.**\n"
-        )
-        
-
+        prompt = build_generation_prompt(strategy, currency, fraud_label, profile_type, global_clock, user_id)
         response = ollama.chat(model="deepseek-r1", messages=[{"role": "user", "content": prompt}])
         raw_response = response['message']['content'].strip()
         save_to_text(log_text_file, raw_response, user_id)
@@ -150,56 +147,84 @@ def extract_json(text):
 
     return combined_activities if combined_activities else None
 
-def generate_activities(total_activities=1000, target_fraud_percentage=0.1, fraud_agents_count=5, legit_agents_count=20):
-    """Generates a bank log with multiple fraudulent and legitimate agents, ensuring a realistic fraud ratio."""
-    
-    all_activities = []
+def generate_activities(total_activities=1000, target_fraud_percentage=0.1, fraud_agents_count=5, legit_agents_count=20, buffer_size=100):
+    """Generates a bank log with multiple fraudulent and legitimate agents using a memory-efficient buffer."""
+
     fraudulent_strategies = load_existing_strategies("strategies/fraud_strategies.json")
     legitimate_strategies = load_existing_strategies("strategies/legitimate_strategies.json")
 
-    # Global clock for the start of the simulation
     global_clock = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S')
+    output_file = "outputs/bank_log.csv"
+    log_text_file="outputs/llm_chain_of_thought.txt"
 
-    # Generate fraudulent activities for multiple agents
+    # Ensure the output directory exists
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+
+    # Step 1: Initialize a fresh CSV and txt by clearing any existing content
+    with open(output_file, 'w') as f:
+        f.write("")  # Clear existing file content
+    with open(log_text_file, 'w') as f:
+        f.write("")  # Clear existing file content
+    header_written = False  # Track if header is written
+    buffer = []  # Initialize buffer
+
+    # Helper function to write buffer to CSV and clear it
+    def flush_buffer():
+        nonlocal header_written
+        if buffer:
+            df = pd.DataFrame(buffer)
+            # Append to the CSV; write header only once
+            df.to_csv(output_file, mode='a', index=False, header=not header_written)
+            header_written = True  # Set header_written to True after the first write
+            buffer.clear()  # Clear buffer after writing
+
+    # Generate fraudulent activities
     fraud_activities_count = 0
     for _ in range(fraud_agents_count):
         user_id = str(uuid.uuid4())
         behavior_type = random.choice(list(fraudulent_strategies.keys()))
         strategy = fraudulent_strategies[behavior_type]
-        fraud_label = 1
 
-        activities = generate_activity_sequence(strategy=strategy, fraud_label=fraud_label, profile_type=behavior_type, global_clock=global_clock, user_id=user_id)
+        activities = generate_activity_sequence(strategy=strategy, fraud_label=1, profile_type=behavior_type, global_clock=global_clock, user_id=user_id, log_text_file=log_text_file)
         for activity in activities:
-            all_activities.append(activity)
+            buffer.append(activity)
             fraud_activities_count += 1
+
+            if len(buffer) >= buffer_size:
+                flush_buffer()
+
             if fraud_activities_count >= int(total_activities * target_fraud_percentage):
                 break
         if fraud_activities_count >= int(total_activities * target_fraud_percentage):
             break
 
-    # Generate legitimate activities for multiple agents
-    legit_activities_count = 0
-    while len(all_activities) < total_activities:
+    # Generate legitimate activities
+    while fraud_activities_count + len(buffer) < total_activities:
         for _ in range(legit_agents_count):
             user_id = str(uuid.uuid4())
             behavior_type = random.choice(list(legitimate_strategies.keys()))
             strategy = legitimate_strategies[behavior_type]
-            fraud_label = 0
 
-            activities = generate_activity_sequence(strategy=strategy, fraud_label=fraud_label, profile_type=behavior_type, global_clock=global_clock, user_id=user_id)
+            activities = generate_activity_sequence(strategy=strategy, fraud_label=0, profile_type=behavior_type, global_clock=global_clock, user_id=user_id)
             for activity in activities:
-                all_activities.append(activity)
-                legit_activities_count += 1
-                if len(all_activities) >= total_activities:
+                buffer.append(activity)
+
+                if len(buffer) >= buffer_size:
+                    flush_buffer()
+
+                if fraud_activities_count + len(buffer) >= total_activities:
                     break
-            if len(all_activities) >= total_activities:
+            if fraud_activities_count + len(buffer) >= total_activities:
                 break
 
-    # Save to DataFrame and CSV
-    df = pd.DataFrame(all_activities)
-    df.to_csv("outputs/bank_log.csv", index=False)
-    
-    return df
+    # Final flush to write any remaining activities in the buffer
+    flush_buffer()
+
+    print(f"✅ Activity generation complete. Data saved to {output_file}")
+
+    # Load final dataframe (optional, if needed for further processing)
+    final_df = pd.read_csv(output_file)
+    return final_df
 
 
 def load_existing_strategies(filename):
@@ -208,5 +233,6 @@ def load_existing_strategies(filename):
         with open(filename, 'r') as file:
             return json.load(file)
     return {}
+
 
 generate_activities(total_activities=15, target_fraud_percentage=0.5, fraud_agents_count=2, legit_agents_count=2)
