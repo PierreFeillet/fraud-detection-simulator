@@ -45,28 +45,52 @@ def generate_fraud_strategy(fraud_type=None, filename="strategies/fraud_strategi
         print(f"Strategy for {fraud_type} already exists.")
         return existing_strategies[fraud_type]
     
-    # Generate new strategy
-    fraud_description = (
-        f"You are a clever fraudster specializing in {fraud_type}. "
-        f"Your goal is to execute a fraud strategy that banks might detect but in a way that minimizes your risk. "
-        f"Describe your method realistically, limited to what a banking system can observe. "
-        f"Outline the step-by-step approach, key financial activities, and tactics to avoid detection."
-    )
+    def build_strategy_prompt(fraud_type):
+        """Prompt for the Strategy LLM to define fraud patterns with structured JSON and descriptive context."""
 
-    prompt = (
-        f"You're in a banking simulation where fraud checks can be immediate alerts for High-Risk Transactions "
-        f"(like a flagged large foreign withdrawal) and Continuous Monitoring of Activity Patterns to catch subtler fraud over time.\n"
-        f"Your goal is to execute a fraudulent scheme.\n"
-        f"{fraud_description} "
-        "Your strategy will be used by another LLM to generate a sequence of financial activities aligned with your plan. "
-        "Provide:\n"
-        "- The goal of your fraud scheme\n"
-        "- The specific fraud type (e.g., money laundering, account takeover, synthetic identity fraud, card skimming)\n"
-        "- The key financial tactics used (e.g., multiple small transactions, shell companies, offshore transfers)\n"
-        "- A structured plan outlining the activities needed to reach your goal\n"
-        "Provide a clear thought process, but do NOT return JSON."
-    )
+        return f"""
+        You are an expert in banking fraud detection tasked with defining detailed strategies for simulating fraudulent activities.
 
+        ### Fraud Type:
+        - **{fraud_type}**
+
+        ### Instructions:
+        1. Clearly describe the fraudulent behavior.
+        2. Specify whether the fraud is:
+        - **Single-event**: A one-time transaction that completes the fraud.
+        - **Multi-event**: Requires multiple transactions to fully execute and reveal the fraud pattern.
+        3. Define the **minimum number of activities** required for the fraud to be recognizable.
+        4. Describe the key characteristics of the fraud pattern, including:
+        - **Transaction Types Involved**: Specify whether transactions are purchases, withdrawals, transfers, or trades.
+        - **Typical Transaction Amounts**: Provide realistic ranges for transaction amounts.
+        - **Geographic Patterns**: Indicate if transactions occur locally, internationally, or in high-risk locations.
+        - **Velocity**: Describe how quickly transactions occur (e.g., rapid succession or spaced over time).
+        - **Distance Between Transactions**: Specify the time intervals between transactions (e.g., minutes, hours, days).
+
+        ### Important:
+        - Include a **'Context' section** in the JSON output where you provide a detailed description of how the fraud typically unfolds.
+        - The **structured fields** will guide constraints, while the **context** provides deeper narrative for the activity sequence.
+        - Output the strategy in **structured JSON format** as shown below. Do NOT include any additional text or explanation after the JSON.
+
+        ### Example Output Format:
+        ```json
+        {{
+        "Fraud Type": "{fraud_type}",
+        "Scope": "Multi-event",
+        "Minimum Activities": 5,
+        "Description": {{
+            "Transaction Types Involved": ["Unauthorized Stock Purchases", "Unauthorized Stock Sales"],
+            "Typical Transaction Amounts": ["Between $5,000 and $50,000 per transaction"],
+            "Geographic Patterns": ["Concentrated within the organization's region, occasional international trades"],
+            "Velocity": "High velocity due to the need for quick execution based on non-public information",
+            "Distance Between Transactions": "Minutes to hours between trades to capitalize on timely information"
+        }},
+        "Context": "Insider Trading involves employees or individuals with access to non-public information executing unauthorized stock trades. These trades often occur in rapid succession, with the individual purchasing stock before a major positive announcement or selling it before a negative one. The activity is characterized by sudden, unexplainable trading behavior inconsistent with the individual's usual patterns, often concentrated in the company's geographic region but may also include international trades to obscure detection."
+        }}
+        ```
+        """
+
+    prompt=build_strategy_prompt(fraud_type)
     response = ollama.chat(model="deepseek-r1", messages=[{"role": "user", "content": prompt}])
     strategy_text = response['message']['content'].strip()
     
@@ -107,7 +131,7 @@ def generate_legitimate_strategy(profile_type=None, filename="strategies/legitim
         "- Your customer profile (e.g., Saver, Investor, Traveler, Everyday Spender)\n"
         "- The key financial habits (e.g., monthly savings, frequent small purchases, international spending)\n"
         "- A structured plan outlining the expected activities\n"
-        "Provide a clear thought process, but do NOT return JSON."
+        "Provide a clear thought process."
     )
 
     response = ollama.chat(model="deepseek-r1", messages=[{"role": "user", "content": prompt}])
@@ -121,8 +145,8 @@ def generate_legitimate_strategy(profile_type=None, filename="strategies/legitim
 os.makedirs('strategies', exist_ok=True)
 os.makedirs('outputs', exist_ok=True)
 
-# Generate a fraud strategy
-n_strategies=5
+# Generate strategies
+n_strategies=2
 for i in range(n_strategies):
     fraud_strategy = generate_fraud_strategy()
     generate_legitimate_strategy()
