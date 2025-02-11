@@ -59,7 +59,7 @@ def generate_fraud_strategy(fraud_type=None, filename="strategies/fraud_strategi
         2. Specify whether the fraud is:
         - **Single-event**: A one-time transaction that completes the fraud.
         - **Multi-event**: Requires multiple transactions to fully execute and reveal the fraud pattern.
-        3. Define the **minimum number of activities** required for the fraud to be recognizable.
+        3. Define the **minimum number of activities** required for the fraud to be recognizable. This number must be realistic and specific to the {fraud_type} you're simulating.
         4. Describe the key characteristics of the fraud pattern, including:
         - **Transaction Types Involved**: Specify whether transactions are purchases, withdrawals, transfers, or trades.
         - **Typical Transaction Amounts**: Provide realistic ranges for transaction amounts.
