@@ -65,7 +65,6 @@ def generate_fraud_strategy(fraud_type=None, filename="strategies/fraud_strategi
         - **Typical Transaction Amounts**: Provide realistic ranges for transaction amounts.
         - **Geographic Patterns**: Indicate if transactions occur locally, internationally, or in high-risk locations.
         - **Velocity**: Describe how quickly transactions occur (e.g., rapid succession or spaced over time).
-        - **Distance Between Transactions**: Specify the time intervals between transactions (e.g., minutes, hours, days).
 
         ### Important:
         - Include a **'Context' section** in the JSON output where you provide a detailed description of how the fraud typically unfolds.
@@ -146,7 +145,7 @@ os.makedirs('strategies', exist_ok=True)
 os.makedirs('outputs', exist_ok=True)
 
 # Generate strategies
-n_strategies=2
+n_strategies=20
 for i in range(n_strategies):
-    fraud_strategy = generate_fraud_strategy()
+    generate_fraud_strategy()
     generate_legitimate_strategy()

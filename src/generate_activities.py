@@ -122,36 +122,168 @@ def save_to_text(log_filename, reasoning_text, agent_id=None):
     with open(log_filename, "a", encoding="utf-8") as log_file:
         log_file.write(f"\n### LLM Chain of Thought for user ID {agent_id}###\n\n{reasoning_text}\n\n")
 
+import json
+import os
+import random
+import re
+import uuid
+from datetime import datetime, timedelta, timezone
+import pandas as pd
+import ollama
+
+
+# Error Logging for Adaptive Learning
+ERROR_LOG_FILE = "outputs/json_errors.log"
+
+
+def log_json_error(error_message, raw_output):
+    """Logs JSON errors for adaptive learning."""
+    with open(ERROR_LOG_FILE, "a") as log_file:
+        log_file.write(f"Error: {error_message}\nOutput: {raw_output}\n{'-'*80}\n")
+
+
+def refine_prompt_based_on_errors(base_prompt):
+    """Refines the generation prompt based on logged JSON errors."""
+    if os.path.exists(ERROR_LOG_FILE):
+        with open(ERROR_LOG_FILE, "r") as log_file:
+            errors = log_file.readlines()
+
+        # Ensure instructions are only added once
+        if "Ensure all fields are separated by commas." not in base_prompt and any("Expecting ',' delimiter" in error for error in errors):
+            base_prompt += "\n- Ensure all fields are separated by commas."
+        if "Ensure the JSON structure does not contain any extra data after the closing bracket." not in base_prompt and any("Extra data" in error for error in errors):
+            base_prompt += "\n- Ensure the JSON structure does not contain any extra data after the closing bracket."
+
+    return base_prompt
+
+
+def clear_error_log():
+    """Clears the error log to prevent prompt overload."""
+    if os.path.exists(ERROR_LOG_FILE):
+        with open(ERROR_LOG_FILE, "w") as log_file:
+            log_file.write("")
+
+
+def build_generation_prompt(strategy, fraud_label, profile_type, global_clock, user_id):
+    """Builds the prompt for generating activity sequences with dynamic values and data schema."""
+    json_template = f"""
+    ```json
+    [
+      {{
+        "transaction_id": "{uuid.uuid4()}",
+        "bank_timestamp": "{global_clock}+00:00",
+        "local_timestamp": "2025-03-01T07:00:00-05:00",
+        "user_id": "{user_id}",
+        "account_id": "ACC12345",
+        "type": "Purchase",
+        "amount": 150.75,
+        "currency": "USD",
+        "balance_before": 1000,
+        "balance_after": 849.25,
+        "location": "New York, USA",
+        "ip_address": "192.168.1.10",
+        "device_id": "iPhone-14",
+        "network_type": "Wi-Fi",
+        "merchant_name": "Amazon",
+        "recipient_id": null,
+        "recipient_bank": null,
+        "granted": true,
+        "login_attempts": 1,
+        "session_id": "SESSION123",
+        "velocity": 0.52,
+        "distance_from_last_location": 3.4,
+        "is_repeat_location": true,
+        "fraud_label": {fraud_label},
+        "behavior_type": "{profile_type}"
+      }}
+    ]
+    ```
+    """
+
+    field_explanation = """
+        - `transaction_id`: string, A unique identifier for the transaction generated using UUID.
+        - `bank_timestamp`: string (ISO 8601 format), The UTC time when the activity occurred, formatted as 'YYYY-MM-DDTHH:MM:SS+00:00'.
+        - `local_timestamp`: string (ISO 8601 format), The local time of the activity with time zone offset (e.g., 'YYYY-MM-DDTHH:MM:SS-05:00').
+        - `user_id`: string, A unique identifier for the user generated using UUID.
+        - `account_id`: string, The identifier of the bank account involved in the transaction.
+        - `type`: string, The type of activity (e.g., Purchase, Withdrawal, Transfer).
+        - `amount`: float, The monetary amount involved in the transaction.
+        - `currency`: string, The currency of the transaction (e.g., 'USD'). Must be set according to the location of the activity.
+        - `balance_before`: float, The account balance before the transaction.
+        - `balance_after`: float, The account balance after the transaction (adjusted based on the `amount`). If the generated transaction would make `balance_after` < 0, then set `granted` to `false` and `balance_after` = `balance_before`.
+        - `location`: string, The city and country where the transaction took place.
+        - `ip_address`: string, The IP address used during the activity.
+        - `device_id`: string, The device identifier (e.g., phone or computer model).
+        - `network_type`: string, Type of network used (e.g., Wi-Fi, Mobile Data).
+        - `merchant_name`: string or null, Name of the merchant (if applicable, e.g., 'Amazon'; otherwise, set to `null`).
+        - `recipient_id`: string or null, The identifier of the recipient in case of transfers; otherwise, set to `null`.
+        - `recipient_bank`: string or null, The bank of the recipient in case of transfers; otherwise, set to `null`.
+        - `granted`: bool, Boolean indicating if the transaction was approved (`true`) or denied (`false`).
+        - `login_attempts`: integer, Number of login attempts in the session.
+        - `session_id`: string, Unique identifier for the session grouping multiple activities.
+        - `velocity`: float, Numeric value representing the time delta in minutes between the current and previous `bank_timestamp`. Use a random value if it's the first transaction.
+        - `distance_from_last_location`: float, Numeric value in kilometers indicating the distance from the previous activity's location. Use a random value if it's the first transaction.
+        - `is_repeat_location`: bool, Boolean indicating if the transaction is from a previously used location.
+        - `fraud_label`: integer, `1` for fraudulent transactions, `0` for legitimate ones.
+        - `behavior_type`: string, Describes the behavioral profile (e.g., 'Account Takeover', 'Legitimate').
+    """
+
+    # Refine prompt based on common JSON errors
+    refined_prompt = refine_prompt_based_on_errors(
+        f"You are an AI generating **detailed sequences of banking activities** for a fraud simulation.\n"
+        f"Your task is to create a sequence of financial activities based on the predefined strategy below.\n\n"
+        f"### Strategy:\n{strategy}\n\n"
+        f"If `{fraud_label}`=1: \n"
+        f"  1. Ensure the sequence of activities **completes the fraud** as described in the strategy by the minimum number of activities.\n"
+        f"  2. If the fraud is a **multi-event fraud**, generate at least **`minimum_activities`** transactions that follow the specified pattern.\n"
+        f"  3. For **single-event fraud**, ensure the transaction fully represents the fraudulent behavior.\n"
+        f"  4. The generated activities must clearly reflect the fraud type, scope, and behavior characteristics provided in the strategy.\n"
+        f"### Data Generation Rules:\n"
+        f"The financial activities must be generated as a JSON object.\n"
+        f"### Required Fields in the JSON, with format specifications, don't add extra-fields:\n{field_explanation}\n\n"
+        f"- First, explain your reasoning step by step **without making examples**.\n"
+        f"- Then, generate **only** the structured JSON activity sequence as in the following JSON example: \n{json_template}\n"
+        f"- The JSON MUST be enclosed within **triple backticks** using the format ```json ... ```.\n"
+        f"- Ensure that timestamps are logically consistent and formatted according to ISO 8601 standards.\n"
+        f"- Do **NOT** include comments or explanations in the JSON.\n"
+        f"- End your response immediately after closing the JSON block.\n"
+        f"- **Use the provided `fraud_label`, `profile_type`, `global_clock`, `user_id`. They must remain exactly as given: `{fraud_label},{profile_type},{global_clock},{user_id}`.**\n"
+        f"### Important:\n"
+        f"- Ensure that the JSON is correctly formatted, with the correct formats.\n"
+        f"- **The JSON must be flat**\n"
+        f"- End your response after closing triple backticks.\n"
+        f"- Ensure all field values match the types and formats specified in the JSON field explanation. If the format is string, the string must be enclosed in double quotes."
+    )
+
+    return refined_prompt
+
+
+# Function to extract JSON from LLM response
 def extract_json(text):
     """Extracts all JSON arrays from the LLM response, handling both single and multiple blocks."""
-    
-    # Find all JSON arrays enclosed within triple backticks
     matches = re.findall(r'```json\s*(\[\s*{.*?}\s*\])\s*```', text, re.DOTALL)
 
     if not matches:
-        # Fallback: find JSON arrays without triple backticks
         matches = re.findall(r'(\[\s*{.*?}\s*\])', text, re.DOTALL)
 
     if not matches:
-        print("⚠️ No valid JSON arrays found in the response.")
-        return 'retry'  # Indicate to retry the activity generation
+        log_json_error("No valid JSON arrays found in the response.", text)
+        return 'retry'
 
     combined_activities = []
 
     for json_text in matches:
-        # Remove inline comments (e.g., // comment)
         json_text_cleaned = re.sub(r'//.*', '', json_text)
         try:
             data = json.loads(json_text_cleaned)
-            if isinstance(data, list):
-                combined_activities.extend(data)
-            else:
-                combined_activities.append(data)
+            combined_activities.extend(data if isinstance(data, list) else [data])
         except json.JSONDecodeError as e:
-            print(f"❌ Error parsing JSON block: {e}")
-            continue
+            log_json_error(str(e), json_text_cleaned)
+            return 'retry'
 
-    return combined_activities if combined_activities else None
+    return combined_activities if combined_activities else 'retry'
+
+  
 
 def generate_activities(total_activities=1000, target_fraud_percentage=0.1, fraud_agents_count=5, legit_agents_count=20, buffer_size=5):
     """Generates a bank log with multiple fraudulent and legitimate agents using a memory-efficient buffer."""
@@ -166,11 +298,11 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
     # Ensure the output directory exists
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
-    # Step 1: Initialize a fresh CSV and txt by clearing any existing content
-    with open(output_file, 'w') as f:
-        f.write("")  # Clear existing file content
-    with open(log_text_file, 'w') as f:
-        f.write("")  # Clear existing file content
+    ## Step 1: Initialize a fresh CSV and txt by clearing any existing content
+    #with open(output_file, 'w') as f:
+    #    f.write("")  # Clear existing file content
+    #with open(log_text_file, 'w') as f:
+    #    f.write("")  # Clear existing file content
     header_written = False  # Track if header is written
     buffer = []  # Initialize buffer
 
@@ -257,4 +389,4 @@ def load_existing_strategies(filename):
     return {}
 
 
-generate_activities(total_activities=10, target_fraud_percentage=0.5, fraud_agents_count=2, legit_agents_count=2)
+generate_activities(total_activities=80, target_fraud_percentage=0.5, fraud_agents_count=2, legit_agents_count=2)
