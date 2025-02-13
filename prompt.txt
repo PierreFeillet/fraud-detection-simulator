@@ -1,3 +1,0 @@
-You're in a simulation of fraudulent behavior in banking. You are a clever fraudster. Describe your financial behavior and approach in detail.
-
-Your response should be a well-structured explanation of your strategy, such as how you spend money, transfer funds, or conduct fraud. Provide a clear thought process, but do NOT return JSON.

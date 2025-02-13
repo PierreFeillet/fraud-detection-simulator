@@ -11,6 +11,8 @@ import ollama
 
 LLM_model = 'mistral'
 ERROR_LOG_FILE = f"outputs/json_errors_{LLM_model}.log"
+log_text_file = f"outputs/llm_chain_of_thought_{LLM_model}.txt"
+output_file = f"outputs/bank_log_{LLM_model}.csv"
 
 def build_generation_prompt(strategy, fraud_label, profile_type, global_clock, user_id):
     """Builds the prompt for generating activity sequences with dynamic values and data schema."""
@@ -105,13 +107,13 @@ def build_generation_prompt(strategy, fraud_label, profile_type, global_clock, u
 
 
 
-def generate_activity_sequence(strategy, fraud_label=0, profile_type="Legitimate", global_clock=None, user_id=None, log_text_file="outputs/llm_chain_of_thought.txt"):
+def generate_activity_sequence(strategy, fraud_label=0, profile_type="Legitimate", global_clock=None, user_id=None):
     """Generates structured financial activities based on the provided strategy."""
     while True:
         prompt = build_generation_prompt(strategy, fraud_label, profile_type, global_clock, user_id)
         response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}])
         raw_response = response['message']['content'].strip()
-        save_to_text(log_text_file, raw_response, user_id)
+        save_to_text(raw_response, user_id)
 
         activity_sequence = extract_json(raw_response)
 
@@ -284,10 +286,6 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
     legitimate_strategies = load_existing_strategies("strategies/legitimate_strategies.json")
 
     global_clock = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S')
-    output_file = f"outputs/bank_log_{LLM_model}.csv"
-    log_text_file= f"outputs/llm_chain_of_thought_{LLM_model}.txt"
-    
-
     # Ensure the output directory exists
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
@@ -328,7 +326,7 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
         behavior_type = random.choice(list(fraudulent_strategies.keys()))
         strategy = fraudulent_strategies[behavior_type]
 
-        activities = generate_activity_sequence(strategy=strategy, fraud_label=1, profile_type=behavior_type, global_clock=global_clock, user_id=user_id, log_text_file=log_text_file)
+        activities = generate_activity_sequence(strategy=strategy, fraud_label=1, profile_type=behavior_type, global_clock=global_clock, user_id=user_id,)
         for activity in activities:
             buffer.append(activity)
             fraud_activities_count += 1

@@ -16,13 +16,11 @@ models = {
    # "Llama3": "llama3",
     "Mistral": "mistral",
     "DeepSeek-R1": "deepseek-r1",
-    "Mixtral 8x7B": "mixtral",
-    "Llama3": "llama3"
+   # "Mixtral 8x7B": "mixtral",
+    #"Llama3": "llama3"
 }
 
 # Pick a fraudulent strategy
-strategy = "<think>\nAlright, so I need to come up with a detailed strategy for simulating a Ponzi scheme. Hmm, let me think about what a Ponzi scheme entails.\n\nFirst off, from what I know, a Ponzi scheme is when an operator pays returns to early investors using the profits from new investments rather than legitimate earnings. It's pyramid-shaped because each layer relies on recruiting more people at the next level down.\n\nSo, for simulation purposes, how can we model this? Maybe start by identifying the key components: recruitment of new investors, distribution of returns, and the depletion of funds to sustain the scheme.\n\nIn terms of transaction types, I think it would involve multiple deposits from early investors, which are then used to pay out larger sums to later investors. That way, each subsequent layer gets a bigger payout than the previous one, creating the pyramid effect.\n\nNow, considering the minimum number of activities needed\u2014probably at least 5 transactions: some initial deposits, maybe a few withdrawals for payouts, and a couple more as the scheme depletes. But I'm not sure if that's enough; perhaps it should involve more steps to show how each layer feeds into the next.\n\nTransaction amounts might vary, but early investors could have smaller deposits, while later ones receive larger payouts. The geographic pattern could be concentrated within one region at first, then maybe expand slightly for recruitment purposes.\n\nVelocity-wise, since this is a simulated activity, it's probably high because participants act quickly to recruit and withdraw funds before authorities notice. Distance between transactions might be short periods between recruiting more investors or making payouts.\n\nI'm also thinking about the context. The scheme would likely start with an announcement by someone close to the organization, maybe an executive, who then recruits others. These early investors would deposit their money expecting returns based on rumors of success. Then, as the scheme progresses, each subsequent layer relies on the previous one's investments to sustain it.\n\nPotential red flags for fraud detection might include a concentration of deposits in certain locations followed by massive withdrawals. The scheme could also spread across multiple currencies or regions to make tracking difficult.\n\nBut wait, do I need to consider varying transaction amounts? Maybe early investors get smaller sums, while later ones receive exponentially larger amounts. That would help sustain the pyramid structure until the base is exhausted.\n\nAlso, considering that not all transactions might be legitimate\u2014some could be shell companies or front organizations facilitating the cash flows. This adds another layer of complexity for detection because it's harder to trace the actual sources and sinks of funds.\n\nI should also think about how the simulation will look in terms of activities. Each activity would involve a series of deposits, followed by withdrawals based on those deposits. Maybe some activities are used to show the growth of the pyramid, while others demonstrate the depletion phase as it becomes unsustainable.\n\nIn summary, to simulate a Ponzi scheme, I need to create multiple deposit transactions from early investors, then several withdrawal transactions using these funds for later investors. The number of required activities would depend on how many layers are in the pyramid and when the scheme becomes unmanageable. Including some shell companies or front organizations could make it more realistic.\n\nI think aiming for around 10 to 15 activities might be sufficient to show both the initial growth and the potential collapse as the scheme depletes its funds. The transactions should have varying amounts, starting smaller and increasing exponentially. Geographically, maybe concentrated in a few regions but with some international involvement to hide tracks.\n\nVelocity would likely be high since these are simulated activities meant to mimic real-time recruitment and fund movements. The distance between transactions might be short periods to allow quick growth before the scheme becomes too large for sustainability.\n\nI should also include red flags like unusual patterns in account creation, a sudden spike in withdrawals compared to deposits, and maybe some discrepancies in transaction sources or destinations that could indicate front organizations.\n\nOverall, this approach would help create a realistic simulation of a Ponzi scheme for fraud detection training.\n</think>\n\n```json\n{\n  \"Fraud Type\": \"Ponzi Scheme\",\n  \"Scope\": \"Multi-event\",\n  \"Minimum Activities\": 10,\n  \"Description\": {\n    \"Transaction Types Involved\": [\"Deposits from Early Investors\", \"Withdrawals to Later Investors\"],\n    \"Typical Transaction Amounts\": [\"Early investors: $5,000 - $50,000; Later investors: $25,000 - $100,000 per transaction\"],\n    \"Geographic Patterns\": [\"Concentrated within the organization's region with occasional international involvement for recruitment\"],\n    \"Velocity\": \"High velocity due to rapid execution of transactions to capitalize on timely information and recruitment\"],\n    \"Distance Between Transactions\": \"Minutes to hours between key activities like recruiting new investors or making payouts\"]\n  },\n  \"Context\": \"The Ponzi Scheme begins with an executive announcement promising high returns. Early investors deposit funds expecting significant returns. Subsequent layers rely on the previous investments for payouts, creating a pyramid structure. The scheme accelerates as each layer depends on the prior one's investments. Red flags include concentrated deposits followed by massive withdrawals and anomalies in account creation timing.\"\n}\n```"
-profile_type = "Ponzi Scheme"
 user_id = "AI-12345"
 global_clock='2025-03-01 09:00:00'
 fraud_label = 1
@@ -150,39 +148,52 @@ def build_generation_prompt(strategy, fraud_label, profile_type, global_clock, u
         f"- Ensure all field values match the types and formats specified in the JSON field explanation. If the format is string, the string must be enclosed in "" or ''\n"
     )
 
-prompt = build_generation_prompt(strategy, fraud_label, profile_type, global_clock, user_id)
+def load_existing_strategies(filename):
+    """Loads existing strategies from a JSON file."""
+    if os.path.exists(filename):
+        with open(filename, 'r') as file:
+            return json.load(file)
+    return {}
+
+fraudulent_strategies = load_existing_strategies("strategies/fraud_strategies.json")
+behaviors = list(fraudulent_strategies.keys())
+fraud_label=1
 # Store results
 benchmark_results = []
 
 n_trials=10
 for model_name, model_id in models.items():
-    for trial in range(n_trials):
-        print(f"Testing {model_name}... (Trial {trial + 1}/{n_trials})")
-        print(f"Testing {model_name}...")
+    for behavior in behaviors:
+        strategy = fraudulent_strategies[behavior]
+        prompt = build_generation_prompt(strategy, fraud_label, behavior, global_clock, user_id)
+        for trial in range(n_trials):
+            print(f"Testing {model_name}... (Trial {trial + 1}/{n_trials})")
+            print(f"Testing {model_name}...")
 
-        start_time = time.time()
-        response = ollama.chat(
-            model=model_id, 
-            messages=[{"role": "user", "content": prompt}]
-        )
-        end_time = time.time()
+            start_time = time.time()
+            response = ollama.chat(
+                model=model_id, 
+                messages=[{"role": "user", "content": prompt}]
+            )
+            end_time = time.time()
 
-        response_time = round(end_time - start_time, 2)
-        response_content = response['message']['content']
+            response_time = round(end_time - start_time, 2)
+            response_content = response['message']['content']
 
-        # Extract JSON and retry count
-        extracted_json, retry_count = extract_json(response_content)
+            # Extract JSON and retry count
+            extracted_json, retry_count = extract_json(response_content)
 
-        # Store results
-        benchmark_results.append({
-            "Model": model_name,
-            "Trial": trial + 1,
-            "Response Time (s)": response_time,
-            "Valid JSON": extracted_json != "retry",
-            "Retries": retry_count,  
-            "Raw Response": response_content,
-            "Generated Transactions": extracted_json if extracted_json != "retry" else "Invalid JSON output"
-        })
+            # Store results
+            benchmark_results.append({
+                "Model": model_name,
+                "Profile type": behavior,
+                "Trial": trial + 1,
+                "Response Time (s)": response_time,
+                "Valid JSON": extracted_json != "retry",
+                "Retries": retry_count,  
+                "Raw Response": response_content,
+                "Generated Transactions": extracted_json if extracted_json != "retry" else "Invalid JSON output"
+            })
 
 
 # Convert to DataFrame and display
@@ -191,7 +202,7 @@ df_results = pd.DataFrame(benchmark_results)
 df_results.to_csv('benchmark_results.csv', index=False)
 print(df_results)
 # Compute statistics
-stats_df = df_results.groupby("Model").agg({
+stats_df = df_results.groupby(["Model", "Profile Type"]).agg({
     "Valid JSON": ["count", "sum", lambda x: 100 * (1 - x.mean())],  # Total, valid count, failure rate (%)
     "Retries": ["mean", "max"],  # Average & max retries
     "Response Time (s)": ["mean", "min", "max"]  # Response time stats
@@ -212,7 +223,7 @@ stats_df = df_results.groupby("Model").agg({
 
 # Rename columns for clarity
 stats_df.columns = [
-    "Model", "Total Trials", "Valid JSON Count", "Failure Rate (%)",
+    "Model", "Profile Type", "Total Trials", "Valid JSON Count", "Failure Rate (%)",
     "Avg Retries", "Max Retries", "Avg Response Time (s)", "Min Response Time (s)", "Max Response Time (s)"
 ]
 
