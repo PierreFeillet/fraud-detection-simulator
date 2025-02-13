@@ -16,10 +16,15 @@ log_text_file = f"outputs/llm_chain_of_thought_{LLM_model}.txt"
 output_file = f"outputs/bank_log_{LLM_model}.csv"
 
 # Initialize reward tracking
-def initialize_reward_log():
-    if not os.path.exists(REWARD_LOG_FILE):
-        with open(REWARD_LOG_FILE, 'w') as file:
-            file.write("timestamp,reward\n")
+def initialize_logs():
+    with open(REWARD_LOG_FILE, 'w') as file:
+        file.write("timestamp,reward\n")
+    with open(ERROR_LOG_FILE, 'w') as file:
+        file.write("")
+    with open(log_text_file, 'w') as file:
+        file.write("")
+    with open(output_file, 'w') as file:
+        file.write("")
 
 def update_reward_log(success: bool):
     reward = 1 if success else -1
@@ -203,7 +208,7 @@ def generate_activity_sequence(strategy, fraud_label=0, profile_type="Legitimate
         raw_response = response['message']['content'].strip()
         save_to_text(raw_response, user_id)
 
-        activity_sequence = extract_json(raw_response)
+        activity_sequence = extract_json(raw_response, user_id)
 
         if activity_sequence != 'retry':
             print('✅ Activity sequence generated successfully for user ID:', user_id)
@@ -301,7 +306,7 @@ def load_existing_strategies(filename):
 
 start_time = time.time()
 print(f"Simulation started at {datetime.now().isoformat()}")
-initialize_reward_log()
+initialize_logs()
 generate_activities(total_activities=20, target_fraud_percentage=0.5, fraud_agents_count=2, legit_agents_count=2)
 # Time required to generate activities in minutes approximated
 time_taken = round(time.time()-start_time/60,2)
