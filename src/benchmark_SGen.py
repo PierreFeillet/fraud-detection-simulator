@@ -9,11 +9,15 @@ import re
 import uuid
 from IPython import embed
 import pandas as pd
+import matplotlib.pyplot as plt
 
 #"Mixtral 8x7B": "mixtral"
 models = {
+   # "Llama3": "llama3",
     "Mistral": "mistral",
-    "DeepSeek-R1": "deepseek-r1"
+    "DeepSeek-R1": "deepseek-r1",
+    "Mixtral 8x7B": "mixtral",
+    "Llama3": "llama3"
 }
 
 # Pick a fraudulent strategy
@@ -150,34 +154,102 @@ prompt = build_generation_prompt(strategy, fraud_label, profile_type, global_clo
 # Store results
 benchmark_results = []
 
+n_trials=10
 for model_name, model_id in models.items():
-    print(f"Testing {model_name}...")
+    for trial in range(n_trials):
+        print(f"Testing {model_name}... (Trial {trial + 1}/{n_trials})")
+        print(f"Testing {model_name}...")
 
-    start_time = time.time()
-    response = ollama.chat(
-        model=model_id, 
-        messages=[{"role": "user", "content": prompt}]
-    )
-    end_time = time.time()
+        start_time = time.time()
+        response = ollama.chat(
+            model=model_id, 
+            messages=[{"role": "user", "content": prompt}]
+        )
+        end_time = time.time()
 
-    response_time = round(end_time - start_time, 2)
-    response_content = response['message']['content']
+        response_time = round(end_time - start_time, 2)
+        response_content = response['message']['content']
 
-    # Extract JSON and retry count
-    extracted_json, retry_count = extract_json(response_content)
+        # Extract JSON and retry count
+        extracted_json, retry_count = extract_json(response_content)
 
-    # Store results
-    benchmark_results.append({
-        "Model": model_name,
-        "Response Time (s)": response_time,
-        "Valid JSON": extracted_json != "retry",
-        "Retries": retry_count,  # NEW: Track retry attempts
-        "Raw Response": response_content,
-        "Generated Transactions": extracted_json if extracted_json != "retry" else "Invalid JSON output"
-    })
+        # Store results
+        benchmark_results.append({
+            "Model": model_name,
+            "Trial": trial + 1,
+            "Response Time (s)": response_time,
+            "Valid JSON": extracted_json != "retry",
+            "Retries": retry_count,  
+            "Raw Response": response_content,
+            "Generated Transactions": extracted_json if extracted_json != "retry" else "Invalid JSON output"
+        })
+
 
 # Convert to DataFrame and display
 df_results = pd.DataFrame(benchmark_results)
 # Save df_results
 df_results.to_csv('benchmark_results.csv', index=False)
 print(df_results)
+# Compute statistics
+stats_df = df_results.groupby("Model").agg({
+    "Valid JSON": ["count", "sum", lambda x: 100 * (1 - x.mean())],  # Total, valid count, failure rate (%)
+    "Retries": ["mean", "max"],  # Average & max retries
+    "Response Time (s)": ["mean", "min", "max"]  # Response time stats
+}).reset_index()
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Read the benchmark results from CSV
+df_results = pd.read_csv('../benchmark_results.csv')
+
+# Compute statistics
+stats_df = df_results.groupby("Model").agg({
+    "Valid JSON": ["count", "sum", lambda x: 100 * (1 - x.mean())],  # Total, valid count, failure rate (%)
+    "Retries": ["mean", "max"],  # Average & max retries
+    "Response Time (s)": ["mean", "min", "max"]  # Response time stats
+}).reset_index()
+
+# Rename columns for clarity
+stats_df.columns = [
+    "Model", "Total Trials", "Valid JSON Count", "Failure Rate (%)",
+    "Avg Retries", "Max Retries", "Avg Response Time (s)", "Min Response Time (s)", "Max Response Time (s)"
+]
+
+print(stats_df)
+# Create a single figure with subplots
+fig, axes = plt.subplots(3, 1, figsize=(10, 15))
+
+# Plot 1: Failure Rate Comparison
+axes[0].bar(stats_df["Model"], stats_df["Failure Rate (%)"], alpha=0.75)
+axes[0].set_xlabel("Model")
+axes[0].set_ylabel("Failure Rate (%)")
+axes[0].set_title("Failure Rate Comparison Across Models")
+axes[0].set_ylim(0, 100)
+axes[0].grid(axis="y", linestyle="--", alpha=0.7)
+
+# Plot 2: Response Time Distribution
+axes[1].bar(stats_df["Model"], stats_df["Avg Response Time (s)"], label="Avg", color="orange", alpha=0.65)
+axes[1].scatter(stats_df["Model"], stats_df["Min Response Time (s)"], color="green", label="Min", marker="o")
+axes[1].scatter(stats_df["Model"], stats_df["Max Response Time (s)"], color="red", label="Max", marker="o")
+axes[1].set_xlabel("Model")
+axes[1].set_ylabel("Response Time (s)")
+axes[1].set_title("Response Time Distribution Across Models")
+axes[1].legend()
+axes[1].grid(axis="y", linestyle="--", alpha=0.7)
+
+# Plot 3: Average Retries per Model
+axes[2].bar(stats_df["Model"], stats_df["Avg Retries"], color="orange", alpha=0.65)
+axes[2].set_xlabel("Model")
+axes[2].set_ylabel("Average Retries")
+axes[2].set_title("Average Number of Retries per Model")
+axes[2].grid(axis="y", linestyle="--", alpha=0.7)
+
+# Adjust layout and save the figure
+plt.tight_layout()
+plt.savefig("benchmark_analysis.png")
+
+# Display the figure
+plt.show()
+
+

@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+import time
 import json
 import os
 import random
@@ -7,6 +8,9 @@ import uuid
 from IPython import embed
 import pandas as pd
 import ollama
+
+LLM_model = 'mistral'
+ERROR_LOG_FILE = f"outputs/json_errors_{LLM_model}.log"
 
 def build_generation_prompt(strategy, fraud_label, profile_type, global_clock, user_id):
     """Builds the prompt for generating activity sequences with dynamic values and data schema."""
@@ -105,7 +109,7 @@ def generate_activity_sequence(strategy, fraud_label=0, profile_type="Legitimate
     """Generates structured financial activities based on the provided strategy."""
     while True:
         prompt = build_generation_prompt(strategy, fraud_label, profile_type, global_clock, user_id)
-        response = ollama.chat(model="deepseek-r1", messages=[{"role": "user", "content": prompt}])
+        response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}])
         raw_response = response['message']['content'].strip()
         save_to_text(log_text_file, raw_response, user_id)
 
@@ -122,18 +126,6 @@ def save_to_text(log_filename, reasoning_text, agent_id=None):
     with open(log_filename, "a", encoding="utf-8") as log_file:
         log_file.write(f"\n### LLM Chain of Thought for user ID {agent_id}###\n\n{reasoning_text}\n\n")
 
-import json
-import os
-import random
-import re
-import uuid
-from datetime import datetime, timedelta, timezone
-import pandas as pd
-import ollama
-
-
-# Error Logging for Adaptive Learning
-ERROR_LOG_FILE = "outputs/json_errors.log"
 
 
 def log_json_error(error_message, raw_output):
@@ -157,7 +149,7 @@ def refine_prompt_based_on_errors(base_prompt):
     return base_prompt
 
 
-def clear_error_log():
+def clear_error_log(ERROR_LOG_FILE):
     """Clears the error log to prevent prompt overload."""
     if os.path.exists(ERROR_LOG_FILE):
         with open(ERROR_LOG_FILE, "w") as log_file:
@@ -292,8 +284,9 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
     legitimate_strategies = load_existing_strategies("strategies/legitimate_strategies.json")
 
     global_clock = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S')
-    output_file = "outputs/bank_log.csv"
-    log_text_file="outputs/llm_chain_of_thought.txt"
+    output_file = f"outputs/bank_log_{LLM_model}.csv"
+    log_text_file= f"outputs/llm_chain_of_thought_{LLM_model}.txt"
+    
 
     # Ensure the output directory exists
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
@@ -389,4 +382,6 @@ def load_existing_strategies(filename):
     return {}
 
 
+start_time = time.time()
 generate_activities(total_activities=80, target_fraud_percentage=0.5, fraud_agents_count=2, legit_agents_count=2)
+print("Datset generation required time:", time.time()-start_time)  
