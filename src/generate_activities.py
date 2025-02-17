@@ -10,13 +10,45 @@ import pandas as pd
 import ollama
 import matplotlib.pyplot as plt
 
+# LLM used for sequnce generation
 LLM_model = 'mistral'
+# File paths
 ERROR_LOG_FILE = f"outputs/json_errors_{LLM_model}.log"
 REWARD_LOG_FILE = f"outputs/reward_progress_{LLM_model}.csv"
 VALIDATION_LOG_FILE = f"outputs/json_validation_{LLM_model}.log"
 CORRECTION_LOG_FILE = f"outputs/json_corrections_{LLM_model}.log"
 log_text_file = f"outputs/llm_chain_of_thought_{LLM_model}.txt"
 output_file = f"outputs/bank_log_{LLM_model}.csv"
+
+# Expected field types for the JSON schema
+EXPECTED_FIELD_TYPES = {
+    "transaction_id": str,
+    "bank_timestamp": str,  # ISO 8601 format
+    "local_timestamp": str,  # ISO 8601 format
+    "user_id": str,
+    "account_id": str,
+    "type": str,
+    "amount": (int, float),  # Allow both int and float for amounts
+    "currency": str,
+    "balance_before": (int, float),
+    "balance_after": (int, float),
+    "location": str,
+    "ip_address": str,
+    "device_id": str,
+    "network_type": str,
+    "merchant_name": (str, type(None)),  # Can be string or null
+    "recipient_id": (str, type(None)),  # Can be string or null
+    "recipient_bank": (str, type(None)),  # Can be string or null
+    "granted": bool,
+    "login_attempts": int,
+    "session_id": str,
+    "velocity": (int, float),
+    "distance_from_last_location": (int, float),
+    "is_repeat_location": bool,
+    "fraud_label": int,
+    "behavior_type": str
+}
+
 
 # Initialize reward tracking
 def initialize_logs():
@@ -73,7 +105,10 @@ def extract_json(text, user_id):
         return 'retry'
 
     # ✅ Step 1: Validate the raw extracted JSON
-    if not validate_json(matches):
+    if validate_json(matches):
+        print(f"✅ JSON validation successful for user {user_id}") 
+        json_corrected = False  # JSON is correct
+    else:
         print(f"❌ Validation failed for user {user_id}. Attempting correction...") 
         # 🔄 Step 2: Attempt Correction
         corrected_json = correct_json(matches)
@@ -85,8 +120,7 @@ def extract_json(text, user_id):
             print(f"❌ Correction failed for user {user_id}. Returning 'retry' for regeneration...")
             update_reward_log(score=-1, reason="Correction failed")
             return 'retry'
-    else:
-        json_corrected = False  # JSON was already correct
+    
 
     combined_activities = []
     for match in matches:
@@ -111,15 +145,20 @@ def extract_json(text, user_id):
         return 'retry'
 
 
-def log_validation_result(validation_result, json_string):
-    """Logs JSON validation results for tracking issues."""
-    with open(VALIDATION_LOG_FILE, "a", encoding="utf-8") as log_file:
-        log_file.write(f"Timestamp: {datetime.now().isoformat()}\n")
-        log_file.write("Validation Result:\n")
-        log_file.write(validation_result + "\n")
-        log_file.write("JSON Attempted:\n")
-        log_file.write(json_string + "\n")
-        log_file.write("-" * 80 + "\n\n")
+def log_json_validation(status, json_content, errors=None):
+    """Logs JSON validation status and errors (if any) to a dedicated file."""
+    log_file = "outputs/json_validation.log"
+    with open(log_file, "a", encoding="utf-8") as file:
+        file.write(f"--- JSON Validation Result ---\n")
+        file.write(f"Status: {status}\n")
+        file.write(f"JSON:\n{json_content}\n")
+
+        if errors:
+            file.write("Errors:\n")
+            for error in errors:
+                file.write(f"- {error}\n")
+        
+        file.write("\n" + "="*80 + "\n")  # Separator for readability
 
 def log_correction_result(corrected_json, original_json):
     """Logs JSON correction results for tracking improvements."""
@@ -131,38 +170,86 @@ def log_correction_result(corrected_json, original_json):
         log_file.write(corrected_json + "\n")
         log_file.write("-" * 80 + "\n\n")
 
-def validate_json(activity_sequence):
-    """Validates JSON correctness using an LLM and ensures no comments exist."""
-    json_string = json.dumps(activity_sequence, indent=2)
+def validate_json(activity_sequence, user_id):
+    """Validates JSON correctness: required fields, correct types, and logical consistency."""
+    errors = []
 
-    validation_prompt = f"""
-    You are a JSON validator. Review the JSON for correctness:
+    if not activity_sequence:
+        errors.append("❌ JSON is empty.")
+
+    for activity in activity_sequence:
+        transaction_id = activity.get("transaction_id", "UNKNOWN")
+        
+        # ✅ 1. Check for missing or extra fields
+        missing_fields = [field for field in EXPECTED_FIELD_TYPES if field not in activity]
+        extra_fields = [field for field in activity if field not in EXPECTED_FIELD_TYPES]
+        
+        if missing_fields:
+            errors.append(f"❌ Missing fields in transaction {transaction_id}: {', '.join(missing_fields)}")
+        if extra_fields:
+            errors.append(f"❌ Unexpected fields in transaction {transaction_id}: {', '.join(extra_fields)}")
+        
+        # ✅ 2. Check field types
+        for field, expected_type in EXPECTED_FIELD_TYPES.items():
+            if field in activity and not isinstance(activity[field], expected_type):
+                errors.append(
+                    f"❌ Incorrect type for `{field}` in transaction {transaction_id}. "
+                    f"Expected {expected_type}, got {type(activity[field])}."
+                )
+
+        # ✅ 3. Validate balance computations
+        transaction_type = activity.get("type", "").lower()
+        balance_before = activity.get("balance_before")
+        balance_after = activity.get("balance_after")
+        amount = activity.get("amount", 0)
+        granted = activity.get("granted")
+
+        if balance_before is None or balance_after is None:
+            errors.append(f"❌ Missing balance fields in transaction {transaction_id}.")
+            continue
+
+        if transaction_type in ["deposit", "transfer_in"]:
+            expected_balance_after = balance_before + amount
+            if balance_after != expected_balance_after or granted is not True:
+                errors.append(
+                    f"❌ Incorrect balance for {transaction_type} in transaction {transaction_id}. "
+                    f"Expected balance_after={expected_balance_after}, got {balance_after}."
+                )
+
+        elif any(word in transaction_type for word in ["purchase", "withdrawal", "transfer"]):
+            if amount <= balance_before:  # ✅ Transaction should be granted
+                expected_balance_after = balance_before - amount
+                if balance_after != expected_balance_after or granted is not True:
+                    errors.append(
+                        f"❌ Incorrect balance for {transaction_type} in transaction {transaction_id}. "
+                        f"Expected balance_after={expected_balance_after}, got {balance_after}."
+                    )
+            else:  # ❌ Insufficient funds → should be denied
+                if balance_after != balance_before or granted is not False:
+                    errors.append(
+                        f"❌ Insufficient funds for {transaction_type} in transaction {transaction_id}. "
+                        f"Expected granted=False, balance_after={balance_before}, got granted={granted}, balance_after={balance_after}."
+                    )
+
+        elif transaction_type in ["login", "authentication"]:
+            if balance_after != balance_before:
+                errors.append(
+                    f"❌ Non-transaction activity '{transaction_type}' should not modify balance in transaction {transaction_id}."
+                )
+    # 4. Log and return validation results
+    validation_status = "VALID" if not errors else "INVALID"
     
-    ```json
-    {json_string}
-    ```
-    
-    Validation Rules:
-    - Ensure JSON is NOT empty.
-    - JSON must **NOT contain comments** (`//` or `/* ... */`).
-    - JSON syntax must be valid.
-    - Verify that all required fields exist.
-    - Ensure `balance_after = balance_before - amount` (unless transaction is denied).
-    - Ensure timestamps are sequential.
-    
-    If the JSON is correct, return `"VALID"`. Otherwise, return a detailed error report.
-    """
-
-    response = ollama.chat(model="gemma2:2b", messages=[{"role": "user", "content": validation_prompt}])
-    validation_result = response['message']['content'].strip()
-
-    # ✅ Log validation result
-    log_validation_result(validation_result, json_string)
-
-    if "VALID" in validation_result:
+    if validation_status == "VALID":
+        update_reward_log(success=True)
+        print(f"✅ JSON Validation: {validation_status}")
+        log_json_validation(validation_status, json.dumps(activity_sequence, indent=2))
         return True
     else:
+        update_reward_log(success=False)
+        print(f"❌ JSON Validation: {validation_status}")
+        log_json_validation(validation_status, json.dumps(activity_sequence, indent=2), errors)
         return False
+
 
 def correct_json(activity_sequence):
     """Uses a small LLM to correct minor JSON errors."""
@@ -328,14 +415,7 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
         nonlocal header_written
         if buffer:
             df = pd.DataFrame(buffer)
-            expected_columns = [
-                "transaction_id", "bank_timestamp", "local_timestamp", "user_id", "account_id",
-                "type", "amount", "currency", "balance_before", "balance_after",
-                "location", "ip_address", "device_id", "network_type", "merchant_name",
-                "recipient_id", "recipient_bank", "granted", "login_attempts", "session_id",
-                "velocity", "distance_from_last_location", "is_repeat_location",
-                "fraud_label", "behavior_type"
-            ]
+            expected_columns = list(EXPECTED_FIELD_TYPES.keys())
             df = df[[col for col in df.columns if col in expected_columns]]
             df.to_csv(output_file, mode='a', index=False, header=not header_written)
             header_written = True  
