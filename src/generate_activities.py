@@ -5,6 +5,7 @@ import os
 import random
 import re
 import uuid
+from IPython import embed
 import pandas as pd
 import ollama
 import matplotlib.pyplot as plt
@@ -12,6 +13,8 @@ import matplotlib.pyplot as plt
 LLM_model = 'mistral'
 ERROR_LOG_FILE = f"outputs/json_errors_{LLM_model}.log"
 REWARD_LOG_FILE = f"outputs/reward_progress_{LLM_model}.csv"
+VALIDATION_LOG_FILE = f"outputs/json_validation_{LLM_model}.log"
+CORRECTION_LOG_FILE = f"outputs/json_corrections_{LLM_model}.log"
 log_text_file = f"outputs/llm_chain_of_thought_{LLM_model}.txt"
 output_file = f"outputs/bank_log_{LLM_model}.csv"
 
@@ -26,10 +29,15 @@ def initialize_logs():
     with open(output_file, 'w') as file:
         file.write("")
 
-def update_reward_log(success: bool):
-    reward = 1 if success else -1
+def update_reward_log(score, reason=""):
+    """Logs reward score and reason for tracking performance of JSON generation."""
+    log_entry = f"{datetime.now().isoformat()},{score},{reason}\n"
     with open(REWARD_LOG_FILE, 'a') as file:
-        file.write(f"{datetime.now().isoformat()},{reward}\n")
+        file.write(log_entry)
+    
+    print(f"🔹 Reward Logged: Score={score} | Reason: {reason}")
+
+
 
 def visualize_rewards():
     if not os.path.exists(REWARD_LOG_FILE):
@@ -50,14 +58,18 @@ def visualize_rewards():
 def log_json_error(error_message, raw_output):
     with open(ERROR_LOG_FILE, "a") as log_file:
         log_file.write(f"Error: {error_message}\nOutput: {raw_output}\n{'-'*80}\n")
-    update_reward_log(success=False)
+    
 
 def extract_json(text, user_id):
     """Extracts JSON arrays from LLM responses and validates/corrects them before parsing."""
-    matches = re.findall(r'```json\s*(\[\s*{.*?}\s*\])\s*```', text, re.DOTALL)    
+    matches = re.findall(r'```json\s*(\[\s*{.*?}\s*\])\s*```', text, re.DOTALL) 
+
     if not matches:
-        log_json_error("No valid JSON arrays found in the response.", text)
-        update_reward_log(success=False)
+        matches = re.findall(r'(\[\s*{.*?}\s*\])', text, re.DOTALL)  # Try finding inline JSON without triple backticks   
+    
+    if not matches:
+        log_json_error("❌ No valid JSON arrays found in the response.", text)
+        update_reward_log(score=-1, reason="No valid JSON found")
         return 'retry'
 
     # ✅ Step 1: Validate the raw extracted JSON
@@ -68,31 +80,61 @@ def extract_json(text, user_id):
         if corrected_json and validate_json(corrected_json):
             print(f"✅ JSON successfully corrected for user {user_id}")
             matches = corrected_json
+            json_corrected = True  # Flag to indicate JSON was fixed
         else:
             print(f"❌ Correction failed for user {user_id}. Returning 'retry' for regeneration...")
-            update_reward_log(success=False)
+            update_reward_log(score=-1, reason="Correction failed")
             return 'retry'
+    else:
+        json_corrected = False  # JSON was already correct
+
     combined_activities = []
     for match in matches:
-        # ✅ Step 3: Parse JSON after validation/correction
         try:
             data = json.loads(match)
             combined_activities.extend(data if isinstance(data, list) else [data])
         except json.JSONDecodeError as e:
+            print(f"❌ JSON parsing error for user {user_id}: {e}")
             log_json_error(f"JSON Decode Error: {e}", match)
-            update_reward_log(success=False)
+            update_reward_log(score=-1, reason="JSON decoding error")
             return 'retry'
 
-    update_reward_log(success=True)
-    return combined_activities if combined_activities else 'retry'
+    # ✅ Step 3: Check if the DataFrame can be filled
+    df = pd.DataFrame(combined_activities)
+    if not df.empty:
+        reward_score = 2 if not json_corrected else 1  # +2 for perfect, +1 if corrected
+        update_reward_log(score=reward_score, reason="JSON valid and filled DataFrame")
+        return combined_activities
+    else:
+        print(f"⚠️ No activities found after extraction for user {user_id}. Retrying...")
+        update_reward_log(score=-1, reason="Empty extracted JSON")
+        return 'retry'
 
 
+def log_validation_result(validation_result, json_string):
+    """Logs JSON validation results for tracking issues."""
+    with open(VALIDATION_LOG_FILE, "a", encoding="utf-8") as log_file:
+        log_file.write(f"Timestamp: {datetime.now().isoformat()}\n")
+        log_file.write("Validation Result:\n")
+        log_file.write(validation_result + "\n")
+        log_file.write("JSON Attempted:\n")
+        log_file.write(json_string + "\n")
+        log_file.write("-" * 80 + "\n\n")
 
+def log_correction_result(corrected_json, original_json):
+    """Logs JSON correction results for tracking improvements."""
+    with open(CORRECTION_LOG_FILE, "a", encoding="utf-8") as log_file:
+        log_file.write(f"Timestamp: {datetime.now().isoformat()}\n")
+        log_file.write("Original JSON:\n")
+        log_file.write(original_json + "\n")
+        log_file.write("Corrected JSON:\n")
+        log_file.write(corrected_json + "\n")
+        log_file.write("-" * 80 + "\n\n")
 
-def validate_json(activity_sequence,):
+def validate_json(activity_sequence):
     """Validates JSON correctness using an LLM and ensures no comments exist."""
     json_string = json.dumps(activity_sequence, indent=2)
-    
+
     validation_prompt = f"""
     You are a JSON validator. Review the JSON for correctness:
     
@@ -111,24 +153,26 @@ def validate_json(activity_sequence,):
     If the JSON is correct, return `"VALID"`. Otherwise, return a detailed error report.
     """
 
-    response = ollama.chat(model="gemma-2b", messages=[{"role": "user", "content": validation_prompt}])
+    response = ollama.chat(model="gemma2:2b", messages=[{"role": "user", "content": validation_prompt}])
     validation_result = response['message']['content'].strip()
 
+    # ✅ Log validation result
+    log_validation_result(validation_result, json_string)
+
     if "VALID" in validation_result:
-        update_reward_log(success=True)
         return True
     else:
-        update_reward_log(success=False)
-        log_json_error(validation_result, json_string)
         return False
 
 def correct_json(activity_sequence):
     """Uses a small LLM to correct minor JSON errors."""
+    json_string = json.dumps(activity_sequence, indent=2)
+
     correction_prompt = f"""
     You are an expert JSON corrector. Here is a JSON that contains errors:
     
     ```json
-    {json.dumps(activity_sequence, indent=2)}
+    {json_string}
     ```
     
     Your task:
@@ -137,13 +181,18 @@ def correct_json(activity_sequence):
     - Return ONLY the corrected JSON, nothing else.
     """
 
-    response = ollama.chat(model="phi-2", messages=[{"role": "user", "content": correction_prompt}])
-    return response['message']['content'].strip()
+    response = ollama.chat(model="phi", messages=[{"role": "user", "content": correction_prompt}])
+    corrected_json = response['message']['content'].strip()
 
+    # ✅ Log correction results
+    log_correction_result(corrected_json, json_string)
+
+    return corrected_json
 
 
 def build_generation_prompt(strategy, fraud_label, profile_type, global_clock, user_id):
     """Builds the prompt for generating activity sequences with dynamic values and data schema."""
+    # JSON Template with Dynamic Values
     json_template = f"""
     ```json
     [
@@ -177,44 +226,87 @@ def build_generation_prompt(strategy, fraud_label, profile_type, global_clock, u
     ]
     ```
     """
-    
-    return f"""
-    You are an AI generating **detailed sequences of banking activities** for a fraud simulation.
-    
-    ### Strategy:
-    {strategy}
-
-    If `{fraud_label}`=1:
-      1. Ensure the sequence of activities **completes the fraud** as described.
-      2. If the fraud is **multi-event**, generate at least **minimum_activities** transactions.
-      3. If the fraud is **single-event**, ensure the transaction fully represents the fraudulent behavior.
-
-    ### Data Generation Rules:
-    The financial activities must be generated as a **JSON object** with the exact format below:
-
-    {json_template}
-
-    - **Ensure all field values are valid** (timestamps, locations, amounts, etc.).
-    - **Output only JSON**, enclosed within **triple backticks** (```json ... ```).
-    - **Do not include comments or explanations in the JSON**.
-    - Ensure logical consistency (e.g., `balance_after = balance_before - amount`).
+    field_explanation = """"
+        f"- `transaction_id`: string, A unique identifier for the transaction generated using UUID.\n"
+        f"- `bank_timestamp`: string (ISO 8601 format), The UTC time when the activity occurred, formatted as 'YYYY-MM-DDTHH:MM:SS+00:00'.\n"
+        f"- `local_timestamp`: string (ISO 8601 format), The local time of the activity with time zone offset (e.g., 'YYYY-MM-DDTHH:MM:SS-05:00').\n"
+        f"- `user_id`: string, A unique identifier for the user generated using UUID. Given \n"
+        f"- `account_id`: string, The identifier of the bank account involved in the transaction.\n"
+        f"- `type`: string, The type of activity (e.g., Purchase, Withdrawal, Transfer).\n"
+        f"- `amount`: flaot, The monetary amount involved in the transaction.\n"
+        f"- `currency`: string, The currency of the transaction (e.g., 'USD'). Must be set according to the location of the activty\n"
+        f"- `balance_before`: flaot, The account balance before the transaction.\n"
+        f"- `balance_after`: flaot, The account balance after the transaction (adjusted based on the `amount`). If the generated transaction would make `balance_after`<0 then the field `granted` must be set to `false` and `balance_after`=`balance_before`\n"
+        f"- `location`: string, The city and country where the transaction took place.\n"
+        f"- `ip_address`: string, The IP address used during the activity.\n"
+        f"- `device_id`: string, The device identifier (e.g., phone or computer model).\n"
+        f"- `network_type`: string, Type of network used (e.g., Wi-Fi, Mobile Data).\n"
+        f"- `merchant_name`: string or null, Name of the merchant (if applicable, e.g., 'Amazon' otherwise, set to `null`).\n"
+        f"- `recipient_id`: string or null, The identifier of the recipient in case of transfers; otherwise, set to `null`.\n"
+        f"- `recipient_bank`: string or null, The bank of the recipient in case of transfers; otherwise, set to `null`.\n"
+        f"- `granted`: bool, Boolean indicating if the transaction was approved (`true`) or denied (`false`).\n"
+        f"- `login_attempts`: integer, Number of login attempts in the session.\n"
+        f"- `session_id`: string, Unique identifier for the session grouping multiple activities.\n"
+        f"- `velocity`: float, Numeric value representing the time delta in minutes between the current and previous `bank_timestamp`. Use a random value if it's the first transaction.\n"
+        f"- `distance_from_last_location`: float, Numeric value in kilometers indicating the distance from the previous activity's location. Use a random value if it's the first transaction.\n"
+        f"- `is_repeat_location`: bool, Boolean indicating if the transaction is from a previously used location.\n"
+        f"- `fraud_label`: integer, `1` for fraudulent transactions, `0` for legitimate ones.\n"
+        f"- `behavior_type`: string, Describes the behavioral profile (e.g., 'Account Takeover', 'Legitimate').\n\n"
     """
 
-def generate_activity_sequence(strategy, fraud_label=0, profile_type="Legitimate", global_clock=None, user_id=None):
-    """Generates structured financial activities based on the provided strategy."""
-    while True:
+    # Final Prompt with Strategy and JSON Example
+    return (
+        f"You are an AI generating **detailed sequences of banking activities** for a fraud simulation.\n"  
+        f"Your task is to create a sequence of financial activities based on the predefined strategy below.\n\n"
+        f"### Strategy:\n{strategy}\n\n"
+        f"If `{fraud_label}`=1: "
+        f"  1. Ensure the sequence of activities **completes the fraud** as described in the strategy by the minimum number of activties."
+        f"  2. If the fraud is a **multi-event fraud**, generate at least **`minimum_activities`** (spceified in the {strategy}) transactions that follow the specified pattern."
+        f"  3. For **single-event fraud**, ensure the transaction fully represents the fraudulent behavior."
+        f"  4. The generated activities must clearly reflect the fraud type, scope, and behavior characteristics provided in the strategy."
+        f"### Data Generation Rules:\n"
+        f"The financial activities must be generated as a JSON object.\n"
+        f"### Required Fields in the JSON, with format specifications, don't add extra-fields:\n{field_explanation}\n\n"
+        f"- First, explain your reasoning step by step **without making examples**.\n"
+        f"- Then, generate **only** the structured JSON activity sequence as in the following JSON example: \n{json_template}\n"
+        f"- The JSON MUST be enclosed within **triple backticks** using the format ```json ... ```.\n"
+        f"- Ensure that timestamps are logically consistent and formatted according to ISO 8601 standards.\n"
+        f"- Do **NOT** include comments or explanations in the JSON.\n"
+        f"- End your response immediately after closing the JSON block.\n"
+        f"- **Use the provided `fraud_label`, `profile_type`, `global_clock`, `user_id`. They must remain exactly as given: `{fraud_label},{profile_type}, {global_clock},{user_id}`.**\n"
+        f"### Important:\n"
+        f"- Ensure that the JSON is correctly formatted, with the correct formats.\n"
+        f"- **The JSON must be flat**\n"
+        f"- End your response after closing triple backticks.\n"
+        f"- Ensure all field values match the types and formats specified in the JSON field explanation. If the format is string, the string must be enclosed in "" or ''\n"
+        f"- The JSON example is just a support for you to understand the structure I want. You must fill the fields with the most appropriate values for the strategy you are simulating.\n"
+    )
+
+
+def generate_activity_sequence(strategy, fraud_label=0, profile_type="Legitimate", global_clock=None, user_id=None, max_retries=3):
+    """Generates structured financial activities based on the provided strategy with retry limit."""
+
+    retries = 0  # Track retry attempts
+
+    while retries < max_retries:
         prompt = build_generation_prompt(strategy, fraud_label, profile_type, global_clock, user_id)
         response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}])
         raw_response = response['message']['content'].strip()
+
         save_to_text(raw_response, user_id)
 
         activity_sequence = extract_json(raw_response, user_id)
 
         if activity_sequence != 'retry':
-            print('✅ Activity sequence generated successfully for user ID:', user_id)
-            return activity_sequence 
+            print(f"✅ Activity sequence generated successfully for user ID {user_id} on attempt {retries + 1}")
+            return activity_sequence  
 
-        print("🔄 Retrying activity sequence generation due to invalid JSON...")
+        print(f"🔄 Retrying activity sequence due to invalid JSON... (Attempt {retries + 1} of {max_retries})")
+        retries += 1
+
+    print(f"❌ Failed to generate valid activity sequence for user {user_id} after {max_retries} retries.")
+    return 'retry'  # Signal failure
+
 
 def save_to_text(reasoning_text, agent_id=None):
     """Appends LLM reasoning and extracted JSON to a shared text file."""
