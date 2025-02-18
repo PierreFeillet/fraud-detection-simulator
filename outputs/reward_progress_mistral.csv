@@ -1,2 +1,12 @@
 timestamp, user-id, reward
 2025-02-18T10:30:10.751715,1cfd4c75-7525-433f-8405-f052a1ea4bdd,2,Valid JSON extracted and used
+2025-02-18T10:31:01.932142,ec5aeef0-1770-4cda-8046-d6360fd044e5,2,Valid JSON extracted and used
+2025-02-18T10:31:37.096106,e7ee68e1-eb71-4f25-b973-089c46dbea8a,2,Valid JSON extracted and used
+2025-02-18T10:32:30.697796,928c8f5b-bab4-48ae-9aff-727b367995ff,-1,No valid JSON found
+2025-02-18T10:32:57.719116,928c8f5b-bab4-48ae-9aff-727b367995ff,2,Valid JSON extracted and used
+2025-02-18T10:33:49.959203,44250a11-9e7d-48f3-9a0f-4ba06158b03c,-1,JSON decoding error
+2025-02-18T10:34:35.469648,44250a11-9e7d-48f3-9a0f-4ba06158b03c,-1,No valid JSON found
+2025-02-18T10:35:23.869070,44250a11-9e7d-48f3-9a0f-4ba06158b03c,2,Valid JSON extracted and used
+2025-02-18T10:36:35.222351,db378440-de45-4e92-9bec-03cf35413a6d,-1,Correction failed
+2025-02-18T10:37:12.729660,db378440-de45-4e92-9bec-03cf35413a6d,-1,JSON decoding error
+2025-02-18T10:38:04.318184,db378440-de45-4e92-9bec-03cf35413a6d,-1,No valid JSON found

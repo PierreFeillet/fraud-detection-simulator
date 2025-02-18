@@ -39,3 +39,604 @@
 ]
 ```
 
+
+### LLM Chain of Thought for user ID ec5aeef0-1770-4cda-8046-d6360fd044e5 ###
+
+1. Generate a new UUID for the transaction ID, which we will denote as `txn_id`. The format should be similar to the provided user_id.
+     - In Python, you can use `uuid.uuid4().hex` function to generate a new UUID.
+
+  2. Based on the scenario, decide on the values for other fields. For simplicity, let's assume the following:
+     1. The `bank_timestamp` is the provided global clock (2025-02-18T09:29:28).
+     2. For `account_id`, we can use a simple 6-digit number, ACC123456 (you may choose a different pattern if needed).
+     3. Choose any appropriate type for the transaction (e.g., Purchase, Transfer, Payment), let's say "Transfer".
+     4. For `amount`, since we don't have specific requirements, we can use a random float amount around 150.75.
+     5. Let the `currency` be "USD", as specified in the provided JSON example.
+     6. Set the `balance_before` to a reasonable value (e.g., 2000) and adjust the `balance_after` based on the chosen `amount`.
+     7. Choose any location, for instance, "Los Angeles, USA".
+     8. For `ip_address`, use a random IP address in the US range (e.g., "192.168.1.10").
+     9. Set the `device_id` to a common device identifier like "iPhone-14" or "Android-5G".
+    10. For `network_type`, choose either "Wi-Fi" or "Mobile".
+    11. Since we don't have any merchant information, let the `merchant_name` be None.
+    12. Let's assume that the user has already logged in once and is repeating the same location, so set `is_repeat_location` to True and set `login_attempts` to 1.
+    13. For the `session_id`, generate a new UUID similar to the transaction ID.
+    14. Set `velocity` and `distance_from_last_location` as random values between 0 and 2 (as a decimal) for both fields.
+    15. Since the provided `fraud_label` is 1, let's assign "Money Laundering" to `behavior_type`.
+
+Now, construct the JSON with all the decided field values:
+
+```json
+[
+    {
+        "transaction_id": "6bc01d92-354f-4b94-8a77-e8f4eb599c93",
+        "bank_timestamp": "2025-02-18T09:29:28",
+        "local_timestamp": "2025-02-18T14:29:28-08:00",
+        "user_id": "ec5aeef0-1770-4cda-8046-d6360fd044e5",
+        "account_id": "ACC123456",
+        "type": "Transfer",
+        "amount": 149.75,
+        "currency": "USD",
+        "balance_before": 2000,
+        "balance_after": 1850.25,
+        "location": "Los Angeles, USA",
+        "ip_address": "192.168.1.10",
+        "device_id": "iPhone-14",
+        "network_type": "Wi-Fi",
+        "merchant_name": null,
+        "recipient_id": null,
+        "recipient_bank": null,
+        "granted": true,
+        "login_attempts": 1,
+        "session_id": "6bc01d92-354f-4b94-8a77-e8f4eb599c95",
+        "velocity": 0.5,
+        "distance_from_last_location": 1.2,
+        "is_repeat_location": true,
+        "fraud_label": 1,
+        "behavior_type": "Money Laundering"
+    }
+]
+```
+
+
+### LLM Chain of Thought for user ID e7ee68e1-eb71-4f25-b973-089c46dbea8a ###
+
+1. Generate a new transaction ID, account ID (different from the ones provided), and session ID.
+2. Calculate `balance_after` based on `balance_before`, `amount`, and the type of transaction (Purchase).
+3. Determine `location`, `ip_address`, `device_id`, `network_type`, `merchant_name`, `recipient_id`, `recipient_bank`, `login_attempts` based on the strategy you are simulating (e.g., user behavior, geolocation, device information, etc.).
+4. Generate a logical and consistent `bank_timestamp` and `local_timestamp` that are logically related to each other.
+5. Set `fraud_label` and `behavior_type` as provided (0 and "Saver", respectively).
+6. Ensure all field values match the types and formats specified in the JSON field explanation.
+7. Enclose the JSON within triple backticks using the format ```json ... ```.
+
+Here's an example of a possible JSON based on the given constraints:
+
+```json
+[
+  {
+    "transaction_id": "TXN98765",
+    "bank_timestamp": "2025-02-18T14:30:00",
+    "local_timestamp": "2025-02-18T19:30:00-05:00",
+    "user_id": "f9da6bcf-f4ab-47e4-bb9a-2c3d5ef6abc7",
+    "account_id": "ACCO1234",
+    "type": "Purchase",
+    "amount": 20.00,
+    "currency": "USD",
+    "balance_before": 100.00,
+    "balance_after": 80.00,
+    "location": "Chicago, USA",
+    "ip_address": "203.0.113.56",
+    "device_id": "Samsung-Galaxy-S22",
+    "network_type": "Mobile",
+    "merchant_name": "Starbucks",
+    "recipient_id": null,
+    "recipient_bank": null,
+    "granted": true,
+    "login_attempts": 2,
+    "session_id": "SESSION789",
+    "velocity": 0.56,
+    "distance_from_last_location": 450.0,
+    "is_repeat_location": false,
+    "fraud_label": 0,
+    "behavior_type": "Saver"
+  }
+]
+```
+
+
+### LLM Chain of Thought for user ID 928c8f5b-bab4-48ae-9aff-727b367995ff ###
+
+1. First, let's create the timestamps that are consistent and formatted according to ISO 8601 standards. The `global_clock` provided is the base timestamp for all local timestamps:
+     ```
+     global_clock = "2025-02-18T09:29:28"
+     local_timestamp = global_clock + "Z"  # Adding Z to denote UTC time
+     ```
+
+  2. Next, let's create the local timestamp considering a timezone offset of -5 hours (Eastern Time Zone):
+     ```
+     local_timezone_offset = datetime.timedelta(hours=5)
+     local_timestamp_with_offset = local_timestamp - local_timezone_offset  # Subtracting the offset to get Eastern Time Zone
+     ```
+
+  3. Now, let's create a random transaction ID and account ID (these can be any valid strings):
+     ```
+     import uuid
+     transaction_id = str(uuid.uuid4())
+     account_id = "ACC12345"
+     ```
+
+  4. Let's create a purchase with a random amount within a specific range (e.g., between 50 and 200):
+     ```
+     import random
+     purchase_amount = round(random.uniform(50, 200), 2)
+     ```
+
+  5. The balance before the purchase will be the current balance minus the amount of previous purchases (assuming no deposits or other changes). Let's initialize the balance to a specific value and create a variable to keep track of total purchases:
+     ```
+     initial_balance = 1000
+     total_purchases = 0
+     balance_before = initial_balance - total_purchases * purchase_amount
+     ```
+
+  6. To simulate the new balance after the purchase, we will add the purchase amount to `balance_before` and update `total_purchases`:
+     ```
+     balance_after = balance_before - purchase_amount
+     total_purchases += 1
+     ```
+
+  7. Now, let's create a device ID and network type (these can be any valid strings):
+     ```
+     device_id = "iPhone-14"
+     network_type = "Wi-Fi"
+     ```
+
+  8. To simulate a repeat location, we will generate a random location for the first purchase and use that as the last location. For subsequent purchases, we will compare the current location to the last location and determine if it is a repeat location or not:
+     ```
+     import random
+     location = "New York, USA"  # First purchase location
+     last_location = location
+     ```
+
+  9. To simulate the distance from the last location, we can generate a random float value between 0 and 10 (representing kilometers) for each purchase:
+     ```
+     distance_from_last_location = round(random.uniform(0, 10), 2)
+     ```
+
+  10. Finally, let's create a merchant name (this can be any valid string or `None` if no merchant is involved in the purchase):
+     ```
+     merchant_name = "Amazon"
+     ```
+
+  11. Now we can assemble the JSON with the correct field values and formats:
+     ```
+     import json
+
+     data = {
+         "transaction_id": transaction_id,
+         "bank_timestamp": global_clock,
+         "local_timestamp": local_timestamp_with_offset.strftime("%Y-%m-%dT%H:%M:%S"),  # Converting to the format expected in the JSON
+         "user_id": user_id,
+         "account_id": account_id,
+         "type": "Purchase",
+         "amount": purchase_amount,
+         "currency": "USD",
+         "balance_before": balance_before,
+         "balance_after": balance_after,
+         "location": location,
+         "ip_address": "192.168.1.10",  # Any valid IP address
+         "device_id": device_id,
+         "network_type": network_type,
+         "merchant_name": merchant_name,  # If not provided, the field will be omitted from the JSON
+         "recipient_id": None,
+         "recipient_bank": None,
+         "recipient_country": None,
+         "distance_from_last_location": distance_from_last_location,
+         "is_repeat_location": last_location == location  # True if the current purchase is a repeat location, False otherwise
+     }
+
+     json_data = json.dumps(data)
+     print(json_data)
+     ```
+
+
+### LLM Chain of Thought for user ID 928c8f5b-bab4-48ae-9aff-727b367995ff ###
+
+1. The provided data is inconsistent with the specified field types and formats. Here's a JSON response based on your specifications, using the given values for `fraud_label`, `profile_type`, `global_clock`, and `user_id`.
+
+```json
+[
+    {
+        "transaction_id": "TID123",
+        "bank_timestamp": "2025-02-18T09:29:28",
+        "local_timestamp": "2025-02-18T14:29:28-05:00",
+        "user_id": "928c8f5b-bab4-48ae-9aff-727b367995ff",
+        "account_id": "ACC12345",
+        "type": "Purchase",
+        "amount": 150.75,
+        "currency": "USD",
+        "balance_before": 1000,
+        "balance_after": 849.25,
+        "location": "New York, USA",
+        "ip_address": "192.168.1.10",
+        "device_id": "iPhone-14",
+        "network_type": "Wi-Fi",
+        "merchant_name": "Amazon",
+        "recipient_id": null,
+        "recipient_bank": null,
+        "granted": true,
+        "login_attempts": 1,
+        "session_id": "SESSION123",
+        "velocity": 0.52,
+        "distance_from_last_location": 3.4,
+        "is_repeat_location": true,
+        "fraud_label": 0,
+        "behavior_type": "Freelancer"
+    }
+]
+```
+
+
+### LLM Chain of Thought for user ID 44250a11-9e7d-48f3-9a0f-4ba06158b03c ###
+
+1. The provided information and constraints suggest that we are creating a JSON object representing a transaction for the user with `user_id` "44250a11-9e7d-48f3-9a0f-4ba06158b03c".
+
+  2. We will use the global clock provided, which is "2025-02-18T09:29:28". This clock will be used to generate timestamps for the `bank_timestamp` and `local_timestamp`.
+
+  3. Let's generate some random values within appropriate ranges based on the provided information and constraints:
+
+     - `account_id`: A string representing a unique account ID, e.g., "ACC12345"
+     - `type`: "Purchase", as per the example
+     - `amount`: 150.75 (a reasonable amount for online shopping)
+     - `currency`: "USD" since it is provided in the example
+     - `balance_before` and `balance_after`: The balance before is 1000 as per the example, we will reduce this by the transaction amount to get the balance after, i.e., 849.25 (rounded to two decimal places)
+     - `location`: "New York, USA" since it is provided in the example
+     - `ip_address`: A random IP address within a valid range, e.g., "192.168.1.10"
+     - `device_id`: A string representing a device ID, e.g., "iPhone-14" or any other common device ID
+     - `network_type`: "Wi-Fi" as per the example
+     - `merchant_name`: "Amazon", as per the example (you can choose another merchant based on your strategy)
+     - `recipient_id` and `recipient_bank`: None since they are not provided in the example
+     - `granted`: True, as the transaction is being processed successfully
+     - `login_attempts`: 1, assuming one login attempt for this transaction
+     - `session_id`: "SESSION123", a random session ID
+     - `velocity` and `distance_from_last_location`: Random values within reasonable ranges for your strategy
+     - `fraud_label` and `behavior_type`: 0 and "Frequent Online Shopper", as provided in the example
+
+  4. Now, let's generate timestamps based on the global clock:
+
+     - `bank_timestamp` will be the same as the global clock: "2025-02-18T09:29:28"
+     - To generate a local timestamp, we can add or subtract some offset depending on your strategy. For simplicity, let's assume no offset and set `local_timestamp` to the same value as `bank_timestamp`.
+
+  5. Finally, we will construct the JSON object:
+
+     ```json
+     [
+       {
+         "transaction_id": "randomTransactionID",
+         "bank_timestamp": "2025-02-18T09:29:28",
+         "local_timestamp": "2025-02-18T09:29:28",
+         "user_id": "44250a11-9e7d-48f3-9a0f-4ba06158b03c",
+         "account_id": "ACC12345",
+         "type": "Purchase",
+         "amount": 150.75,
+         "currency": "USD",
+         "balance_before": 1000,
+         "balance_after": 849.25,
+         "location": "New York, USA",
+         "ip_address": "192.168.1.10",
+         "device_id": "iPhone-14",
+         "network_type": "Wi-Fi",
+         "merchant_name": "Amazon",
+         "recipient_id": null,
+         "recipient_bank": null,
+         "granted": true,
+         "login_attempts": 1,
+         "session_id": "SESSION123",
+         "velocity": randomVelocityValue,
+         "distance_from_last_location": randomDistanceValue,
+         "fraud_label": 0,
+         "behavior_type": "Frequent Online Shopper"
+       }
+     ]
+     ```
+
+
+### LLM Chain of Thought for user ID 44250a11-9e7d-48f3-9a0f-4ba06158b03c ###
+
+1. First, let's generate a random account ID and session ID to ensure uniqueness for each transaction. We'll use the format `ACCTxxxx` and `SESSIONyyy`, where `xxxx` are 4 random digits and `yyy` are 3 random digits:
+
+```python
+import random
+account_id = "ACCT" + str(random.randint(1000,9999))
+session_id = "SESSION" + str(random.randint(100,999))
+```
+
+2. Next, let's create a random merchant name and location to simulate a purchase:
+
+```python
+import random
+merchant_name = None  # If the transaction is a transfer or deposit, set this to a specific merchant
+location = "New York, USA" + ', ' + str(random.uniform(-100000, 100000)) + 'm'  # Add some random distance for fun
+```
+
+3. Now we can generate the transaction amount. Let's assume that this user makes frequent online purchases:
+
+```python
+amount = random.uniform(50, 250)  # Adjust range as needed for your use case
+currency = "USD"
+balance_before = 1000 + amount  # Since we are simulating a purchase, the balance before is the current balance plus the transaction amount
+balance_after = balance_before - amount
+```
+
+4. For simplicity, let's assume the user logs in only once per session:
+
+```python
+login_attempts = 1
+```
+
+5. Lastly, we can set is_repeat_location to True or False randomly, assuming this user has a 50% chance of visiting the same location twice:
+
+```python
+is_repeat_location = bool(random.getrandbits(1))
+```
+
+6. Finally, let's construct the JSON data structure and print it:
+
+```python
+data = {
+    "transaction_id": "44250a11-9e7d-48f3-9a0f-4ba06158b03c",
+    "bank_timestamp": "2025-02-18T09:29:28",  # This should be replaced with the actual timestamp from your system
+    "local_timestamp": "2025-02-18T09:29:28.%f" % random.uniform(0,1),  # Add microseconds to the local timestamp
+    "user_id": user_id,
+    "account_id": account_id,
+    "type": "Purchase",
+    "amount": amount,
+    "currency": currency,
+    "balance_before": balance_before,
+    "balance_after": balance_after,
+    "location": location,
+    "ip_address": "192.168.1.10",
+    "device_id": "iPhone-14",
+    "network_type": "Wi-Fi",
+    "merchant_name": merchant_name,
+    "recipient_id": None,
+    "recipient_bank": None,
+    "granted": True,
+    "login_attempts": login_attempts,
+    "session_id": session_id,
+    "velocity": random.uniform(0, 2),  # Adjust the range as needed for your use case
+    "distance_from_last_location": location[-19:],  # Extract the distance value from the location string
+    "is_repeat_location": is_repeat_location,
+    "fraud_label": 0,
+    "behavior_type": "Frequent Online Shopper"
+}
+
+json_data = json.dumps(data)
+print("```json\n", json_data, "\n```")
+```
+
+
+### LLM Chain of Thought for user ID 44250a11-9e7d-48f3-9a0f-4ba06158b03c ###
+
+1. First, let's generate a random account ID and session ID for this transaction. Let's use `ACC67890` and `SESSION456`.
+
+2. We need to generate a reasonable location for the user. Let's assume the user is from New York City in the USA. So, the location would be "New York, NY, USA".
+
+3. Generate a random IP address within a typical range (192.168.x.x). For example, let's use `192.168.1.10`.
+
+4. Select a device that is commonly used for online shopping. Let's assume the user is using an iPhone 14, so the device_id would be "iPhone-14".
+
+5. The network type can be Wi-Fi or Mobile. For this example, let's use Wi-Fi as the network type (`Wi-Fi`).
+
+6. Merchant name is Amazon in this case, so we will use "Amazon" for `merchant_name`. Since this transaction does not involve a recipient or recipient bank, we will set them to null (`None`).
+
+7. The `balance_before`, `amount`, and `balance_after` are the most important fields for generating realistic values. We need to ensure that the balance after the transaction is reasonable based on the given constraints. Let's assume a starting balance of 1500 (as the user has been shopping frequently). The `amount` could be any reasonable value for a purchase, let's say 150.75. After the deduction of the amount, the balance should be less than the initial balance to show that the transaction was successful. Let's calculate the updated balance as 1349.25 (`balance_after`).
+
+8. For `velocity`, let's use a random float value between 0 and 1 that represents how long it has been since the user's last transaction. Let's generate a value like 0.52 for velocity.
+
+9. The `is_repeat_location` field is set to true because the user has made purchases from the same location in the past.
+
+10. Lastly, ensure that all timestamps are logically consistent and formatted according to ISO 8601 standards. Use the given global clock value of "2025-02-18T09:29:28" for both `bank_timestamp` and `local_timestamp`.
+
+Now, let's create the JSON structure with all the generated values:
+
+```json
+[
+    {
+        "transaction_id": "TRANSACTION789",
+        "bank_timestamp": "2025-02-18T09:29:28",
+        "local_timestamp": "2025-02-18T09:29:28",
+        "user_id": "44250a11-9e7d-48f3-9a0f-4ba06158b03c",
+        "account_id": "ACC67890",
+        "type": "Purchase",
+        "amount": 150.75,
+        "currency": "USD",
+        "balance_before": 1500,
+        "balance_after": 1349.25,
+        "location": "New York, NY, USA",
+        "ip_address": "192.168.1.10",
+        "device_id": "iPhone-14",
+        "network_type": "Wi-Fi",
+        "merchant_name": "Amazon",
+        "recipient_id": null,
+        "recipient_bank": null,
+        "granted": true,
+        "login_attempts": 1,
+        "session_id": "SESSION456",
+        "velocity": 0.52,
+        "distance_from_last_location": 3.4,
+        "is_repeat_location": true,
+        "fraud_label": 0,
+        "behavior_type": "Frequent Online Shopper"
+    }
+]
+```
+
+
+### LLM Chain of Thought for user ID db378440-de45-4e92-9bec-03cf35413a6d ###
+
+1. Generate a unique transaction ID (let's say `txn_001` for this example)
+  2. Create a bank timestamp based on the provided global clock (`2025-02-18T09:29:28`) and adjust it to be 5 minutes ahead (`2025-02-18T09:34:28`).
+  3. Create a local timestamp for the user based on the bank timestamp, subtracting the user's timezone offset (for example, if the user is in New York (-5 hours GMT), the local timestamp would be `2025-02-18T14:34:28-05:00`).
+  4. Generate a random account ID (let's say `ACC6789`) and set the type of transaction to "Purchase" for this example.
+  5. Assign a random amount between $50 and $200 (for this example, let's say $150.75).
+  6. Set the currency to USD as provided.
+  7. Generate a random balance_before value greater than the transaction amount (let's say 1200 for this example), then calculate the new balance_after by subtracting the transaction amount from the balance_before (850.25 in this case).
+  8. Set the location to any city, state, and country combination (for this example, let's say "New York, USA").
+  9. Set the IP address to a random IPv4 address (192.168.1.10 for this example).
+  10. Set the device_id to any smartphone model (iPhone-14 for this example).
+  11. Set the network type to "Wi-Fi" or "Mobile" randomly.
+  12. Set the merchant_name to a well-known online retailer like "Amazon", "eBay", or "Walmart".
+  13. Assign a random recipient_id and recipient_bank for this transaction if applicable (optional).
+  14. Set the granted field to True as the transaction is valid.
+  15. Generate a random number of login attempts between 1 and 5 (let's say 2 for this example) and set the login_attempts field accordingly.
+  16. Generate a random session ID (SESSION123 for this example).
+  17. Calculate the velocity as the time elapsed since the last transaction in minutes, then multiply it by a random factor between 0.5 and 1.5 (let's say 0.9 for this example).
+  18. Generate a random distance_from_last_location value between 0 and 10 miles (3.4 for this example).
+  19. Set the is_repeat_location field to True if the last transaction was close in location, or False otherwise.
+  20. Keep the fraud_label and behavior_type as provided: `0,Business Owner`.
+
+Here's the resulting JSON:
+
+```json
+[
+  {
+    "transaction_id": "txn_001",
+    "bank_timestamp": "2025-02-18T09:34:28",
+    "local_timestamp": "2025-02-18T14:34:28-05:00",
+    "user_id": "db378440-de45-4e92-9bec-03cf35413a6d",
+    "account_id": "ACC6789",
+    "type": "Purchase",
+    "amount": 150.75,
+    "currency": "USD",
+    "balance_before": 1200,
+    "balance_after": 850.25,
+    "location": "New York, USA",
+    "ip_address": "192.168.1.10",
+    "device_id": "iPhone-14",
+    "network_type": "Wi-Fi",
+    "merchant_name": "Amazon",
+    "recipient_id": null,
+    "recipient_bank": null,
+    "granted": true,
+    "login_attempts": 2,
+    "session_id": "SESSION123",
+    "velocity": 0.9,
+    "distance_from_last_location": 3.4,
+    "is_repeat_location": true,
+    "fraud_label": 0,
+    "behavior_type": "Business Owner"
+  }
+]
+```
+
+
+### LLM Chain of Thought for user ID db378440-de45-4e92-9bec-03cf35413a6d ###
+
+1. The provided timestamps and user id are inconsistent with the example JSON provided. The example JSON has a `local_timestamp` in the past (2025-02-18T09:29:28) while the given global clock is in the future (2025-02-18T09:29:28). I will assume that the provided `global_clock` is the correct time and adjust other timestamps accordingly.
+
+  2. The provided JSON example has the following issues:
+      - Incorrect field order
+      - Fields not enclosed in quotes when they should be
+      - Incorrect data types for some fields (e.g., `balance_before` and `balance_after` are floats while they should be ints)
+
+  3. To create a valid JSON according to the provided constraints, I will adjust the example JSON as follows:
+
+```json
+[
+  {
+    "transaction_id": "TRAN123",
+    "bank_timestamp": "2025-02-18T09:29:28",
+    "local_timestamp": "2025-02-18T14:29:28-05:00", // Adjusted local timestamp to be in the future and consistent with global clock
+    "user_id": "db378440-de45-4e92-9bec-03cf35413a6d",
+    "account_id": "ACC12345",
+    "type": "Purchase",
+    "amount": 150.75, // Changed to float since the example uses a floating point value
+    "currency": "USD",
+    "balance_before": 1000,
+    "balance_after": 849.25,
+    "location": "New York, USA",
+    "ip_address": "192.168.1.10",
+    "device_id": "iPhone-14",
+    "network_type": "Wi-Fi",
+    "merchant_name": "Amazon",
+    "recipient_id": null,
+    "recipient_bank": null,
+    "granted": true,
+    "login_attempts": 1,
+    "session_id": "SESSION123",
+    "velocity": 0.52,
+    "distance_from_last_location": 3.4,
+    "is_repeat_location": true,
+    "fraud_label": 0,
+    "behavior_type": "Business Owner"
+  }
+]
+```
+
+
+### LLM Chain of Thought for user ID db378440-de45-4e92-9bec-03cf35413a6d ###
+
+1. First, let's create a function to generate random but consistent timestamps based on the given global clock. This function will ensure that all generated timestamps are after the provided global clock.
+
+```python
+import datetime as dt
+from random import uniform
+
+def generate_timestamps(global_clock):
+    now = dt.datetime.strptime(global_clock, "%Y-%m-%d %H:%M:%S") + dt.timedelta(seconds=uniform(-60*60, 60*24))
+    bank_timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
+    local_timestamp = (now - dt.timedelta(hours=5)).strftime("%Y-%m-%d %H:%M:%S%z")
+    return bank_timestamp, local_timestamp
+```
+
+  2. Now, let's create a function to generate the JSON data with all the specified field types and values. I will use placeholders for some of the fields that require more logic or randomization.
+
+```python
+def generate_json_data(global_clock, fraud_label, profile_type, user_id):
+    bank_timestamp, local_timestamp = generate_timestamps(global_clock)
+
+    data = {
+        "transaction_id": f"T{dt.datetime.now().strftime('%Y%m%d%H%M%S')}",
+        "bank_timestamp": bank_timestamp,
+        "local_timestamp": local_timestamp,
+        "user_id": user_id,
+        "account_id": f"ACC{dt.datetime.now().strftime('%Y%m%d%H%M%S')}",
+        "type": "Purchase",  # or other type depending on the strategy
+        "amount": 150.75,  # or other amount depending on the strategy
+        "currency": "USD",
+        "balance_before": 1000,  # or other value depending on the strategy
+        "balance_after": None,  # will be calculated based on the 'amount' and 'balance_before' fields
+        "location": "New York, USA",
+        "ip_address": "192.168.1.10",
+        "device_id": "iPhone-14",
+        "network_type": "Wi-Fi",
+        "merchant_name": "Amazon",  # or other value depending on the strategy
+        "recipient_id": None,  # will be calculated based on the 'type' field
+        "recipient_bank": None,  # will be calculated based on the 'type' field
+        "granted": True,
+        "login_attempts": 1,
+        "session_id": f"SESSION{dt.datetime.now().strftime('%Y%m%d%H%M%S')}",
+        "velocity": None,  # will be calculated based on the timestamps and other data
+        "distance_from_last_location": None,  # will be calculated based on random location generator
+        "is_repeat_location": False,  # or True depending on the location history of 'user_id'
+        "fraud_label": fraud_label,
+        "behavior_type": profile_type
+    }
+
+    return data
+```
+
+  3. Finally, let's call the `generate_json_data()` function with the provided inputs and format the resulting JSON data.
+
+```python
+data = generate_json_data("2025-02-18T09:29:28", 0, "Business Owner", "db378440-de45-4e92-9bec-03cf35413a6d")
+
+json_data = {k: v for k, v in data.items() if isinstance(v, str) or isinstance(v, float) or isinstance(v, int)}
+json_data["balance_after"] = data["balance_before"] - data["amount"]
+json_data["distance_from_last_location"] = 3.4
+json_data["is_repeat_location"] = True
+json_str = json.dumps(json_data, indent=2)
+
+print(f"```json\n{json_str}\n```")
+```
+
+This code will generate a JSON data structure with the specified fields and types, fill in some placeholders based on given inputs or logic, and produce a formatted JSON string for output.
+
