@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 import time
 import json
@@ -13,12 +14,13 @@ import matplotlib.pyplot as plt
 # LLM used for sequnce generation
 LLM_model = 'mistral'
 # File paths
-ERROR_LOG_FILE = f"outputs/json_errors_{LLM_model}.log"
-REWARD_LOG_FILE = f"outputs/reward_progress_{LLM_model}.csv"
-VALIDATION_LOG_FILE = f"outputs/json_validation_{LLM_model}.log"
-CORRECTION_LOG_FILE = f"outputs/json_corrections_{LLM_model}.log"
-log_text_file = f"outputs/llm_chain_of_thought_{LLM_model}.txt"
-output_file = f"outputs/bank_log_{LLM_model}.csv"
+OUTPUT_DIR = "outputs"
+ERROR_TRACKING_FILE = os.path.join(OUTPUT_DIR, f"error_tracking_{LLM_model}.json")
+ERROR_LOG_FILE = os.path.join(OUTPUT_DIR, f"json_errors_{LLM_model}.log")
+REWARD_LOG_FILE = os.path.join(OUTPUT_DIR, f"reward_progress_{LLM_model}.csv")
+VALIDATION_LOG_FILE = os.path.join(OUTPUT_DIR, f"json_validation_{LLM_model}.log")
+LOG_TEXT_FILE = os.path.join(OUTPUT_DIR, f"llm_chain_of_thought_{LLM_model}.txt")
+OUTPUT_FILE = os.path.join(OUTPUT_DIR, f"bank_log_{LLM_model}.csv")
 
 # Expected field types for the JSON schema
 EXPECTED_FIELD_TYPES = {
@@ -49,32 +51,191 @@ EXPECTED_FIELD_TYPES = {
     "behavior_type": str
 }
 
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# Initialize reward tracking
 def initialize_logs():
-    with open(REWARD_LOG_FILE, 'w') as file:
-        file.write("timestamp, user-id, reward\n")
-    with open(ERROR_LOG_FILE, 'w') as file:
-        file.write("")
-    with open(log_text_file, 'w') as file:
-        file.write("")
-    with open(output_file, 'w') as file:
-        file.write("")
-    with open(VALIDATION_LOG_FILE, 'w') as file:
-        file.write("")
-    with open(CORRECTION_LOG_FILE, 'w') as file:
-        file.write("")  
+    """Initializes all log files."""
+    for file_path in [REWARD_LOG_FILE, ERROR_LOG_FILE, LOG_TEXT_FILE, OUTPUT_FILE, VALIDATION_LOG_FILE, ERROR_TRACKING_FILE]:
+        with open(file_path, 'w') as file:
+            file.write("")
 
-
-def update_reward_log(score, user_id, reason=""):
-    """Logs reward score and reason for tracking performance of JSON generation."""
-    log_entry = f"{datetime.now().isoformat()}, {user_id}, {score},{reason}\n"
-    with open(REWARD_LOG_FILE, 'a') as file:
-        file.write(log_entry)
+def log_error_occurrences(errors):
+    """Logs and tracks how often each type of error occurs over time."""
     
-    print(f"🔹 Reward Logged: Score={score} | Reason: {reason}")
+    # Load existing error records if the file exists
+    if os.path.exists(ERROR_TRACKING_FILE):
+        with open(ERROR_TRACKING_FILE, "r", encoding="utf-8") as file:
+            error_data = json.load(file)
+    else:
+        error_data = {"error_counts": defaultdict(int), "timestamps": []}
+
+    # Update error counts
+    for error in errors:
+        error_data["error_counts"][error] = error_data["error_counts"].get(error, 0) + 1
+
+    # Track timestamp of latest error set
+    error_data["timestamps"].append(datetime.now().isoformat())
+
+    # Save back to the file
+    if os.path.exists(ERROR_TRACKING_FILE) and os.path.getsize(ERROR_TRACKING_FILE) > 0:
+        with open(ERROR_TRACKING_FILE, "r", encoding="utf-8") as file:
+            try:
+                error_data = json.load(file)
+            except json.JSONDecodeError:
+                print("⚠️ Warning: Corrupt or empty error tracking file. Resetting.")
+                error_data = {"error_counts": defaultdict(int), "timestamps": []}
+    else:
+        error_data = {"error_counts": defaultdict(int), "timestamps": []}
+
+def validate_json(raw_response, user_id):
+    """Validates JSON correctness and returns a list of detected errors while logging occurrences.
+    Returns 'retry' if the JSON is invalid and needs to be reattempted."""  
+    errors = []
+    print(f"Validating JSON for user {user_id}...")
+    extracted_json_blocks = re.findall(r'```json\s*(\[\s*{.*?}\s*\])\s*```', raw_response, re.DOTALL) 
+
+    if not extracted_json_blocks:
+        extracted_json_blocks = re.findall(r'(\[\s*{.*?}\s*\])', raw_response, re.DOTALL)
+
+    if not extracted_json_blocks:
+        errors.append(f"Error: JSON not enclosed in triple backticks or missing valid structure.")
+        log_json_errors(errors)
+        print(f"Errors detected in JSON for user {user_id}:\n{errors}")
+        return 'retry'
+    else:
+        valid_json_strings = []
+
+        for json_string in extracted_json_blocks:
+            # 🔹 Step 1: Check for forbidden inline comments before parsing
+            if re.search(r'//.*', json_string) or re.search(r'/\*.*?\*/', json_string, re.DOTALL):
+                errors.append("Error: JSON contains inline comments (`//` or `/*...*/`). Remove eventual comments.")
+                log_json_errors(errors)
+                print(f"Errors detected in JSON for user {user_id}:\n{errors}")
+                return 'retry'
+            # 🔹 Step 2: Store for later parsing if no comments are found
+            valid_json_strings.append(json_string)
+
+        valid_activities = []
+        for json_string in valid_json_strings:
+            try:
+                activities = json.loads(json_string)  # Convert JSON string to Python object
+                if not isinstance(activities, list):
+                    activities = [activities]
+
+                # 🔹 Step 3: Validate JSON structure and field types
+                for activity in activities:
+                    missing_fields = [field for field in EXPECTED_FIELD_TYPES if field not in activity]
+                    extra_fields = [field for field in activity if field not in EXPECTED_FIELD_TYPES]
+
+                    if missing_fields:
+                        errors.append(f"Error:  Missing fields in transaction: {', '.join(missing_fields)}")
+                    if extra_fields:
+                        errors.append(f"Error: Unexpected fields in transaction: {', '.join(extra_fields)}")
+
+                    for field, expected_type in EXPECTED_FIELD_TYPES.items():
+                        if field in activity and not isinstance(activity[field], expected_type):
+                            errors.append(
+                                f"Error: Incorrect type for `{field}` in transaction. "
+                                f"Error: Expected {expected_type}, got {type(activity[field])}."
+                            )
+                    
+                    if check_balance(activity, errors):
+                        valid_activities.append(activity)
+
+            except json.JSONDecodeError as e:
+                errors.append(f"JSON Decode Error: {e}")
+
+    if not errors:
+        print(f"JSON validated successfully for user {user_id}.")
+        #update_reward_log()
+        return valid_activities
+    else:
+        #log_error_occurrences(errors)
+        log_json_errors(errors)
+        print(f"Errors detected in JSON for user {user_id}:\n{errors}")
+        #update_reward_log()
+        return 'retry'
 
 
+def check_balance(activity, errors):
+                transaction_type = activity.get("type", "").lower()
+                balance_before = activity.get("balance_before")
+                balance_after = activity.get("balance_after")
+                amount = activity.get("amount", 0)
+                granted = activity.get("granted")
+                if balance_before is None or balance_after is None or amount is None:
+                    errors.append(f"Error:  Missing balance fields and amount in transaction.")
+                    return False
+
+                if any(word in transaction_type for word in ["purchase", "withdrawal", "transfer"]):
+                    if amount > balance_before:
+                        if granted:
+                            errors.append(
+                                f"Error:  Insufficient funds for {transaction_type} in transaction. "
+                                f"Error: Expected granted=False, balance_after={balance_before}, got granted={granted}, balance_after={balance_after}."
+                            )
+                            return False
+                    else:
+                        expected_balance_after = balance_before - amount
+                        if balance_after != expected_balance_after:
+                            errors.append(
+                                f"Error: Incorrect balance for {transaction_type} in transaction. "
+                                f"Error: Expected balance_after={expected_balance_after}, got {balance_after}."
+                            )
+                        return False
+                return True
+
+def plot_error_trends():
+    """Visualizes the frequency of different errors over time."""
+    if not os.path.exists(ERROR_TRACKING_FILE):
+        print("No error tracking data found.")
+        return
+
+    with open(ERROR_TRACKING_FILE, "r", encoding="utf-8") as file:
+        error_data = json.load(file)
+
+    if not error_data["error_counts"]:
+        print("No errors recorded yet.")
+        return
+
+    errors = list(error_data["error_counts"].keys())
+    counts = list(error_data["error_counts"].values())
+
+    plt.figure(figsize=(12, 6))
+    plt.barh(errors, counts)
+    plt.xlabel("Occurrences")
+    plt.ylabel("Error Type")
+    plt.title("Error Occurrences Over Time")
+    plt.tight_layout()
+    plt.show()
+
+def update_reward_log(score=1):
+    """Logs reward score based on JSON correctness and recurring error patterns."""
+    
+    # Load error tracking data
+    if os.path.exists(ERROR_TRACKING_FILE):
+        with open(ERROR_TRACKING_FILE, "r", encoding="utf-8") as file:
+            error_data = json.load(file)
+            total_errors = sum(error_data["error_counts"].values())  # Count total errors
+    else:
+        total_errors = 0
+
+    # Adjust reward: More errors reduce score
+    adjusted_score = score - (total_errors * 0.1)  # Penalize based on error occurrences
+
+    log_entry = f"{datetime.now().isoformat()},{adjusted_score}\n"
+    if os.path.exists(ERROR_TRACKING_FILE) and os.path.getsize(ERROR_TRACKING_FILE) > 0:
+        with open(ERROR_TRACKING_FILE, "r", encoding="utf-8") as file:
+            try:
+                error_data = json.load(file)
+            except json.JSONDecodeError:
+                print("⚠️ Warning: Resetting corrupted error tracking file.")
+                error_data = {"error_counts": {}}
+    else:
+        error_data = {"error_counts": {}}
+
+
+    print(f"🔹 Reward Logged: Adjusted Score={adjusted_score}")
 
 def visualize_rewards():
     if not os.path.exists(REWARD_LOG_FILE):
@@ -92,62 +253,36 @@ def visualize_rewards():
     plt.tight_layout()
     plt.show()
 
-def log_json_error(error_message, raw_output):
+def log_json_errors(error_array):
+    """Logs an array of errors to a JSON file."""
+    
+    # Ensure the file exists and read existing data
+    existing_errors = []
+    if os.path.exists(ERROR_LOG_FILE):
+        try:
+            with open(ERROR_LOG_FILE, "r") as log_file:
+                existing_errors = json.load(log_file)
+        except json.JSONDecodeError:
+            existing_errors = []  # Reset if corrupted
+    
+    # Append new errors to existing ones
+    existing_errors.extend(error_array)
+
+    # Write updated error log
     with open(ERROR_LOG_FILE, "a") as log_file:
-        log_file.write(f"Error: {error_message}\nOutput: {raw_output}\n{'-'*80}\n")
+        json.dump(existing_errors, log_file, indent=2)
+
+def read_past_errors():
+    """Reads past errors from the log file and returns them as an array."""
+    if not os.path.exists(ERROR_LOG_FILE):
+        return []  # Return empty if no log file exists
     
-
-def extract_json(text, user_id, strategy):
-    """Extracts JSON arrays from LLM responses, validates them, and attempts correction."""
-    
-    matches = re.findall(r'```json\s*(\[\s*{.*?}\s*\])\s*```', text, re.DOTALL) 
-
-    if not matches:
-        matches = re.findall(r'(\[\s*{.*?}\s*\])', text, re.DOTALL)  # Try finding inline JSON without triple backticks   
-    
-    if not matches:
-        log_json_error("❌ No valid JSON arrays found in the response.", text)
-        update_reward_log(score=-1, user_id=user_id, reason="No valid JSON found")
-        return 'retry'
-
-    combined_activities = []
-    for match in matches:
-        try:
-            data = json.loads(match)
-            combined_activities.extend(data if isinstance(data, list) else [data])
-        except json.JSONDecodeError as e:
-            log_json_error(f"JSON Decode Error: {e}", match)
-            update_reward_log(score=-1, user_id=user_id, reason="JSON decoding error")
-            return 'retry'
-
-    # ✅ Step 1: Validate JSON
-    validation_errors = validate_json(combined_activities)
-    
-    if not validation_errors:  # ✅ If valid, return immediately
-        print(f"✅ JSON validation successful for user {user_id}") 
-        update_reward_log(score=2, user_id=user_id, reason="Valid JSON extracted and used")
-        return combined_activities
-
-    print(f"❌ Validation failed for user {user_id}. Errors detected: {validation_errors}")
-
-    # 🔄 Step 2: Attempt Correction
-    corrected_json = correct_json(combined_activities, validation_errors, strategy)
-
-    if corrected_json:
-        try:
-            corrected_data = json.loads(corrected_json)
-            corrected_validation_errors = validate_json(corrected_data)
-            if not corrected_validation_errors:
-                print(f"✅ JSON successfully corrected for user {user_id}")
-                update_reward_log(score=1, user_id=user_id, reason="Corrected JSON successfully used")
-                return corrected_data
-        except json.JSONDecodeError as e:
-            log_json_error(f"JSON Decode Error after correction: {e}", corrected_json)
-
-    print(f"❌ Correction failed for user {user_id}. Returning 'retry' for regeneration...")
-    update_reward_log(score=-1, user_id=user_id, reason="Correction failed")
-    return 'retry'
-
+    try:
+        with open(ERROR_LOG_FILE, "r") as log_file:
+            past_errors = json.load(log_file)  # Load JSON array
+        return past_errors
+    except json.JSONDecodeError:
+        return []  # Return empty array if JSON is malformed
 
 def log_json_validation(status, json_content, errors=None):
     """Logs JSON validation status and errors (if any) to a dedicated file."""
@@ -164,140 +299,10 @@ def log_json_validation(status, json_content, errors=None):
         
         file.write("\n" + "="*80 + "\n")  # Separator for readability
 
-def log_correction_result(corrected_json, original_json):
-    """Logs JSON correction results for tracking improvements."""
-    with open(CORRECTION_LOG_FILE, "a", encoding="utf-8") as log_file:
-        log_file.write(f"Timestamp: {datetime.now().isoformat()}\n")
-        log_file.write("Original JSON:\n")
-        log_file.write(original_json + "\n")
-        log_file.write("Corrected JSON:\n")
-        log_file.write(corrected_json + "\n")
-        log_file.write("-" * 80 + "\n\n")
-
-def validate_json(activity_sequence):
-    """Validates JSON correctness and returns a list of detected errors."""
-    errors = []
-
-    if not activity_sequence:
-        return ["❌ JSON is empty."]
+def build_generation_prompt(strategy, fraud_label, profile_type, global_clock, user_id, past_errors=None):
+    """Builds the prompt for generating activity sequences, adapting based on past errors."""
     
-    json_string = json.dumps(activity_sequence, indent=2)
-    # ✅ Detect inline comments (`//`)
-    if re.search(r'//.*', json_string):
-        errors.append("❌ JSON contains inline comments (`//`). Comments must be removed.")
-
-    for activity in activity_sequence:
-        transaction_id = activity.get("transaction_id", "UNKNOWN")
-
-        # ✅ 1. Check for missing or extra fields
-        missing_fields = [field for field in EXPECTED_FIELD_TYPES if field not in activity]
-        extra_fields = [field for field in activity if field not in EXPECTED_FIELD_TYPES]
-
-        if missing_fields:
-            errors.append(f"❌ Missing fields in transaction {transaction_id}: {', '.join(missing_fields)}")
-        if extra_fields:
-            errors.append(f"❌ Unexpected fields in transaction {transaction_id}: {', '.join(extra_fields)}")
-
-        # ✅ 2. Check field types
-        for field, expected_type in EXPECTED_FIELD_TYPES.items():
-            if field in activity and not isinstance(activity[field], expected_type):
-                errors.append(
-                    f"❌ Incorrect type for `{field}` in transaction {transaction_id}. "
-                    f"Expected {expected_type}, got {type(activity[field])}."
-                )
-
-        # ✅ 3. Validate balance computations
-        transaction_type = activity.get("type", "").lower()
-        balance_before = activity.get("balance_before")
-        balance_after = activity.get("balance_after")
-        amount = activity.get("amount", 0)
-        granted = activity.get("granted")
-
-        if balance_before is None or balance_after is None:
-            errors.append(f"❌ Missing balance fields in transaction {transaction_id}.")
-            continue
-
-        if any(word in transaction_type for word in ["purchase", "withdrawal", "transfer"]):
-            if amount > balance_before:  # ❌ Insufficient funds
-                if granted:
-                    errors.append(
-                        f"❌ Insufficient funds for {transaction_type} in transaction {transaction_id}. "
-                        f"Expected granted=False, balance_after={balance_before}, got granted={granted}, balance_after={balance_after}."
-                    )
-            else:  # ✅ Correct transaction
-                expected_balance_after = balance_before - amount
-                if balance_after != expected_balance_after:
-                    errors.append(
-                        f"❌ Incorrect balance for {transaction_type} in transaction {transaction_id}. "
-                        f"Expected balance_after={expected_balance_after}, got {balance_after}."
-                    )
-
-    # Log validation
-    validation_status = "VALID" if not errors else "INVALID"
-    log_json_validation(validation_status, json.dumps(activity_sequence, indent=2), errors)
-    
-    return errors
-
-
-def correct_json(activity_sequence, validation_errors, strategy):
-    """Uses LLM to correct minor JSON errors based on validation issues and the original strategy."""
-    
-    json_string = json.dumps(activity_sequence, indent=2)
-
-    # Convert expected field types into a readable format for the LLM
-    field_types_description = "\n".join(
-        [f"- `{field}`: {str(expected_type)}" for field, expected_type in EXPECTED_FIELD_TYPES.items()]
-    )
-
-    correction_prompt = f"""
-    You are an **expert JSON corrector**. Here is a JSON that contains errors:
-
-    ```json
-    {json_string}
-    ```
-
-    **Validation errors detected:**
-    {validation_errors}
-
-    **Field Type Constraints (MUST be followed exactly):**
-    {field_types_description}
-
-    ### **Instructions for Correction:**
-    - **Fix all errors detected in validation while strictly preserving the transaction intent** from this strategy:
-      **"{strategy}"**
-    - **Balance and Grant Status:** Ensure that balance_after is always computed correctly, and if a transaction lacks funds, `granted` must be set to `false`.
-    - **Field Types:** **Ensure all fields match their required types** as listed above.
-    - **Strict Adherence to JSON Schema:** **Do not add or remove fields** from the JSON structure.
-    - **Handling Missing (`NoneType`) Values:**
-      - Replace missing (`None`) values in `location`, `ip_address`, `device_id`, `network_type`, and `distance_from_last_location` with strategy-consistent values.
-    - **Comments Removal:** If any `//` or `/* ... */` comments are present, **remove them completely**.
-    - **Valid JSON Formatting:** **Ensure the response is a valid JSON object** with properly formatted strings, numbers, and booleans.
-
-    **Return Format (STRICT RULES):**
-    - **Return ONLY the corrected JSON, inside triple backticks.**
-    - **DO NOT include any explanations, reasoning, or additional text.**
-    - **DO NOT wrap the JSON in any markdown, just return it cleanly inside triple backticks.**
-
-    **Example Output Format (Your response MUST follow this):**
-    ```json
-    <corrected_json>
-    ```
-    """
-
-
-    response = ollama.chat(model="mistral", messages=[{"role": "user", "content": correction_prompt}])
-    corrected_json = response['message']['content'].strip()
-
-    if corrected_json:
-        log_correction_result(corrected_json, json_string)
-    
-    return corrected_json
-
-
-
-
-def build_generation_prompt(strategy, fraud_label, profile_type, global_clock, user_id):
-    """Builds the prompt for generating activity sequences with dynamic values and data schema."""
+    error_feedback = "### Errors you MUST avoid:\n" + "\n".join([f"- {err}" for err in past_errors]) if past_errors else ""
     # JSON Template with Dynamic Values
     json_template = f"""
     ```json
@@ -365,67 +370,82 @@ def build_generation_prompt(strategy, fraud_label, profile_type, global_clock, u
     )
     # Final Prompt with Strategy and JSON Example
     return (
-        f"You are an AI generating **detailed sequences of banking activities** for a fraud simulation.\n"  
-        f"Your task is to create a sequence of financial activities based on the predefined strategy below.\n\n"
-        f"### Strategy:\n{strategy}\n\n"
-        f"If `{fraud_label}`=1: "
-        f"  1. Ensure the sequence of activities **completes the fraud** as described in the strategy by the minimum number of activties."
-        f"  2. If the fraud is a **multi-event fraud**, generate at least **`minimum_activities`** (spceified in the {strategy}) transactions that follow the specified pattern."
-        f"  3. For **single-event fraud**, ensure the transaction fully represents the fraudulent behavior."
-        f"  4. The generated activities must clearly reflect the fraud type, scope, and behavior characteristics provided in the strategy."
-        f"### Data Generation Rules:\n"
-        f"The financial activities must be generated as a JSON object.\n"
-        f"### Required Fields in the JSON, with format specifications, don't add extra-fields:\n{field_explanation}\n\n"
-        f"- First, explain your reasoning step by step **without making examples**.\n"
-        f"- Then, generate **only** the structured JSON activity sequence as in the following JSON example: \n{json_template}\n"
-        f"- The JSON MUST be enclosed within **triple backticks** using the format ```json ... ```.\n"
-        f"- Ensure that timestamps are logically consistent and formatted according to ISO 8601 standards.\n"
-        f"- Do **NOT** include comments or explanations in the JSON.\n"
-        f"- End your response immediately after closing the JSON block.\n"
-        f"- **Use the provided `fraud_label`, `profile_type`, `global_clock`, `user_id`. They must remain exactly as given: `{fraud_label},{profile_type}, {global_clock},{user_id}`.**\n"
-        f"### Important:\n"
-        f"- Ensure that the JSON is correctly formatted, with the correct formats.\n"
-        f"- **The JSON must be flat**\n"
-        f"- End your response after closing triple backticks.\n"
-        f"- Ensure all field values match the types and formats specified in the JSON field explanation. If the format is string, the string must be enclosed in "" or ''\n"
-        f"- The JSON example is just a support for you to understand the structure I want. You must fill the fields with the most appropriate values for the strategy you are simulating.\n"
-        f"**Field Type Constraints (MUST be followed):** {field_types_description}"
+    f"You are an AI generating **detailed sequences of banking activities** for a fraud simulation.\n"
+    f"Your task is to create a sequence of financial activities based on the predefined strategy below.\n\n"
+
+    f"### Strategy:\n{strategy}\n\n"
+
+    f"If `{fraud_label}`=1: "
+    f"  1. Ensure the sequence of activities **completes the fraud** as described in the strategy by the minimum number of activities."
+    f"  2. If the fraud is a **multi-event fraud**, generate at least **`minimum_activities`** (specified in the {strategy}) transactions that follow the specified pattern."
+    f"  3. For **single-event fraud**, ensure the transaction fully represents the fraudulent behavior."
+    f"  4. The generated activities must clearly reflect the fraud type, scope, and behavior characteristics provided in the strategy.\n\n"
+    f"{error_feedback}\n\n"
+
+    f"### Data Generation Rules:\n"
+    f"The financial activities must be generated as a JSON object.\n\n"
+
+    f"### Required Fields in the JSON (with format specifications, do NOT add extra fields):\n{field_explanation}\n\n"
+
+    f"- First, explain your reasoning step by step **without making examples**.\n"
+    f"- Then, generate **only** the structured JSON activity sequence as in the following JSON example: \n{json_template}\n"
+    f"- The JSON MUST be enclosed within **triple backticks** using the format ```json ... ```.\n"
+    f"- Ensure that timestamps are logically consistent and formatted according to ISO 8601 standards.\n"
+    f"- Do **NOT** include comments or explanations in the JSON.\n"
+    f"- End your response immediately after closing the JSON block.\n"
+    f"- **Use the provided `fraud_label`, `profile_type`, `global_clock`, `user_id`. They must remain exactly as given: `{fraud_label},{profile_type}, {global_clock},{user_id}`.**\n\n"
+
+    f"### Important:\n"
+    f"- Ensure that the JSON is correctly formatted, with the correct formats.\n"
+    f"- **The JSON must be flat**\n"
+    f"- End your response after closing triple backticks.\n"
+    f"- Ensure all field values match the types and formats specified in the JSON field explanation. If the format is string, the string must be enclosed in \"\" or ''\n"
+    f"- Don't repeat the JSON example, just fill the fields with the most appropriate values for the strategy you are simulating.\n\n"
+    f"** Field Type Constraints (MUST be followed):**\n{field_types_description}"
     )
 
+#Add usefyul prints during build_generation_prompt
+#- need to understand if the errors are beinng used and in case of invali structure it must be return retry
 
-def generate_activity_sequence(strategy, fraud_label=0, profile_type="Legitimate", global_clock=None, user_id=None, max_retries=3):
-    """Generates structured financial activities based on the provided strategy with a retry mechanism."""
-    
-    retries = 0  # Track retry attempts
-    
-    while retries < max_retries:
-        print(f"🔄 Generating activity sequence for user {user_id} (Attempt {retries + 1}/{max_retries})")
 
-        # 🔹 Step 1: Generate JSON using Mistral
-        prompt = build_generation_prompt(strategy, fraud_label, profile_type, global_clock, user_id)
-        response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}])
+def generate_activity_sequence(strategy, fraud_label=0, profile_type="Legitimate", global_clock=None, user_id=None, max_retries=3):   
+    """Generates structured financial activities with adaptive learning."""
+    retries = 1
+    past_errors = []
+    while retries <= max_retries:
+        print(f"Attempt {retries}/{max_retries} to generate activities for user {user_id}...")
+        prompt = build_generation_prompt(strategy, fraud_label, profile_type, global_clock, user_id, past_errors)
+        response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}], temperature=0.6)    
         raw_response = response['message']['content'].strip()
-
         save_to_text(raw_response, user_id)  # Save for debugging
-
+        activity_sequence = validate_json(raw_response, user_id)
         # 🔹 Step 2: Extract, Validate, and Correct JSON
-        activity_sequence = extract_json(raw_response, user_id, strategy)
+        if activity_sequence != 'retry':
+            return activity_sequence 
+        else:
+            past_errors = read_past_errors()
+            print(f"Retrying activity generation for user {user_id}...")
+            #embed()
+            retries += 1
+    
 
-        if activity_sequence != 'retry':  # ✅ If successfully processed, return it
-            print(f"✅ Activity sequence successfully generated for user {user_id} on attempt {retries + 1}")
-            return activity_sequence  
-
-        print(f"⚠️ JSON processing failed. Retrying activity sequence generation... (Attempt {retries + 1}/{max_retries})")
-        retries += 1  # Increment retry counter
-
-    print(f"❌ Failed to generate a valid activity sequence for user {user_id} after {max_retries} retries.")
-    return 'retry'  # Signal failure after max attempts
-
+def visualize_json_success_rate():
+    """Plots JSON success trends over time."""
+    if not os.path.exists(REWARD_LOG_FILE):
+        return
+    df = pd.read_csv(REWARD_LOG_FILE)
+    df['cumulative_success'] = (df['reward'] == 2).cumsum()
+    plt.plot(df.index, df['cumulative_success'], marker='o')
+    plt.xlabel('Attempts')
+    plt.ylabel('Valid JSONs')
+    plt.title('JSON Success Rate')
+    plt.grid()
+    plt.show()
 
 
 def save_to_text(reasoning_text, agent_id=None):
     """Appends LLM reasoning and extracted JSON to a shared text file."""
-    with open(log_text_file, "a", encoding="utf-8") as log_file:
+    with open(LOG_TEXT_FILE, "a", encoding="utf-8") as log_file:
         log_file.write(f"\n### LLM Chain of Thought for user ID {agent_id} ###\n\n{reasoning_text}\n\n")
 
 def generate_activities(total_activities=1000, target_fraud_percentage=0.1, fraud_agents_count=5, legit_agents_count=20, buffer_size=3):
@@ -434,18 +454,17 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
     legitimate_strategies = load_existing_strategies("strategies/legitimate_strategies.json")
 
     global_clock = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S')
-    os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
     header_written = False  
     buffer = []  
-
+    
     def flush_buffer():
         nonlocal header_written
         if buffer:
             df = pd.DataFrame(buffer)
             expected_columns = list(EXPECTED_FIELD_TYPES.keys())
             df = df[[col for col in df.columns if col in expected_columns]]
-            df.to_csv(output_file, mode='a', index=False, header=not header_written)
+            df.to_csv(OUTPUT_FILE, mode='a', index=False, header=not header_written)
             header_written = True  
             buffer.clear()  
 
@@ -454,7 +473,6 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
         user_id = str(uuid.uuid4())
         behavior_type = random.choice(list(fraudulent_strategies.keys()))
         strategy = fraudulent_strategies[behavior_type]
-
         activities = generate_activity_sequence(strategy=strategy, fraud_label=1, profile_type=behavior_type, global_clock=global_clock, user_id=user_id)
         for activity in activities:
             buffer.append(activity)
@@ -488,13 +506,13 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
 
     flush_buffer()
 
-    print(f"✅ Activity generation complete. Data saved to {output_file}")
+    print(f"Activity generation complete. Data saved to {OUTPUT_FILE}")
     print(f"Total activities: {fraud_activities_count + len(buffer)}")
     print(f"Fraudulent activities: {fraud_activities_count}")
     print(f"Legitimate activities: {len(buffer) - fraud_activities_count}")
     print(f"Fraud percentage: {target_fraud_percentage * 100}%")
 
-    final_df = pd.read_csv(output_file)
+    final_df = pd.read_csv(OUTPUT_FILE)
     return final_df
 
 def load_existing_strategies(filename):
@@ -511,4 +529,7 @@ generate_activities(total_activities=20, target_fraud_percentage=0.5, fraud_agen
 # Time required to generate activities in minutes approximated
 time_taken = round(time.time()-start_time/60,2)
 print(f"Dataset generation required time: {round((time.time()-start_time)/60,1)} minutes")  
+visualize_json_success_rate()
+plot_error_trends()
+
 visualize_rewards()
