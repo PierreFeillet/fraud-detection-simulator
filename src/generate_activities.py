@@ -408,14 +408,14 @@ def build_generation_prompt(strategy, fraud_label, profile_type, global_clock, u
 #- need to understand if the errors are beinng used and in case of invali structure it must be return retry
 
 
-def generate_activity_sequence(strategy, fraud_label=0, profile_type="Legitimate", global_clock=None, user_id=None, max_retries=3):   
+def generate_activity_sequence(strategy, fraud_label=0, profile_type="Legitimate", global_clock=None, user_id=None, max_retries=3, past_errors=None):   
     """Generates structured financial activities with adaptive learning."""
     retries = 1
-    past_errors = []
     while retries <= max_retries:
+        print(f"Past errors: {past_errors}")
         print(f"Attempt {retries}/{max_retries} to generate activities for user {user_id}...")
         prompt = build_generation_prompt(strategy, fraud_label, profile_type, global_clock, user_id, past_errors)
-        response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}], temperature=0.6)    
+        response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}], options={"temperature": 0.6})    
         raw_response = response['message']['content'].strip()
         save_to_text(raw_response, user_id)  # Save for debugging
         activity_sequence = validate_json(raw_response, user_id)
@@ -457,6 +457,7 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
 
     header_written = False  
     buffer = []  
+    past_errors = []
     
     def flush_buffer():
         nonlocal header_written
@@ -473,7 +474,7 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
         user_id = str(uuid.uuid4())
         behavior_type = random.choice(list(fraudulent_strategies.keys()))
         strategy = fraudulent_strategies[behavior_type]
-        activities = generate_activity_sequence(strategy=strategy, fraud_label=1, profile_type=behavior_type, global_clock=global_clock, user_id=user_id)
+        activities = generate_activity_sequence(strategy=strategy, fraud_label=1, profile_type=behavior_type, global_clock=global_clock, user_id=user_id, past_errors=past_errors)
         for activity in activities:
             buffer.append(activity)
             fraud_activities_count += 1
@@ -492,7 +493,7 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
             behavior_type = random.choice(list(legitimate_strategies.keys()))
             strategy = legitimate_strategies[behavior_type]
 
-            activities = generate_activity_sequence(strategy=strategy, fraud_label=0, profile_type=behavior_type, global_clock=global_clock, user_id=user_id)
+            activities = generate_activity_sequence(strategy=strategy, fraud_label=0, profile_type=behavior_type, global_clock=global_clock, user_id=user_id, past_errors=past_errors)
             for activity in activities:
                 buffer.append(activity)
 
