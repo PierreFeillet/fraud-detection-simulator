@@ -1,0 +1,41 @@
+
+### LLM Chain of Thought for user ID 1cfd4c75-7525-433f-8405-f052a1ea4bdd ###
+
+1. Generate a new transaction ID (e.g., "TRANSACTION987") using the provided format.
+  2. Set the bank timestamp to be consistent with the global clock provided (2025-02-18T09:29:28).
+  3. Calculate the local timestamp based on the bank timestamp and a timezone offset (e.g., -5 hours for Eastern Standard Time) resulting in 2025-02-18T14:29:28-05:00.
+  4. Set the user ID, account ID, type, amount, currency, balance_before, balance_after, location, ip_address, device_id, network_type, merchant_name (optional), recipient_id (optional), recipient_bank (optional), granted, login_attempts, session_id, velocity, distance_from_last_location, is_repeat_location, fraud_label, and behavior_type according to the strategy you are simulating.
+  5. Encode the JSON with the generated values within triple backticks:
+
+```json
+[
+  {
+    "transaction_id": "TRANSACTION987",
+    "bank_timestamp": "2025-02-18T09:29:28",
+    "local_timestamp": "2025-02-18T14:29:28-05:00",
+    "user_id": "1cfd4c75-7525-433f-8405-f052a1ea4bdd",
+    "account_id": "ACC12345",
+    "type": "Purchase",
+    "amount": 150.75,
+    "currency": "USD",
+    "balance_before": 1000,
+    "balance_after": 849.25,
+    "location": "New York, USA",
+    "ip_address": "192.168.1.10",
+    "device_id": "iPhone-14",
+    "network_type": "Wi-Fi",
+    "merchant_name": "Amazon",
+    "recipient_id": null,
+    "recipient_bank": null,
+    "granted": true,
+    "login_attempts": 1,
+    "session_id": "SESSION123",
+    "velocity": 0.52,
+    "distance_from_last_location": 3.4,
+    "is_repeat_location": true,
+    "fraud_label": 1,
+    "behavior_type": "Account Takeover"
+  }
+]
+```
+

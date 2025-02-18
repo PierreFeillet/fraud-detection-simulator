@@ -66,9 +66,9 @@ def initialize_logs():
         file.write("")  
 
 
-def update_reward_log(score, reason=""):
+def update_reward_log(score, user_id, reason="",):
     """Logs reward score and reason for tracking performance of JSON generation."""
-    log_entry = f"{datetime.now().isoformat()},{score},{reason}\n"
+    log_entry = f"{datetime.now().isoformat()},{user_id},{score},{reason}\n"
     with open(REWARD_LOG_FILE, 'a') as file:
         file.write(log_entry)
     
@@ -107,7 +107,7 @@ def extract_json(text, user_id, strategy):
     
     if not matches:
         log_json_error("❌ No valid JSON arrays found in the response.", text)
-        update_reward_log(score=-1, reason="No valid JSON found")
+        update_reward_log(score=-1, user_id=user_id, reason="No valid JSON found")
         return 'retry'
 
     combined_activities = []
@@ -117,7 +117,7 @@ def extract_json(text, user_id, strategy):
             combined_activities.extend(data if isinstance(data, list) else [data])
         except json.JSONDecodeError as e:
             log_json_error(f"JSON Decode Error: {e}", match)
-            update_reward_log(score=-1, reason="JSON decoding error")
+            update_reward_log(score=-1, user_id=user_id, reason="JSON decoding error")
             return 'retry'
 
     # ✅ Step 1: Validate JSON
@@ -125,7 +125,7 @@ def extract_json(text, user_id, strategy):
     
     if not validation_errors:  # ✅ If valid, return immediately
         print(f"✅ JSON validation successful for user {user_id}") 
-        update_reward_log(score=2, reason="Valid JSON extracted and used")
+        update_reward_log(score=2, user_id=user_id, reason="Valid JSON extracted and used")
         return combined_activities
 
     print(f"❌ Validation failed for user {user_id}. Errors detected: {validation_errors}")
@@ -139,13 +139,13 @@ def extract_json(text, user_id, strategy):
             corrected_validation_errors = validate_json(corrected_data)
             if not corrected_validation_errors:
                 print(f"✅ JSON successfully corrected for user {user_id}")
-                update_reward_log(score=1, reason="Corrected JSON successfully used")
+                update_reward_log(score=1, user_id=user_id, reason="Corrected JSON successfully used")
                 return corrected_data
         except json.JSONDecodeError as e:
             log_json_error(f"JSON Decode Error after correction: {e}", corrected_json)
 
     print(f"❌ Correction failed for user {user_id}. Returning 'retry' for regeneration...")
-    update_reward_log(score=-1, reason="Correction failed")
+    update_reward_log(score=-1, user_id=user_id, reason="Correction failed")
     return 'retry'
 
 
@@ -250,42 +250,81 @@ def correct_json(activity_sequence, validation_errors, strategy):
     )
 
     correction_prompt = f"""
-    You are an expert JSON corrector. Here is a JSON with errors:
-    
+    You are an **expert JSON corrector**. Here is a JSON that contains errors:
+
     ```json
     {json_string}
     ```
 
-    Validation errors detected:
+    **Validation errors detected:**
     {validation_errors}
 
-    **Field Type Constraints (MUST be followed):**
+    **Field Type Constraints (MUST be followed exactly):**
     {field_types_description}
 
-    Task:
-    - Correct all errors detected in the validation errors while **preserving the original transaction intent** from this strategy:
-      "{strategy}"
-    - Correct balance inconsistencies and grant status as detected in the validation errors.
-    - **Ensure all fields have the correct type as specified above**.
-    — do **not** remove or add any extra fields.
-    - Replace missing (`NoneType`) values in `location`, `ip_address`, `device_id`, `network_type`, and `distance_from_last_location` with values consistent with the strategy.
-    - Return **ONLY** the corrected JSON, no extra text.
-    - **Ensure a valid JSON output.** Do **not** return explanations or anything outside triple backticks.
+    ### **Instructions for Correction:**
+    - **Fix all errors detected in validation while strictly preserving the transaction intent** from this strategy:
+      **"{strategy}"**
+    - **Balance and Grant Status:** Ensure that balance_after is always computed correctly, and if a transaction lacks funds, `granted` must be set to `false`.
+    - **Field Types:** **Ensure all fields match their required types** as listed above.
+    - **Strict Adherence to JSON Schema:** **Do not add or remove fields** from the JSON structure.
+    - **Handling Missing (`NoneType`) Values:**
+      - Replace missing (`None`) values in `location`, `ip_address`, `device_id`, `network_type`, and `distance_from_last_location` with strategy-consistent values.
+    - **Comments Removal:** If any `//` or `/* ... */` comments are present, **remove them completely**.
+    - **Valid JSON Formatting:** **Ensure the response is a valid JSON object** with properly formatted strings, numbers, and booleans.
 
-    Return **only** the corrected JSON inside triple backticks like this:
+    **Return Format (STRICT RULES):**
+    - **Return ONLY the corrected JSON, inside triple backticks.**
+    - **DO NOT include any explanations, reasoning, or additional text.**
+    - **DO NOT wrap the JSON in any markdown, just return it cleanly inside triple backticks.**
+
+    **Example Output Format (Your response MUST follow this):**
     ```json
     <corrected_json>
     ```
     """
-    
+    temperature_setting = 0.3  # Adjust based on the desired correction strictness
 
     response = ollama.chat(model="phi", messages=[{"role": "user", "content": correction_prompt}])
     corrected_json = response['message']['content'].strip()
 
-    if corrected_json:
-        log_correction_result(corrected_json, json_string)
-    
-    return corrected_json
+     # ✅ Track correction accuracy
+    correction_success = False
+    errors_fixed = 0
+
+    if corrected_json.startswith("```json"):
+        try:
+            corrected_json = corrected_json.strip("```json").strip("```")
+            corrected_data = json.loads(corrected_json)
+
+            # Count how many issues were fixed
+            for error in validation_errors:
+                if any(field in error for field in EXPECTED_FIELD_TYPES.keys()):
+                    errors_fixed += 1
+
+            correction_success = True
+        except json.JSONDecodeError:
+            corrected_json = None
+            correction_success = False
+
+    # ✅ Log correction results
+    correction_log_entry = {
+        "timestamp": datetime.now().isoformat(),
+        "temperature": temperature_setting,
+        "success": correction_success,
+        "errors_fixed": errors_fixed,
+        "original_json": json_string,
+        "corrected_json": corrected_json if corrected_json else "FAILED"
+    }
+
+    with open(CORRECTION_LOG_FILE, "a", encoding="utf-8") as log_file:
+        log_file.write(json.dumps(correction_log_entry, indent=2) + "\n")
+
+    if correction_success:
+        return corrected_json
+    else:
+        return None  # Signal that correction failed
+
 
 
 
