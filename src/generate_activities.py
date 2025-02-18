@@ -66,9 +66,9 @@ def initialize_logs():
         file.write("")  
 
 
-def update_reward_log(score, user_id, reason="",):
+def update_reward_log(score, user_id, reason=""):
     """Logs reward score and reason for tracking performance of JSON generation."""
-    log_entry = f"{datetime.now().isoformat()},{user_id},{score},{reason}\n"
+    log_entry = f"{datetime.now().isoformat()}, {user_id}, {score},{reason}\n"
     with open(REWARD_LOG_FILE, 'a') as file:
         file.write(log_entry)
     
@@ -283,48 +283,15 @@ def correct_json(activity_sequence, validation_errors, strategy):
     <corrected_json>
     ```
     """
-    temperature_setting = 0.3  # Adjust based on the desired correction strictness
 
-    response = ollama.chat(model="phi", messages=[{"role": "user", "content": correction_prompt}])
+
+    response = ollama.chat(model="mistral", messages=[{"role": "user", "content": correction_prompt}])
     corrected_json = response['message']['content'].strip()
 
-     # ✅ Track correction accuracy
-    correction_success = False
-    errors_fixed = 0
-
-    if corrected_json.startswith("```json"):
-        try:
-            corrected_json = corrected_json.strip("```json").strip("```")
-            corrected_data = json.loads(corrected_json)
-
-            # Count how many issues were fixed
-            for error in validation_errors:
-                if any(field in error for field in EXPECTED_FIELD_TYPES.keys()):
-                    errors_fixed += 1
-
-            correction_success = True
-        except json.JSONDecodeError:
-            corrected_json = None
-            correction_success = False
-
-    # ✅ Log correction results
-    correction_log_entry = {
-        "timestamp": datetime.now().isoformat(),
-        "temperature": temperature_setting,
-        "success": correction_success,
-        "errors_fixed": errors_fixed,
-        "original_json": json_string,
-        "corrected_json": corrected_json if corrected_json else "FAILED"
-    }
-
-    with open(CORRECTION_LOG_FILE, "a", encoding="utf-8") as log_file:
-        log_file.write(json.dumps(correction_log_entry, indent=2) + "\n")
-
-    if correction_success:
-        return corrected_json
-    else:
-        return None  # Signal that correction failed
-
+    if corrected_json:
+        log_correction_result(corrected_json, json_string)
+    
+    return corrected_json
 
 
 
