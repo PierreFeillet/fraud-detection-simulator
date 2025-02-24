@@ -43,4 +43,4 @@ import pandas as pd
 
 file_csv='/Users/molocco/IBM_secondment/fraud-detection-simulator/banking_activity_log.csv'
 
-df = pd.
+df = pd.read_csv(file_csv)

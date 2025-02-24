@@ -12,6 +12,11 @@ models = {
     "DeepSeek-R1": "deepseek-r1"
 }
 
+"Phi-2": "phi",
+"Gemma2:2b": "gemma2"\
+"Llama"
+
+
 # Define test parameters
 user_id = "AI-12345"
 global_clock = '2025-03-01 09:00:00'
