@@ -50,7 +50,7 @@ def apply_clustering(df, numerical_features, categorical_features, output_dir="c
     pipeline = Pipeline(steps=[('preprocessor', preprocessor)])
 
     # Apply the transformations to the dataframe
-    X = pipeline.fit_transform(df.drop(columns=['fraud', 'behavior']))  # Transformed data is now dense
+    X = pipeline.fit_transform(df.drop(columns=['is_fraudster', 'behavior']))  # Transformed data is now dense
 
     # 1. DBSCAN Clustering
     dbscan = DBSCAN(eps=0.5, min_samples=5)
@@ -161,8 +161,11 @@ if __name__ == "__main__":
     # Identify numerical and categorical columns
     numerical_features = ['initial_balance', 'amount', 'balance', 'year', 'month', 'day', 'hour', 'minute', 'second']
     categorical_features = ['activity_type', 'initial_country', 'device', 'network']
+    os.makedirs('clustering_results', exist_ok=True)
+    output_dir = f"clustering_results/data_{len(df)}"
+    os.makedirs(output_dir, exist_ok=True)
 
-    dbscan_labels, kmeans_labels, hierarchical_labels, isolation_forest_labels = apply_clustering(df=df, categorical_features=categorical_features, numerical_features=numerical_features )
+    dbscan_labels, kmeans_labels, hierarchical_labels, isolation_forest_labels = apply_clustering(df=df, categorical_features=categorical_features, numerical_features=numerical_features, output_dir=output_dir)
     
     # Optionally, add the labels back to the dataframe
     df['dbscan_label'] = dbscan_labels

@@ -19,18 +19,18 @@ class TransactionDistributions:
         self.legit_amount_distribution = np.random.lognormal(mean=5, sigma=1, size=10000)
         self.fraud_amount_distribution = np.random.lognormal(mean=8, sigma=1.2, size=10000)
 
-    def plot_distributions(output_folder='data'):
+    def plot_distributions(self, output_folder='.'):
         # Create subplots to display the distributions
         plt.figure(figsize=(12, 6))
         plt.subplot(1, 2, 1)
-        plt.hist(self.legit_amount_distribution, bins=100, alpha=0.7, label='Legitimate Small Transactions', color='blue', density=True)
+        plt.hist(self.legit_amount_distribution, bins=100, alpha=0.7, label='Legitimate Small Transactions', color='blue', density=True, range=(0,2000))
         plt.xlabel("Transaction Amount ($)")
         plt.ylabel("Density")
         plt.legend()
         plt.title("Legitimate Small Transactions")
 
         plt.subplot(1, 2, 2)
-        plt.hist(self.fraud_amount_distribution, bins=100, alpha=0.7, label='Fraudulent Large Transactions', color='red', density=True)
+        plt.hist(self.fraud_amount_distribution, bins=100, alpha=0.7, label='Fraudulent Large Transactions', color='red', density=True, range=(0,40000))
         plt.xlabel("Transaction Amount ($)")
         plt.ylabel("Density")
         plt.legend()

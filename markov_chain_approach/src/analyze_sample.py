@@ -108,8 +108,8 @@ if __name__ == "__main__":
     plt.figure(figsize=(24,25))
     for i, col in enumerate(numeric_cols):
         plt.subplot(4, 3 , pos + 1)
-        plt.hist(X_train[col][y_train==0], density = True, bins=60, label = f"{flag} = 0",color='b', alpha=0.5, )
-        plt.hist(X_train[col][y_train==1], density = True, bins=60, label = f"{flag} = 1",color='r', alpha=0.5, )
+        plt.hist(data[col][data[target_col]==0], density = True, bins=60, label = f"{flag} = 0",color='b', alpha=0.5, )
+        plt.hist(data[col][data[target_col]==1], density = True, bins=60, label = f"{flag} = 1",color='r', alpha=0.5, )
         plt.xlabel(col)
         plt.legend()
         pos+=1
