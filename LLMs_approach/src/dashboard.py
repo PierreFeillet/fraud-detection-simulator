@@ -82,7 +82,7 @@ def update_dashboard(selected_agent):
 
     # Summary statistics
     total_activities = len(filtered_df)
-    total_fraud = filtered_df['is_fraudster'].sum()
+    total_fraud = filtered_df['is_fraud'].sum()
 
     fraud_rate = (total_fraud / total_activities) * 100 if total_activities > 0 else 0
     summary = html.Div([
@@ -92,13 +92,13 @@ def update_dashboard(selected_agent):
     ], style={'font-family': 'IBM Plex Sans'})
     
     # activity  Distribution
-    activity_type_fig = px.histogram(filtered_df, x='activity_type', color='is_fraudster', barmode='group', histnorm='probability', title='Activity Distribution by fraud (1)/not fraud(0)')
+    activity_type_fig = px.histogram(filtered_df, x='activity_type', color='is_fraud', barmode='group', histnorm='probability', title='Activity Distribution by fraud (1)/not fraud(0)')
     
     # Fraud by Device
-    device_fig = px.histogram(filtered_df, x='device', color='is_fraudster', barmode='group', histnorm='probability', title='Fraud Occurrence by Device')
+    device_fig = px.histogram(filtered_df, x='device', color='is_fraud', barmode='group', histnorm='probability', title='Fraud Occurrence by Device')
     
     # Fraud by Network
-    network_fig = px.histogram(filtered_df, x='network', color='is_fraudster', barmode='group', histnorm='probability', title='Fraud Occurrence by Network')
+    network_fig = px.histogram(filtered_df, x='network', color='is_fraud', barmode='group', histnorm='probability', title='Fraud Occurrence by Network')
     
     # Time Series Analysis per Agent ID
     # Time Series Analysis per Agent ID, with separate lines for each behavior

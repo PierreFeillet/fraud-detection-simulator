@@ -82,8 +82,8 @@ if __name__ == "__main__":
     # One-Hot Encoding for categorical columns
     data = pd.get_dummies(data, columns=categorical_columns, drop_first=True)  # drop_first=True to avoid dummy variable trap   
     # Features and target selection
-    target_col = 'is_fraudster'  
-    X = data.drop(columns=[col for col in data.columns if col.startswith('behavior')] + ['real_id', 'is_fraudster'])
+    target_col = 'is_fraud'  
+    X = data.drop(columns=[col for col in data.columns if col.startswith('behavior')] + ['real_id', 'is_fraud'])
     y = data[target_col]
 
     print(f"Dataset columns: {X.columns}")
@@ -102,7 +102,7 @@ if __name__ == "__main__":
     os.makedirs('plots', exist_ok=True)
 
     pos=0
-    flag='is_fraudster'
+    flag='is_fraud'
     plt.figure(figsize=(24,25))
     for i, col in enumerate(numeric_cols):
         plt.subplot(4, 3 , pos + 1)
