@@ -12,7 +12,7 @@ import ollama
 import matplotlib.pyplot as plt
 
 # LLM used for sequnce generation
-LLM_model = 'mistral'
+LLM_model = 'deepseek-r1'
 # File paths
 OUTPUT_DIR = "outputs"
 ERROR_TRACKING_FILE = os.path.join(OUTPUT_DIR, f"error_tracking_{LLM_model}.json")
@@ -53,9 +53,10 @@ EXPECTED_FIELD_TYPES = {
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+# ERROR_TRACKING_FILE
 def initialize_logs():
     """Initializes all log files."""
-    for file_path in [REWARD_LOG_FILE, ERROR_LOG_FILE, LOG_TEXT_FILE, OUTPUT_FILE, VALIDATION_LOG_FILE, ERROR_TRACKING_FILE]:
+    for file_path in [REWARD_LOG_FILE, ERROR_LOG_FILE, LOG_TEXT_FILE, OUTPUT_FILE, VALIDATION_LOG_FILE, ]:
         with open(file_path, 'w') as file:
             file.write("")
 
@@ -129,8 +130,16 @@ def validate_json(raw_response, user_id):
 
                     if missing_fields:
                         errors.append(f"Error:  Missing fields in transaction: {', '.join(missing_fields)}")
+                        log_json_errors(errors)
+                        print(f"Errors detected in JSON for user {user_id}:\n{errors}")
+                        return 'retry'
+
                     if extra_fields:
                         errors.append(f"Error: Unexpected fields in transaction: {', '.join(extra_fields)}")
+                        log_json_errors(errors)
+                        print(f"Errors detected in JSON for user {user_id}:\n{errors}")
+                        return 'retry'
+
 
                     for field, expected_type in EXPECTED_FIELD_TYPES.items():
                         if field in activity and not isinstance(activity[field], expected_type):
@@ -138,24 +147,23 @@ def validate_json(raw_response, user_id):
                                 f"Error: Incorrect type for `{field}` in transaction. "
                                 f"Error: Expected {expected_type}, got {type(activity[field])}."
                             )
-                    
+                            log_json_errors(errors)
+                            print(f"Errors detected in JSON for user {user_id}:\n{errors}")
+                            return 'retry'
+  
                     if check_balance(activity, errors):
                         valid_activities.append(activity)
 
             except json.JSONDecodeError as e:
                 errors.append(f"JSON Decode Error: {e}")
+                log_json_errors(errors)
+                print(f"Errors detected in JSON for user {user_id}:\n{errors}")
+                return 'retry'
+
 
     if not errors:
         print(f"JSON validated successfully for user {user_id}.")
-        #update_reward_log()
         return valid_activities
-    else:
-        #log_error_occurrences(errors)
-        log_json_errors(errors)
-        print(f"Errors detected in JSON for user {user_id}:\n{errors}")
-        #update_reward_log()
-        return 'retry'
-
 
 def check_balance(activity, errors):
                 transaction_type = activity.get("type", "").lower()
@@ -164,25 +172,29 @@ def check_balance(activity, errors):
                 amount = activity.get("amount", 0)
                 granted = activity.get("granted")
                 if balance_before is None or balance_after is None or amount is None:
-                    errors.append(f"Error:  Missing balance fields and amount in transaction.")
-                    return False
+                    error= f"Error:  Missing balance fields and amount in transaction."
+                    errors.append(errors)
+                    log_json_errors(errors)
+                    print(errors)
+                    return 'retry'
 
                 if any(word in transaction_type for word in ["purchase", "withdrawal", "transfer"]):
                     if amount > balance_before:
                         if granted:
-                            errors.append(
-                                f"Error:  Insufficient funds for {transaction_type} in transaction. "
-                                f"Error: Expected granted=False, balance_after={balance_before}, got granted={granted}, balance_after={balance_after}."
-                            )
-                            return False
+                            error = f"Error: Insufficient funds for {transaction_type} in transaction. Error: Expected granted=False, balance_after={balance_before}, got granted={granted}, balance_after={balance_after}."
+                            errors.append(error)
+                            log_json_errors(errors)
+                            print(errors)
+                            return 'retry'
+
                     else:
                         expected_balance_after = balance_before - amount
                         if balance_after != expected_balance_after:
-                            errors.append(
-                                f"Error: Incorrect balance for {transaction_type} in transaction. "
-                                f"Error: Expected balance_after={expected_balance_after}, got {balance_after}."
-                            )
-                        return False
+                            error = f"Error: Incorrect balance for {transaction_type} in transaction. Error: Expected balance_after={expected_balance_after}, got {balance_after}."
+                            errors.append(error)
+                            log_json_errors(errors)
+                            print(errors)
+                            return 'retry'
                 return True
 
 def plot_error_trends():
@@ -209,33 +221,17 @@ def plot_error_trends():
     plt.tight_layout()
     plt.show()
 
-def update_reward_log(score=1):
-    """Logs reward score based on JSON correctness and recurring error patterns."""
-    
-    # Load error tracking data
-    if os.path.exists(ERROR_TRACKING_FILE):
-        with open(ERROR_TRACKING_FILE, "r", encoding="utf-8") as file:
-            error_data = json.load(file)
-            total_errors = sum(error_data["error_counts"].values())  # Count total errors
-    else:
-        total_errors = 0
+# Initialize reward tracking
+def initialize_reward_log():
+    if not os.path.exists(REWARD_LOG_FILE):
+        with open(REWARD_LOG_FILE, 'w') as file:
+            file.write("timestamp,user_id,reward,reason\n")
 
-    # Adjust reward: More errors reduce score
-    adjusted_score = score - (total_errors * 0.1)  # Penalize based on error occurrences
-
-    log_entry = f"{datetime.now().isoformat()},{adjusted_score}\n"
-    if os.path.exists(ERROR_TRACKING_FILE) and os.path.getsize(ERROR_TRACKING_FILE) > 0:
-        with open(ERROR_TRACKING_FILE, "r", encoding="utf-8") as file:
-            try:
-                error_data = json.load(file)
-            except json.JSONDecodeError:
-                print("⚠️ Warning: Resetting corrupted error tracking file.")
-                error_data = {"error_counts": {}}
-    else:
-        error_data = {"error_counts": {}}
+def update_reward_log(score: int, user_id: str, reason: str):
+    with open(REWARD_LOG_FILE, 'a') as file:
+        file.write(f"{datetime.now().isoformat()},{user_id},{score},{reason}\n")
 
 
-    print(f"🔹 Reward Logged: Adjusted Score={adjusted_score}")
 
 def visualize_rewards():
     if not os.path.exists(REWARD_LOG_FILE):
@@ -254,35 +250,31 @@ def visualize_rewards():
     plt.show()
 
 def log_json_errors(error_array):
-    """Logs an array of errors to a JSON file."""
-    
-    # Ensure the file exists and read existing data
-    existing_errors = []
-    if os.path.exists(ERROR_LOG_FILE):
-        try:
-            with open(ERROR_LOG_FILE, "r") as log_file:
-                existing_errors = json.load(log_file)
-        except json.JSONDecodeError:
-            existing_errors = []  # Reset if corrupted
-    
-    # Append new errors to existing ones
-    existing_errors.extend(error_array)
-
-    # Write updated error log
+    """Logs an array of errors to a JSON file, storing each array as a separate JSON line."""
     with open(ERROR_LOG_FILE, "a") as log_file:
-        json.dump(existing_errors, log_file, indent=2)
+        json.dump(error_array, log_file)
+        log_file.write("\n")  # Newline to separate each JSON array
+
 
 def read_past_errors():
-    """Reads past errors from the log file and returns them as an array."""
-    if not os.path.exists(ERROR_LOG_FILE):
-        return []  # Return empty if no log file exists
-    
-    try:
-        with open(ERROR_LOG_FILE, "r") as log_file:
-            past_errors = json.load(log_file)  # Load JSON array
-        return past_errors
-    except json.JSONDecodeError:
-        return []  # Return empty array if JSON is malformed
+    """Reads past errors from the log file and returns them as a combined list."""
+    if os.path.exists(ERROR_LOG_FILE):
+        with open(ERROR_LOG_FILE, 'r') as file:
+            try:
+                lines = file.readlines()
+                all_errors = []
+                for line in lines:
+                    try:
+                        errors = json.loads(line.strip())  # Load each line as a JSON array
+                        all_errors.extend(errors)
+                    except json.JSONDecodeError:
+                        continue
+                return list(set(all_errors))  # Remove duplicates
+            except Exception as e:
+                print(f"⚠️ Error reading past errors: {e}")
+                return []
+    return []
+
 
 def log_json_validation(status, json_content, errors=None):
     """Logs JSON validation status and errors (if any) to a dedicated file."""
@@ -302,67 +294,91 @@ def log_json_validation(status, json_content, errors=None):
 def build_generation_prompt(strategy, fraud_label, profile_type, global_clock, user_id, past_errors=None):
     """Builds the prompt for generating activity sequences, adapting based on past errors."""
     
-    error_feedback = "### Errors you MUST avoid:\n" + "\n".join([f"- {err}" for err in past_errors]) if past_errors else ""
     # JSON Template with Dynamic Values
-    json_template = f"""
+    json_template = """
     ```json
-    [
-      {{
-        "transaction_id": "{uuid.uuid4()}",
-        "bank_timestamp": "{global_clock}+00:00",
-        "local_timestamp": "2025-03-01T07:00:00-05:00",
-        "user_id": "{user_id}",
-        "account_id": "ACC12345",
-        "type": "Purchase",
-        "amount": 150.75,
-        "currency": "USD",
-        "balance_before": 1000,
-        "balance_after": 849.25,
-        "location": "New York, USA",
-        "ip_address": "192.168.1.10",
-        "device_id": "iPhone-14",
-        "network_type": "Wi-Fi",
-        "merchant_name": "Amazon",
-        "recipient_id": null,
-        "recipient_bank": null,
-        "granted": true,
-        "login_attempts": 1,
-        "session_id": "SESSION123",
-        "velocity": 0.52,
-        "distance_from_last_location": 3.4,
-        "is_repeat_location": true,
-        "fraud_label": {fraud_label},
-        "behavior_type": "{profile_type}"
-      }}
-    ]
+        [
+        {
+            "transaction_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+            "bank_timestamp": "2025-03-01T07:00:00+00:00",
+            "local_timestamp": "2025-03-01T02:00:00-05:00",
+            "user_id": "c9d3b1a7-6e3b-4b4f-95d1-8c4a5f7f3d7a",
+            "account_id": "ACC-12345678",
+            "type": "Purchase",
+            "amount": 150.75,
+            "currency": "USD",
+            "balance_before": 1000.00,
+            "balance_after": 849.25,
+            "location": "New York, USA",
+            "ip_address": "192.168.1.10",
+            "device_id": "iPhone-14",
+            "network_type": "Wi-Fi",
+            "merchant_name": "Amazon",
+            "recipient_id": null,
+            "recipient_bank": null,
+            "granted": true,
+            "login_attempts": 1,
+            "session_id": "d0a9c3b2-7f5d-41c9-8860-7e4af7e1e3d4",
+            "velocity": 0.52,
+            "distance_from_last_location": 3.4,
+            "is_repeat_location": true,
+            "fraud_label": 0,
+            "behavior_type": "Legitimate"
+        },
+        {
+            "transaction_id": "f9a7c3b6-8d6e-4c9a-8b6c-7f9af7d3e7c5",
+            "bank_timestamp": "2025-03-01T07:10:00+00:00",
+            "local_timestamp": "2025-03-01T02:10:00-05:00",
+            "user_id": "c9d3b1a7-6e3b-4b4f-95d1-8c4a5f7f3d7a",
+            "account_id": "ACC-98765432",
+            "type": "Transfer",
+            "amount": 500.00,
+            "currency": "USD",
+            "balance_before": 849.25,
+            "balance_after": 349.25,
+            "location": "San Francisco, USA",
+            "ip_address": "192.168.1.20",
+            "device_id": "MacBook-Air",
+            "network_type": "Wi-Fi",
+            "merchant_name": null,
+            "recipient_id": "REC-12345678",
+            "recipient_bank": "NWBKGB2L",
+            "granted": true,
+            "login_attempts": 1,
+            "session_id": "d0a9c3b2-7f5d-41c9-8860-7e4af7e1e3d4",
+            "velocity": 10.0,
+            "distance_from_last_location": 4150.0,
+            "is_repeat_location": false,
+            "fraud_label": 0,
+            "behavior_type": "Legitimate"
+        }
+        ]
     ```
     """
     field_explanation = """"
-        f"- `transaction_id`: string, A unique identifier for the transaction generated using UUID.\n"
-        f"- `bank_timestamp`: string (ISO 8601 format), The UTC time when the activity occurred, formatted as 'YYYY-MM-DDTHH:MM:SS+00:00'.\n"
-        f"- `local_timestamp`: string (ISO 8601 format), The local time of the activity with time zone offset (e.g., 'YYYY-MM-DDTHH:MM:SS-05:00').\n"
-        f"- `user_id`: string, A unique identifier for the user generated using UUID. Given \n"
-        f"- `account_id`: string, The identifier of the bank account involved in the transaction.\n"
-        f"- `type`: string, The type of activity (e.g., Purchase, Withdrawal, Transfer).\n"
-        f"- `amount`: flaot, The monetary amount involved in the transaction.\n"
-        f"- `currency`: string, The currency of the transaction (e.g., 'USD'). Must be set according to the location of the activty\n"
-        f"- `balance_before`: flaot, The account balance before the transaction.\n"
-        f"- `balance_after`: flaot, The account balance after the transaction (adjusted based on the `amount`). If the generated transaction would make `balance_after`<0 then the field `granted` must be set to `false` and `balance_after`=`balance_before`\n"
-        f"- `location`: string, The city and country where the transaction took place.\n"
-        f"- `ip_address`: string, The IP address used during the activity.\n"
-        f"- `device_id`: string, The device identifier (e.g., phone or computer model).\n"
-        f"- `network_type`: string, Type of network used (e.g., Wi-Fi, Mobile Data).\n"
-        f"- `merchant_name`: string or null, Name of the merchant (if applicable, e.g., 'Amazon' otherwise, set to `null`).\n"
-        f"- `recipient_id`: string or null, The identifier of the recipient in case of transfers; otherwise, set to `null`.\n"
-        f"- `recipient_bank`: string or null, The bank of the recipient in case of transfers; otherwise, set to `null`.\n"
-        f"- `granted`: bool, Boolean indicating if the transaction was approved (`true`) or denied (`false`).\n"
-        f"- `login_attempts`: integer, Number of login attempts in the session.\n"
-        f"- `session_id`: string, Unique identifier for the session grouping multiple activities.\n"
-        f"- `velocity`: float, Numeric value representing the time delta in minutes between the current and previous `bank_timestamp`. Use a random value if it's the first transaction.\n"
-        f"- `distance_from_last_location`: float, Numeric value in kilometers indicating the distance from the previous activity's location. Use a random value if it's the first transaction.\n"
-        f"- `is_repeat_location`: bool, Boolean indicating if the transaction is from a previously used location.\n"
-        f"- `fraud_label`: integer, `1` for fraudulent transactions, `0` for legitimate ones.\n"
-        f"- `behavior_type`: string, Describes the behavioral profile (e.g., 'Account Takeover', 'Legitimate').\n\n"
+    - `transaction_id`: string, A unique identifier for the transaction using **UUID v4** (e.g., `"f47ac10b-58cc-4372-a567-0e02b2c3d479"`).
+    - `user_id`: string, A unique identifier for the user using **UUID v4** (e.g., `"c9d3b1a7-6e3b-4b4f-95d1-8c4a5f7f3d7a"`).
+    - `account_id`: string, A structured account ID starting with **"ACC-"** followed by 8 digits (e.g., `"ACC-12345678"`).
+    - `type`: string, The type of activity (e.g., Purchase, Withdrawal, Transfer).
+    - `amount`: float, The monetary amount involved in the transaction.
+    - `currency`: string, The currency of the transaction (e.g., 'USD', 'EUR'). Must match the transaction location.
+    - `balance_before`: float, The account balance before the transaction.
+    - `balance_after`: float, The account balance after the transaction.
+    - `location`: string, The city and country where the transaction took place.
+    - `ip_address`: string, The IP address used during the activity (IPv4 format, e.g., `"192.168.1.10"`).
+    - `device_id`: string, The device identifier, typically the device model (e.g., `"iPhone-14"` or `"Pixel-7"`).
+    - `network_type`: string, The network used during the transaction (e.g., `"Wi-Fi"`, `"Mobile Data"`).
+    - `merchant_name`: string or null, The name of the merchant (e.g., `"Amazon"` or `"Walmart"`), otherwise null.
+    - `recipient_id`: string or null, For transfers: structured like a bank account ID, starting with **"REC-"** followed by 8 digits (e.g., `"REC-98765432"`), or `null` if not applicable.
+    - `recipient_bank`: string or null, For transfers: a simulated BIC code (8 or 11 alphanumeric characters, e.g., `"DEUTDEFFXXX"`), or `null` if not applicable.
+    - `granted`: bool, True if the transaction was approved, False otherwise.
+    - `login_attempts`: int, The number of login attempts during the session.
+    - `session_id`: string, A unique identifier for the session using **UUID v4** (e.g., `"d0a9c3b2-7f5d-41c9-8860-7e4af7e1e3d4"`).
+    - `velocity`: float, Time difference in minutes between the current and previous activity.
+    - `distance_from_last_location`: float, Distance in kilometers from the previous transaction location.
+    - `is_repeat_location`: bool, True if the location is previously used, False otherwise.
+    - `fraud_label`: int, `1` for fraudulent transactions, `0` for legitimate ones.
+    - `behavior_type`: string, The profile type (e.g., `"Account Takeover"`, `"Legitimate"`).
     """
     # Convert expected field types into a readable format for the LLM
     field_types_description = "\n".join(
@@ -377,10 +393,10 @@ def build_generation_prompt(strategy, fraud_label, profile_type, global_clock, u
 
     f"If `{fraud_label}`=1: "
     f"  1. Ensure the sequence of activities **completes the fraud** as described in the strategy by the minimum number of activities."
-    f"  2. If the fraud is a **multi-event fraud**, generate at least **`minimum_activities`** (specified in the {strategy}) transactions that follow the specified pattern."
+    f"  2. If the fraud is a **multi-event fraud**, generate at least **`minimum_activities`** (specified in the strategy) transactions that follow the specified pattern."
     f"  3. For **single-event fraud**, ensure the transaction fully represents the fraudulent behavior."
     f"  4. The generated activities must clearly reflect the fraud type, scope, and behavior characteristics provided in the strategy.\n\n"
-    f"{error_feedback}\n\n"
+    f"Errors you did in the past generation and that you must avoid {past_errors}\n\n"
 
     f"### Data Generation Rules:\n"
     f"The financial activities must be generated as a JSON object.\n\n"
@@ -402,29 +418,36 @@ def build_generation_prompt(strategy, fraud_label, profile_type, global_clock, u
     f"- Ensure all field values match the types and formats specified in the JSON field explanation. If the format is string, the string must be enclosed in \"\" or ''\n"
     f"- Don't repeat the JSON example, just fill the fields with the most appropriate values for the strategy you are simulating.\n\n"
     f"** Field Type Constraints (MUST be followed):**\n{field_types_description}"
-    )
+    f"- All identifiers must follow the exact format provided.\n"
+    f"- UUIDs must use **UUID v4** format only.\n"
+    f"- Account and recipient IDs must follow the structure 'ACC-12345678' and 'REC-98765432'.\n"
+    f"- `recipient_bank` should resemble realistic **BIC codes** (e.g., 'DEUTDEFF', 'NWBKGB2L'\n")    
+
 
 #Add usefyul prints during build_generation_prompt
 #- need to understand if the errors are beinng used and in case of invali structure it must be return retry
 
 
-def generate_activity_sequence(strategy, fraud_label=0, profile_type="Legitimate", global_clock=None, user_id=None, max_retries=3, past_errors=None):   
+def generate_activity_sequence(strategy, fraud_label=0, profile_type="Legitimate", global_clock=None, user_id=None, max_retries=3, ):   
     """Generates structured financial activities with adaptive learning."""
     retries = 1
-    while retries <= max_retries:
+    while True:
+        past_errors = read_past_errors()
         print(f"Past errors: {past_errors}")
-        print(f"Attempt {retries}/{max_retries} to generate activities for user {user_id}...")
+        print(f"Attempt {retries} to generate activities for user {user_id}...")
         prompt = build_generation_prompt(strategy, fraud_label, profile_type, global_clock, user_id, past_errors)
-        response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}], options={"temperature": 0.6})    
+        response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}], )    # options={"temperature": 0.7}
         raw_response = response['message']['content'].strip()
         save_to_text(raw_response, user_id)  # Save for debugging
         activity_sequence = validate_json(raw_response, user_id)
         # 🔹 Step 2: Extract, Validate, and Correct JSON
         if activity_sequence != 'retry':
+            print(f"JSON generation successful for user {user_id}.")
+            update_reward_log(score=1, user_id=user_id, reason="Valid JSON extracted and used")
             return activity_sequence 
         else:
-            past_errors = read_past_errors()
             print(f"Retrying activity generation for user {user_id}...")
+            update_reward_log(score=-1, user_id=user_id, reason="JSON generation failed")
             #embed()
             retries += 1
     
@@ -448,7 +471,7 @@ def save_to_text(reasoning_text, agent_id=None):
     with open(LOG_TEXT_FILE, "a", encoding="utf-8") as log_file:
         log_file.write(f"\n### LLM Chain of Thought for user ID {agent_id} ###\n\n{reasoning_text}\n\n")
 
-def generate_activities(total_activities=1000, target_fraud_percentage=0.1, fraud_agents_count=5, legit_agents_count=20, buffer_size=3):
+def generate_activities(total_activities=1000, target_fraud_percentage=0.1, fraud_agents_count=5, legit_agents_count=20, buffer_size=1):
     """Generates a bank log with multiple fraudulent and legitimate agents using a memory-efficient buffer."""
     fraudulent_strategies = load_existing_strategies("strategies/fraud_strategies.json")
     legitimate_strategies = load_existing_strategies("strategies/legitimate_strategies.json")
@@ -457,8 +480,7 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
 
     header_written = False  
     buffer = []  
-    past_errors = []
-    
+
     def flush_buffer():
         nonlocal header_written
         if buffer:
@@ -474,7 +496,7 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
         user_id = str(uuid.uuid4())
         behavior_type = random.choice(list(fraudulent_strategies.keys()))
         strategy = fraudulent_strategies[behavior_type]
-        activities = generate_activity_sequence(strategy=strategy, fraud_label=1, profile_type=behavior_type, global_clock=global_clock, user_id=user_id, past_errors=past_errors)
+        activities = generate_activity_sequence(strategy=strategy, fraud_label=1, profile_type=behavior_type, global_clock=global_clock, user_id=user_id)
         for activity in activities:
             buffer.append(activity)
             fraud_activities_count += 1
@@ -493,7 +515,7 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
             behavior_type = random.choice(list(legitimate_strategies.keys()))
             strategy = legitimate_strategies[behavior_type]
 
-            activities = generate_activity_sequence(strategy=strategy, fraud_label=0, profile_type=behavior_type, global_clock=global_clock, user_id=user_id, past_errors=past_errors)
+            activities = generate_activity_sequence(strategy=strategy, fraud_label=0, profile_type=behavior_type, global_clock=global_clock, user_id=user_id)
             for activity in activities:
                 buffer.append(activity)
 
@@ -508,10 +530,6 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
     flush_buffer()
 
     print(f"Activity generation complete. Data saved to {OUTPUT_FILE}")
-    print(f"Total activities: {fraud_activities_count + len(buffer)}")
-    print(f"Fraudulent activities: {fraud_activities_count}")
-    print(f"Legitimate activities: {len(buffer) - fraud_activities_count}")
-    print(f"Fraud percentage: {target_fraud_percentage * 100}%")
 
     final_df = pd.read_csv(OUTPUT_FILE)
     return final_df
@@ -526,6 +544,7 @@ def load_existing_strategies(filename):
 start_time = time.time()
 print(f"Simulation started at {datetime.now().isoformat()}")
 initialize_logs()
+initialize_reward_log()
 generate_activities(total_activities=20, target_fraud_percentage=0.5, fraud_agents_count=2, legit_agents_count=2)
 # Time required to generate activities in minutes approximated
 time_taken = round(time.time()-start_time/60,2)
