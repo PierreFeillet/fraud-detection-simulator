@@ -23,12 +23,11 @@ from IPython import embed
 from sklearn.preprocessing import StandardScaler
 
 
-#from legitimate_agent import LegitimateCustomer
-#from fraudulentster_agent import fraudulentster
 from activity import Activity
 from agent import Agent
 from bank import BankActivities
 from catalog import behavior_catalog, check_and_normalize_catalog, fraud_rates_by_country, locations,location_weights
+from distributions import TransactionDistributions
 
 def assign_agent_countries(agents):
     """Assign agents to countries based on a predefined distribution."""
@@ -41,91 +40,6 @@ def assign_agent_countries(agents):
         agent.real_id: random.choices(country_distribution, country_probabilities)[0] for agent in agents
     }
     return agent_countries
-
-def run_simulation(normalized_catalog, agents, bank, start_time, steps=100, flush_interval=100, target_size=10**6):
-    
-    activity_time = start_time
-    #agent_countries = assign_agent_countries(agents)  # Assign initial countries
-    active_agents = {}
-
-    # Initialize active agents
-    for agent in agents:
-        #country = agent_countries[agent.real_id]
-        #fraud_probability = fraud_rates_by_country[country]
-
-        active_agents[agent.real_id] = {
-            #"residence_country": agent.residence_country, #will be used to extract probabilities of an activity made in a certain location
-            "balance": agent.initial_balance,
-            "last_activity": None
-        }
-
-    for step in range(steps):
-        if len(bank.activity_log) >= target_size:
-            print(f"Target generation of {target_size} activities reached")
-            break
-
-        for agent in list(agents):  # Iterate over agents
-            if agent.real_id not in active_agents:
-                continue  # Skip closed accounts
-
-            #country = active_agents[agent.real_id]["country"]
-            #fraud_status = active_agents[agent.real_id]["fraud"]
-
-            behavior = normalized_catalog[agent.behavior] # To be inserted as function parame
-            activities = behavior["activities"]
-            time_limit = behavior["time_limit"]
-            transition_matrix = behavior["transition_matrix"]
-
-            # Select an initial activity
-            if active_agents[agent.real_id]["last_activity"] is None:
-                valid_activities = [act for act in activities.keys() if act != "Close Account"]
-                current_activity_type = random.choice(valid_activities) if valid_activities else None
-            else:
-                current_activity_type = extract_activity_markov_chain(
-                    active_agents[agent.real_id]["last_activity"], activities, transition_matrix
-                )
-
-            if current_activity_type is None:
-                continue  
-
-            delta = timedelta(minutes=random.randint(0, time_limit))
-            activity_time += delta
-            current_activity = Activity(
-                real_id=agent.real_id,
-                virtual_id=agent.virtual_id,
-                is_fraudster=agent.is_fraudster,
-                behavior=agent.behavior,
-                initial_balance=active_agents[agent.virtual_id]["balance"],
-                timestamp=activity_time.strftime("%Y-%m-%d %H:%M:%S"),
-                residence_country=agent.residence_country
-            )
-            current_activity.activity_type = current_activity_type
-            transaction_range = activities[current_activity_type]
-            current_activity.amount = 0 if transaction_range == (0, 0) else random.randint(*transaction_range)
-            current_activity.update_balance()
-
-            active_agents[agent.real_id]["balance"] = current_activity.balance
-            if agent.real_id != agent.virtual_id: # Update balance of victim account
-                active_agents[agent.virtual_id]["balance"] = current_activity.balance
-            active_agents[agent.real_id]["last_activity"] = current_activity_type
-            bank.add_activity(current_activity)
-
-            # If the agent closes their account, remove them from active agents
-            if current_activity_type == "Close Account":
-                del active_agents[agent.real_id]
-
-        # Check if the buffer size has reached 100 and flush if necessary
-        if len(bank.buffer) >= flush_interval:
-            bank.flush_activities()
-            print(f"Flushed transactions at step {step}")
-    
-    bank.last_activity_time = activity_time
-    # Final flush after simulation ends
-    bank.flush_activities()
-    print(f"Final flush completed.")
-
-
-
 
 def get_random_fraudster_behavior(normalized_catalog):
     fraud_behaviors = [key for key in normalized_catalog.keys() if key != "legitimate"]
@@ -188,60 +102,170 @@ def format_number(nb_global_activities):
     formated_number = f"{int(value) if value.is_integer() else round(value, 1)}{suffix}"
     return formated_number
 
-def assign_behavior(fraudster_rate, normalized_catalog):
+def assign_behavior(fraudster_rate, normalized_catalog, exclude_identity_theft=False):
     is_fraudulent = random.random() < fraudster_rate
-    behavior_type = get_random_fraudster_behavior(normalized_catalog) if is_fraudulent else "legitimate"
+
+    if is_fraudulent:
+        # Get all fraud behaviors excluding 'identity_theft' if needed
+        fraud_behaviors = [b for b, v in normalized_catalog.items() if v.get("fraud", 0) == 1]
+        if exclude_identity_theft:
+            fraud_behaviors = [b for b in fraud_behaviors if b != "identity_theft"]
+
+        behavior_type = random.choice(fraud_behaviors) if fraud_behaviors else "legitimate"
+    else:
+        behavior_type = "legitimate"
+
     return is_fraudulent, behavior_type
 
-def generate_dataset(fraudster_rate, normalized_catalog, nb_activities, min_n_agents, data_folder, start_time, target_size):
-    # Assign behavior to agents
-    initial_agents=[]
-    for i in range(min_n_agents):
+def generate_new_agents(min_index, max_index, agents, active_agents, normalized_catalog, fraudster_rate, locations, location_weights,):
+    print(f"Generating new agents: min_index={min_index}, max_index={max_index}")
+    
+    for i in range(min_index, max_index):
         real_id = i
+        
         is_fraudster, behavior_type = assign_behavior(fraudster_rate, normalized_catalog)
-        # If real_id is 0 and behavior is 'identity_theft', reselect behavior
-        while real_id == 0 and behavior_type == 'identity_theft':
-            is_fraudster, behavior_type = assign_behavior(fraudster_rate, normalized_catalog )  # Reassign behavior
-        print(behavior_type)
-        if behavior_type == 'identity_theft':
-            while True:
-                virtual_id = random.randint(0, real_id - 1)  # Randomly extract victim id
-                if initial_agents[virtual_id].is_fraudster == 0:  # Ensure victim is not a fraudster
-                    break
-        else:
-            virtual_id = real_id
-        initial_balance=round(random.uniform(1000, 10000), 2)
-        residence_country=np.random.choice(locations, p=location_weights)
-        initial_agents.append(Agent(real_id, virtual_id, is_fraudster, behavior_type, initial_balance, residence_country))
-    #fraudulent_agents = [Agent(real_id=i + nb_legitimate_agents, initial_balance=round(random.uniform(1000, 5000), 2)) for i in range(nb_fraudulent_agents)]
-    bank_with_activities = BankActivities(nb_activities)
-    run_simulation(normalized_catalog=normalized_catalog, agents=initial_agents, bank=bank_with_activities, start_time=start_time, target_size=nb_activities)
-    last_activity_time = pd.to_datetime(bank_with_activities.last_activity_time)
-    # Check if we need to generate new agents
-    count = 1
-    print(f"Generated number of actitivities: {len(bank_with_activities.activity_log)}, required {target_size}")
-    while(len(bank_with_activities.activity_log)<target_size):
-        print(f"Generating new agents to reach the target size")
-        print(f"Restarting loop over steps..")
-        # Get last activity timestamp
-        new_agents = []
-        for i in range(min_n_agents):
-            real_id = i
+        
+        # Ensure the first agent in the batch is never an identity thief (to prevent a deadlock)
+        while real_id == min_index and behavior_type == 'identity_theft':
             is_fraudster, behavior_type = assign_behavior(fraudster_rate, normalized_catalog)
-            if behavior_type == 'identity_theft':
-                while True:
-                    virtual_id = random.randint(0, real_id - 1)  # Randomly extract victim id
-                    if initial_agents[virtual_id].is_fraudster == 0:  # Ensure victim is not a fraudster
-                        break
+
+        # Identity Theft needs a legitimate victim
+        if behavior_type == 'identity_theft':
+            legitimate_agents = [a for a in agents if not a.is_fraudster and a.real_id in active_agents]  # Find all legit agents
+            if legitimate_agents:
+                victim_agent = random.choice(legitimate_agents)  # Pick a random legitimate victim
+                virtual_id = victim_agent.real_id  # Use the victim's real_id
             else:
-                virtual_id = real_id
-            initial_balance=round(random.uniform(1000, 10000), 2)
-            residence_country=np.random.choice(locations, p=location_weights)
-            new_agents.append(Agent(real_id, virtual_id, is_fraudster, behavior_type, initial_balance, residence_country))
-        run_simulation(agents=new_agents, bank=bank_with_activities, start_time=last_activity_time, target_size=nb_activities)
-        count = count +1
-        print(f"Had to generate {count*min_n_agents} new agents iterating {count} times over the minimum number of agents. \nConsider increasing the minimum number of agents if too many agents are created.")
-        print(f"Generated number of actitivities: {len(bank_with_activities.activity_log)}, required {target_size}")
+                # If no legitimate agents exist, switch to another fraud behavior
+                print(f"No legitimate agents available. Assigning different fraud behavior to agent {real_id}.")
+                is_fraudster, behavior_type = assign_behavior(fraudster_rate, normalized_catalog, exclude_identity_theft=True)
+                virtual_id = real_id  # Default to self ID for non-identity-theft behaviors
+        else:
+            virtual_id = real_id  # Legitimate or other fraud types use their own ID
+
+        
+        initial_balance = round(random.uniform(1000, 100000), 2)
+        residence_country = np.random.choice(locations, p=location_weights)
+        
+        # Create and add the agent to the list
+        agents.append(Agent(real_id, virtual_id, is_fraudster, behavior_type, initial_balance, residence_country))
+        active_agents[real_id] = {
+            "balance": initial_balance,
+            "last_activity": None
+        }
+
+    return agents
+
+def run_simulation_step(active_agents, normalized_catalog, agents, bank, start_time, distributions, steps=100, flush_interval=100, target_size=10**6):
+    activity_time = start_time
+
+    for step in range(steps):
+        if len(bank.activity_log) >= target_size:
+            print(f"Target generation of {target_size} activities reached")
+            break
+
+        for agent in agents:  # Iterate over agents
+            if agent.real_id not in active_agents:
+                continue  # Skip closed accounts
+
+            behavior = normalized_catalog[agent.behavior]  # Behavior catalog
+            activities = behavior["activities"]
+            time_limit = behavior["time_limit"]
+            transition_matrix = behavior["transition_matrix"]
+
+            # Select an initial activity
+            if active_agents[agent.real_id]["last_activity"] is None:
+                valid_activities = [act for act in activities.keys() if act != "Close Account"]
+                current_activity_type = random.choice(valid_activities) 
+            else:
+                current_activity_type = extract_activity_markov_chain(
+                    active_agents[agent.real_id]["last_activity"], activities, transition_matrix
+                )
+
+            delta = timedelta(minutes=random.randint(0, time_limit))
+            activity_time += delta
+            current_activity = Activity(
+                real_id=agent.real_id,
+                virtual_id=agent.virtual_id,
+                is_fraudster=agent.is_fraudster,
+                behavior=agent.behavior,
+                initial_balance=active_agents[agent.virtual_id]["balance"],
+                timestamp=activity_time.strftime("%Y-%m-%d %H:%M:%S"),
+                residence_country=agent.residence_country
+            )
+            current_activity.activity_type = current_activity_type
+            transaction_type = activities[current_activity_type]
+            if transaction_type == "neutral":
+                current_activity.amount = 0
+            else:
+                if agent.is_fraudster:
+                    current_activity.amount = np.random.choice(distributions.fraud_amount_distribution)
+                else:
+                    current_activity.amount = np.random.choice(distributions.legit_amount_distribution)
+                if transaction_type == "negative":
+                    current_activity.amount = - current_activity.amount
+            current_activity.update_balance()
+
+            active_agents[agent.real_id]["balance"] = current_activity.balance
+            if agent.real_id != agent.virtual_id:  # Update balance of victim account
+                active_agents[agent.virtual_id]["balance"] = current_activity.balance
+            active_agents[agent.real_id]["last_activity"] = current_activity_type
+            bank.add_activity(current_activity)
+
+            # Find identity theft agents before removing the closed account
+            if current_activity_type == "Close Account":
+                closed_id = agent.real_id
+
+                # Identify identity theft agents using this agent as a virtual_id (victim)
+                identity_theft_agents = [aid for aid, data in active_agents.items() if data.get("virtual_id") == closed_id]
+
+                # Remove identity theft agents as well
+                for identity_thief in identity_theft_agents:
+                    del active_agents[identity_thief]
+                    print(f"Identity theft agent {identity_thief} removed due to victim account closure.")
+
+                # Now remove the legitimate agent
+                del active_agents[closed_id]
+                print(f"Agent {closed_id} closed their account and was removed.")
+
+        
+        # Check if the buffer size has reached flush_interval and flush if necessary
+        if len(bank.buffer) >= flush_interval:
+            bank.flush_activities()
+            print(f"Flushed transactions at step {step}")
+
+    bank.last_activity_time = activity_time
+    # Final flush after simulation ends
+    bank.flush_activities()
+    
+
+def run_full_simulation(normalized_catalog, fraudster_rate, min_n_agents, distributions, start_time, nb_activities, target_size, data_folder):
+    count = 0
+    last_activity_time = start_time
+    bank_with_activities = BankActivities(nb_activities)
+    
+    # Generate initial agents
+    #initial_agents = generate_new_agents(count, min_n_agents, normalized_catalog, fraudster_rate, locations, location_weights)
+    agents=[]   
+    active_agents = {}
+    while len(bank_with_activities.activity_log) < target_size:
+        min_index = count * min_n_agents
+        max_index = (count + 1) * min_n_agents
+        print(f"Generating activities to reach the target size. Iteration: {count}")
+        
+        # Generate new agents for this batch
+        agents = generate_new_agents(min_index, max_index, agents, active_agents, normalized_catalog, fraudster_rate, locations, location_weights)
+
+        
+        # Run simulation step for the new agents
+        run_simulation_step(active_agents,normalized_catalog, agents[min_index:max_index], bank_with_activities, last_activity_time, distributions, target_size=nb_activities)
+        
+        # Update the last activity time after running the simulation
+        last_activity_time = pd.to_datetime(bank_with_activities.last_activity_time)
+        count += 1
+        print(f"Generated number of activities: {len(bank_with_activities.activity_log)}, required {target_size}")
+
+    print(f"Simulation completed. Total generated activities: {len(bank_with_activities.activity_log)}")
 
     os.makedirs(data_folder, exist_ok=True)
     file_name= f'fraud_simulation_activities_{format_number(nb_activities)}.csv'
@@ -273,13 +297,14 @@ if __name__ == "__main__":
     #else:
     #    normalized_catalog = check_and_normalize_catalog(behavior_catalog)
     normalized_catalog = check_and_normalize_catalog(behavior_catalog) #better to regenerate it everytime in case some probabilitis are changed
-
+    distributions = TransactionDistributions()
+    distributions.generate()
     #n_fraudulent_activities = int(cfg.nb_activities*cfg.pr_frauds)
     #n_legitimate_activities = cfg.nb_activities - n_fraudulent_activities
     #n_max_per_legitimate_A = int(n_legitimate_activities/cfg.n_legitimate_agent)
     #n_max_per_fraudster_A = int(n_fraudulent_activities/cfg.n_fraudulent_agent)
-    
-    dataset = generate_dataset(fraudster_rate=cfg.fraudster_rate, normalized_catalog=normalized_catalog, nb_activities=cfg.nb_activities, min_n_agents=cfg.min_n_agents, data_folder=cfg.data_folder, start_time=cfg.start_time, target_size=cfg.nb_activities)
+    dataset = run_full_simulation(fraudster_rate=cfg.fraudster_rate, nb_activities=cfg.nb_activities, min_n_agents=cfg.min_n_agents, normalized_catalog=normalized_catalog, distributions=distributions, data_folder=cfg.data_folder, start_time=cfg.start_time, target_size=cfg.nb_activities)
+    #dataset = generate_dataset(fraudster_rate=cfg.fraudster_rate, normalized_catalog=normalized_catalog, nb_activities=cfg.nb_activities, min_n_agents=cfg.min_n_agents, data_folder=cfg.data_folder, start_time=cfg.start_time, target_size=cfg.nb_activities)
     # Build sample for training ML clustering alghoritms
     #columns_to_drop = ['behavior']
     #dataset.drop(columns=columns_to_drop, inplace=True)

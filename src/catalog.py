@@ -5,16 +5,16 @@ import random
 behavior_catalog = {
     "legitimate": {
         "activities": {
-            "Open Account": (0, 0),                  # No transaction at the start
-            "Deposit Funds": (0, 10000),             # Can vary from 0 to 10,000
-            "Make Purchase": (-1000, -1),            # Purchases are negative (money spent)
-            "Pay Bills": (-5000, 0),                 # Payments are negative (money spent)
-            "Transfer Funds": (-5000, -1),           # Transfers are negative (money sent out)
-            "Apply for Credit Card": (0, 0),         # No transaction, just an application
-            "Apply for Loan": (0, 0),                # No transaction, just an application
-            "Invest Money": (-5000, -500),          # Investments are negative (money spent)
-            "Review activityments": (0, 0),          # No transaction, review only
-            "Close Account": (0, 0)                  # No transaction at account closure
+            "Open Account": "neutral",                  # No transaction at the start
+            "Deposit Funds": "positive",             # Can vary from 0 to 10,000
+            "Make Purchase": "negative",            # Purchases are negative (money spent)
+            "Pay Bills": "negative",                 # Payments are negative (money spent)
+            "Transfer Funds": "negative",           # Transfers are negative (money sent out)
+            "Apply for Credit Card": "neutral",         # No transaction, just an application
+            "Apply for Loan": "neutral",                # No transaction, just an application
+            "Invest Money": "negative",          # Investments are negative (money spent)
+            "Review activityments": "neutral",          # No transaction, review only
+            "Close Account": "neutral"                  # No transaction at account closure
         },
         "transition_matrix": [
             [0.0, 0.5, 0.2, 0.1, 0.1, 0.02, 0.02, 0.02, 0.03, 0.01],
@@ -25,7 +25,7 @@ behavior_catalog = {
             [0.0, 0.1, 0.2, 0.2, 0.1, 0.3, 0.05, 0.02, 0.01, 0.01],
             [0.0, 0.1, 0.1, 0.1, 0.1, 0.02, 0.4, 0.1, 0.05, 0.02],
             [0.0, 0.05, 0.05, 0.1, 0.1, 0.02, 0.03, 0.5, 0.1, 0.05],
-            [0.0, 0.05, 0.05, 0.1, 0.1, 0.02, 0.03, 0.05, 0.5, 0.1],
+            [0.0, 0.05, 0.05, 0.15, 0.14, 0.02, 0.03, 0.05, 0.5, 0.01],
             [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
         ],
         "time_limit": 180,  # Maximum 3 hours between events
@@ -33,14 +33,14 @@ behavior_catalog = {
     },
     "identity_theft": {
         "activities": {
-            "Failed Login": (0, 0),                  # No transaction
-            "Suspicious Login": (0, 0),         # To be suspicious it should be accompanied by a weird location     # No transaction
-            "Change Password": (0, 0),               # No transaction
-            "Change Email": (0, 0),                  # No transaction
-            "Change Phone": (0, 0),                  # No transaction
-            "Request New Card": (0, 0),              # No transaction
-            "Unauthorized Transfer": (-10000, -100),  # Unauthorized transfers are negative (money stolen)
-            "Close Account": (0, 0),                  # No transaction at account closure
+            "Failed Login": "neutral",                  # No transaction
+            "Suspicious Login": "neutral",         # To be suspicious it should be accompanied by a weird location     # No transaction
+            "Change Password": "neutral",               # No transaction
+            "Change Email": "neutral",                  # No transaction
+            "Change Phone": "neutral",                  # No transaction
+            "Request New Card": "neutral",              # No transaction
+            "Unauthorized Transfer": "negative",  # Unauthorized transfers are negative (money stolen)
+            "Close Account": "neutral",                  # No transaction at account closure
         },
         "transition_matrix": [
             [0.6, 0.3, 0.05, 0.02, 0.02, 0.0, 0.01, 0.0],
@@ -58,13 +58,13 @@ behavior_catalog = {
 
     "card_skimming": {
         "activities": {
-            "ATM Withdrawal": (-1000, -10),           # Withdrawals are negative (money taken out)
-            "Online Purchase": (-500, -5),            # Purchases are negative (money spent)
-            "POS Purchase": (-1000, -1),              # In-person purchases are negative (money spent)
-            "Balance Check": (0, 0),                  # No transaction for balance check
-            "Request New PIN": (0, 0),                # No transaction for PIN request
-            "Report Lost Card": (0, 0),               # No transaction for report
-            "Close Account": (0, 0)                   # No transaction at account closure
+            "ATM Withdrawal": "negative",           # Withdrawals are negative (money taken out)
+            "Online Purchase": "negative",            # Purchases are negative (money spent)
+            "POS Purchase": "negative",              # In-person purchases are negative (money spent)
+            "Balance Check": "neutral",                  # No transaction for balance check
+            "Request New PIN": "neutral",                # No transaction for PIN request
+            "Report Lost Card": "neutral",               # No transaction for report
+            "Close Account": "neutral"                   # No transaction at account closure
         },
         "transition_matrix": [
             [0.0, 0.3, 0.3, 0.2, 0.1, 0.05, 0.05],
@@ -81,13 +81,13 @@ behavior_catalog = {
 
     "money_laundering": {
         "activities": {
-            "Open Account": (0, 0),                  # No transaction at account opening
-            "Deposit Funds": (100, 10000),           # Deposits can vary, but negative when spent
-            "Wire Transfer": (-50000, -100),         # Wire transfers are negative (money sent)
-            "Purchase Luxury Goods": (-100000, -500), # Luxury goods are negative (money spent)
-            "Cash Withdrawal": (-5000, -100),         # Withdrawals are negative (money taken out)
-            "Invest in Assets": (-50000, -500),      # Investments are negative (money spent)
-            "Close Account": (0, 0)                  # No transaction at account closure
+            "Open Account": "neutral",                  # No transaction at account opening
+            "Deposit Funds": "positive",           # Deposits can vary, but negative when spent
+            "Wire Transfer": "negative",         # Wire transfers are negative (money sent)
+            "Purchase Luxury Goods": "negative", # Luxury goods are negative (money spent)
+            "Cash Withdrawal": "negative",         # Withdrawals are negative (money taken out)
+            "Invest in Assets": "negative",      # Investments are negative (money spent)
+            "Close Account": "neutral"                  # No transaction at account closure
         },
         "transition_matrix": [
             [0.0, 0.5, 0.3, 0.1, 0.05, 0.03, 0.02],
@@ -104,14 +104,14 @@ behavior_catalog = {
 
     "synthetic_identity_fraud": {
         "activities": {
-            "Create Fake Identity": (0, 0),          # No transaction for creating fake identity
-            "Open Account": (0, 0),                  # No transaction at account opening
-            "Apply for Credit Card": (0, 0),         # No transaction for credit card application
-            "Apply for Loan": (0, 0),                # No transaction for loan application
-            "Make Purchase": (-50000, -500),         # Purchases are negative (money spent)
-            "Max Out Credit": (-10000, -100),        # Maxing out credit is negative (money used)
-            "Withdraw Funds": (-5000, -100),         # Withdrawals are negative (money taken out)
-            "Close Account": (0, 0)                  # No transaction at account closure
+            "Create Fake Identity": "neutral",          # No transaction for creating fake identity
+            "Open Account": "neutral",                  # No transaction at account opening
+            "Apply for Credit Card": "neutral",         # No transaction for credit card application
+            "Apply for Loan": "neutral",                # No transaction for loan application
+            "Make Purchase": "negative",         # Purchases are negative (money spent)
+            "Max Out Credit": "negative",        # Maxing out credit is negative (money used)
+            "Withdraw Funds": "negative",         # Withdrawals are negative (money taken out)
+            "Close Account": "neutral"                  # No transaction at account closure
         },
        "transition_matrix": [
         [0.4, 0.3, 0.1, 0.1, 0.05, 0.01, 0.01, 0.03],  # From Create Fake Identity
