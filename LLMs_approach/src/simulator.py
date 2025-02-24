@@ -22,6 +22,7 @@ from datetime import datetime, timedelta
 from IPython import embed
 from sklearn.preprocessing import StandardScaler
 
+import ollama
 
 from activity import Activity
 from agent import Agent
@@ -155,8 +156,49 @@ def generate_new_agents(min_index, max_index, agents, active_agents, normalized_
 
     return agents
 
-def run_simulation_step(active_agents, normalized_catalog, agents, bank, distributions, steps=100, flush_interval=100, target_size=10**6):
 
+
+def get_next_activity_from_ollama(agent_data, previous_activity, previous_timestamp):
+    """Get the next activity prediction from Ollama."""
+    
+    # Construct the LLM prompt for Ollama
+    prompt = (
+        f"You are a structured data generator. You must always return a response in strict JSON format, without any additional text. "
+        f"Given the following agent details, predict their next financial activity:\n\n"
+        f"Agent Type: {agent_data['agent_type']} (Options: 'traveler', 'static')\n"
+        f"Residence Country: {agent_data['initial_country']}\n"
+        f"Behavior Type: {agent_data['behavior']} (Examples: 'high spender', 'frequent traveler', 'identity thief', 'card skimmer', 'normal user')\n"
+        f"Is Fraudster: {agent_data['is_fraud']} (0 = Legitimate, 1 = Fraudster)\n"
+        f"Previous Activity: {previous_activity} (Options: 'withdrawal', 'deposit', 'purchase', 'login', 'account takeover', etc.)\n"
+        f"Previous Timestamp: {previous_timestamp.strftime('%Y-%m-%d %H:%M:%S')}\n"
+        f"Previous Location: {agent_data['previous_location']}\n"
+        f"Previous Amount: {agent_data['previous_amount']} (Use 0 for non-transaction activities)\n\n"
+        f"Constraints:\n"
+        f"- The predicted activity must align with the agent's **behavior**.\n"
+        f"- Timestamp must be after the previous timestamp, with a delay between **5 minutes and 2 hours**.\n"
+        f"- The activity must be consistent with past behavior and agent type.\n"
+        f"- If the activity is a **transaction**, predict a reasonable amount based on behavior (e.g., small purchases <$100, large withdrawals >$500).\n"
+        f"- If the agent is a **fraudster**, they are more likely to conduct suspicious activities such as high-value transactions, international transfers, or account takeovers.\n"
+        f"- Return **only** JSON format, like this:\n"
+        f"  {{\"activity\": \"...\", \"timestamp\": \"YYYY-MM-DD HH:MM:SS\", \"location\": \"...\", \"amount\": ...}}\n"
+    )
+
+    # Send the request to Ollama
+    response = ollama.chat(model="mistral", messages=[
+        {"role": "system", "content": "You are an AI trained to return structured JSON outputs. Always return valid JSON, nothing else."},
+        {"role": "user", "content": prompt}
+    ])
+    
+    # Parse the response and return the result
+    try:
+        data = json.loads(response['message']['content'])
+        return data
+    except Exception as e:
+        print("Error parsing response from Ollama:", str(e))
+        return None
+
+
+def run_simulation_step(active_agents, normalized_catalog, agents, bank, distributions, steps=100, flush_interval=100, target_size=10**6):
     for step in range(steps):
         if len(bank.activity_log) >= target_size:
             print(f"Target generation of {target_size} activities reached")
@@ -168,70 +210,61 @@ def run_simulation_step(active_agents, normalized_catalog, agents, bank, distrib
 
             behavior = normalized_catalog[agent.behavior]  # Behavior catalog
             activities = behavior["activities"]
-            time_limit = behavior["time_limit"]
-            transition_matrix = behavior["transition_matrix"]
 
             # Select an initial activity
             if active_agents[agent.real_id]["last_activity"] is None:
                 valid_activities = [act for act in activities.keys() if act != "Close Account"]
-                current_activity_type = random.choice(valid_activities) 
+                current_activity_type = random.choice(valid_activities)
             else:
-                current_activity_type = extract_activity_markov_chain(
-                    active_agents[agent.real_id]["last_activity"], activities, transition_matrix
-                )
+                # Get the next activity from Ollama (replacing markov chain logic)
+                agent_data = {
+                    "agent_type": agent.behavior,
+                    "initial_country": active_agents[agent.real_id]["initial_country"],  # Now dynamically populated
+                    "behavior": agent.behavior,
+                    "is_fraud": agent.is_fraud,
+                    "previous_activity": active_agents[agent.real_id]["last_activity"],
+                    "previous_timestamp": active_agents[agent.real_id]["time"],
+                    "previous_location": active_agents[agent.real_id]["previous_location"],  # Now dynamically populated
+                    "previous_amount": active_agents[agent.real_id]["previous_amount"],  # Now dynamically populated
+                }
+                response_data = get_next_activity_from_ollama(agent_data, active_agents[agent.real_id]["last_activity"], active_agents[agent.real_id]["time"])
+                if response_data:
+                    current_activity_type = response_data["activity"]
+                    print(f"Predicted activity for agent {agent.real_id}: {current_activity_type}")
 
+            # Create the activity object and update agent balances and other data
             current_activity = Activity(agent=agent)
             current_activity.initial_balance = active_agents[agent.virtual_id]["balance"]
             current_activity.balance = active_agents[agent.virtual_id]["balance"]
             current_activity.activity_type = current_activity_type
-            transaction_type = activities[current_activity_type]
-            current_activity.delta_time = timedelta(seconds=random.randint(0, time_limit))
-            activity_time = active_agents[agent.virtual_id]["time"] + current_activity.delta_time
-            current_activity.timestamp = activity_time.strftime("%Y-%m-%d %H:%M:%S")  
-            #current_activity.delta_time=current_activity.delta_time.total_seconds()
-            if transaction_type == "neutral":
-                current_activity.amount = 0
-            else:
-                if agent.is_fraud:
-                    current_activity.amount = np.random.choice(distributions.fraud_amount_distribution)
-                else:
-                    current_activity.amount = np.random.choice(distributions.legit_amount_distribution)
-                if transaction_type == "negative":
-                    current_activity.amount = - current_activity.amount
-            current_activity.update_balance()
+            current_activity.timestamp = activity_time.strftime("%Y-%m-%d %H:%M:%S")
 
+            # Update agent data
             active_agents[agent.real_id]["balance"] = current_activity.balance
             active_agents[agent.real_id]["time"] = pd.to_datetime(current_activity.timestamp)
-            if agent.real_id != agent.virtual_id:  # Update balance and time of victim account
-                active_agents[agent.virtual_id]["balance"] = current_activity.balance
-                active_agents[agent.virtual_id]["time"] = pd.to_datetime(current_activity.timestamp)
+            active_agents[agent.real_id]["previous_location"] = current_activity.location
+            active_agents[agent.real_id]["previous_amount"] = current_activity.amount
             active_agents[agent.real_id]["last_activity"] = current_activity_type
             bank.add_activity(current_activity)
 
-            # Find identity theft agents before removing the closed account
+            # Handle account closure
             if current_activity_type == "Close Account":
                 closed_id = agent.real_id
-
-                # Identify identity theft agents using this agent as a virtual_id (victim)
                 identity_theft_agents = [aid for aid, data in active_agents.items() if data.get("virtual_id") == closed_id]
-
-                # Remove identity theft agents as well
                 for identity_thief in identity_theft_agents:
                     del active_agents[identity_thief]
                     print(f"Identity theft agent {identity_thief} removed due to victim account closure.")
-
-                # Now remove the legitimate agent
                 del active_agents[closed_id]
                 print(f"Agent {closed_id} closed their account and was removed.")
 
-        #print(current_activity.initial_balance)
-        # Check if the buffer size has reached flush_interval and flush if necessary
         if len(bank.buffer) >= flush_interval:
             bank.flush_activities()
             print(f"Flushed transactions at step {step}")
 
-    # Final flush after simulation ends
     bank.flush_activities()
+
+
+
     
 
 def run_full_simulation(normalized_catalog, fraudster_rate, min_n_agents, distributions, start_time, nb_activities, target_size, data_folder):
@@ -273,7 +306,7 @@ if __name__ == "__main__":
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument('--nb_activities', help='Total number of activities to be generated', type=int, required=True)
-    parser.add_argument('--min_n_agents', help='Number of legitimate agents', type=int, default=40)
+    parser.add_argument('--min_n_agents', help='Number of legitimate agents', type=int, default=4)
     parser.add_argument('--fraudster_rate', help='Rate of fraudulent agents', type=float, default=0.1) # Default is High Risk
     #Low-Fraud Environment (Highly Secure Banking System): 0.5% - 2% fraudsters.
     #Moderate Fraud Risk (General Banking, E-commerce): 2% - 5% fraudsters.

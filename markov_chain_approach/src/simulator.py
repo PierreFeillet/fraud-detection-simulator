@@ -207,6 +207,7 @@ def run_simulation_step(active_agents, normalized_catalog, agents, bank, distrib
                 active_agents[agent.virtual_id]["time"] = pd.to_datetime(current_activity.timestamp)
             active_agents[agent.real_id]["last_activity"] = current_activity_type
             bank.add_activity(current_activity)
+            #print(bank.activity_log.tail(5))
 
             # Find identity theft agents before removing the closed account
             if current_activity_type == "Close Account":
@@ -281,6 +282,7 @@ if __name__ == "__main__":
     parser.add_argument('--data_folder', help='Where to save produced data', type=str, default='data')
     parser.add_argument('--start_time', help='Initial timestamp value for the generating the series (ISO 8601 format, example: "2025-01-06T12:00:00")', default=datetime.now())
     # Example: python src/simulator.py --nb_activities 1000 --n_legitimate_agent 3 --n_fraudulent_agent 1 --pr_fraud 0.3
+    start_time = time.time()
     cfg = parser.parse_args()
     pprint(cfg)
 
@@ -294,10 +296,11 @@ if __name__ == "__main__":
     distributions = TransactionDistributions()
     distributions.generate()
     # Plot log-norm distributions used for extracting transaction amount
-    #distributions.plot_distributions()
+    distributions.plot_distributions()
 
     dataset = run_full_simulation(fraudster_rate=cfg.fraudster_rate, nb_activities=cfg.nb_activities, min_n_agents=cfg.min_n_agents, normalized_catalog=normalized_catalog, distributions=distributions, data_folder=cfg.data_folder, start_time=cfg.start_time, target_size=cfg.nb_activities)
-    #dataset = generate_dataset(fraudster_rate=cfg.fraudster_rate, normalized_catalog=normalized_catalog, nb_activities=cfg.nb_activities, min_n_agents=cfg.min_n_agents, data_folder=cfg.data_folder, start_time=cfg.start_time, target_size=cfg.nb_activities)
+    print(f"Running the simulation required {round((time.time() - start_time)/60,2)} seconds.")
+    # dataset = generate_dataset(fraudster_rate=cfg.fraudster_rate, normalized_catalog=normalized_catalog, nb_activities=cfg.nb_activities, min_n_agents=cfg.min_n_agents, data_folder=cfg.data_folder, start_time=cfg.start_time, target_size=cfg.nb_activities)
     # Build sample for training ML clustering alghoritms
     #columns_to_drop = ['behavior']
     #dataset.drop(columns=columns_to_drop, inplace=True)
