@@ -17,6 +17,7 @@ class Activity(Agent):
         "real_id": "int16",
         "virtual_id": "int16",
         "timestamp": "datetime64[ns]",
+        "delta_time": "timedelta64[ns]",
         "behavior": "category",
         "initial_balance": "float32",
         "activity_type": "category",
@@ -24,19 +25,22 @@ class Activity(Agent):
         "amount": "float32",
         "balance": "float32",
         #"merchant": "category",
-        "residence_country": "category",
+        "initial_country": "category",
+        "location": "category",
         "device": "category",
         "network": "category",
         "compromised_device": "int8",
         "compromised_network": "int8",
+        "agent_type": "category",
         "is_fraudster": "int8"
     }
 
-    def __init__(self, real_id, virtual_id, is_fraudster, behavior, initial_balance, timestamp, residence_country):
+    def __init__(self, agent,):
         # Initialize the parent class (Agent)
-        super().__init__(real_id, virtual_id, is_fraudster, behavior, initial_balance, residence_country)
+        super().__init__(agent.real_id, agent.virtual_id, agent.is_fraudster, agent.behavior, agent.initial_time)
         # activity-specific attributes
-        self.timestamp = timestamp
+        self.timestamp = agent.initial_time
+        self.delta_time = 0
         self.activity_type = ''
         #self.balance = self.initial_balance
         self.granted = True 
@@ -46,6 +50,52 @@ class Activity(Agent):
         self.network = np.random.choice(networks, p=network_weights)
         self.compromised_device = self.is_compromised()
         self.compromised_network = self.is_compromised()
+        self.initial_country = agent.initial_country
+        self.agent_type= agent.agent_type
+        self.visited_countries = agent.visited_countries
+        self.update_location_probabilities()
+        # Assign the transaction location for this activity
+        self.location = self.assign_transaction_location()
+    
+    
+    def update_location_probabilities(self):
+        """Adjusts probabilities based on agent type.
+        Over time, a traveler's probability distribution shifts, reducing the likelihood of transactions in their 
+        initial country while increasing the probability of transacting abroad.
+        This ensures that frequent travelers are more likely to have transactions spread across multiple countries."""
+        if self.agent_type == "traveler":
+            # Increase probability of foreign transactions
+            for country in self.visited_countries:
+                self.visited_countries[country] *= 0.9  # Decay home probability
+            foreign_countries = ["France", "UK", "USA", "Germany", "Japan"]
+            for country in foreign_countries:
+                self.visited_countries[country] = self.visited_countries.get(country, 0) + 0.1
+
+        elif self.agent_type == "static":
+            # Mostly transacts in the home country, rarely elsewhere
+            self.visited_countries[self.initial_country] = 0.95
+            self.visited_countries[random.choice(["France", "UK", "USA"]) if random.random() < 0.05 else self.initial_country] = 0.05
+
+    def assign_transaction_location(self):
+        """Assigns a location based on the agent type and behavior."""
+        if self.is_fraudster:
+            if random.random() < 0.7:
+                return random.choice(["Switzerland", "Cayman Islands", "Hong Kong", "Singapore"])
+            else:
+                return random.choice(["USA", "UK", "France", "Germany", "Canada"])
+        else:
+            # Assign based on probability distribution
+            return random.choices(list(self.visited_countries.keys()), weights=self.visited_countries.values())[0]
+
+    #def update_location_probabilities(self):
+    #    """Updates the location probabilities for the activity based on the agent's type."""
+    #    # You can call the Agent's method to update the probabilities
+    #    super().update_location_probabilities()
+#
+    #def assign_transaction_location(self):
+    #    """Assigns a location based on the agent's type and behavior."""
+    #    # Call the Agent's method to assign the location
+    #    return super().assign_transaction_location()
 
     def is_compromised(self, probability=0.05):
         """
