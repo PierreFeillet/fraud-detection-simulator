@@ -5,7 +5,7 @@ import ollama
 
 #  Top 10 Banking Frauds
 TOP_10_FRAUD_TYPES = [
-    "Money Laundering", "Account Takeover", "Synthetic Identity Fraud",
+    "Money Laundering", "Account Takeover", "Synthetic Identity Fraud", "Identity Theft",
     "Card Skimming", "Loan Fraud", "Check Fraud", 
     "Wire Fraud", "Ponzi Scheme", "Cryptocurrency Fraud", "Insider Trading"
 ]
@@ -63,7 +63,7 @@ def generate_fraud_strategy(fraud_type=None, filename="strategies/fraud_strategi
         4. Describe the key characteristics of the fraud pattern, including:
         - **Transaction Types Involved**: Specify whether transactions are purchases, withdrawals, transfers, or trades.
         - **Typical Transaction Amounts**: Provide realistic ranges for transaction amounts.
-        - **Geographic Patterns**: Indicate if transactions occur locally, internationally, or in high-risk locations.
+        - **Geographic Patterns**: Indicate if transactions occur locally, internationally, or in high-risk locations and specify which currency must be used.
         - **Velocity**: Describe how quickly transactions occur (e.g., rapid succession or spaced over time).
 
         ### Important:
