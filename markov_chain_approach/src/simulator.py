@@ -123,29 +123,29 @@ def generate_new_agents(min_index, max_index, agents, active_agents, normalized_
     for i in range(min_index, max_index):
         real_id = i
         
-        is_fraudster, behavior_type = assign_behavior(fraudster_rate, normalized_catalog)
+        is_fraud, behavior_type = assign_behavior(fraudster_rate, normalized_catalog)
         
         # Ensure the first agent in the batch is never an identity thief (to prevent a deadlock)
         while real_id == min_index and behavior_type == 'identity_theft':
-            is_fraudster, behavior_type = assign_behavior(fraudster_rate, normalized_catalog)
+            is_fraud, behavior_type = assign_behavior(fraudster_rate, normalized_catalog)
 
         # Identity Theft needs a legitimate victim
         if behavior_type == 'identity_theft':
-            legitimate_agents = [a for a in agents if not a.is_fraudster and a.real_id in active_agents]  # Find all legit agents
+            legitimate_agents = [a for a in agents if not a.is_fraud and a.real_id in active_agents]  # Find all legit agents
             if legitimate_agents:
                 victim_agent = random.choice(legitimate_agents)  # Pick a random legitimate victim
                 virtual_id = victim_agent.real_id  # Use the victim's real_id
             else:
                 # If no legitimate agents exist, switch to another fraud behavior
                 print(f"No legitimate agents available. Assigning different fraud behavior to agent {real_id}.")
-                is_fraudster, behavior_type = assign_behavior(fraudster_rate, normalized_catalog, exclude_identity_theft=True)
+                is_fraud, behavior_type = assign_behavior(fraudster_rate, normalized_catalog, exclude_identity_theft=True)
                 virtual_id = real_id  # Default to self ID for non-identity-theft behaviors
         else:
             virtual_id = real_id  # Legitimate or other fraud types use their own ID
         
         # Create and add the agent to the list
         initial_start_time = start_time+timedelta(seconds=random.randint(0, 60))
-        agent = Agent(real_id, virtual_id, is_fraudster, behavior_type, initial_start_time)
+        agent = Agent(real_id, virtual_id, is_fraud, behavior_type, initial_start_time)
         agents.append(agent)
         active_agents[real_id] = {
             "balance": agent.initial_balance,
@@ -192,7 +192,7 @@ def run_simulation_step(active_agents, normalized_catalog, agents, bank, distrib
             if transaction_type == "neutral":
                 current_activity.amount = 0
             else:
-                if agent.is_fraudster:
+                if agent.is_fraud:
                     current_activity.amount = np.random.choice(distributions.fraud_amount_distribution)
                 else:
                     current_activity.amount = np.random.choice(distributions.legit_amount_distribution)

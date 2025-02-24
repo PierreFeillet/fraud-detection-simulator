@@ -29,15 +29,15 @@ class Activity(Agent):
         "location": "category",
         "device": "category",
         "network": "category",
-        "compromised_device": "int8",
-        "compromised_network": "int8",
+        #"compromised_device": "int8",
+        #"compromised_network": "int8",
         "agent_type": "category",
-        "is_fraudster": "int8"
+        "is_fraud": "int8"
     }
 
     def __init__(self, agent,):
         # Initialize the parent class (Agent)
-        super().__init__(agent.real_id, agent.virtual_id, agent.is_fraudster, agent.behavior, agent.initial_time)
+        super().__init__(agent.real_id, agent.virtual_id, agent.is_fraud, agent.behavior, agent.initial_time)
         # activity-specific attributes
         self.timestamp = agent.initial_time
         self.delta_time = 0
@@ -48,8 +48,8 @@ class Activity(Agent):
        #self.merchant =  extract_merchant(self.activity_type) if self.amount !=0 else ''
         self.device = np.random.choice(devices, p=device_weights)
         self.network = np.random.choice(networks, p=network_weights)
-        self.compromised_device = self.is_compromised()
-        self.compromised_network = self.is_compromised()
+       #self.compromised_device = self.is_compromised()
+       # self.compromised_network = self.is_compromised()
         self.initial_country = agent.initial_country
         self.agent_type= agent.agent_type
         self.visited_countries = agent.visited_countries
@@ -78,7 +78,7 @@ class Activity(Agent):
 
     def assign_transaction_location(self):
         """Assigns a location based on the agent type and behavior."""
-        if self.is_fraudster:
+        if self.is_fraud:
             if random.random() < 0.7:
                 return random.choice(["Switzerland", "Cayman Islands", "Hong Kong", "Singapore"])
             else:

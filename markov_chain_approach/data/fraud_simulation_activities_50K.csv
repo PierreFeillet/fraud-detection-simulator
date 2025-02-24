@@ -1,4 +1,4 @@
-real_id,virtual_id,timestamp,delta_time,behavior,initial_balance,activity_type,granted,amount,balance,initial_country,location,device,network,compromised_device,compromised_network,agent_type,is_fraudster
+real_id,virtual_id,timestamp,delta_time,behavior,initial_balance,activity_type,granted,amount,balance,initial_country,location,device,network,compromised_device,compromised_network,agent_type,is_fraud
 0,0,2025-02-24 15:49:07,0 days 00:15:04,legitimate,77000.27,Review activityments,True,0.0,77000.27,China,China,iPhone,Home WiFi,0,0,static,0
 1,1,2025-02-24 17:40:37,0 days 02:07:24,legitimate,56481.46,Apply for Loan,True,0.0,56481.46,China,China,MacBook,Home WiFi,0,0,static,0
 2,2,2025-02-24 15:52:21,0 days 00:18:27,legitimate,27791.53,Pay Bills,True,-95.58865,27695.941,Japan,Japan,iPhone,Home WiFi,0,0,static,0

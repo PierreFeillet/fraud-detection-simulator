@@ -50,7 +50,7 @@ def apply_clustering(df, numerical_features, categorical_features, output_dir="c
     pipeline = Pipeline(steps=[('preprocessor', preprocessor)])
 
     # Apply the transformations to the dataframe
-    X = pipeline.fit_transform(df.drop(columns=['is_fraudster', 'behavior']))  # Transformed data is now dense
+    X = pipeline.fit_transform(df.drop(columns=['is_fraud', 'behavior']))  # Transformed data is now dense
 
     # 1. DBSCAN Clustering
     dbscan = DBSCAN(eps=0.5, min_samples=5)

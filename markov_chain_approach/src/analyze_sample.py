@@ -82,8 +82,8 @@ if __name__ == "__main__":
     # One-Hot Encoding for categorical columns
     data = pd.get_dummies(data, columns=categorical_columns, drop_first=True)  # drop_first=True to avoid dummy variable trap   
     # Features and target selection
-    target_col = 'is_fraudster'  
-    X = data.drop(columns=[col for col in data.columns if col.startswith('behavior')] + ['real_id', 'is_fraudster'])
+    target_col = 'is_fraud'  
+    X = data.drop(columns=[col for col in data.columns if col.startswith('behavior')] + ['real_id', 'is_fraud'])
     y = data[target_col]
 
     print(f"Dataset columns: {X.columns}")
@@ -103,13 +103,18 @@ if __name__ == "__main__":
     output_dir = f'plots/data_{len(data)}'
     os.makedirs(f'{output_dir}', exist_ok=True)
 
+    # Usinf full dataset just for exploratory purposes about the "godness" of the features
     pos=0
-    flag='is_fraudster'
-    plt.figure(figsize=(24,25))
+    flag='is_fraud'
+    plt.figure(figsize=(50,50))
     for i, col in enumerate(numeric_cols):
         plt.subplot(4, 3 , pos + 1)
-        plt.hist(data[col][data[target_col]==0], density = True, bins=60, label = f"{flag} = 0",color='b', alpha=0.5, )
-        plt.hist(data[col][data[target_col]==1], density = True, bins=60, label = f"{flag} = 1",color='r', alpha=0.5, )
+        if col == 'amount':
+            plt.hist(data[col][data[target_col]==0], density = True, bins=60, label = f"{flag} = 0",color='b', alpha=0.5, range=())
+            plt.hist(data[col][data[target_col]==1], density = True, bins=60, label = f"{flag} = 1",color='r', alpha=0.5, )
+        else:    
+            plt.hist(data[col][data[target_col]==0], density = True, bins=60, label = f"{flag} = 0",color='b', alpha=0.5, )
+            plt.hist(data[col][data[target_col]==1], density = True, bins=60, label = f"{flag} = 1",color='r', alpha=0.5, )
         plt.xlabel(col)
         plt.legend()
         pos+=1

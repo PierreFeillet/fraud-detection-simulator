@@ -52,7 +52,7 @@ behavior_catalog = {
             [0.0, 0.01, 0.02, 0.05, 0.1, 0.1, 0.6, 0.12],
             [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
         ],
-        "time_limit": 60*30,  # Shorter time between suspicious activity
+        "time_limit": for *30,  # Shorter time between suspicious activity
         "fraud": 1,
     },
 
