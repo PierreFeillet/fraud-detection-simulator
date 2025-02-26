@@ -48,6 +48,38 @@ EXPECTED_FIELD_TYPES = {
     "is_repeat_location": bool,
 }
 
+ORDERED_COLUMNS = [
+    "transaction_id",  # Transaction ID first
+    "account_id",
+    "user_id",
+    
+    # Time-related fields together
+    "bank_timestamp",
+    "local_timestamp",
+
+    # Geographical information together
+    "location",
+    "ip_address",
+    "device_id",
+    "network_type",
+
+    # Transaction-related fields grouped
+    "type",
+    "amount",
+    "currency",
+    "balance_before",
+    "balance_after",
+    "granted",
+
+    # Recipient details
+    "merchant_name",
+    "recipient_id",
+    "recipient_bank",
+
+    # Behavior and fraud information
+    "behavior_type",
+    "fraud_label"
+]
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(DATA_DIR, exist_ok=True)
@@ -289,14 +321,38 @@ def log_json_validation(status, json_content, errors=None):
         
         file.write("\n" + "="*80 + "\n")  # Separator for readability
 
-def build_generation_prompt(strategy, global_clock, user_id, past_errors=None):
-    """Builds the prompt for generating activity sequences, adapting based on past errors."""
-    
-    # JSON Template with Dynamic Values
-    json_template = """
+def build_generation_prompt(strategy, global_clock, user_id, past_errors=None, fraud_label=0, balance_before=None, granted=None):
+    """Builds the prompt for generating activity sequences, adapting based on fraud type and past errors."""
+
+    # Adjust field list based on fraud or legit user
+    if fraud_label == 0:
+        # Legitimate transactions: LLM does NOT generate balance_after or granted
+        fields_to_include = [
+            "bank_timestamp", "local_timestamp", "account_id", "type", "amount",
+            "currency", "balance_before", "location", "ip_address", "device_id",
+            "network_type", "merchant_name", "recipient_id", "recipient_bank",
+            "login_attempts", "session_id", "velocity", "distance_from_last_location", "is_repeat_location"
+        ]
+    else:
+        # Fraudulent transactions: LLM must generate balance_after & granted
+        fields_to_include = [
+            "bank_timestamp", "local_timestamp", "account_id", "type", "amount",
+            "currency", "balance_before", "balance_after", "granted", "location",
+            "ip_address", "device_id", "network_type", "merchant_name", "recipient_id",
+            "recipient_bank", "login_attempts", "session_id", "velocity",
+            "distance_from_last_location", "is_repeat_location"
+        ]
+
+    # Generate a structured explanation of required fields
+    field_explanation = "\n".join(
+        [f"- `{field}`: {str(EXPECTED_FIELD_TYPES[field])}" for field in fields_to_include]
+    )
+
+    # Adjust JSON template example
+    json_template = f"""
     ```json
-        [
-        {
+    [
+        {{
             "bank_timestamp": "2025-03-01T07:00:00+00:00",
             "local_timestamp": "2025-03-01T02:00:00-05:00",
             "account_id": "ACC-12345678",
@@ -304,6 +360,8 @@ def build_generation_prompt(strategy, global_clock, user_id, past_errors=None):
             "amount": 150.75,
             "currency": "USD",
             "balance_before": 1000.00,
+            {'' if fraud_label == 0 else '"balance_after": 849.25,'}
+            {'' if fraud_label == 0 else '"granted": true,'}
             "location": "New York, USA",
             "ip_address": "192.168.1.10",
             "device_id": "iPhone-14",
@@ -315,118 +373,136 @@ def build_generation_prompt(strategy, global_clock, user_id, past_errors=None):
             "session_id": "S-12345678",
             "velocity": 0.52,
             "distance_from_last_location": 3.4,
-            "is_repeat_location": true,
-        },
-        {
-            "bank_timestamp": "2025-03-01T07:10:00+00:00",
-            "local_timestamp": "2025-03-01T02:10:00-05:00",
-            "account_id": "ACC-98765432",
-            "type": "Transfer",
-            "amount": 500.00,
-            "currency": "USD",
-            "balance_before": 849.25,
-            "location": "San Francisco, USA",
-            "ip_address": "192.168.1.20",
-            "device_id": "MacBook-Air",
-            "network_type": "Wi-Fi",
-            "merchant_name": null,
-            "recipient_id": "REC-12345678",
-            "recipient_bank": "NWBKGB2L",
-            "login_attempts": 1,
-            "session_id": "S-15467349",
-            "velocity": 10.0,
-            "distance_from_last_location": 4150.0,
-            "is_repeat_location": false,
-        }
-        ]
+            "is_repeat_location": true
+        }}
+    ]
     ```
     """
-    field_explanation = f""""
-    - `bank_timestamp`: string (ISO 8601 format), The UTC time when the activity occurred starting from {global_clock}, formatted as 'YYYY-MM-DDTHH:MM:SS+00:00'.\n
-    - `local_timestamp`: string (ISO 8601 format), The local time of the activity with time zone offset (e.g., 'YYYY-MM-DDTHH:MM:SS-05:00').\n
-    - `account_id`: string, A structured account ID starting with **"ACC-"** followed by 8 digits (e.g., `"ACC-12345678"`).\n
-    - `type`: string, The type of activity (e.g., Purchase, Withdrawal, Transfer).\n
-    - `amount`: float, The monetary amount involved in the transaction.\n
-    - `currency`: string, The currency of the transaction (e.g., 'USD', 'EUR').\n
-    - `balance_before`: float, The account balance before the transaction.\n
-    - `location`: string, The city and country where the transaction took place.\n
-    - `ip_address`: string, The IP address used during the activity (IPv4 format, e.g., `"192.168.1.10"`).\n
-    - `device_id`: string, The device identifier, typically the device model (e.g., `"iPhone-14"` or `"Pixel-7"`).\n
-    - `network_type`: string, The network used during the transaction (e.g., `"Wi-Fi"`, `"Mobile Data"`).\n
-    - `merchant_name`: string or null, The name of the merchant (e.g., `"Amazon"` or `"Walmart"`), otherwise null.\n
-    - `recipient_id`: string or null, For transfers: structured like a bank account ID, starting with **"REC-"** followed by 8 digits (e.g., `"REC-98765432"`), or `null` if not applicable.\n
-    - `recipient_bank`: string or null, For transfers: a simulated BIC code (8 or 11 alphanumeric characters, e.g., `"DEUTDEFFXXX"`), or `null` if not applicable.\n
-    - `login_attempts`: int, The number of login attempts during the session.\n
-    - `session_id`: string, A unique identifier for the session using "S-" followed by 8 digits (e.g., `"S-12345678"`).\n
-    - `velocity`: float, Time difference in minutes between the current and previous activity.\n
-    - `distance_from_last_location`: float, Distance in kilometers from the previous transaction location.\n
-    - `is_repeat_location`: bool, True if the location is previously used, False otherwise.\n
-    """
-    # Convert expected field types into a readable format for the LLM
-    field_types_description = "\n".join(
-        [f"- `{field}`: {str(expected_type)}" for field, expected_type in EXPECTED_FIELD_TYPES.items()]
-    )
-    # Final Prompt with Strategy and JSON Example
+
     return (
-    f"You are an AI generating **detailed sequences of banking activities** for a fraud simulation.\n"
-    f"Your task is to create a sequence of financial activities based on the predefined strategy below.\n\n"
+        f"You are an AI generating **detailed sequences of banking activities** for a fraud simulation.\n"
+        f"Your task is to create a sequence of financial activities based on the predefined strategy below.\n\n"
+        
+        f"### Strategy:\n{strategy}\n\n"
 
-    f"### Strategy:\n{strategy}\n\n"
+        f"### Data Generation Rules:\n"
+        f"- The financial activities must be generated as a JSON object.\n"
+        f"- Only include the following fields:\n{field_explanation}\n\n"
 
-    f"- If the fraud is a **multi-event fraud**, generate at least **`minimum_activities`** (specified in the strategy) transactions that follow the specified pattern."
-    f"- For **single-event fraud**, ensure the transaction fully represents the fraudulent behavior."
-    f"The generated activities must clearly reflect the characteristics provided in the strategy.\n\n"
-    
-    f"### Data Generation Rules:\n"
-    f"- The financial activities must be generated as a JSON object.\n\n"
-    f"- Required Fields in the JSON (with format specifications, do NOT add extra fields):\n{field_explanation}\n\n"
-    f"- First, explain your reasoning step by step **without making examples**.\n"
-    f"- Then, generate **only** the structured JSON activity sequence as in the following JSON example: \n{json_template}\n"
-    f"- The JSON MUST be enclosed within **triple backticks** using the format ```json ... ```.\n"
-    f"- Ensure that timestamps are logically consistent and formatted according to ISO 8601 standards.\n"
-    f"- Do **NOT** include comments or explanations in the JSON.\n"
-    f"- End your response immediately after closing the JSON block.\n"
-    f"- **Use the provided `global_clock`, `user_id`.**\n\n"
-    f"- Errors you did in the past generation and that you must avoid {past_errors}\n\n"
+        f"{'Fraudulent Transactions: Each new transaction should adapt to the previous balance_after value.' if fraud_label == 1 else ''}\n"
+        
+        f"{'Fraudulent Transactions: If the last transaction was denied (granted=False), adjust the fraud strategy.' if fraud_label == 1 and granted == False else ''}\n"
 
-    f"### Important:\n"
-    f"- **The JSON must be flat**\n"
-    f"- End your response after closing triple backticks.\n"
-    f"- Ensure all field values match the types and formats specified in the JSON field explanation. If the format is string, the string must be enclosed in \"\" or ''\n"
-    f"- Don't repeat the JSON example, just fill the fields with the most appropriate values for the strategy you are simulating.\n\n"
-    f"** Field Type Constraints (MUST be followed):**\n{field_types_description}"
-    f"- All identifiers must follow the exact format provided.\n"
-    f"- Account and recipient IDs must follow the structure 'ACC-12345678' and 'REC-98765432'.\n"
-    f"- `recipient_bank` should resemble realistic **BIC codes** (e.g., 'DEUTDEFF', 'NWBKGB2L'\n")    
+        f"- Ensure transactions follow **logical constraints**, such as:\n"
+        f"  - Withdrawals or purchases should not exceed `balance_before`.\n"
+        f"  - Transfers should respect available balance unless flagged as fraud.\n"
 
+        f"- First, explain your reasoning **without making examples**.\n"
+        f"- Then, generate **only** the structured JSON activity sequence as in the following JSON example:\n{json_template}\n"
+
+        f"- The JSON MUST be enclosed within **triple backticks** using the format ```json ... ```.\n"
+        f"- Ensure that timestamps are logically consistent and formatted according to ISO 8601 standards.\n"
+        f"- Do **NOT** include comments or explanations in the JSON.\n"
+        f"- End your response immediately after closing the JSON block.\n"
+        
+        f"### Important:\n"
+        f"- **The JSON must be flat**\n"
+        f"- Ensure all field values match the expected data types.\n"
+        f"- **Errors you did in past generations and must avoid:** {past_errors}\n"
+    )
 
 #Add usefyul prints during build_generation_prompt
 #- need to understand if the errors are beinng used and in case of invali structure it must be return retry
 
 
-def generate_activity_sequence(strategy, global_clock=None, user_id=None):
-    """Generates structured financial activities with adaptive learning."""
-    retries = 1
-    while True:
+def generate_activity_sequence(strategy, global_clock=None, user_id=None, fraud_label=0):
+    """Generates structured financial activities for an agent, handling both legitimate and fraudulent behaviors."""
+
+    if fraud_label == 0:
+        # ✅ Legitimate Users → Generate full sequence in one LLM call
         past_errors = read_past_errors()
-        print(f"Past errors: {past_errors}")
-        print(f"Attempt {retries} to generate activities for user {user_id}...")
-        prompt = build_generation_prompt(strategy, global_clock, user_id, past_errors)
-        response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}], )    # options={"temperature": 0.7}
+        print(f"Generating full sequence for legitimate user {user_id}...")
+        
+        prompt = build_generation_prompt(strategy, global_clock, user_id, past_errors, fraud_label=0)
+        response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}])
         raw_response = response['message']['content'].strip()
-        save_to_text(raw_response, user_id)  # Save for debugging
+        save_to_text(raw_response, user_id)
+
         activity_sequence = validate_json(raw_response, user_id)
-        # 🔹 Step 2: Extract, Validate, and Correct JSON
-        if activity_sequence != 'retry':
-            print(f"JSON generation successful for user {user_id}.")
-            update_reward_log(score=1, user_id=user_id, reason="Valid JSON extracted and used")
-            return activity_sequence 
-        else:
-            print(f"Retrying activity generation for user {user_id}...")
-            update_reward_log(score=-1, user_id=user_id, reason="JSON generation failed")
-            #embed()
-            retries += 1
+        if activity_sequence == 'retry':
+            print(f"Retrying legitimate sequence for {user_id}...")
+            return generate_activity_sequence(strategy, global_clock, user_id, fraud_label)
+        
+        # Post-process: Compute `balance_after` and `granted`
+        for activity in activity_sequence:
+            activity = compute_balance(activity)
+
+        return activity_sequence  
+
+    else:
+        # ⚠️ Fraudulent Users → Step-by-step generation
+        print(f"Generating fraudulent transactions dynamically for {user_id}...")
+        
+        balance_before = random.uniform(500, 5000)  # Initialize with a random balance
+        fraudulent_transactions = []
+        granted = True  # Assume first transaction is granted
+
+        for _ in range(random.randint(2, 5)):  # Generate 2-5 fraudulent attempts
+            past_errors = read_past_errors()
+            print(f"Attempting fraud transaction for {user_id} with balance {balance_before}...")
+
+            # Generate prompt with current balance_before and last granted status
+            prompt = build_generation_prompt(
+                strategy, global_clock, user_id, past_errors, fraud_label=1, 
+                balance_before=balance_before, granted=granted
+            )
+            response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}])
+            raw_response = response['message']['content'].strip()
+            save_to_text(raw_response, user_id)
+
+            activity = validate_json(raw_response, user_id)
+            if activity == 'retry':
+                print(f"Retrying fraudulent transaction for {user_id}...")
+                continue
+            
+            # Ensure activity is structured correctly
+            activity[0]['balance_before'] = balance_before
+            activity[0] = compute_balance(activity[0])  
+            
+            # Update balance and granted status
+            balance_before = activity[0]['balance_after']
+            granted = activity[0]['granted']
+
+            fraudulent_transactions.append(activity[0])
+
+            # Adapt fraud behavior if the transaction was denied
+            if not granted:
+                print(f"🚨 Fraudulent transaction denied. Adjusting strategy for {user_id}...")
+                strategy = modify_strategy_based_on_rejection(strategy)
+
+        return fraudulent_transactions
+
+def modify_strategy_based_on_rejection(strategy):
+    """Modifies the fraud strategy when a transaction is denied, making the fraudster adapt."""
     
+    print("🔄 Adapting fraud strategy...")
+
+    # Example modifications: 
+    # - Reduce transaction amount if previous fraud attempt was too large
+    # - Try a different transaction type (e.g., from withdrawal to transfer)
+    # - Use a different device or IP to bypass detection
+
+    if "high-value transactions" in strategy:
+        strategy = strategy.replace("high-value transactions", "medium-value transactions")
+
+    if "single large withdrawal" in strategy:
+        strategy = strategy.replace("single large withdrawal", "multiple small withdrawals")
+
+    if "same device" in strategy:
+        strategy = strategy.replace("same device", "new device")
+
+    print(f"🚀 Updated fraud strategy: {strategy}")
+    return strategy
 
 def visualize_json_success_rate():
     """Plots JSON success trends over time."""
@@ -455,8 +531,8 @@ def assign_actvity_fields(activity, user_id, behavior_type, fraud_label):
     activity['user_id'] = user_id
     activity['transaction_id'] = f"TXN-{generate_random_hash(10)}"
     activity['behavior_type'] = behavior_type
-    activity['fraud_label'] = fraud_label
     activity = compute_balance(activity)
+    activity['fraud_label'] = fraud_label
     return activity
 
 def generate_activities(total_activities=1000, target_fraud_percentage=0.1, fraud_agents_count=5, legit_agents_count=20, buffer_size=1):
@@ -473,6 +549,7 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
         nonlocal header_written
         if buffer:
             df = pd.DataFrame(buffer)
+            df = df[ORDERED_COLUMNS]
             #expected_columns = list(EXPECTED_FIELD_TYPES.keys())
             #df = df[[col for col in df.columns if col in expected_columns]]
             df.to_csv(DATA_FILE, mode='a', index=False, header=not header_written)
