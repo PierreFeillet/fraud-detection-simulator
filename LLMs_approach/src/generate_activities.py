@@ -22,7 +22,8 @@ ERROR_LOG_FILE = os.path.join(OUTPUT_DIR, f"json_errors_{LLM_model}.log")
 REWARD_LOG_FILE = os.path.join(OUTPUT_DIR, f"reward_progress_{LLM_model}.csv")
 VALIDATION_LOG_FILE = os.path.join(OUTPUT_DIR, f"json_validation_{LLM_model}.log")
 LOG_TEXT_FILE = os.path.join(OUTPUT_DIR, f"llm_chain_of_thought_{LLM_model}.txt")
-OUTPUT_FILE = os.path.join(OUTPUT_DIR, f"bank_log_{LLM_model}.csv")
+DATA_DIR = "data"
+DATA_FILE = os.path.join(DATA_DIR, f"bank_log_{LLM_model}.csv")
 
 # Expected field types for the JSON schema
 EXPECTED_FIELD_TYPES = {
@@ -49,13 +50,13 @@ EXPECTED_FIELD_TYPES = {
 
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
-
+os.makedirs(DATA_DIR, exist_ok=True)
 
 
 # ERROR_TRACKING_FILE
 def initialize_logs():
     """Initializes all log files."""
-    for file_path in [REWARD_LOG_FILE, ERROR_LOG_FILE, LOG_TEXT_FILE, OUTPUT_FILE, VALIDATION_LOG_FILE, ]:
+    for file_path in [REWARD_LOG_FILE, ERROR_LOG_FILE, LOG_TEXT_FILE, DATA_FILE, VALIDATION_LOG_FILE, ]:
         with open(file_path, 'w') as file:
             file.write("")
 
@@ -474,7 +475,7 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
             df = pd.DataFrame(buffer)
             #expected_columns = list(EXPECTED_FIELD_TYPES.keys())
             #df = df[[col for col in df.columns if col in expected_columns]]
-            df.to_csv(OUTPUT_FILE, mode='a', index=False, header=not header_written)
+            df.to_csv(DATA_FILE, mode='a', index=False, header=not header_written)
             header_written = True  
             buffer.clear()  
 
@@ -517,9 +518,9 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
 
     flush_buffer()
 
-    print(f"Activity generation complete. Data saved to {OUTPUT_FILE}")
+    print(f"Activity generation complete. Data saved to {DATA_FILE}")
 
-    final_df = pd.read_csv(OUTPUT_FILE)
+    final_df = pd.read_csv(DATA_FILE)
     return final_df
 
 def load_existing_strategies(filename):
