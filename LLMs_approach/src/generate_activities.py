@@ -324,9 +324,8 @@ def log_json_validation(status, json_content, errors=None):
 def build_generation_prompt(strategy, global_clock, user_id, past_errors=None, fraud_label=0, balance_before=None, granted=None):
     """Builds the prompt for generating activity sequences, adapting based on fraud type and past errors."""
 
-    # Adjust field list based on fraud or legit user
     if fraud_label == 0:
-        # Legitimate transactions: LLM does NOT generate balance_after or granted
+        # Legitimate Users → LLM does NOT generate `balance_after` or `granted`
         fields_to_include = [
             "bank_timestamp", "local_timestamp", "account_id", "type", "amount",
             "currency", "balance_before", "location", "ip_address", "device_id",
@@ -334,7 +333,7 @@ def build_generation_prompt(strategy, global_clock, user_id, past_errors=None, f
             "login_attempts", "session_id", "velocity", "distance_from_last_location", "is_repeat_location"
         ]
     else:
-        # Fraudulent transactions: LLM must generate balance_after & granted
+        # Fraudulent Users → LLM MUST generate `balance_after` and `granted`
         fields_to_include = [
             "bank_timestamp", "local_timestamp", "account_id", "type", "amount",
             "currency", "balance_before", "balance_after", "granted", "location",
@@ -348,40 +347,15 @@ def build_generation_prompt(strategy, global_clock, user_id, past_errors=None, f
         [f"- `{field}`: {str(EXPECTED_FIELD_TYPES[field])}" for field in fields_to_include]
     )
 
-    # Adjust JSON template example
-    json_template = f"""
-    ```json
-    [
-        {{
-            "bank_timestamp": "2025-03-01T07:00:00+00:00",
-            "local_timestamp": "2025-03-01T02:00:00-05:00",
-            "account_id": "ACC-12345678",
-            "type": "Purchase",
-            "amount": 150.75,
-            "currency": "USD",
-            "balance_before": 1000.00,
-            {'' if fraud_label == 0 else '"balance_after": 849.25,'}
-            {'' if fraud_label == 0 else '"granted": true,'}
-            "location": "New York, USA",
-            "ip_address": "192.168.1.10",
-            "device_id": "iPhone-14",
-            "network_type": "Wi-Fi",
-            "merchant_name": "Amazon",
-            "recipient_id": null,
-            "recipient_bank": null,
-            "login_attempts": 1,
-            "session_id": "S-12345678",
-            "velocity": 0.52,
-            "distance_from_last_location": 3.4,
-            "is_repeat_location": true
-        }}
-    ]
-    ```
-    """
+    # Fraud case: Pass balance_before and reaction to last granted flag
+    fraud_instructions = (
+        f"- **IMPORTANT:** You MUST generate `balance_after` and `granted`.\n"
+        f"- If the previous transaction was **denied (`granted=False`)**, adjust the fraud strategy (e.g., lower amount, change location, use a different device).\n"
+    ) if fraud_label == 1 else ""
 
     return (
-        f"You are an AI generating **detailed sequences of banking activities** for a fraud simulation.\n"
-        f"Your task is to create a sequence of financial activities based on the predefined strategy below.\n\n"
+        f"You are generating a sequence of banking activities for a fraud simulation.\n"
+        f"Your task is to create a sequence based on the predefined strategy below.\n\n"
         
         f"### Strategy:\n{strategy}\n\n"
 
@@ -389,26 +363,17 @@ def build_generation_prompt(strategy, global_clock, user_id, past_errors=None, f
         f"- The financial activities must be generated as a JSON object.\n"
         f"- Only include the following fields:\n{field_explanation}\n\n"
 
-        f"{'Fraudulent Transactions: Each new transaction should adapt to the previous balance_after value.' if fraud_label == 1 else ''}\n"
+        f"{fraud_instructions}\n"
         
-        f"{'Fraudulent Transactions: If the last transaction was denied (granted=False), adjust the fraud strategy.' if fraud_label == 1 and granted == False else ''}\n"
-
-        f"- Ensure transactions follow **logical constraints**, such as:\n"
+        f"- **Ensure transactions follow balance constraints**:\n"
         f"  - Withdrawals or purchases should not exceed `balance_before`.\n"
         f"  - Transfers should respect available balance unless flagged as fraud.\n"
 
         f"- First, explain your reasoning **without making examples**.\n"
-        f"- Then, generate **only** the structured JSON activity sequence as in the following JSON example:\n{json_template}\n"
-
-        f"- The JSON MUST be enclosed within **triple backticks** using the format ```json ... ```.\n"
-        f"- Ensure that timestamps are logically consistent and formatted according to ISO 8601 standards.\n"
+        f"- Then, generate **only** the structured JSON activity sequence:\n"
+        f"```json\n[...]\n```\n"
+        f"- The JSON MUST be enclosed within triple backticks.\n"
         f"- Do **NOT** include comments or explanations in the JSON.\n"
-        f"- End your response immediately after closing the JSON block.\n"
-        
-        f"### Important:\n"
-        f"- **The JSON must be flat**\n"
-        f"- Ensure all field values match the expected data types.\n"
-        f"- **Errors you did in past generations and must avoid:** {past_errors}\n"
     )
 
 #Add usefyul prints during build_generation_prompt
@@ -481,6 +446,7 @@ def generate_activity_sequence(strategy, global_clock=None, user_id=None, fraud_
                 strategy = modify_strategy_based_on_rejection(strategy)
 
         return fraudulent_transactions
+
 
 def modify_strategy_based_on_rejection(strategy):
     """Modifies the fraud strategy when a transaction is denied, making the fraudster adapt."""
