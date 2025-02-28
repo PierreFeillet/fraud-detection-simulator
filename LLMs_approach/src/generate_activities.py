@@ -28,6 +28,8 @@ DATA_FILE = os.path.join(DATA_DIR, f"bank_log_{LLM_model}.csv")
 
 # Expected field types for the JSON schema
 # Expected field types for the JSON schema
+
+# Expected field types for the JSON schema
 EXPECTED_FIELD_TYPES = {
     "bank_timestamp": str,  # ISO 8601 format
     "local_timestamp": str,  # ISO 8601 format
@@ -36,7 +38,6 @@ EXPECTED_FIELD_TYPES = {
     "amount": (int, float),  # Allow both int and float for amounts
     "currency": str,
     "balance_before": (int, float),
-    "balance_after": (int, float),
     "location": str,
     "ip_address": str,
     "device_id": str,
@@ -59,6 +60,7 @@ ORDERED_COLUMNS = [
     # Time-related fields together
     "bank_timestamp",
     "local_timestamp",
+    "velocity",
 
     # Geographical information together
     "location",
@@ -71,6 +73,7 @@ ORDERED_COLUMNS = [
     "amount",
     "currency",
     "account_id",
+    "granted",
     "balance_before",
     "balance_after",
 
@@ -127,121 +130,98 @@ def log_error_occurrences(errors):
     else:
         error_data = {"error_counts": defaultdict(int), "timestamps": []}
 
-def validate_json(raw_response, user_id):
+        raise ValueError("No JSON block found in the text.")
+    
+    
+def validate_json(text, user_id):
     """Validates JSON correctness and returns a list of detected errors while logging occurrences.
     Returns 'retry' if the JSON is invalid and needs to be reattempted."""  
     errors = []
     print(f"Validating JSON for user {user_id}...")
-    extracted_json_blocks = re.findall(r'```\s*(\[\s*{.*?}\s*\])\s*```end_json', raw_response, re.DOTALL) 
+    # Use a regular expression to capture text between the markers.
+    pattern = r"<<<JSON>>>(.*?)<<<END_JSON>>>"
+    match = re.search(pattern, text, re.DOTALL)
 
-    if not extracted_json_blocks:
-        extracted_json_blocks = re.findall(r'(\[\s*{.*?}\s*\])', raw_response, re.DOTALL)
+    if not match:
+        match = re.findall(r'(\{\s*{.*?}\s*\})', text, re.DOTALL)
 
-    if not extracted_json_blocks:
-        errors.append(f"Error: JSON not enclosed in triple backticks or missing valid structure.")
+    if not match:
+        errors.append(f"Error: JSON not enclosed in delimiters or missing valid structure.")
         log_json_errors(errors)
         print(f"Errors detected in JSON for user {user_id}:\n{errors}")
         return 'retry'
-    else:
-        valid_json_strings = []
 
-        for json_string in extracted_json_blocks:
-            # 🔹 Step 1: Check for forbidden inline comments before parsing
-            if re.search(r'//.*', json_string) or re.search(r'/\*.*?\*/', json_string, re.DOTALL):
-                errors.append("Error: JSON contains inline comments (`//` or `/*...*/`). Remove eventual comments.")
-                log_json_errors(errors)
-                print(f"Errors detected in JSON for user {user_id}:\n{errors}")
-                return 'retry'
-            # 🔹 Step 2: Store for later parsing if no comments are found
-            valid_json_strings.append(json_string)
+    # 🔹 Step 1: Check for forbidden inline comments before parsing
+    if re.search(r'//.*', match) or re.search(r'/\*.*?\*/', match, re.DOTALL):
+        errors.append("Error: JSON contains inline comments (`//` or `/*...*/`). Remove eventual comments.")
+        log_json_errors(errors)
+        print(f"Errors detected in JSON for user {user_id}:\n{errors}")
+        return 'retry'
+    # 🔹 Step 2: Store for later parsing if no comments are found
+    try:
+        activity = json.loads(match)  # Convert JSON string to Python object
+         # 🔹 Step 3: Validate JSON structure and field types
+        missing_fields = [field for field in EXPECTED_FIELD_TYPES if field not in activity]
+        extra_fields = [field for field in activity if field not in EXPECTED_FIELD_TYPES]
+        if missing_fields:
+            errors.append(f"Error:  Missing fields in transaction: {', '.join(missing_fields)}")
+            log_json_errors(errors)
+            print(f"Errors detected in JSON for user {user_id}:\n{errors}")
+            return 'retry'
+        if extra_fields:
+            errors.append(f"Error: Unexpected fields in transaction: {', '.join(extra_fields)}")
+            log_json_errors(errors)
+            print(f"Errors detected in JSON for user {user_id}:\n{errors}")
+            return 'retry'
 
-        valid_activities = []
-        for json_string in valid_json_strings:
-            try:
-                activities = json.loads(json_string)  # Convert JSON string to Python object
-                if not isinstance(activities, list):
-                    activities = [activities]
-
-                # 🔹 Step 3: Validate JSON structure and field types
-                for activity in activities:
-                    missing_fields = [field for field in EXPECTED_FIELD_TYPES if field not in activity]
-                    extra_fields = [field for field in activity if field not in EXPECTED_FIELD_TYPES]
-
-                    if missing_fields:
-                        errors.append(f"Error:  Missing fields in transaction: {', '.join(missing_fields)}")
-                        log_json_errors(errors)
-                        print(f"Errors detected in JSON for user {user_id}:\n{errors}")
-                        return 'retry'
-
-                    if extra_fields:
-                        errors.append(f"Error: Unexpected fields in transaction: {', '.join(extra_fields)}")
-                        log_json_errors(errors)
-                        print(f"Errors detected in JSON for user {user_id}:\n{errors}")
-                        return 'retry'
-
-
-                    for field, expected_type in EXPECTED_FIELD_TYPES.items():
-                        if field in activity and not isinstance(activity[field], expected_type):
-                            errors.append(
-                                f"Error: Incorrect type for `{field}` in transaction. "
-                                f"Error: Expected {expected_type}, got {type(activity[field])}."
-                            )
-                            log_json_errors(errors)
-                            print(f"Errors detected in JSON for user {user_id}:\n{errors}")
-                            return 'retry'
-  
-                    if check_balance(activity, errors):
-                        valid_activities.append(activity)
-
-            except json.JSONDecodeError as e:
-                errors.append(f"JSON Decode Error: {e}")
+        for field, expected_type in EXPECTED_FIELD_TYPES.items():
+            if field in activity and not isinstance(activity[field], expected_type):
+                errors.append(
+                    f"Error: Incorrect type for `{field}` in transaction. "
+                    f"Error: Expected {expected_type}, got {type(activity[field])}."
+                )
                 log_json_errors(errors)
                 print(f"Errors detected in JSON for user {user_id}:\n{errors}")
                 return 'retry'
 
+    except json.JSONDecodeError as e:
+        errors.append(f"JSON Decode Error: {e}")
+        log_json_errors(errors)
+        print(f"Errors detected in JSON for user {user_id}:\n{errors}")
+        return 'retry'
 
     if not errors:
         print(f"JSON validated successfully for user {user_id}.")
-        return valid_activities
+        return activity
+    
 
-def check_balance(activity, errors):
-                transaction_type = activity.get("type", "").lower()
-                balance_before = activity.get("balance_before")
-                balance_after = activity.get("balance_after")
-                amount = activity.get("amount")
-                if balance_before is None or balance_after is None or amount is None:
-                    error= f"Error: `balance_before`, `amount`, `balance_after` fields are None"
-                    errors.append(error)
-                    log_json_errors(errors)
-                    print(errors)
-                    return 'retry'
+def compute_balance(activity):
+    transaction_type = activity.get("type", "").lower()
+    balance_before = activity.get("balance_before")
+    amount = activity.get("amount")
+    if any(word in transaction_type for word in ["purchase", "withdrawal", "transfer"]):
+        if amount > balance_before:
+            granted = False
+            balance_after = balance_before
+            print(f"Insufficient funds for {transaction_type} in transaction. Granted set to False")
+        else:
+            balance_after = balance_before - amount
+            granted = True
+    else:
+        balance_after = balance_before + amount
+        granted = True
+    activity["balance_after"] = balance_after
+    activity["granted"] = granted
+    return activity
 
-                if any(word in transaction_type for word in ["purchase", "withdrawal", "transfer"]):
-                    if amount > balance_before:
-                        if balance_after!=balance_before:
-                            error = f"Error: Insufficient funds for {transaction_type} in transaction. `balance_after` must be = `balance_before`."
-                            errors.append(error)
-                            log_json_errors(errors)
-                            print(errors)
-                            return 'retry'
 
-                    else:
-                        expected_balance_after = balance_before - amount
-                        if balance_after != expected_balance_after:
-                            error = f"Error: Incorrect balance for {transaction_type} in transaction. Error: Expected balance_after={expected_balance_after}, got {balance_after} for transaction type {transaction_type}."
-                            errors.append(error)
-                            log_json_errors(errors)
-                            print(errors)
-                            return 'retry'
-                else:
-                    expected_balance_after = balance_before+amount
-                    if balance_after != expected_balance_after:
-                        error = f"Error: Incorrect balance for {transaction_type} in transaction. Error: Expected balance_after={expected_balance_after}, got {balance_after} for transaction type {transaction_type}."
-                        errors.append(error)
-                        log_json_errors(errors)
-                        print(errors)   
-                        return
-                return True
+def assign_actvity_fields(activity, user_id, behavior_type, fraud_label):   
+    activity['user_id'] = user_id
+    activity['transaction_id'] = f"TXN-{generate_random_hash(10)}"
+    activity['behavior_type'] = behavior_type
+    activity = compute_balance(activity)
+    activity['fraud_label'] = fraud_label
+    return activity
 
 
 def plot_error_trends():
@@ -338,13 +318,19 @@ def log_json_validation(status, json_content, errors=None):
         
         file.write("\n" + "="*80 + "\n")  # Separator for readability
 
-def build_generation_prompt(strategy, global_clock, user_id, past_errors=None):
-    """Builds the prompt for generating activity sequences, adapting based on fraud type and past errors."""
+def build_generation_prompt(strategy, global_clock, user_id, history, past_errors=None):
+    """
+    Builds a prompt for generating the next transaction.
+    It includes the current balance and an optional summary of previous transactions.
+    """
+    # Build a history summary if history is provided
+    history_summary = ""
+    if history:
+        history_summary = f"Previous transactions for user {user_id}:\n" + json.dumps(history, indent=2) + "\n"
 
     # JSON Template with Dynamic Values
     json_template = """
-    ```
-        [
+    <<<JSON>>>        
         {
             "bank_timestamp": "2025-03-01T07:00:00+00:00",
             "local_timestamp": "2025-03-01T02:00:00-05:00",
@@ -366,34 +352,11 @@ def build_generation_prompt(strategy, global_clock, user_id, past_errors=None):
             "velocity": 0.52,
             "distance_from_last_location": 3.4,
             "is_repeat_location": true,
-        },
-        {
-            "bank_timestamp": "2025-03-01T07:10:00+00:00",
-            "local_timestamp": "2025-03-01T02:10:00-05:00",
-            "account_id": "ACC-12345678",
-            "type": "Transfer",
-            "amount": 500.00,
-            "currency": "USD",
-            "balance_before": 849.25,
-            "balance_after": 349.25,
-            "location": "San Francisco, USA",
-            "ip_address": "192.168.1.20",
-            "device_id": "MacBook-Air",
-            "network_type": "Wi-Fi",
-            "merchant_name": null,
-            "recipient_id": "REC-12345678",
-            "recipient_bank": "NWBKGB2L",
-            "login_attempts": 1,
-            "session_id": "S-15467349",
-            "velocity": 10.0,
-            "distance_from_last_location": 4150.0,
-            "is_repeat_location": false,
         }
-        ]
-    ```end_json
+    <<<END_JSON>>>
     """
     field_explanation = f""""
-        - `bank_timestamp`: string (ISO 8601 format), The UTC time when the activity occurred starting from {global_clock}, formatted as 'YYYY-MM-DDTHH:MM:SS+00:00'.\n
+        - `bank_timestamp`: string (ISO 8601 format), The UTC time when the activity occurred, formatted as 'YYYY-MM-DDTHH:MM:SS+00:00'.\n
         - `local_timestamp`: string (ISO 8601 format), The local time of the activity with time zone offset (e.g., 'YYYY-MM-DDTHH:MM:SS-05:00').\n
         - `account_id`: string, A structured account ID starting with **"ACC-"** followed by 8 digits (e.g., `"ACC-12345678"`). This is the target account for that activity.\n
         - `type`: string, The type of activity (e.g., Purchase, Withdrawal, Transfer).\n
@@ -418,42 +381,32 @@ def build_generation_prompt(strategy, global_clock, user_id, past_errors=None):
     field_types_description = "\n".join(
         [f"- `{field}`: {str(expected_type)}" for field, expected_type in EXPECTED_FIELD_TYPES.items()]
     )
-
-    balance_rules = """
-    - Rule for `balance_before`: check if the `account_id` is already present in the sequence. If not, initialize the `balance_before` to a reasonable number; if yes, `balance_before`=`balance_after` of the latest transaction for that account. \n
-    - Rule for `balance_after`: if the activity `type` involves adding money on the account then compute `balance_after` as `balance_before - amount` and assign only the result value. if the activity `type` involves taking money from the account then compute `balance_after` as `balance_before - amount` and assign only the result value. If the activity `type` doesn't involve any impact on the balance for that account, then `balance_after`=`balance_before` for that account_id. \n"
-    """
-     # Final Prompt with Strategy and JSON Example
-    return (
-        f"You are an AI generating **detailed sequences of banking activities** for a fraud simulation.\n"  
-        f"Your task is to create a sequence of financial activities based on the predefined strategy below.\n\n"
-        f"### Strategy:\n{strategy}\n\n"
-        f"- If the fraud is a **multi-event fraud**, generate at least **`minimum_activities`** (specified in the strategy) transactions that follow the specified pattern."
-        f"- For **single-event fraud**, ensure the transaction fully represents the fraudulent behavior."
-        f"The generated activities must clearly reflect the characteristics provided in the strategy.\n\n"
-        f"### Data Generation Rules:\n"
-        f"- Required Fields in the JSON, with format specifications, don't add extra-fields:\n{field_explanation}\n\n"
-        f"- First, explain your reasoning step by step **without making examples**.\n"
-        f"- Then, generate **only** the structured JSON activity sequence as in the following JSON example: \n{json_template}\n"
-        f"- Don't repeat the example, generate a new one.\n"
-        f"- The JSON MUST be enclosed within **triple backticks** and must have '```end_json' as a stop sequence.\n"
-        f"- Ensure that timestamps are logically consistent and formatted according to ISO 8601 standards.\n"
-        f"- Do **NOT** include comments or explanations in the JSON.\n"
-        f"- End your response immediately after closing the JSON block.\n"
-        f"- **Use the provided `global_clock` to iniziliaze the `bank_timestamp` for only the first activity in the sequence.**\n"
-        f"- **Field Type Constraints (MUST be followed):** {field_types_description}"
-        f"- To choose the value for `balance_before` and compute the `balance_after` follow the rules in Balance Rules section.\n"
-        f"- Balance Rules: {balance_rules}\n"
-        f"### Important:\n"
-        f"- **The JSON must be flat**\n"
-        f"- End your response after closing triple backticks and add ``.\n"
-        f"- Ensure all field values match the types and formats specified in the JSON field explanation. If the format is string, the string must be enclosed in "" or ''\n"
-        f"- Ensure the balance after is correctly calculated based on the transaction type and amount.\n"
-        f"- Don't repeat the same errors you did in the past: {past_errors}.\n"
+    # Build the final prompt in parts
+    prompt_parts = []
+    if history_summary:
+        prompt_parts.append(f"{history_summary}\n")
+    prompt_parts.append(
+        f"You are generating the next most probable banking activity for user {user_id} whose behavior is described by the following strategy: {strategy}.\n"
     )
+    prompt_parts.append(
+        f"The activity must be created in JSON format with the same fields as in the following example:\n{json_template}\n"
+    )
+    prompt_parts.append("Do not include any extra fields, comments, or explanations in the JSON.\n")
+    prompt_parts.append("Only generate one transaction in this call.\n")
+    prompt_parts.append("### Data Generation Rules:\n")
+    prompt_parts.append(f"- Required Fields in the JSON, with format specifications, don't add extra fields:\n{field_explanation}\n\n")
+    prompt_parts.append("- Don't repeat the example, generate a new one.\n")
+    prompt_parts.append("- The JSON MUST be enclosed within the markers <<<JSON>>> and <<<END_JSON>>>.\n")
+    prompt_parts.append("- Ensure that timestamps are logically consistent and formatted according to ISO 8601 standards.\n")
+    prompt_parts.append("- End your response immediately after closing the JSON block.\n")
+    prompt_parts.append("- Use the provided `global_clock` to initialize the `bank_timestamp` if the history is empty for the user.\n")
+    prompt_parts.append("### Important:\n")
+    prompt_parts.append("- The JSON must be flat.\n")
+    prompt_parts.append("- Ensure all field values match the types and formats specified in the JSON field explanation. If the format is string, the string must be enclosed in double quotes.\n")
+    prompt_parts.append(f"- Don't repeat the same errors you did in the past: {past_errors}.\n")
+    
+    return "".join(prompt_parts)
 
-#Add usefyul prints during build_generation_prompt
-#- need to understand if the errors are beinng used and in case of invali structure it must be return retry
 
 
 def generate_activity_sequence(strategy, global_clock=None, user_id=None,):   
