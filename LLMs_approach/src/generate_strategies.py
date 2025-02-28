@@ -55,12 +55,8 @@ def generate_fraud_strategy(fraud_type=None, filename="strategies/fraud_strategi
         - **{fraud_type}**
 
         ### Instructions:
-        1. Clearly describe the fraudulent behavior.
-        2. Specify whether the fraud is:
-        - **Single-event**: A one-time transaction that completes the fraud.
-        - **Multi-event**: Requires multiple transactions to fully execute and reveal the fraud pattern.
-        3. Define the **minimum number of activities** required for the fraud to be recognizable. This number must be realistic and specific to the {fraud_type} you're simulating.
-        4. Describe the key characteristics of the fraud pattern, including:
+        - Clearly describe the fraudulent behavior.
+=       - Describe the key characteristics of the fraud pattern, including:
         - **Transaction Types Involved**: Specify whether transactions are purchases, withdrawals, transfers, or trades.
         - **Typical Transaction Amounts**: Provide realistic ranges for transaction amounts.
         - **Geographic Patterns**: Indicate if transactions occur locally, internationally, or in high-risk locations and specify which currency must be used.
@@ -76,7 +72,6 @@ def generate_fraud_strategy(fraud_type=None, filename="strategies/fraud_strategi
         {{
         "Fraud Type": "{fraud_type}",
         "Scope": "Multi-event",
-        "Minimum Activities": 5,
         "Description": {{
             "Transaction Types Involved": ["Unauthorized Stock Purchases", "Unauthorized Stock Sales"],
             "Typical Transaction Amounts": ["Between $5,000 and $50,000 per transaction"],
@@ -121,7 +116,6 @@ def generate_legitimate_strategy(profile_type=None, filename="strategies/legitim
     prompt = (
         f"You're in a banking simulation where fraud checks can be immediate alerts for High-Risk Transactions "
         f"(like a flagged large foreign withdrawal) and Continuous Monitoring of Activity Patterns to catch subtler fraud over time. "
-        f"Sometimes legitimate customer operations are not granted because of the bank alerts. "
         f"You are a legitimate customer. "
         f"{profile_description} "
         "Your strategy will be used by another LLM to generate a sequence of financial activities aligned with your plan. "

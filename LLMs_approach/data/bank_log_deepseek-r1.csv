@@ -1,4 +1,0 @@
-transaction_id,user_id,bank_timestamp,local_timestamp,location,ip_address,device_id,network_type,type,amount,currency,account_id,balance_before,balance_after,merchant_name,recipient_id,recipient_bank,behavior_type,fraud_label
-TXN-2b051df7f0,USER-cbd45849,2023-10-01T12:45:00+00:00,2023-10-01T07:45:00+00:00,"New York, USA",184.217.39.109,iPhone 15 Pro,Wi-Fi,Deposit,500,USD,ACC987654321,1000,1500,XYZ Services LLC,,,Loan Fraud,1
-TXN-cd514e71a2,USER-cbd45849,2023-10-01T13:00:00+00:00,2023-10-01T07:45:00+00:00,"Los Angeles, USA",184.217.39.110,MacBook Pro,Wi-Fi,Withdrawal,300,USD,ACC987654321,1500,1200,ABC Retail Co.,,,Loan Fraud,1
-TXN-304f24a39a,USER-cbd45849,2023-10-01T13:15:00+00:00,2023-10-01T07:45:00+00:00,"London, UK",184.217.39.111,Samsung Galaxy S21 Ultra,Wi-Fi,Transfer,200,USD,ACC987654321,1200,1000,,R1234567890,ABC Bank PLC,Loan Fraud,1
