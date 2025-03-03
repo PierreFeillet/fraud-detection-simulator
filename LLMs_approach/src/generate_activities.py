@@ -301,7 +301,13 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
 
     prompt_parts = []
     if history_summary:
+        # If history exists, instruct the LLM to use the last bank_timestamp as reference,
+        # and generate a new bank_timestamp that is a plausible continuation.
         prompt_parts.append(f"{history_summary}\n")
+        prompt_parts.append("- Use the last bank_timestamp from the history as a reference to generate the next bank_timestamp. The new timestamp should be a plausible, later time, consistent with the transaction type and strategy.\n")
+    else:
+        # If no history, instruct the LLM to use the global clock as the starting point.
+        prompt_parts.append(f"- Use the global clock {global_clock} as a reference to initialize the bank_timestamp for the activity. The generated timestamp should be close to this time.\n")
     prompt_parts.append(f"You are generating the next most probable banking activity for user {user_id} whose behavior is described by the following strategy: {strategy}.\n")
     prompt_parts.append(f"The activity must be generated in JSON format with the same fields as in the following example:\n{json_template}\n")
     prompt_parts.append("Do not include any extra fields, comments, or explanations.\n")
@@ -312,7 +318,6 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
     prompt_parts.append("- The JSON MUST be enclosed within the markers <<<JSON>>> and <<<END_JSON>>>.\n")
     prompt_parts.append("- Ensure timestamps are ISO 8601 formatted and logically consistent.\n")
     prompt_parts.append("- End your response immediately after closing the JSON block.\n")
-    prompt_parts.append("- Use the provided global_clock to initialize bank_timestamp if no history exists for the user.\n")
     prompt_parts.append("- The possible activity types are described in the strategy.\n")
     prompt_parts.append(f"- The value for `amount` must be <{balance}.\n")
     prompt_parts.append("### Important:\n")
@@ -341,39 +346,42 @@ def generate_activity_sequence(strategy, global_clock, user_id, behavior_type, f
         history = history_by_account.get(account_id, [])
         
         retries = 1
-        past_errors = read_past_errors()
-        print(f"User {user_id}, Account {account_id}: Generating activity attempt {retries} with balance {current_balance:.2f}...")
-        prompt = build_generation_prompt(strategy, global_clock, user_id, history, current_balance, past_errors)
-        response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}])
-        raw_response = response['message']['content'].strip()
-        save_to_text(raw_response, user_id)  # For debugging
-        
-        activity = validate_json(raw_response, user_id)
-        if activity != 'retry':
-            tx = activity[0]
-            new_account_id = tx.get("account_id")
-            if not new_account_id or new_account_id.strip() == "":
-                new_account_id = account_id
-                tx["account_id"] = new_account_id
-            if new_account_id not in user_accounts:
-                default_balance = random.randint(100, 10000)
-                print(f"New account detected: {new_account_id}. Creating account with initial balance {default_balance:.2f}.")
-                user_accounts[new_account_id] = default_balance
-                history_by_account[new_account_id] = []
-            current_balance = user_accounts[new_account_id]
-            tx["balance_before"] = current_balance
-            new_balance = update_balance(tx, current_balance)
-            tx["balance_after"] = new_balance
-            tx = assign_actvity_fields(tx, user_id, behavior_type, fraud_label)
-            # Optionally, you could set a 'granted' field here if your strategy requires it.
-            history_by_account[new_account_id].append(tx)
-            user_accounts[new_account_id] = new_balance
-            activities.append(tx)
-            print(f"Activity generated for account {new_account_id}. New balance: {new_balance:.2f}")
-        else:
-            print(f"Retrying activity generation for user {user_id}, account {account_id}...")
-            update_reward_log(score=-1, user_id=user_id, reason="JSON generation failed")
-            retries += 1
+        while True:
+            print(f"User {user_id}, Account {account_id}: Generating activity attempt {retries} with balance {current_balance:.2f}...")
+            print(f"Generating activity {i+1}/{num_activities}...")
+            past_errors = read_past_errors()
+            prompt = build_generation_prompt(strategy, global_clock, user_id, history, current_balance, past_errors)
+            response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}])
+            raw_response = response['message']['content'].strip()
+            save_to_text(raw_response, user_id)  # For debugging
+            
+            activity = validate_json(raw_response, user_id)
+            if activity != 'retry':
+                tx = activity[0]
+                new_account_id = tx.get("account_id")
+                if not new_account_id or new_account_id.strip() == "":
+                    new_account_id = account_id
+                    tx["account_id"] = new_account_id
+                if new_account_id not in user_accounts:
+                    default_balance = random.randint(100, 10000)
+                    print(f"New account detected: {new_account_id}. Creating account with initial balance {default_balance:.2f}.")
+                    user_accounts[new_account_id] = default_balance
+                    history_by_account[new_account_id] = []
+                current_balance = user_accounts[new_account_id]
+                tx["balance_before"] = current_balance
+                new_balance = update_balance(tx, current_balance)
+                tx["balance_after"] = new_balance
+                tx = assign_actvity_fields(tx, user_id, behavior_type, fraud_label)
+                # Optionally, you could set a 'granted' field here if your strategy requires it.
+                history_by_account[new_account_id].append(tx)
+                user_accounts[new_account_id] = new_balance
+                activities.append(tx)
+                print(f"Activity generated for account {new_account_id}. New balance: {new_balance:.2f}")
+                break
+            else:
+                print(f"Retrying activity generation for user {user_id}, account {account_id}...")
+                update_reward_log(score=-1, user_id=user_id, reason="JSON generation failed")
+                retries += 1
     return activities
 
 def generate_activities(total_activities=1000, target_fraud_percentage=0.1, fraud_agents_count=5, legit_agents_count=20, buffer_size=1):
@@ -415,28 +423,20 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
                 flush_buffer()
             
        
-       
-
     # Generate legitimate activities for the remaining transactions.
-    while total_generated < total_activities:
+    while total_generated <= total_activities:
         for _ in range(legit_agents_count):
             user_id = f"USER-{generate_random_hash(8)}"
             behavior_type = random.choice(list(legitimate_strategies.keys()))
             strategy = legitimate_strategies[behavior_type]
-            activities = generate_activity_sequence(strategy=strategy, global_clock=global_clock, user_id=user_id, fraud_label=1, behavior_type=behavior_type, num_activities=random.randint(1,6))
+            activities = generate_activity_sequence(strategy=strategy, global_clock=global_clock, user_id=user_id, fraud_label=0, behavior_type=behavior_type, num_activities=random.randint(1,6))
             for activity in activities:
                 buffer.append(activity)
                 total_generated += 1
-                if len(buffer) >= buffer_size:
-                    flush_buffer()
                 if total_generated >= total_activities:
                     break
-            if total_generated >= total_activities:
-                break
-        if total_generated >= total_activities:
-            break
-    
-    flush_buffer()
+                if len(buffer) >= buffer_size:
+                    flush_buffer() 
     print(f"Activity generation complete. Data saved to {DATA_FILE}")
     final_df = pd.read_csv(DATA_FILE)
     return final_df
