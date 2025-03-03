@@ -17,13 +17,15 @@ from watsonx_helper import watsonx_chat
 # LLM used for sequence generation
 LLM_model = 'mistral'
 # File paths
-OUTPUT_DIR = "outputs"
+OUTPUT_DIR = os.getcwd()+"/outputs"
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 ERROR_TRACKING_FILE = os.path.join(OUTPUT_DIR, f"error_tracking_{LLM_model}.json")
 ERROR_LOG_FILE = os.path.join(OUTPUT_DIR, f"json_errors_{LLM_model}.log")
 REWARD_LOG_FILE = os.path.join(OUTPUT_DIR, f"reward_progress_{LLM_model}.csv")
 VALIDATION_LOG_FILE = os.path.join(OUTPUT_DIR, f"json_validation_{LLM_model}.log")
 LOG_TEXT_FILE = os.path.join(OUTPUT_DIR, f"llm_chain_of_thought_{LLM_model}.txt")
-DATA_DIR = "data"
+DATA_DIR = os.getcwd()+"/data"
+os.makedirs(DATA_DIR, exist_ok=True)
 DATA_FILE = os.path.join(DATA_DIR, f"bank_log_{LLM_model}.csv")
 
 # Expected field types for the JSON schema
@@ -77,8 +79,17 @@ ORDERED_COLUMNS = [
     "fraud_label"
 ]
 
-os.makedirs(OUTPUT_DIR, exist_ok=True)
-os.makedirs(DATA_DIR, exist_ok=True)
+def robust_remove(file_path, max_retries=5, delay=1):
+    """Attempts to remove file_path, retrying if it fails."""
+    for i in range(max_retries):
+        try:
+            if os.path.exists(file_path):
+                os.remove(file_path)
+            return True
+        except Exception as e:
+            print(f"Attempt {i+1}: Failed to remove {file_path}: {e}. Retrying in {delay} seconds...")
+            time.sleep(delay)
+    return False
 
 def initialize_logs():
     """Initializes all log files and clears the CSV.
@@ -96,11 +107,11 @@ def initialize_logs():
             f.write("")
     
     # Clear the CSV file.
-    if os.path.exists(DATA_FILE):
-        os.remove(DATA_FILE)
+    #if os.path.exists(DATA_FILE):
+    #    os.remove(DATA_FILE)
+    robust_remove(DATA_FILE)
     with open(DATA_FILE, 'w') as f:
         f.write("")  # Create an empty CSV file.
-
 
 initialize_logs()
 
@@ -217,7 +228,7 @@ def update_balance(tx, current_balance):
     """
     tx_type = tx.get("type", "").lower()
     amount = tx.get("amount", 0)
-    if "deposit" in tx_type:
+    if "deposit" or "contribution" in tx_type:
         return current_balance + amount
     elif "withdrawal" or "transfer" or  "purchase" or "sale" in tx_type:
         new_balance = current_balance - amount
@@ -433,6 +444,9 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
                 break
             if len(buffer) >= buffer_size:
                 flush_buffer()
+    if buffer:
+        flush_buffer()
+
             
        
     # Generate legitimate activities for the remaining transactions.
@@ -449,8 +463,12 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
                     break
                 if len(buffer) >= buffer_size:
                     flush_buffer() 
+    if buffer:
+        flush_buffer()
+
     print(f"Activity generation complete. Data saved to {DATA_FILE}")
     final_df = pd.read_csv(DATA_FILE)
+    print(f"Bank Dataframe has {len(final_df)} activities")
     return final_df
 
 def load_existing_strategies(filename):
@@ -471,7 +489,7 @@ def visualize_json_success_rate():
     plt.ylabel('Valid JSONs')
     plt.title('JSON Success Rate')
     plt.grid()
-    plt.show()
+    plt.savefig(f"{OUTPUT_DIR}/success_rate.png")
 
 def save_to_text(reasoning_text, agent_id=None):
     """Appends LLM reasoning and extracted JSON to a shared text file."""
@@ -496,12 +514,11 @@ def visualize_rewards():
     plt.xticks(rotation=45)
     plt.legend()
     plt.tight_layout()
-    plt.show()
+    plt.savefig(f"{OUTPUT_DIR}/reward_trend.png")
 
 # Main simulation entry point
 start_time = time.time()
 print(f"Simulation started at {datetime.now().isoformat()}")
-print(DATA_FILE)
 
 generate_activities(total_activities=20, target_fraud_percentage=0.5, fraud_agents_count=2, legit_agents_count=2)
 time_taken = round((time.time()-start_time)/60, 2)

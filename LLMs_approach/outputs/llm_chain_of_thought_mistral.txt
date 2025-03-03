@@ -1,567 +1,396 @@
 
-### LLM Chain of Thought for user ID USER-088766d5 ###
+### LLM Chain of Thought for user ID USER-d026732f ###
 
 <<<JSON>>>
     {
-        "bank_timestamp": "2025-03-01T07:00:00+00:00",
-        "local_timestamp": "2025-03-01T02:00:00-05:00",
-        "account_id": "ACC-98765432",
-        "type": "Transfer",
-        "amount": 60.25,
+        "bank_timestamp": "2025-03-04T08:14:47+00:00",
+        "local_timestamp": "2025-03-04T03:14:47-05:00",
+        "account_id": "ACC-abcdefgh",
+        "type": "Withdrawal",
+        "amount": 456.89,
         "currency": "USD",
-        "balance_before": 15000.00,
-        "location": "San Francisco, USA",
-        "ip_address": "255.255.255.0",
+        "balance_before": 1234567.00,
+        "location": "Hong Kong, China",
+        "ip_address": "220.220.220.220",
         "device_id": "Samsung-Note9",
-        "network_type": "Mobile",
+        "network_type": "4G",
         "merchant_name": null,
-        "recipient_id": "REC-11111111",
-        "recipient_bank": "Bank-XYZ",
-        "login_attempts": 0,
-        "session_id": "S-98765432",
+        "recipient_id": null,
+        "recipient_bank": null,
+        "login_attempts": 3,
+        "session_id": "S-12345678",
         "is_repeat_location": false
     }
    <<<END_JSON>>>
 
 
-### LLM Chain of Thought for user ID USER-088766d5 ###
+### LLM Chain of Thought for user ID USER-39d7bd5c ###
 
-<<<JSON>>>
+```
+   <<<JSON>>>
+   {
+       "bank_timestamp": "2025-03-04T08:22:27+00:00",
+       "local_timestamp": "2025-03-04T03:22:27-05:00",
+       "account_id": "ACC-abcdefgh",
+       "type": "Unauthorized Stock Sale",
+       "amount": 25000.00,
+       "currency": "USD",
+       "balance_before": 35000.00,
+       "location": "Chicago, USA",
+       "ip_address": "198.51.100.24",
+       "device_id": "Samsung-Note10",
+       "network_type": "Mobile Network",
+       "merchant_name": "Brokerage A",
+       "recipient_id": null,
+       "recipient_bank": null,
+       "login_attempts": 3,
+       "session_id": "S-12345678",
+       "is_repeat_location": false
+   }
+   <<<END_JSON>>>
+   ```
+
+
+### LLM Chain of Thought for user ID USER-5f733475 ###
+
+```
 {
-    "bank_timestamp": "2025-03-01T07:00:00+00:00",
-    "local_timestamp": "2025-03-01T02:00:00-05:00",
-    "account_id": "ACC-98765432",
-    "type": "Transfer",
-    "amount": 4500.00,
-    "currency": "SGD",
-    "balance_before": 100000.00,
-    "location": "Singapore",
-    "ip_address": "203.0.113.6",
-    "device_id": "Samsung-Galaxy-S21",
-    "network_type": "Mobile",
-    "recipient_id": "REC-11111111",
-    "recipient_bank": "OCBC Bank",
-    "login_attempts": 0,
-    "session_id": "S-98765432",
-    "is_repeat_location": true
-}
-   <<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-13ab95fd ###
-
-<<<JSON>>>
-    {
-        "bank_timestamp": "2025-03-01T08:00:00+00:00",
-        "local_timestamp": "2025-03-01T03:00:00-05:00",
-        "account_id": "ACC-98765432",
-        "type": "Unauthorized Stock Sale",
-        "amount": 1234.56,
-        "currency": "USD",
-        "balance_before": 6789.00,
-        "location": "Chicago, USA",
-        "ip_address": "10.0.0.1",
-        "device_id": "Samsung-Galaxy-Note-9",
-        "network_type": "4G",
-        "merchant_name": "XYZ Corporation",
-        "recipient_id": null,
-        "recipient_bank": null,
-        "login_attempts": 2,
-        "session_id": "S-98765432",
-        "is_repeat_location": true
-    }
-   <<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-13ab95fd ###
-
-<<<JSON>>>
-    {
-        "bank_timestamp": "2025-03-01T16:00:00+00:00",
-        "local_timestamp": "2025-03-01T11:00:00-05:00",
-        "account_id": "ACC-987654ab",
-        "type": "Sale",
-        "amount": 4500.0,
-        "currency": "USD",
-        "balance_before": 2838.44,
-        "location": "London, UK",
-        "ip_address": "172.16.254.1",
-        "device_id": "Samsung-Galaxy-S21",
-        "network_type": "4G",
-        "merchant_name": "ABC Corporation",
-        "recipient_id": null,
-        "recipient_bank": null,
-        "login_attempts": 0,
-        "session_id": "S-987654ab",
-        "is_repeat_location": false
-    }
-   <<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-13ab95fd ###
-
-<<<JSON>>>
-    {
-        "bank_timestamp": "2025-03-01T06:05:00+00:00",
-        "local_timestamp": "2025-03-01T01:05:00-05:00",
-        "account_id": "ACC-11111111",
-        "type": "Sale",
-        "amount": 2500.0,
-        "currency": "USD",
-        "balance_before": 9758.4400000000005,
-        "location": "San Francisco, USA",
-        "ip_address": "172.16.0.1",
-        "device_id": "MacBook-Pro",
-        "network_type": "Wi-Fi",
-        "merchant_name": "ABC Corporation",
-        "recipient_id": null,
-        "recipient_bank": null,
-        "login_attempts": 0,
-        "session_id": "S-11111111",
-        "is_repeat_location": false
-    }
-   <<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-13ab95fd ###
-
-<<<JSON>>>
-{
-    "bank_timestamp": "2025-03-01T07:45:00+00:00",
-    "local_timestamp": "2025-03-01T02:45:00-05:00",
-    "account_id": "ACC-98765432",
-    "type": "Sale",
-    "amount": 4000.50,
+    "bank_timestamp": "2025-03-15T11:22:27+00:00",
+    "local_timestamp": "2025-03-15T06:22:27-05:00",
+    "account_id": "ACC-5f733475",
+    "type": "FraudCheck",
+    "amount": 0,
     "currency": "USD",
-    "balance_before": 7378.4400000000005,
-    "location": "London, UK",
-    "ip_address": "192.168.0.1",
-    "device_id": "Samsung-Galaxy-Note-9",
-    "network_type": "4G",
-    "merchant_name": "ABC Brokers Ltd.",
-    "recipient_id": null,
-    "recipient_bank": null,
-    "login_attempts": 1,
-    "session_id": "S-98765432",
-    "is_repeat_location": false
-}
-<<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-13ab95fd ###
-
-<<<JSON>>>
-    {
-        "bank_timestamp": "2025-03-01T09:10:00+00:00",
-        "local_timestamp": "2025-03-01T04:10:00-05:00",
-        "account_id": "ACC-22222222",
-        "type": "Sale",
-        "amount": 4000.0,
-        "currency": "USD",
-        "balance_before": 8611.0,
-        "location": "Chicago, USA",
-        "ip_address": "255.255.255.0",
-        "device_id": "iPhone-15",
-        "network_type": "Wi-Fi",
-        "merchant_name": "XYZ Corporation",
-        "recipient_id": null,
-        "recipient_bank": null,
-        "login_attempts": 0,
-        "session_id": "S-22222222",
-        "is_repeat_location": false
-    }
-   <<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-13ab95fd ###
-
-<<<JSON>>>
-{
-    "bank_timestamp": "2025-03-01T09:30:00+00:00",
-    "local_timestamp": "2025-03-01T04:30:00-05:00",
-    "account_id": "ACC-0987654b",
-    "type": "Sale",
-    "amount": 3500.0,
-    "currency": "USD",
-    "balance_before": 1200.0,
-    "location": "Paris, FR",
-    "ip_address": "89.10.234.76",
-    "device_id": "Samsung-Galaxy-S22",
-    "network_type": "5G",
-    "merchant_name": "XYZ Corporation",
+    "balance_before": 9850.00,
+    "location": "Seattle, USA",
+    "ip_address": "123.456.789.012",
+    "device_id": "Samsung Galaxy S21",
+    "network_type": "Cellular",
+    "merchant_name": null,
     "recipient_id": null,
     "recipient_bank": null,
     "login_attempts": 0,
-    "session_id": "S-0987654b",
+    "session_id": "S-5f733475",
     "is_repeat_location": false
 }
-<<<END_JSON>>>
+```
 
 
-### LLM Chain of Thought for user ID USER-beacfa46 ###
+### LLM Chain of Thought for user ID USER-5f733475 ###
 
 <<<JSON>>>
 {
-    "bank_timestamp": "2025-04-15T12:30:00+00:00",
-    "local_timestamp": "2025-04-15T07:30:00-08:00",
-    "account_id": "ACC-beacfa46",
+    "bank_timestamp": "2025-03-15T11:22:27+00:00",
+    "local_timestamp": "2025-03-15T06:22:27-08:00",
+    "account_id": "ACC-5f733475abcd",
     "type": "FraudCheck",
     "amount": 0.00,
     "currency": "USD",
-    "balance_before": 9732.50,
-    "location": "Seattle, USA",
-    "ip_address": "123.456.789.0",
-    "device_id": "Samsung-Galaxy-S22",
+    "balance_before": 10028.96,
+    "location": "San Francisco, USA",
+    "ip_address": "74.23.255.96",
+    "device_id": "Samsung-Galaxy-S21",
     "network_type": "Mobile",
     "merchant_name": null,
     "recipient_id": null,
     "recipient_bank": null,
-    "login_attempts": 1,
-    "session_id": "S-beacfa46",
+    "login_attempts": 0,
+    "session_id": "S-5f733475abcd",
+    "is_repeat_location": true
+}
+   <<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-4b99a21e ###
+
+<<<JSON>>>
+    {
+        "bank_timestamp": "2025-03-06T11:22:27+00:00",
+        "local_timestamp": "2025-03-06T06:22:27-05:00",
+        "account_id": "ACC-4b99a21e",
+        "type": "FraudCheck",
+        "amount": 0.00,
+        "currency": "USD",
+        "balance_before": 9750.00,
+        "location": "Phoenix, AZ, USA",
+        "ip_address": "123.456.789.012",
+        "device_id": "Samsung Galaxy S22",
+        "network_type": "LTE",
+        "merchant_name": null,
+        "recipient_id": null,
+        "recipient_bank": null,
+        "login_attempts": 0,
+        "session_id": "S-4b99a21e",
+        "is_repeat_location": false
+    }
+   <<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-4b99a21e ###
+
+<<<JSON>>>
+{
+    "bank_timestamp": "2025-03-06T11:22:27+00:00",
+    "local_timestamp": "2025-03-06T06:22:27-05:00",
+    "account_id": "ACC-4b99a21e",
+    "type": "FraudCheck",
+    "amount": 0.00,
+    "currency": "USD",
+    "balance_before": 10578.37,
+    "location": "San Francisco, USA",
+    "ip_address": "203.0.113.241",
+    "device_id": "MacBook Pro",
+    "network_type": "Wi-Fi",
+    "merchant_name": null,
+    "recipient_id": null,
+    "recipient_bank": null,
+    "login_attempts": 0,
+    "session_id": "S-4b99a21e",
     "is_repeat_location": true
 }
 <<<END_JSON>>>
 
 
-### LLM Chain of Thought for user ID USER-beacfa46 ###
+### LLM Chain of Thought for user ID USER-4b99a21e ###
 
 <<<JSON>>>
 {
-    "bank_timestamp": "2025-04-15T07:30:00+00:00",
-    "local_timestamp": "2025-04-15T02:30:00-05:00",
-    "account_id": "ACC-98765432",
-    "type": "Transfer",
-    "amount": 50.0,
+    "bank_timestamp": "2025-03-10T11:22:27+00:00",
+    "local_timestamp": "2025-03-10T16:22:27-05:00",
+    "account_id": "ACC-4b99a21e",
+    "type": "Fraud Check",
+    "amount": 0.00,
     "currency": "USD",
-    "balance_before": 1465.00,
-    "location": "Chicago, USA",
-    "ip_address": "234.234.234.234",
-    "device_id": "Samsung-Galaxy-S21",
-    "network_type": "Cellular",
-    "recipient_id": "REC-09876543",
-    "recipient_bank": "Bank-of-America",
-    "login_attempts": 1,
-    "session_id": "S-98765432",
-    "is_repeat_location": false
-}
-<<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-8d39bd23 ###
-
-```JSON
-   {
-       "bank_timestamp": "2025-03-01T07:00:00+00:00",
-       "local_timestamp": "2025-03-01T02:00:00-05:00",
-       "account_id": "ACC-98765432",
-       "type": "Purchase",
-       "amount": 35.99,
-       "currency": "USD",
-       "balance_before": 1125.00,
-       "location": "Chicago, USA",
-       "ip_address": "172.168.1.20",
-       "device_id": "Samsung Galaxy S21",
-       "network_type": "LTE",
-       "merchant_name": "Starbucks",
-       "recipient_id": null,
-       "recipient_bank": null,
-       "login_attempts": 0,
-       "session_id": "S-98765432",
-       "is_repeat_location": false
-   }
-   ```
-
-
-### LLM Chain of Thought for user ID USER-8d39bd23 ###
-
-<<<JSON>>>
-{
-    "bank_timestamp": "2025-03-15T14:30:00+00:00",
-    "local_timestamp": "2025-03-15T09:30:00-05:00",
-    "account_id": "ACC-98765432",
-    "type": "Withdrawal",
-    "amount": 100.50,
-    "currency": "USD",
-    "balance_before": 1200.00,
-    "location": "Miami, USA",
-    "ip_address": "203.0.113.220",
-    "device_id": "Samsung-Galaxy S21",
-    "network_type": "LTE",
+    "balance_before": 10750.00,
+    "location": "Boston, USA",
+    "ip_address": "203.0.113.45",
+    "device_id": "MacBook-Pro-M1",
+    "network_type": "Mobile",
     "merchant_name": null,
     "recipient_id": null,
     "recipient_bank": null,
     "login_attempts": 0,
-    "session_id": "S-98765432",
-    "is_repeat_location": false
+    "session_id": "S-4b99a21e",
+    "is_repeat_location": true
 }
-   <<<END_JSON>>>
+<<<END_JSON>>>
 
 
-### LLM Chain of Thought for user ID USER-8d39bd23 ###
+### LLM Chain of Thought for user ID USER-4b99a21e ###
 
 <<<JSON>>>
 {
-    "bank_timestamp": "2025-03-01T07:15:00+00:00",
-    "local_timestamp": "2025-03-01T02:15:00-05:00",
-    "account_id": "ACC-98765432",
-    "type": "Purchase",
-    "amount": 32.99,
+    "bank_timestamp": "2025-03-06T14:39:57+00:00",
+    "local_timestamp": "2025-03-06T08:39:57-05:00",
+    "account_id": "ACC-4b99a21e",
+    "type": "Fraud Check",
+    "amount": 0.00,
     "currency": "USD",
-    "balance_before": 1200.00,
+    "balance_before": 9850.00,
+    "location": "Seattle, USA",
+    "ip_address": "172.16.34.123",
+    "device_id": "Samsung Galaxy S22 Ultra",
+    "network_type": "Mobile Network",
+    "merchant_name": null,
+    "recipient_id": null,
+    "recipient_bank": null,
+    "login_attempts": 0,
+    "session_id": "S-4b99a21e",
+    "is_repeat_location": false
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-4b99a21e ###
+
+<<<JSON>>>
+{
+    "bank_timestamp": "2025-03-06T11:22:27+00:00",
+    "local_timestamp": "2025-03-06T06:22:27-05:00",
+    "account_id": "ACC-4b99a21e",
+    "type": "FraudCheck",
+    "amount": 0,
+    "currency": "USD",
+    "balance_before": 9585.00,
+    "location": "Seattle, USA",
+    "ip_address": "172.16.43.12",
+    "device_id": "Samsung-Galaxy-S21",
+    "network_type": "Mobile",
+    "merchant_name": null,
+    "recipient_id": null,
+    "recipient_bank": null,
+    "login_attempts": 0,
+    "session_id": "S-4b99a21e",
+    "is_repeat_location": false
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-4b99a21e ###
+
+<<<JSON>>>
+{
+    "bank_timestamp": "2025-03-15T11:22:27+00:00",
+    "local_timestamp": "2025-03-15T06:22:27-08:00",
+    "account_id": "ACC-4b99a21e",
+    "type": "FraudCheck",
+    "amount": 0,
+    "currency": "USD",
+    "balance_before": 9850.00,
     "location": "San Francisco, USA",
-    "ip_address": "172.168.1.10",
-    "device_id": "Samsung Galaxy S21",
-    "network_type": "Mobile",
-    "merchant_name": "Apple Inc.",
+    "ip_address": "123.456.789.012",
+    "device_id": "iPhone-X",
+    "network_type": "Wi-Fi",
+    "merchant_name": null,
     "recipient_id": null,
     "recipient_bank": null,
     "login_attempts": 0,
-    "session_id": "S-98765432",
-    "is_repeat_location": false
-}
-   <<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-8d39bd23 ###
-
-<<<JSON>>>
-{
-    "bank_timestamp": "2025-03-03T14:30:00+00:00",
-    "local_timestamp": "2025-03-03T09:30:00-05:00",
-    "account_id": "ACC-98765432",
-    "type": "Purchase",
-    "amount": 30.5,
-    "currency": "USD",
-    "balance_before": 120.0,
-    "location": "Chicago, USA",
-    "ip_address": "255.255.255.0",
-    "device_id": "Samsung-Galaxy-S22",
-    "network_type": "Cellular",
-    "merchant_name": "Starbucks",
-    "recipient_id": null,
-    "recipient_bank": null,
-    "login_attempts": 1,
-    "session_id": "S-98765432",
-    "is_repeat_location": false
+    "session_id": "S-4b99a21e",
+    "is_repeat_location": true
 }
 <<<END_JSON>>>
 
 
-### LLM Chain of Thought for user ID USER-875426d1 ###
-
-<<<JSON>>>
-{
-    "bank_timestamp": "2025-03-01T07:00:00+00:00",
-    "local_timestamp": "2025-03-01T02:00:00-05:00",
-    "account_id": "ACC-98765432",
-    "type": "Purchase",
-    "amount": 25.00,
-    "currency": "USD",
-    "balance_before": 100.00,
-    "location": "Paris, France",
-    "ip_address": "74.88.234.12",
-    "device_id": "Samsung Galaxy S21",
-    "network_type": "Mobile",
-    "merchant_name": "Starbucks",
-    "recipient_id": null,
-    "recipient_bank": null,
-    "login_attempts": 0,
-    "session_id": "S-98765432",
-    "is_repeat_location": false
-}
-   <<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-875426d1 ###
-
-<<<JSON>>>
-{
-    "bank_timestamp": "2025-03-15T14:30:00+00:00",
-    "local_timestamp": "2025-03-15T09:30:00-05:00",
-    "account_id": "ACC-98765432",
-    "type": "Purchase",
-    "amount": 125.99,
-    "currency": "USD",
-    "balance_before": 2000.00,
-    "location": "Los Angeles, USA",
-    "ip_address": "192.168.0.1",
-    "device_id": "Samsung-Galaxy-S23",
-    "network_type": "Cellular",
-    "merchant_name": "Starbucks",
-    "recipient_id": null,
-    "recipient_bank": null,
-    "login_attempts": 0,
-    "session_id": "S-98765432",
-    "is_repeat_location": false
-}
-<<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-875426d1 ###
-
-```JSON
-   {
-       "bank_timestamp": "2025-03-15T14:30:00+00:00",
-       "local_timestamp": "2025-03-15T09:30:00-05:00",
-       "account_id": "ACC-98765432",
-       "type": "Purchase",
-       "amount": 34.99,
-       "currency": "USD",
-       "balance_before": 1000.00,
-       "location": "Chicago, USA",
-       "ip_address": "255.255.255.255",
-       "device_id": "Samsung Galaxy S9",
-       "network_type": "Mobile Network",
-       "merchant_name": "Starbucks",
-       "recipient_id": null,
-       "recipient_bank": null,
-       "login_attempts": 0,
-       "session_id": "S-98765432",
-       "is_repeat_location": false
-   }
-   ```
-
-
-### LLM Chain of Thought for user ID USER-875426d1 ###
-
-<<<JSON>>>
-{
-    "bank_timestamp": "2025-03-01T14:30:00+00:00",
-    "local_timestamp": "2025-03-01T09:30:00-05:00",
-    "account_id": "ACC-98765432",
-    "type": "Purchase",
-    "amount": 25.99,
-    "currency": "USD",
-    "balance_before": 125.00,
-    "location": "Chicago, USA",
-    "ip_address": "172.168.1.10",
-    "device_id": "Samsung-Galaxy-S23",
-    "network_type": "Mobile",
-    "merchant_name": "Starbucks",
-    "recipient_id": null,
-    "recipient_bank": null,
-    "login_attempts": 0,
-    "session_id": "S-98765432",
-    "is_repeat_location": false
-}
-   <<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-875426d1 ###
-
-<<<JSON>>>
-   {
-      "bank_timestamp": "2025-03-15T14:30:00+00:00",
-      "local_timestamp": "2025-03-15T09:30:00-05:00",
-      "account_id": "ACC-98765432",
-      "type": "Purchase",
-      "amount": 50.25,
-      "currency": "USD",
-      "balance_before": 150.00,
-      "location": "Chicago, USA",
-      "ip_address": "203.0.113.4",
-      "device_id": "Samsung Galaxy S21",
-      "network_type": "Mobile Network",
-      "merchant_name": "Starbucks",
-      "recipient_id": null,
-      "recipient_bank": null,
-      "login_attempts": 0,
-      "session_id": "S-98765432",
-      "is_repeat_location": false
-   }
-   <<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-875426d1 ###
-
-<<<JSON>>>
-{
-    "bank_timestamp": "2025-03-01T18:00:00+00:00",
-    "local_timestamp": "2025-03-01T13:00:00-05:00",
-    "account_id": "ACC-98765432",
-    "type": "Purchase",
-    "amount": 30.99,
-    "currency": "USD",
-    "balance_before": 120.00,
-    "location": "Chicago, USA",
-    "ip_address": "172.168.1.15",
-    "device_id": "Samsung-Galaxy",
-    "network_type": "Mobile",
-    "merchant_name": "Starbucks",
-    "recipient_id": null,
-    "recipient_bank": null,
-    "login_attempts": 0,
-    "session_id": "S-98765432",
-    "is_repeat_location": false
-}
-   <<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-2f2ca6b0 ###
-
-<<<JSON>>>
-   {
-      "bank_timestamp": "2025-03-15T16:30:00+00:00",
-      "local_timestamp": "2025-03-15T11:30:00-05:00",
-      "account_id": "ACC-98765432",
-      "type": "Purchase",
-      "amount": 50.00,
-      "currency": "USD",
-      "balance_before": 1000.00,
-      "location": "New York, USA",
-      "ip_address": "255.255.255.254",
-      "device_id": "Samsung Galaxy S21",
-      "network_type": "Cellular",
-      "merchant_name": "Starbucks",
-      "recipient_id": null,
-      "recipient_bank": null,
-      "login_attempts": 0,
-      "session_id": "S-98765432",
-      "is_repeat_location": false
-   }
-   <<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-2f2ca6b0 ###
+### LLM Chain of Thought for user ID USER-8fbad3a3 ###
 
 <<<JSON>>>
     {
-        "bank_timestamp": "2025-03-01T07:00:00+00:00",
-        "local_timestamp": "2025-03-01T02:00:00-05:00",
+        "bank_timestamp": "2025-03-15T16:44:47+00:00",
+        "local_timestamp": "2025-03-15T11:44:47-05:00",
+        "account_id": "ACC-8fbad3a3",
+        "type": "Savings Deposit",
+        "amount": 1500.00,
+        "currency": "USD",
+        "balance_before": 2000.00,
+        "location": "Chicago, USA",
+        "ip_address": "172.16.32.98",
+        "device_id": "Samsung Galaxy S21",
+        "network_type": "Cellular",
+        "merchant_name": null,
+        "recipient_id": null,
+        "recipient_bank": null,
+        "login_attempts": 0,
+        "session_id": "S-8fbad3a34726",
+        "is_repeat_location": false
+    }
+   <<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-dd821f1f ###
+
+<<<JSON>>>
+{
+    "bank_timestamp": "2025-04-15T16:30:00+02:00",
+    "local_timestamp": "2025-04-15T13:30:00-07:00",
+    "account_id": "ACC-98765432",
+    "type": "Purchase",
+    "amount": 50.00,
+    "currency": "USD",
+    "balance_before": 1200.00,
+    "location": "San Francisco, USA",
+    "ip_address": "87.123.456.789",
+    "device_id": "Samsung Galaxy S21",
+    "network_type": "Mobile",
+    "merchant_name": "Starbucks",
+    "recipient_id": null,
+    "recipient_bank": null,
+    "login_attempts": 0,
+    "session_id": "S-98765432",
+    "is_repeat_location": false
+}
+   <<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-dd821f1f ###
+
+<<<JSON>>>
+{
+    "bank_timestamp": "2025-03-07T12:30:00+00:00",
+    "local_timestamp": "2025-03-07T06:30:00-05:00",
+    "account_id": "ACC-98765432",
+    "type": "Purchase",
+    "amount": 120.00,
+    "currency": "USD",
+    "balance_before": 450.00,
+    "location": "Chicago, USA",
+    "ip_address": "203.0.113.78",
+    "device_id": "iPhone-13",
+    "network_type": "Cellular",
+    "merchant_name": "Starbucks",
+    "recipient_id": null,
+    "recipient_bank": null,
+    "login_attempts": 0,
+    "session_id": "S-98765432",
+    "is_repeat_location": false
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-dd821f1f ###
+
+<<<JSON>>>
+    {
+        "bank_timestamp": "2025-03-02T14:30:00+00:00",
+        "local_timestamp": "2025-03-02T09:30:00-06:00",
         "account_id": "ACC-98765432",
         "type": "Withdrawal",
-        "amount": 120.50,
+        "amount": 123.00,
         "currency": "USD",
         "balance_before": 500.00,
-        "location": "Paris, France",
-        "ip_address": "87.98.65.43",
+        "location": "Chicago, USA",
+        "ip_address": "203.0.113.246",
         "device_id": "Samsung Galaxy S21",
         "network_type": "Mobile Network",
         "merchant_name": null,
         "recipient_id": null,
         "recipient_bank": null,
-        "login_attempts": 2,
+        "login_attempts": 0,
         "session_id": "S-98765432",
         "is_repeat_location": false
     }
    <<<END_JSON>>>
 
 
-### LLM Chain of Thought for user ID USER-ce57371a ###
+### LLM Chain of Thought for user ID USER-dd821f1f ###
 
 <<<JSON>>>
 {
-    "bank_timestamp": "2025-03-03T10:45:27+00:00",
-    "local_timestamp": "2025-03-03T06:45:27-08:00",
+    "bank_timestamp": "2025-03-06T12:30:45+00:00",
+    "local_timestamp": "2025-03-06T07:30:45-08:00",
     "account_id": "ACC-98765432",
     "type": "Purchase",
-    "amount": 10.5,
+    "amount": 25.00,
     "currency": "USD",
-    "balance_before": 120.00,
-    "location": "Los Angeles, USA",
-    "ip_address": "192.168.1.10",
+    "balance_before": 100.00,
+    "location": "Seattle, USA",
+    "ip_address": "234.56.78.90",
     "device_id": "Samsung Galaxy S21",
-    "network_type": "4G LTE",
+    "network_type": "Cellular",
+    "merchant_name": "Starbucks",
+    "recipient_id": null,
+    "recipient_bank": null,
+    "login_attempts": 0,
+    "session_id": "S-98765432",
+    "is_repeat_location": false
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-899a5ce9 ###
+
+<<<JSON>>>
+{
+    "bank_timestamp": "2025-03-15T12:45:00+00:00",
+    "local_timestamp": "2025-03-15T07:45:00-05:00",
+    "account_id": "ACC-98765432",
+    "type": "Purchase",
+    "amount": 24.50,
+    "currency": "USD",
+    "balance_before": 102.00,
+    "location": "Chicago, USA",
+    "ip_address": "198.51.100.22",
+    "device_id": "Samsung Galaxy S21",
+    "network_type": "Mobile Network",
     "merchant_name": "Starbucks",
     "recipient_id": null,
     "recipient_bank": null,
@@ -570,4 +399,304 @@
     "is_repeat_location": false
 }
    <<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-899a5ce9 ###
+
+<<<JSON>>>
+    {
+        "bank_timestamp": "2025-03-15T14:30:00+00:00",
+        "local_timestamp": "2025-03-15T09:30:00-08:00",
+        "account_id": "ACC-98765432",
+        "type": "Purchase",
+        "amount": 25.99,
+        "currency": "USD",
+        "balance_before": 125.00,
+        "location": "Los Angeles, CA, USA",
+        "ip_address": "203.0.113.45",
+        "device_id": "Samsung Galaxy S21",
+        "network_type": "Cellular",
+        "merchant_name": "Starbucks",
+        "recipient_id": null,
+        "recipient_bank": null,
+        "login_attempts": 0,
+        "session_id": "S-12345678",
+        "is_repeat_location": false
+    }
+   <<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-899a5ce9 ###
+
+<<<JSON>>>
+{
+    "bank_timestamp": "2025-12-31T23:59:59+00:00",
+    "local_timestamp": "2025-12-31T18:59:59-08:00",
+    "account_id": "ACC-98765432",
+    "type": "Withdrawal",
+    "amount": 25.0,
+    "currency": "USD",
+    "balance_before": 1000.00,
+    "location": "San Francisco, USA",
+    "ip_address": "198.51.100.123",
+    "device_id": "Samsung-Note9",
+    "network_type": "4G",
+    "merchant_name": null,
+    "recipient_id": null,
+    "recipient_bank": null,
+    "login_attempts": 0,
+    "session_id": "S-98765432",
+    "is_repeat_location": false
+}
+   <<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-899a5ce9 ###
+
+<<<JSON>>>
+   {
+       "bank_timestamp": "2025-03-05T14:30:00+00:00",
+       "local_timestamp": "2025-03-05T09:30:00-08:00",
+       "account_id": "ACC-98765432",
+       "type": "Purchase",
+       "amount": 67.12,
+       "currency": "EUR",
+       "balance_before": 250.00,
+       "location": "Paris, France",
+       "ip_address": "89.123.456.789",
+       "device_id": "Samsung Galaxy S21",
+       "network_type": "Mobile",
+       "merchant_name": "Carrefour",
+       "recipient_id": null,
+       "recipient_bank": null,
+       "login_attempts": 0,
+       "session_id": "S-98765432",
+       "is_repeat_location": false
+   }
+   <<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-fe64afc6 ###
+
+<<<JSON>>>
+{
+    "bank_timestamp": "2025-03-10T11:22:27+00:00",
+    "local_timestamp": "2025-03-10T16:22:27-04:00",
+    "account_id": "ACC-98765432",
+    "type": "Fraud Check",
+    "amount": 0.00,
+    "currency": "USD",
+    "balance_before": 10500.00,
+    "location": "Philadelphia, USA",
+    "ip_address": "203.0.113.4",
+    "device_id": "Samsung Galaxy S22",
+    "network_type": "Mobile",
+    "merchant_name": null,
+    "recipient_id": null,
+    "recipient_bank": null,
+    "login_attempts": 0,
+    "session_id": "S-98765432",
+    "is_repeat_location": false
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-4247c8ff ###
+
+<<<JSON>>>
+{
+    "bank_timestamp": "2025-03-10T11:22:27+00:00",
+    "local_timestamp": "2025-03-10T06:22:27-08:00",
+    "account_id": "ACC-4247c8ff",
+    "type": "FraudMonitoring",
+    "amount": 0.00,
+    "currency": "USD",
+    "balance_before": 10563.25,
+    "location": "San Francisco, USA",
+    "ip_address": "172.16.2.34",
+    "device_id": "iPhone XR",
+    "network_type": "Cellular",
+    "merchant_name": null,
+    "recipient_id": null,
+    "recipient_bank": null,
+    "login_attempts": 1,
+    "session_id": "S-4247c8ff",
+    "is_repeat_location": true
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-4247c8ff ###
+
+<<<JSON>>>
+{
+    "bank_timestamp": "2025-03-10T16:47:39+00:00",
+    "local_timestamp": "2025-03-10T11:47:39-05:00",
+    "account_id": "ACC-4247c8ff",
+    "type": "Transfer",
+    "amount": 100.00,
+    "currency": "USD",
+    "balance_before": 1050.00,
+    "location": "Chicago, USA",
+    "ip_address": "203.0.113.4",
+    "device_id": "Samsung Galaxy S22",
+    "network_type": "Mobile",
+    "merchant_name": null,
+    "recipient_id": "REC-33334455",
+    "recipient_bank": "Wells Fargo Bank",
+    "login_attempts": 1,
+    "session_id": "S-4247c8ff",
+    "is_repeat_location": false
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-4247c8ff ###
+
+<<<JSON>>>
+{
+    "bank_timestamp": "2025-03-15T14:44:47+00:00",
+    "local_timestamp": "2025-03-15T10:44:47-08:00",
+    "account_id": "ACC-98765432",
+    "type": "SavingsDeposit",
+    "amount": 500.00,
+    "currency": "USD",
+    "balance_before": 10500.00,
+    "location": "Los Angeles, USA",
+    "ip_address": "123.456.789.123",
+    "device_id": "iPhone-9",
+    "network_type": "Mobile",
+    "merchant_name": null,
+    "recipient_id": null,
+    "recipient_bank": null,
+    "login_attempts": 1,
+    "session_id": "S-98765432",
+    "is_repeat_location": false
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-4247c8ff ###
+
+<<<JSON>>>
+    {
+        "bank_timestamp": "2025-03-15T12:00:00+00:00",
+        "local_timestamp": "2025-03-15T07:00:00-05:00",
+        "account_id": "ACC-98765432",
+        "type": "Transfer",
+        "amount": 200.50,
+        "currency": "USD",
+        "balance_before": 10687.00,
+        "location": "Chicago, USA",
+        "ip_address": "10.0.0.1",
+        "device_id": "Samsung-Galaxy",
+        "network_type": "4G",
+        "recipient_id": "REC-12345678",
+        "recipient_bank": "Wells Fargo",
+        "login_attempts": 0,
+        "session_id": "S-98765432",
+        "is_repeat_location": false
+    }
+   <<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-4247c8ff ###
+
+```
+   <<<JSON>>>
+   {
+       "bank_timestamp": "2025-03-01T12:00:00+00:00",
+       "local_timestamp": "2025-03-01T07:00:00-05:00",
+       "account_id": "ACC-98765432",
+       "type": "Investment",
+       "amount": 50.00,
+       "currency": "USD",
+       "balance_before": 7137.00,
+       "location": "Chicago, USA",
+       "ip_address": "255.255.255.0",
+       "device_id": "Samsung Galaxy S22",
+       "network_type": "Mobile",
+       "merchant_name": null,
+       "recipient_id": null,
+       "recipient_bank": null,
+       "login_attempts": 0,
+       "session_id": "S-98765432",
+       "is_repeat_location": false
+   }
+   <<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-4247c8ff ###
+
+<<<JSON>>>
+{
+    "bank_timestamp": "2025-03-06T14:37:19+00:00",
+    "local_timestamp": "2025-03-06T08:37:19-08:00",
+    "account_id": "ACC-12345678",
+    "type": "Fraud Check",
+    "amount": 0.00,
+    "currency": "USD",
+    "balance_before": 9685.00,
+    "location": "San Francisco, USA",
+    "ip_address": "172.16.254.1",
+    "device_id": "MacBookPro-13",
+    "network_type": "Wi-Fi",
+    "merchant_name": null,
+    "recipient_id": null,
+    "recipient_bank": null,
+    "login_attempts": 0,
+    "session_id": "S-87654321",
+    "is_repeat_location": true
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-4247c8ff ###
+
+<<<JSON>>>
+{
+    "bank_timestamp": "2025-03-10T11:22:27+00:00",
+    "local_timestamp": "2025-03-10T06:22:27-08:00",
+    "account_id": "ACC-4247c8ff",
+    "type": "FraudCheck",
+    "amount": 0,
+    "currency": "USD",
+    "balance_before": 1005.00,
+    "location": "San Francisco, USA",
+    "ip_address": "203.0.113.4",
+    "device_id": "Samsung-Galaxy-S22",
+    "network_type": "Mobile",
+    "merchant_name": null,
+    "recipient_id": null,
+    "recipient_bank": null,
+    "login_attempts": 1,
+    "session_id": "S-4247c8ff",
+    "is_repeat_location": false
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-798d73f3 ###
+
+<<<JSON>>>
+{
+    "bank_timestamp": "2025-03-06T11:22:27+00:00",
+    "local_timestamp": "2025-03-06T06:22:27-05:00",
+    "account_id": "ACC-798d73f3",
+    "type": "Fraud Check",
+    "amount": 0.00,
+    "currency": "USD",
+    "balance_before": 1150.00,
+    "location": "Seattle, USA",
+    "ip_address": "203.0.113.78",
+    "device_id": "MacBook Pro",
+    "network_type": "Wi-Fi",
+    "merchant_name": null,
+    "recipient_id": null,
+    "recipient_bank": null,
+    "login_attempts": 0,
+    "session_id": "S-798d73f3",
+    "is_repeat_location": false
+}
+<<<END_JSON>>>
 
