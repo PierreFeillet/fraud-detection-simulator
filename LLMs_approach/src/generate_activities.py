@@ -81,14 +81,26 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(DATA_DIR, exist_ok=True)
 
 def initialize_logs():
-    """Initializes all log files and clears the CSV."""
-    for file in [REWARD_LOG_FILE, ERROR_LOG_FILE, LOG_TEXT_FILE, DATA_FILE, VALIDATION_LOG_FILE]:
+    """Initializes all log files and clears the CSV.
+    Writes a header to the reward log file."""
+    # Define header for the reward log file.
+    reward_header = "timestamp,user_id,reward,reason\n"
+    
+    # Write the header to the reward log file.
+    with open(REWARD_LOG_FILE, 'w') as f:
+        f.write(reward_header)
+    
+    # Clear the other log files.
+    for file in [ERROR_LOG_FILE, LOG_TEXT_FILE, VALIDATION_LOG_FILE]:
         with open(file, 'w') as f:
             f.write("")
+    
+    # Clear the CSV file.
     if os.path.exists(DATA_FILE):
         os.remove(DATA_FILE)
     with open(DATA_FILE, 'w') as f:
         f.write("")  # Create an empty CSV file.
+
 
 initialize_logs()
 
