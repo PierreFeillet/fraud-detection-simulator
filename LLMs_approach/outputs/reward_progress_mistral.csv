@@ -1,1 +1,94 @@
 timestamp,user_id,reward,reason
+2025-03-03T19:52:24.445418,USER-06abb925,1,JSON generation succesfull
+2025-03-03T19:52:33.945490,USER-06abb925,1,JSON generation succesfull
+2025-03-03T19:52:49.785252,USER-06abb925,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-03T19:52:59.000285,USER-06abb925,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-03T19:53:08.455910,USER-06abb925,-1,['JSON Decode Error: Expecting property name enclosed in double quotes: line 16 column 5 (char 539)']
+2025-03-03T19:53:18.318086,USER-06abb925,-1,['Error: Unexpected fields: balance_after']
+2025-03-03T19:53:27.747362,USER-06abb925,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-03T19:53:37.114541,USER-06abb925,1,JSON generation succesfull
+2025-03-03T19:53:51.362465,USER-b545cec4,1,JSON generation succesfull
+2025-03-03T19:54:07.643747,USER-b545cec4,1,JSON generation succesfull
+2025-03-03T19:54:22.410471,USER-e3689702,1,JSON generation succesfull
+2025-03-03T19:54:36.659365,USER-c5f0a919,1,JSON generation succesfull
+2025-03-03T19:54:53.338010,USER-c5f0a919,1,JSON generation succesfull
+2025-03-03T19:55:08.818774,USER-c5f0a919,-1,['JSON Decode Error: Expecting property name enclosed in double quotes: line 14 column 1 (char 425)']
+2025-03-03T19:55:27.031255,USER-c5f0a919,1,JSON generation succesfull
+2025-03-03T19:55:41.709880,USER-c5f0a919,1,JSON generation succesfull
+2025-03-03T19:55:55.864386,USER-f1747a23,1,JSON generation succesfull
+2025-03-03T19:56:05.486284,USER-f1747a23,1,JSON generation succesfull
+2025-03-03T19:56:22.131613,USER-f1747a23,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-03T19:56:31.285915,USER-f1747a23,1,JSON generation succesfull
+2025-03-03T19:56:46.041055,USER-f1747a23,1,JSON generation succesfull
+2025-03-03T19:57:00.287901,USER-bc683be9,1,JSON generation succesfull
+2025-03-03T19:57:09.821565,USER-bc683be9,1,JSON generation succesfull
+2025-03-03T19:57:26.448332,USER-bc683be9,1,JSON generation succesfull
+2025-03-03T19:57:42.796377,USER-bc683be9,1,JSON generation succesfull
+2025-03-03T19:57:57.779057,USER-89e5e97a,1,JSON generation succesfull
+2025-03-03T19:58:14.517338,USER-89e5e97a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-03T19:58:24.917162,USER-89e5e97a,1,JSON generation succesfull
+2025-03-03T19:58:41.455785,USER-89e5e97a,-1,['JSON Decode Error: Extra data: line 1 column 17 (char 16)']
+2025-03-03T19:58:59.511422,USER-89e5e97a,1,JSON generation succesfull
+2025-03-03T19:59:14.042857,USER-2fd7cecb,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-03T19:59:24.071846,USER-2fd7cecb,1,JSON generation succesfull
+2025-03-03T19:59:40.929879,USER-2fd7cecb,1,JSON generation succesfull
+2025-03-03T19:59:54.328905,USER-2fd7cecb,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-03T20:00:03.768228,USER-2fd7cecb,1,JSON generation succesfull
+2025-03-03T20:00:18.404430,USER-deaaa132,1,JSON generation succesfull
+2025-03-03T20:00:37.330710,USER-08e65c18,-1,['Error: Missing fields: merchant_name']
+2025-03-03T20:00:55.337003,USER-08e65c18,-1,['Error: Missing fields: merchant_name, recipient_bank']
+2025-03-03T20:01:13.095958,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:01:31.006549,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:01:48.852844,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:02:06.546931,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:02:24.294502,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:02:42.712595,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:03:00.789846,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:03:18.823487,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:03:36.733340,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:03:54.666218,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:04:12.868251,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:04:30.834499,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:04:49.093427,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:05:06.997377,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:05:24.833843,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:05:42.678581,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:06:01.656829,USER-08e65c18,-1,['Error: Missing fields: merchant_name']
+2025-03-03T20:06:19.798224,USER-08e65c18,-1,['JSON Decode Error: Expecting property name enclosed in double quotes: line 14 column 1 (char 410)']
+2025-03-03T20:06:37.554929,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:06:55.416926,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:07:13.328634,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:07:31.420969,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:07:49.220020,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:08:08.736896,USER-08e65c18,-1,['Error: Missing fields: merchant_name']
+2025-03-03T20:08:26.592542,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:08:45.334110,USER-08e65c18,-1,['Error: Missing fields: merchant_name']
+2025-03-03T20:09:03.140044,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:09:21.046779,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:09:40.004301,USER-08e65c18,-1,['Error: Missing fields: merchant_name']
+2025-03-03T20:09:57.614069,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:10:15.664980,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:10:33.290378,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:10:50.981979,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:11:08.703938,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:11:26.441767,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:11:43.919011,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:12:02.341286,USER-08e65c18,-1,['Error: Missing fields: merchant_name']
+2025-03-03T20:12:21.147519,USER-08e65c18,-1,['Error: Missing fields: merchant_name']
+2025-03-03T20:12:39.822387,USER-08e65c18,-1,['Error: Missing fields: merchant_name']
+2025-03-03T20:12:57.335726,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:13:15.790467,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:13:33.730419,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:13:51.639817,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:14:09.264275,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:14:27.540723,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:14:46.131518,USER-08e65c18,-1,['Error: Missing fields: merchant_name']
+2025-03-03T20:15:03.944966,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:15:22.408809,USER-08e65c18,-1,['Error: Missing fields: merchant_name']
+2025-03-03T20:15:40.176914,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:15:59.016921,USER-08e65c18,-1,['Error: Missing fields: merchant_name']
+2025-03-03T20:16:16.896427,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:16:34.697504,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:16:52.329835,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:17:09.887098,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']
+2025-03-03T20:17:27.996244,USER-08e65c18,-1,['Error: Missing fields: recipient_id, recipient_bank']

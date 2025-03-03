@@ -207,7 +207,7 @@ def validate_json(text, user_id):
             print(f"Errors detected in JSON for user {user_id}: {errors}")
             return 'retry', errors
         print(f"JSON validated successfully for user {user_id}.")
-        return activity, _
+        return activity, None
     except json.JSONDecodeError as e:
         errors.append(f"JSON Decode Error: {e}")
         log_json_errors(errors)
@@ -298,7 +298,7 @@ def summarize_errors(past_errors):
     return ""
 
 
-def build_generation_prompt(strategy, global_clock, user_id, history, balance, summarized_errors=None):
+def build_generation_prompt(strategy, global_clock, user_id, history, balance, past_errors=None):
     """
     Builds a prompt for generating the next transaction.
     It includes a summary of previous transactions.
@@ -366,7 +366,7 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, s
     prompt_parts.append("Do not include any extra fields, comments, or explanations.\n")
     prompt_parts.append("Only generate one transaction in this call.\n")
     prompt_parts.append("### Data Generation Rules:\n")
-    prompt_parts.append(f"- Required fields and formats:\n{field_explanation}\n\n")
+    prompt_parts.append(f"- Required fields and formats:\n{field_explanation}. \n\n")
     prompt_parts.append("- Do not repeat the example; generate a new transaction.\n")
     prompt_parts.append("- The JSON MUST be enclosed within the markers <<<JSON>>> and <<<END_JSON>>>.\n")
     prompt_parts.append("- Ensure timestamps are ISO 8601 formatted and logically consistent.\n")
@@ -374,14 +374,15 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, s
     prompt_parts.append("- The possible activity types are described in the strategy.\n")
     prompt_parts.append(f"- The value for `amount` must be smaller than {balance}.\n")
     prompt_parts.append("- For any transfer activity, set the 'type' field to either 'Transfer IN' if the funds are being received, or 'Transfer Out' if the funds are being sent.\n")
-
+    prompt_parts.append("- For a Purchase or Sale: 'merchant_name' must not be null.\n")
+    prompt_parts.append("- For a Transfer (in or out): 'recipient_id' and 'recipient_bank' must not be null.\n")
     prompt_parts.append("- Use the provided global_clock to initialize bank_timestamp if no history exists for the user.\n")
+    prompt_parts.append("You are allowed to leave the fields ")
     prompt_parts.append("### Important:\n")
     prompt_parts.append("- The JSON must be flat.\n")
     prompt_parts.append("- All string values must be enclosed in double quotes.\n")
     if past_errors:
-        prompt_parts.append(f"- Errors you got in the past and that you must avoid: {summarized_errors}.\n")
-    
+        prompt_parts.append(f"- Do not repeat previous errors: {past_errors}.\n")
     return "".join(prompt_parts)
 
 def generate_activity_sequence(strategy, global_clock, user_id, behavior_type, fraud_label, num_activities=5, user_accounts=None):
@@ -407,8 +408,8 @@ def generate_activity_sequence(strategy, global_clock, user_id, behavior_type, f
             print(f"User {user_id}, Account {account_id}: Generating activity attempt {retries} with balance {current_balance:.2f}...")
             print(f"Generating activity {i+1}/{num_activities}...")
             past_errors = read_past_errors()
-            summarized_errors = summarize_errors(past_errors)
-            prompt = build_generation_prompt(strategy, global_clock, user_id, history, current_balance, summarized_errors)
+            #past_errors = summarize_errors(past_errors)
+            prompt = build_generation_prompt(strategy, global_clock, user_id, history, current_balance, past_errors)
             response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}])
             raw_response = response['message']['content'].strip()
             save_to_text(raw_response, user_id)  # For debugging
