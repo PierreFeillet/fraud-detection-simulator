@@ -207,7 +207,7 @@ def validate_json(text, user_id):
             print(f"Errors detected in JSON for user {user_id}: {errors}")
             return 'retry', errors
         print(f"JSON validated successfully for user {user_id}.")
-        return activity
+        return activity, _
     except json.JSONDecodeError as e:
         errors.append(f"JSON Decode Error: {e}")
         log_json_errors(errors)
@@ -270,7 +270,35 @@ def read_past_errors():
                 return []
     return []
 
-def build_generation_prompt(strategy, global_clock, user_id, history, balance, past_errors=None):
+def summarize_errors(past_errors):
+    """
+    Processes past error messages and returns a concise summary of the issues encountered.
+    This function checks for common categories of errors and returns a combined string.
+    """
+    categories = set()
+    for err in past_errors:
+        err_lower = err.lower()
+        if "missing fields" in err_lower:
+            categories.add("missing required fields")
+        elif "unexpected fields" in err_lower:
+            categories.add("unexpected extra fields")
+        elif "json not enclosed" in err_lower:
+            categories.add("proper JSON delimiters must be used")
+        elif "inline comments" in err_lower:
+            categories.add("no inline comments allowed")
+        elif "json decode error" in err_lower:
+            categories.add("a valid JSON structure is required")
+        elif "expected type" in err_lower:
+            categories.add("all fields must have the correct data types")
+        else:
+            # If the error doesn't match a known category, add it as is.
+            categories.add(err)
+    if categories:
+        return "; ".join(sorted(categories))
+    return ""
+
+
+def build_generation_prompt(strategy, global_clock, user_id, history, balance, summarized_errors=None):
     """
     Builds a prompt for generating the next transaction.
     It includes a summary of previous transactions.
@@ -352,7 +380,7 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
     prompt_parts.append("- The JSON must be flat.\n")
     prompt_parts.append("- All string values must be enclosed in double quotes.\n")
     if past_errors:
-        prompt_parts.append(f"- Errors you got in the past and that you must avoid: {past_errors}.\n")
+        prompt_parts.append(f"- Errors you got in the past and that you must avoid: {summarized_errors}.\n")
     
     return "".join(prompt_parts)
 
@@ -379,7 +407,8 @@ def generate_activity_sequence(strategy, global_clock, user_id, behavior_type, f
             print(f"User {user_id}, Account {account_id}: Generating activity attempt {retries} with balance {current_balance:.2f}...")
             print(f"Generating activity {i+1}/{num_activities}...")
             past_errors = read_past_errors()
-            prompt = build_generation_prompt(strategy, global_clock, user_id, history, current_balance, past_errors)
+            summarized_errors = summarize_errors(past_errors)
+            prompt = build_generation_prompt(strategy, global_clock, user_id, history, current_balance, summarized_errors)
             response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}])
             raw_response = response['message']['content'].strip()
             save_to_text(raw_response, user_id)  # For debugging
