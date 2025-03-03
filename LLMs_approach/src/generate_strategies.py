@@ -65,23 +65,6 @@ def generate_fraud_strategy(fraud_type=None, filename="strategies/fraud_strategi
         ### Important:
         - Include a **'Context' section** in the JSON output where you provide a detailed description of how the fraud typically unfolds.
         - The **structured fields** will guide constraints, while the **context** provides deeper narrative for the activity sequence.
-        - Output the strategy in **structured JSON format** as shown below. Do NOT include any additional text or explanation after the JSON.
-
-        ### Example Output Format:
-        ```json
-        {{
-        "Fraud Type": "{fraud_type}",
-        "Scope": "Multi-event",
-        "Description": {{
-            "Transaction Types Involved": ["Unauthorized Stock Purchases", "Unauthorized Stock Sales"],
-            "Typical Transaction Amounts": ["Between $5,000 and $50,000 per transaction"],
-            "Geographic Patterns": ["Concentrated within the organization's region, occasional international trades"],
-            "Velocity": "High velocity due to the need for quick execution based on non-public information",
-            "Distance Between Transactions": "Minutes to hours between trades to capitalize on timely information"
-        }},
-        "Context": "Insider Trading involves employees or individuals with access to non-public information executing unauthorized stock trades. These trades often occur in rapid succession, with the individual purchasing stock before a major positive announcement or selling it before a negative one. The activity is characterized by sudden, unexplainable trading behavior inconsistent with the individual's usual patterns, often concentrated in the company's geographic region but may also include international trades to obscure detection."
-        }}
-        ```
         """
 
     prompt=build_strategy_prompt(fraud_type)
