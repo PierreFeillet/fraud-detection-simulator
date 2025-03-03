@@ -44,8 +44,8 @@ EXPECTED_FIELD_TYPES = {
     "merchant_name": (str, type(None)),  # Can be string or null
     "recipient_id": (str, type(None)),     # Can be string or null
     "recipient_bank": (str, type(None)),   # Can be string or null
-    "login_attempts": int,
-    "session_id": str,
+    #"login_attempts": int,
+    #"session_id": str,
     #"velocity": (int, float),
     #"distance_from_last_location": (int, float),
     #"is_repeat_location": bool,
@@ -167,13 +167,13 @@ def validate_json(text, user_id):
             errors.append("Error: JSON not enclosed in expected delimiters.")
             log_json_errors(errors)
             print(f"Errors detected in JSON for user {user_id}: {errors}")
-            return 'retry'
+            return 'retry', errors
 
     if re.search(r'//', json_str) or re.search(r'/\*.*?\*/', json_str, re.DOTALL):
         errors.append("Error: JSON contains inline comments.")
         log_json_errors(errors)
         print(f"Errors detected in JSON for user {user_id}: {errors}")
-        return 'retry'
+        return 'retry', errors
 
     try:
         activity = json.loads(json_str)
@@ -186,7 +186,7 @@ def validate_json(text, user_id):
             errors.append("Error: JSON root is neither a list nor a dictionary.")
             log_json_errors(errors)
             print(f"Errors detected in JSON for user {user_id}: {errors}")
-            return 'retry'
+            return 'retry', errors
         
         missing_fields = [field for field in EXPECTED_FIELD_TYPES if field not in tx]
         extra_fields = [field for field in tx if field not in EXPECTED_FIELD_TYPES]
@@ -197,7 +197,7 @@ def validate_json(text, user_id):
         if errors:
             log_json_errors(errors)
             print(f"Errors detected in JSON for user {user_id}: {errors}")
-            return 'retry'
+            return 'retry', errors
 
         for field, expected_type in EXPECTED_FIELD_TYPES.items():
             if field in tx and not isinstance(tx[field], expected_type):
@@ -205,14 +205,14 @@ def validate_json(text, user_id):
         if errors:
             log_json_errors(errors)
             print(f"Errors detected in JSON for user {user_id}: {errors}")
-            return 'retry'
+            return 'retry', errors
         print(f"JSON validated successfully for user {user_id}.")
         return activity
     except json.JSONDecodeError as e:
         errors.append(f"JSON Decode Error: {e}")
         log_json_errors(errors)
         print(f"Errors detected in JSON for user {user_id}: {errors}")
-        return 'retry'
+        return 'retry', errors
 
 def log_json_errors(error_array):
     """Logs an array of errors to a JSON file, one per line."""
@@ -228,9 +228,9 @@ def update_balance(tx, current_balance):
     """
     tx_type = tx.get("type", "").lower()
     amount = tx.get("amount", 0)
-    if "deposit" or "contribution" in tx_type:
+    if any(word in tx_type for word in ["deposit", "contribution", "transfer in"]):
         return current_balance + amount
-    elif "withdrawal" or "transfer" or  "purchase" or "sale" in tx_type:
+    elif any(word in tx_type for word in ["withdrawal", "transfer out", "purchase", "sale"]):
         new_balance = current_balance - amount
         if new_balance<0:
             return current_balance
@@ -303,9 +303,6 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
     "merchant_name": "Amazon",
     "recipient_id": null,
     "recipient_bank": null,
-    "login_attempts": 1,
-    "session_id": "S-12345678",
-    "is_repeat_location": true
 }
 <<<END_JSON>>>
 """
@@ -324,8 +321,6 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
         "- merchant_name: string or null.\n"
         "- recipient_id: string or null. If string, formatted as \"REC-XXXXXXXX\".\n"
         "- recipient_bank: string or nul.\n"
-        "- login_attempts: int, number of login attempts.\n"
-        "- session_id: string, formatted as \"S-XXXXXXXX\".\n"
     )
 
     prompt_parts = []
@@ -350,12 +345,14 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
     prompt_parts.append("- End your response immediately after closing the JSON block.\n")
     prompt_parts.append("- The possible activity types are described in the strategy.\n")
     prompt_parts.append(f"- The value for `amount` must be smaller than {balance}.\n")
+    prompt_parts.append("- For any transfer activity, set the 'type' field to either 'Transfer IN' if the funds are being received, or 'Transfer Out' if the funds are being sent.\n")
+
     prompt_parts.append("- Use the provided global_clock to initialize bank_timestamp if no history exists for the user.\n")
     prompt_parts.append("### Important:\n")
     prompt_parts.append("- The JSON must be flat.\n")
     prompt_parts.append("- All string values must be enclosed in double quotes.\n")
     if past_errors:
-        prompt_parts.append(f"- Do not repeat previous errors: {past_errors}.\n")
+        prompt_parts.append(f"- Errors you got in the past and that you must avoid: {past_errors}.\n")
     
     return "".join(prompt_parts)
 
@@ -373,6 +370,7 @@ def generate_activity_sequence(strategy, global_clock, user_id, behavior_type, f
     for i in range(num_activities):
         # Randomly select an account (LLM may output a new one)
         account_id = random.choice(list(user_accounts.keys()))
+        # Get balance for that account
         current_balance = user_accounts[account_id]
         history = history_by_account.get(account_id, [])
         
@@ -386,7 +384,7 @@ def generate_activity_sequence(strategy, global_clock, user_id, behavior_type, f
             raw_response = response['message']['content'].strip()
             save_to_text(raw_response, user_id)  # For debugging
             
-            activity = validate_json(raw_response, user_id)
+            activity, errors = validate_json(raw_response, user_id)
             if activity != 'retry':
                 tx = activity[0]
                 new_account_id = tx.get("account_id")
@@ -412,7 +410,7 @@ def generate_activity_sequence(strategy, global_clock, user_id, behavior_type, f
                 break
             else:
                 print(f"Retrying activity generation for user {user_id}, account {account_id}...")
-                update_reward_log(score=-1, user_id=user_id, reason="JSON generation failed")
+                update_reward_log(score=-1, user_id=user_id, reason=errors)
                 retries += 1
     return activities
 
@@ -585,7 +583,7 @@ def visualize_json_success_rate():
 start_time = time.time()
 print(f"Simulation started at {datetime.now().isoformat()}")
 
-generate_activities(total_activities=20, target_fraud_percentage=0.5, fraud_agents_count=2, legit_agents_count=2)
+generate_activities(total_activities=50, target_fraud_percentage=0.5, fraud_agents_count=2, legit_agents_count=2)
 time_taken = round((time.time()-start_time)/60, 2)
 print(f"Dataset generation required time: {round((time.time()-start_time)/60,1)} minutes")
 visualize_json_success_rate()
