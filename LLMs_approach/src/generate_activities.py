@@ -48,7 +48,7 @@ EXPECTED_FIELD_TYPES = {
     "session_id": str,
     #"velocity": (int, float),
     #"distance_from_last_location": (int, float),
-    "is_repeat_location": bool,
+    #"is_repeat_location": bool,
 }
 
 ORDERED_COLUMNS = [
@@ -275,10 +275,17 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
     Builds a prompt for generating the next transaction.
     It includes a summary of previous transactions.
     """
+    # Create a history summary.
     history_summary = ""
     if history:
         history_summary = f"Previous transactions for user {user_id}:\n" + json.dumps(history, indent=2) + "\n"
-
+        # Extract the last bank_timestamp from the history.
+        last_timestamp = history[-1].get("bank_timestamp", global_clock)
+        time_instruction = (f"Use the last bank_timestamp {last_timestamp} as the reference for the next transaction. "
+                            f"Generate a new bank_timestamp that is a plausible, later time based on the transaction type and strategy.")
+    else:
+        time_instruction = (f"Use the global clock {global_clock} as the reference for the transaction. "
+                            f"The generated bank_timestamp should be close to this time.")
     json_template = """
 <<<JSON>>>        
 {
@@ -315,11 +322,10 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
         "- device_id: string, the device model.\n"
         "- network_type: string, e.g., \"Wi-Fi\".\n"
         "- merchant_name: string or null.\n"
-        "- recipient_id: string or null.\n"
-        "- recipient_bank: string or null.\n"
+        "- recipient_id: string or null. If string, formatted as \"REC-XXXXXXXX\".\n"
+        "- recipient_bank: string or nul.\n"
         "- login_attempts: int, number of login attempts.\n"
         "- session_id: string, formatted as \"S-XXXXXXXX\".\n"
-        "- is_repeat_location: bool, whether the location was used before.\n"
     )
 
     prompt_parts = []
@@ -331,6 +337,7 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
     else:
         # If no history, instruct the LLM to use the global clock as the starting point.
         prompt_parts.append(f"- Use the global clock {global_clock} as a reference to initialize the bank_timestamp for the activity. The generated timestamp should be close to this time.\n")
+    prompt_parts.append(time_instruction + "\n")
     prompt_parts.append(f"You are generating the next most probable banking activity for user {user_id} whose behavior is described by the following strategy: {strategy}.\n")
     prompt_parts.append(f"The activity must be generated in JSON format with the same fields as in the following example:\n{json_template}\n")
     prompt_parts.append("Do not include any extra fields, comments, or explanations.\n")
@@ -342,7 +349,8 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
     prompt_parts.append("- Ensure timestamps are ISO 8601 formatted and logically consistent.\n")
     prompt_parts.append("- End your response immediately after closing the JSON block.\n")
     prompt_parts.append("- The possible activity types are described in the strategy.\n")
-    prompt_parts.append(f"- The value for `amount` must be <{balance}.\n")
+    prompt_parts.append(f"- The value for `amount` must be smaller than {balance}.\n")
+    prompt_parts.append("- Use the provided global_clock to initialize bank_timestamp if no history exists for the user.\n")
     prompt_parts.append("### Important:\n")
     prompt_parts.append("- The JSON must be flat.\n")
     prompt_parts.append("- All string values must be enclosed in double quotes.\n")
@@ -400,6 +408,7 @@ def generate_activity_sequence(strategy, global_clock, user_id, behavior_type, f
                 user_accounts[new_account_id] = new_balance
                 activities.append(tx)
                 print(f"Activity generated for account {new_account_id}. New balance: {new_balance:.2f}")
+                update_reward_log(score=1, user_id=user_id, reason="JSON generation succesfull")
                 break
             else:
                 print(f"Retrying activity generation for user {user_id}, account {account_id}...")
@@ -407,11 +416,11 @@ def generate_activity_sequence(strategy, global_clock, user_id, behavior_type, f
                 retries += 1
     return activities
 
-def generate_activities(total_activities=1000, target_fraud_percentage=0.1, fraud_agents_count=5, legit_agents_count=20, buffer_size=1):
+def generate_activities(total_activities=1000, target_fraud_percentage=0.1, fraud_agents_count=5, legit_agents_count=20):
     """
     Generates a bank log with multiple fraudulent and legitimate agents.
     
-    Creates transactions for each agent and writes them to a CSV.
+    Creates transactions for each agent and writes them to a CSV immediately.
     """
     fraudulent_strategies = load_existing_strategies("strategies/fraud_strategies.json")
     legitimate_strategies = load_existing_strategies("strategies/legitimate_strategies.json")
@@ -430,46 +439,81 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
             buffer.clear()
     
     total_generated = 0  # Count all transactions (fraudulent + legitimate)
+    target_fraud = int(total_activities * target_fraud_percentage)
     
-    # Generate fraudulent activities.
-    for _ in range(fraud_agents_count):
-        user_id = f"USER-{generate_random_hash(8)}"
-        behavior_type = random.choice(list(fraudulent_strategies.keys()))
-        strategy = fraudulent_strategies[behavior_type]
-        activities = generate_activity_sequence(strategy=strategy, global_clock=global_clock, user_id=user_id, fraud_label=1, behavior_type=behavior_type, num_activities=random.randint(1,6))
-        for activity in activities: 
-            buffer.append(activity)
-            total_generated += 1
-            if total_generated > int(total_activities * target_fraud_percentage):
+    # --- Fraudulent activities generation ---
+    while total_generated < target_fraud:
+        remaining = target_fraud - total_generated
+        for _ in range(fraud_agents_count):
+            if total_generated >= target_fraud:
                 break
-            if len(buffer) >= buffer_size:
-                flush_buffer()
-    if buffer:
-        flush_buffer()
+            user_id = f"USER-{generate_random_hash(8)}"
+            behavior_type = random.choice(list(fraudulent_strategies.keys()))
+            strategy = fraudulent_strategies[behavior_type]
+            # Decide the number of activities for this agent, but don't generate more than needed.
+            num_act = random.randint(1, 6)
+            num_act = min(num_act, remaining)
+            activities = generate_activity_sequence(
+                strategy=strategy, 
+                global_clock=global_clock, 
+                user_id=user_id, 
+                behavior_type=behavior_type, 
+                fraud_label=1, 
+                num_activities=num_act
+            )
+            for activity in activities:
+                assign_actvity_fields(activity, user_id, behavior_type, fraud_label=1)
+                flush_buffer_immediate(activity)  # Immediately flush this transaction to CSV.
+                total_generated += 1
+                if total_generated >= target_fraud:
+                    break
+            if total_generated >= target_fraud:
+                break
 
-            
-       
-    # Generate legitimate activities for the remaining transactions.
-    while total_generated <= total_activities:
+    # --- Legitimate activities generation ---
+    while total_generated < total_activities:
+        remaining = total_activities - total_generated
         for _ in range(legit_agents_count):
+            if total_generated >= total_activities:
+                break
             user_id = f"USER-{generate_random_hash(8)}"
             behavior_type = random.choice(list(legitimate_strategies.keys()))
             strategy = legitimate_strategies[behavior_type]
-            activities = generate_activity_sequence(strategy=strategy, global_clock=global_clock, user_id=user_id, fraud_label=0, behavior_type=behavior_type, num_activities=random.randint(1,6))
+            num_act = random.randint(1, 6)
+            num_act = min(num_act, remaining)
+            activities = generate_activity_sequence(
+                strategy=strategy, 
+                global_clock=global_clock, 
+                user_id=user_id, 
+                behavior_type=behavior_type, 
+                fraud_label=0, 
+                num_activities=num_act
+            )
             for activity in activities:
-                buffer.append(activity)
+                assign_actvity_fields(activity, user_id, behavior_type, fraud_label=0)
+                flush_buffer_immediate(activity)
                 total_generated += 1
                 if total_generated >= total_activities:
                     break
-                if len(buffer) >= buffer_size:
-                    flush_buffer() 
+            if total_generated >= total_activities:
+                break
+        if total_generated >= total_activities:
+            break
+
+    # Final flush in case anything remains.
     if buffer:
         flush_buffer()
-
+    
     print(f"Activity generation complete. Data saved to {DATA_FILE}")
     final_df = pd.read_csv(DATA_FILE)
-    print(f"Bank Dataframe has {len(final_df)} activities")
     return final_df
+
+def flush_buffer_immediate(tx):
+    """Immediately appends a single transaction to the CSV file."""
+    df = pd.DataFrame([tx])
+    df = df[ORDERED_COLUMNS]
+    header = not (os.path.exists(DATA_FILE) and os.path.getsize(DATA_FILE) > 0)
+    df.to_csv(DATA_FILE, mode='a', index=False, header=header)
 
 def load_existing_strategies(filename):
     """Loads existing strategies from a JSON file."""
@@ -477,19 +521,6 @@ def load_existing_strategies(filename):
         with open(filename, 'r') as f:
             return json.load(f)
     return {}
-
-def visualize_json_success_rate():
-    """Plots JSON success trends over time."""
-    if not os.path.exists(REWARD_LOG_FILE):
-        return
-    df = pd.read_csv(REWARD_LOG_FILE)
-    df['cumulative_success'] = (df['reward'] == 2).cumsum()
-    plt.plot(df.index, df['cumulative_success'], marker='o')
-    plt.xlabel('Attempts')
-    plt.ylabel('Valid JSONs')
-    plt.title('JSON Success Rate')
-    plt.grid()
-    plt.savefig(f"{OUTPUT_DIR}/success_rate.png")
 
 def save_to_text(reasoning_text, agent_id=None):
     """Appends LLM reasoning and extracted JSON to a shared text file."""
@@ -501,11 +532,21 @@ def update_reward_log(score: int, user_id: str, reason: str):
         f.write(f"{datetime.now().isoformat()},{user_id},{score},{reason}\n")
 
 def visualize_rewards():
+    """Plots cumulative reward progress over time."""
     if not os.path.exists(REWARD_LOG_FILE):
         print("No reward log found.")
         return
+    # Read the reward log, assuming it has a header.
     df = pd.read_csv(REWARD_LOG_FILE)
+    # Convert timestamp to datetime.
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
+    # Ensure rewards are numeric.
+    df['reward'] = df['reward'].astype(int)
+    # Sort by timestamp for a chronological plot.
+    df.sort_values(by='timestamp', inplace=True)
+    # Compute cumulative reward.
     df['cumulative_reward'] = df['reward'].cumsum()
+    
     plt.figure(figsize=(10, 5))
     plt.plot(df['timestamp'], df['cumulative_reward'], marker='o', linestyle='-', label='Cumulative Reward')
     plt.xlabel('Time')
@@ -514,7 +555,31 @@ def visualize_rewards():
     plt.xticks(rotation=45)
     plt.legend()
     plt.tight_layout()
-    plt.savefig(f"{OUTPUT_DIR}/reward_trend.png")
+    plt.savefig(os.path.join(OUTPUT_DIR, "reward_trend.png"))
+
+def visualize_json_success_rate():
+    """Plots the cumulative count of successful JSON generations over attempt number."""
+    if not os.path.exists(REWARD_LOG_FILE):
+        print("No reward log found.")
+        return
+    # Read the reward log. Adjust the names if needed.
+    df = pd.read_csv(REWARD_LOG_FILE)
+    # Convert rewards to numeric, if necessary.
+    df['reward'] = df['reward'].astype(int)
+    # Assume reward of 2 means success.
+    df['success'] = df['reward'].apply(lambda r: 1 if r == 1 else 0)
+    df['cumulative_success'] = df['success'].cumsum()
+    
+    plt.figure(figsize=(10, 5))
+    plt.plot(df.index, df['cumulative_success'], marker='o', linestyle='-', label='Cumulative Valid JSONs')
+    plt.xlabel('Attempt Number')
+    plt.ylabel('Cumulative Valid JSONs')
+    plt.title('JSON Success Rate')
+    plt.grid(True)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(os.path.join(OUTPUT_DIR, "success_rate.png"))
+
 
 # Main simulation entry point
 start_time = time.time()

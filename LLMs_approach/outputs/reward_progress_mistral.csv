@@ -1,3 +1,23 @@
 timestamp,user_id,reward,reason
-2025-03-03T12:23:17.068776,USER-5f733475,-1,JSON generation failed
-2025-03-03T12:29:53.151500,USER-4247c8ff,-1,JSON generation failed
+2025-03-03T16:48:28.829696,USER-88c8a12e,1,JSON generation succesfull
+2025-03-03T16:48:48.683625,USER-88c8a12e,1,JSON generation succesfull
+2025-03-03T16:49:08.849773,USER-88c8a12e,1,JSON generation succesfull
+2025-03-03T16:49:26.926108,USER-4e7ab71f,1,JSON generation succesfull
+2025-03-03T16:49:47.258329,USER-4e7ab71f,1,JSON generation succesfull
+2025-03-03T16:50:07.064441,USER-4e7ab71f,-1,JSON generation failed
+2025-03-03T16:50:27.717770,USER-4e7ab71f,1,JSON generation succesfull
+2025-03-03T16:50:48.142452,USER-4e7ab71f,1,JSON generation succesfull
+2025-03-03T16:51:08.244069,USER-4e7ab71f,-1,JSON generation failed
+2025-03-03T16:51:28.659268,USER-4e7ab71f,1,JSON generation succesfull
+2025-03-03T16:51:46.818343,USER-73299150,1,JSON generation succesfull
+2025-03-03T16:52:05.081315,USER-73299150,1,JSON generation succesfull
+2025-03-03T16:52:25.232302,USER-7361109b,1,JSON generation succesfull
+2025-03-03T16:52:45.278947,USER-7361109b,1,JSON generation succesfull
+2025-03-03T16:53:05.354210,USER-7361109b,1,JSON generation succesfull
+2025-03-03T16:53:26.224370,USER-7361109b,1,JSON generation succesfull
+2025-03-03T16:53:45.103464,USER-6265ddba,1,JSON generation succesfull
+2025-03-03T16:53:56.746742,USER-6265ddba,1,JSON generation succesfull
+2025-03-03T16:54:17.290360,USER-6265ddba,1,JSON generation succesfull
+2025-03-03T16:54:36.663552,USER-6265ddba,1,JSON generation succesfull
+2025-03-03T16:54:57.006212,USER-6265ddba,-1,JSON generation failed
+2025-03-03T16:55:16.872885,USER-6265ddba,-1,JSON generation failed
