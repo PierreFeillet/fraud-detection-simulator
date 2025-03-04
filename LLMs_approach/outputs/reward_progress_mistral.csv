@@ -1,54 +1,85 @@
 timestamp,user_id,reward,reason
-2025-03-04T15:08:12.898076,USER-ae30600d,1,JSON generation succesfull
-2025-03-04T15:08:26.548697,USER-ae30600d,1,JSON generation succesfull
-2025-03-04T15:08:34.211647,USER-ae30600d,1,JSON generation succesfull
-2025-03-04T15:08:47.055032,USER-aaa9f9da,1,JSON generation succesfull
-2025-03-04T15:09:00.955906,USER-aaa9f9da,1,JSON generation succesfull
-2025-03-04T15:09:09.220938,USER-aaa9f9da,-1,['Error: JSON contains inline comments.']
-2025-03-04T15:09:17.392463,USER-aaa9f9da,1,JSON generation succesfull
-2025-03-04T15:09:31.303398,USER-aaa9f9da,1,JSON generation succesfull
-2025-03-04T15:09:45.244631,USER-aaa9f9da,1,JSON generation succesfull
-2025-03-04T15:09:58.516301,USER-b2cbc3e0,1,JSON generation succesfull
-2025-03-04T15:10:07.631342,USER-b2cbc3e0,1,JSON generation succesfull
-2025-03-04T15:10:16.722338,USER-b2cbc3e0,1,JSON generation succesfull
-2025-03-04T15:10:24.264187,USER-b2cbc3e0,1,JSON generation succesfull
-2025-03-04T15:10:36.629281,USER-d2799dd5,1,JSON generation succesfull
-2025-03-04T15:10:52.880919,USER-d2799dd5,1,JSON generation succesfull
-2025-03-04T15:11:00.862127,USER-d2799dd5,1,JSON generation succesfull
-2025-03-04T15:11:14.014940,USER-32aecdac,1,JSON generation succesfull
-2025-03-04T15:11:22.721020,USER-32aecdac,1,JSON generation succesfull
-2025-03-04T15:11:39.433690,USER-32aecdac,1,JSON generation succesfull
-2025-03-04T15:11:52.404152,USER-32aecdac,1,JSON generation succesfull
-2025-03-04T15:12:01.162965,USER-32aecdac,1,JSON generation succesfull
-2025-03-04T15:12:13.613581,USER-97db5151,1,JSON generation succesfull
-2025-03-04T15:12:27.783623,USER-97db5151,1,JSON generation succesfull
-2025-03-04T15:12:36.912737,USER-97db5151,1,JSON generation succesfull
-2025-03-04T15:12:46.363160,USER-97db5151,1,JSON generation succesfull
-2025-03-04T15:12:59.720111,USER-97db5151,1,JSON generation succesfull
-2025-03-04T15:13:13.219572,USER-97db5151,1,JSON generation succesfull
-2025-03-04T15:13:30.963209,USER-4b33c306,1,JSON generation succesfull
-2025-03-04T15:13:48.680427,USER-4b33c306,1,JSON generation succesfull
-2025-03-04T15:14:06.588427,USER-4b33c306,1,JSON generation succesfull
-2025-03-04T15:14:25.530103,USER-4b33c306,1,JSON generation succesfull
-2025-03-04T15:14:43.436618,USER-4b33c306,1,JSON generation succesfull
-2025-03-04T15:15:01.116190,USER-6b11ce91,1,JSON generation succesfull
-2025-03-04T15:15:19.737669,USER-442d9562,1,JSON generation succesfull
-2025-03-04T15:15:37.209750,USER-442d9562,1,JSON generation succesfull
-2025-03-04T15:15:55.653329,USER-442d9562,1,JSON generation succesfull
-2025-03-04T15:16:13.347454,USER-442d9562,1,JSON generation succesfull
-2025-03-04T15:16:31.260802,USER-4735ae1b,1,JSON generation succesfull
-2025-03-04T15:16:48.858136,USER-4735ae1b,1,JSON generation succesfull
-2025-03-04T15:17:06.485372,USER-4735ae1b,1,JSON generation succesfull
-2025-03-04T15:17:24.619925,USER-4735ae1b,1,JSON generation succesfull
-2025-03-04T15:17:42.357766,USER-4735ae1b,1,JSON generation succesfull
-2025-03-04T15:17:59.442423,USER-4735ae1b,1,JSON generation succesfull
-2025-03-04T15:18:17.316595,USER-a86d21e1,1,JSON generation succesfull
-2025-03-04T15:18:34.892554,USER-a86d21e1,1,JSON generation succesfull
-2025-03-04T15:18:52.565950,USER-a86d21e1,1,JSON generation succesfull
-2025-03-04T15:19:09.709980,USER-e1807564,1,JSON generation succesfull
-2025-03-04T15:19:27.315475,USER-e1807564,1,JSON generation succesfull
-2025-03-04T15:19:44.992387,USER-e1807564,1,JSON generation succesfull
-2025-03-04T15:20:02.665908,USER-dc56d3f5,1,JSON generation succesfull
-2025-03-04T15:20:20.128106,USER-fc99c92e,1,JSON generation succesfull
-2025-03-04T15:20:39.142479,USER-fc99c92e,1,JSON generation succesfull
-2025-03-04T15:20:56.803955,USER-fc99c92e,1,JSON generation succesfull
+2025-03-04T16:10:00.589223,USER-0efc871d,1,JSON generation succesfull
+2025-03-04T16:10:10.603780,USER-0efc871d,1,JSON generation succesfull
+2025-03-04T16:10:28.130123,USER-0efc871d,1,JSON generation succesfull
+2025-03-04T16:10:48.917022,USER-0efc871d,-1,['Error: Unexpected fields: balance_after, user_id, transaction_id, behavior_type, fraud_label']
+2025-03-04T16:10:59.904821,USER-0efc871d,1,JSON generation succesfull
+2025-03-04T16:11:10.843487,USER-0efc871d,1,JSON generation succesfull
+2025-03-04T16:11:25.264537,USER-b1893e24,1,JSON generation succesfull
+2025-03-04T16:11:38.966686,USER-32273548,1,JSON generation succesfull
+2025-03-04T16:11:47.082983,USER-32273548,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:11:56.587570,USER-32273548,1,JSON generation succesfull
+2025-03-04T16:12:10.085559,USER-a1956a84,1,JSON generation succesfull
+2025-03-04T16:12:18.206625,USER-a1956a84,1,JSON generation succesfull
+2025-03-04T16:12:35.251565,USER-a1956a84,1,JSON generation succesfull
+2025-03-04T16:12:51.707722,USER-a1956a84,1,JSON generation succesfull
+2025-03-04T16:13:05.881638,USER-a1956a84,1,JSON generation succesfull
+2025-03-04T16:13:20.349475,USER-857895c9,1,JSON generation succesfull
+2025-03-04T16:13:29.451366,USER-857895c9,1,JSON generation succesfull
+2025-03-04T16:13:39.127917,USER-857895c9,1,JSON generation succesfull
+2025-03-04T16:13:53.725900,USER-ebdf8971,1,JSON generation succesfull
+2025-03-04T16:14:02.921597,USER-ebdf8971,1,JSON generation succesfull
+2025-03-04T16:14:19.706256,USER-ebdf8971,1,JSON generation succesfull
+2025-03-04T16:14:35.151947,USER-ebdf8971,1,JSON generation succesfull
+2025-03-04T16:14:50.382678,USER-ebdf8971,1,JSON generation succesfull
+2025-03-04T16:15:07.369715,USER-ebdf8971,1,JSON generation succesfull
+2025-03-04T16:15:21.834823,USER-50f3706a,1,JSON generation succesfull
+2025-03-04T16:15:39.274174,USER-50f3706a,1,JSON generation succesfull
+2025-03-04T16:15:57.070325,USER-50f3706a,1,JSON generation succesfull
+2025-03-04T16:16:16.013679,USER-90ed0a7a,1,JSON generation succesfull
+2025-03-04T16:16:34.535455,USER-90ed0a7a,1,JSON generation succesfull
+2025-03-04T16:16:53.179578,USER-90ed0a7a,1,JSON generation succesfull
+2025-03-04T16:17:11.434160,USER-90ed0a7a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:17:30.196548,USER-90ed0a7a,1,JSON generation succesfull
+2025-03-04T16:17:49.678518,USER-4865fd0a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:18:08.319645,USER-4865fd0a,1,JSON generation succesfull
+2025-03-04T16:18:26.980635,USER-4865fd0a,1,JSON generation succesfull
+2025-03-04T16:18:44.313874,USER-4865fd0a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:19:02.217449,USER-4865fd0a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:19:21.947419,USER-4865fd0a,1,JSON generation succesfull
+2025-03-04T16:19:40.634731,USER-4865fd0a,1,JSON generation succesfull
+2025-03-04T16:19:59.692114,USER-4865fd0a,1,JSON generation succesfull
+2025-03-04T16:20:17.542222,USER-4865fd0a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:20:35.455284,USER-4865fd0a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:20:52.575046,USER-4865fd0a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:21:09.540813,USER-4865fd0a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:21:26.725484,USER-4865fd0a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:21:45.370457,USER-4865fd0a,1,JSON generation succesfull
+2025-03-04T16:22:02.223526,USER-e9a84277,1,JSON generation succesfull
+2025-03-04T16:22:21.486162,USER-e9a84277,1,JSON generation succesfull
+2025-03-04T16:22:40.029656,USER-e9a84277,1,JSON generation succesfull
+2025-03-04T16:22:57.830100,USER-670c38ac,1,JSON generation succesfull
+2025-03-04T16:23:16.071359,USER-d1b06ab1,1,JSON generation succesfull
+2025-03-04T16:23:34.016983,USER-d1b06ab1,1,JSON generation succesfull
+2025-03-04T16:23:53.137924,USER-d1b06ab1,1,JSON generation succesfull
+2025-03-04T16:24:10.501987,USER-1b832151,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:24:28.718957,USER-1b832151,1,JSON generation succesfull
+2025-03-04T16:24:47.014630,USER-4e11a04a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:25:04.961192,USER-4e11a04a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:25:23.597961,USER-4e11a04a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:25:42.648763,USER-4e11a04a,1,JSON generation succesfull
+2025-03-04T16:26:01.126987,USER-4e11a04a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:26:19.571836,USER-4e11a04a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:26:39.627426,USER-4e11a04a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:26:57.691810,USER-4e11a04a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:27:15.373732,USER-4e11a04a,1,JSON generation succesfull
+2025-03-04T16:27:34.168514,USER-4e11a04a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:27:52.006228,USER-4e11a04a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:28:09.966387,USER-4e11a04a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:28:29.226928,USER-4e11a04a,1,JSON generation succesfull
+2025-03-04T16:28:46.301951,USER-4e11a04a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:29:03.995326,USER-4e11a04a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:29:20.989818,USER-4e11a04a,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:29:38.603087,USER-4e11a04a,1,JSON generation succesfull
+2025-03-04T16:29:55.628063,USER-e012683e,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:30:13.478658,USER-e012683e,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:30:31.793016,USER-e012683e,1,JSON generation succesfull
+2025-03-04T16:30:48.933787,USER-e012683e,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:31:06.709646,USER-e012683e,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:31:23.885092,USER-e012683e,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:31:41.649663,USER-e012683e,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:31:58.717108,USER-e012683e,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:32:15.804076,USER-e012683e,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:32:33.497819,USER-e012683e,1,JSON generation succesfull
+2025-03-04T16:32:51.644302,USER-e012683e,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:33:10.184995,USER-e012683e,1,JSON generation succesfull

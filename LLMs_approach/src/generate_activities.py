@@ -313,88 +313,124 @@ def summarize_errors(past_errors):
 def build_generation_prompt(strategy, global_clock, user_id, history, balance, past_errors=None):
     """
     Builds a prompt for generating the next transaction.
-    It includes a summary of previous transactions.
+    It includes a summary of previous transactions, plus explicit rules
+    for time-series consistency and transaction structure.
     """
-    # Create a history summary.
+
+    # 1. Summarize the user's history (if available).
     history_summary = ""
     if history:
         history_summary = f"Previous transactions for user {user_id}:\n" + json.dumps(history, indent=2) + "\n"
-        # Extract the last bank_timestamp from the history.
         last_timestamp = history[-1].get("bank_timestamp", global_clock)
-        time_instruction = (f"Use the last bank_timestamp {last_timestamp} as the reference for the next transaction. "
-                            f"Generate a new bank_timestamp that is a plausible, later time based on the transaction type and strategy.")
+        time_instruction = (
+            f"Use the last bank_timestamp {last_timestamp} as a reference for the next transaction. "
+            "The new bank_timestamp must be strictly later (chronologically) than the last one. "
+            "Generate a plausible gap in time based on the transaction type and user’s typical activity pattern."
+        )
     else:
-        time_instruction = (f"Use the global clock {global_clock} as the reference for the transaction. "
-                            f"The generated bank_timestamp should be close to this time.")
+        # If no history, we start from the global clock.
+        time_instruction = (
+            f"Use the global clock {global_clock} as a reference for the transaction. "
+            "The generated bank_timestamp should be close to this time."
+        )
+
+    # 2. Provide a JSON template as an example
     json_template = """
-    <<<JSON>>>        
-    {
-    "bank_timestamp": "2025-03-01T10:15:32+00:00",
-    "local_timestamp": "2025-03-01T05:15:32-05:00",
-    "account_id": "ACC-82736401",
-    "type": "Purchase",
-    "amount": 45.99,
-    "currency": "USD",
-    "balance_before": 1280.45,
-    "location": "Chicago, USA",
-    "ip_address": "73.56.201.89",
-    "device_id": "iPhone-13",
-    "network_type": "Wi-Fi",
-    "merchant_name": "Starbucks",
-    "recipient_id": null,
-    "recipient_bank": null
-    }
-    <<<END_JSON>>>
-    """
+<<<JSON>>>        
+{
+  "bank_timestamp": "2025-03-01T10:15:32+00:00",
+  "local_timestamp": "2025-03-01T05:15:32-05:00",
+  "account_id": "ACC-82736401",
+  "type": "Purchase",
+  "amount": 45.99,
+  "currency": "USD",
+  "balance_before": 1280.45,
+  "location": "Chicago, USA",
+  "ip_address": "73.56.201.89",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Starbucks",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+<<<END_JSON>>>
+"""
+
+    # 3. Explain the fields
     field_explanation = (
         "- bank_timestamp: string (ISO 8601), the UTC time of the activity.\n"
-        "- local_timestamp: string (ISO 8601), the local time with time zone offset.\n"
+        "- local_timestamp: string (ISO 8601), the local time with correct offset.\n"
         "- account_id: string, formatted as \"ACC-XXXXXXXX\".\n"
-        "- type: string, activity type.\n"
-        "- amount: float, the monetary amount (0 if not applicable).\n"
+        "- type: string, activity type (Purchase, Sale, Transfer IN, Transfer Out, Withdrawal, etc.).\n"
+        "- amount: float, the monetary amount (0 if not applicable), must be < current balance.\n"
         "- currency: string, e.g., \"USD\".\n"
         "- balance_before: float, the balance before the activity.\n"
         "- location: string, city and country.\n"
-        "- ip_address: string, an IPv4 address.\n"
+        "- ip_address: string, a valid IPv4 address.\n"
         "- device_id: string, the device model.\n"
-        "- network_type: string, e.g., \"Wi-Fi\".\n"
-        "- merchant_name: string, (null if not applicable).\n"
-        "- recipient_id: string formatted as \"REC-XXXXXXXX\", (null if not applicable).\n"
-        "- recipient_bank: string, (null if not applicable).\n"
+        "- network_type: string, e.g., \"Wi-Fi\", \"Cellular\".\n"
+        "- merchant_name: string (null if not applicable).\n"
+        "- recipient_id: string formatted as \"REC-XXXXXXXX\" (null if not applicable).\n"
+        "- recipient_bank: string (null if not applicable).\n"
     )
 
+    # 4. Build the final prompt in parts
     prompt_parts = []
+
+    # 4a. If we have prior transactions, show them
     if history_summary:
-        # If history exists, instruct the LLM to use the last bank_timestamp as reference,
-        # and generate a new bank_timestamp that is a plausible continuation.
-        prompt_parts.append(f"{history_summary}\n")
-        prompt_parts.append("- Use the last bank_timestamp from the history as a reference to generate the next bank_timestamp. The new timestamp should be a plausible, later time, consistent with the transaction type and strategy.\n")
+        prompt_parts.append(history_summary)
+        prompt_parts.append(
+            "- Use the last bank_timestamp from the history as a reference. "
+            "Ensure the new transaction's bank_timestamp is strictly later.\n"
+        )
     else:
-        # If no history, instruct the LLM to use the global clock as the starting point.
-        prompt_parts.append(f"- Use the global clock {global_clock} as a reference to initialize the bank_timestamp for the activity. The generated timestamp should be close to this time.\n")
+        prompt_parts.append(
+            f"- No prior history. Use the global clock {global_clock} to initialize bank_timestamp.\n"
+        )
+
+    # Add the time_instruction from above
     prompt_parts.append(time_instruction + "\n")
-    prompt_parts.append(f"You are generating the next most probable banking activity for user {user_id} whose behavior is described by the following strategy: {strategy}.\n")
-    prompt_parts.append(f"The activity must be generated in JSON format with the same fields as in the following example:\n{json_template}\n")
+
+    # 4b. High-level generation instruction
+    prompt_parts.append(
+        f"You are generating the next probable banking activity for user {user_id} with strategy: {strategy}.\n"
+    )
+    prompt_parts.append(
+        "The output must be valid JSON with **exactly** the same fields as in this example:\n"
+        f"{json_template}\n"
+    )
     prompt_parts.append("Do not include any extra fields, comments, or explanations.\n")
     prompt_parts.append("Only generate one transaction in this call.\n")
+
+    # 4c. Data Generation Rules:
     prompt_parts.append("### Data Generation Rules:\n")
-    prompt_parts.append(f"- Required fields and formats:\n{field_explanation}. \n\n")
-    prompt_parts.append("- Do not repeat the example; generate a new transaction.\n")
-    prompt_parts.append("- The JSON MUST be enclosed within the markers <<<JSON>>> and <<<END_JSON>>>.\n")
-    prompt_parts.append("- Ensure timestamps are ISO 8601 formatted and logically consistent.\n")
+    prompt_parts.append(f"- Required fields and formats:\n{field_explanation}\n\n")
+    prompt_parts.append("- The JSON must be enclosed within <<<JSON>>> and <<<END_JSON>>>.\n")
+    prompt_parts.append("- Keep timestamps logically consistent (UTC vs. local time offset).\n")
+    prompt_parts.append("- The local_timestamp must match the time zone offset implied by the location.\n")
+    prompt_parts.append("- The hour in local_timestamp cannot exceed 23.\n")
     prompt_parts.append("- End your response immediately after closing the JSON block.\n")
-    prompt_parts.append("- The possible activity types are described in the strategy.\n")
-    prompt_parts.append(f"- The value for `amount` must be smaller than {balance}.\n")
-    prompt_parts.append("- For any transfer activity, set the 'type' field to either 'Transfer IN' if the funds are being received, or 'Transfer Out' if the funds are being sent.\n")
-    #prompt_parts.append("- For a Purchase or Sale: 'merchant_name' must not be null.\n")
-    #prompt_parts.append("- For a Transfer (in or out): 'recipient_id' and 'recipient_bank' must not be null.\n")
-    prompt_parts.append("- Use the provided global_clock to initialize bank_timestamp if no history exists for the user.\n")
-    prompt_parts.append("### Important:\n")
-    prompt_parts.append("- The JSON must be flat.\n")
-    prompt_parts.append("- All string values must be enclosed in double quotes.\n")
+
+    # 4d. Transaction-type logic:
+    prompt_parts.append("- For any Transfer activity, set 'type' to 'Transfer IN' or 'Transfer Out'. Provide recipient_id and recipient_bank, but merchant_name must be null.\n")
+    prompt_parts.append("- For a Purchase or Sale, merchant_name must not be null, but recipient_id and recipient_bank must be null.\n")
+    prompt_parts.append("- For a Withdrawal, deposit, or other, merchant_name and recipient_id can be null if not applicable.\n")
+
+    # 4e. Additional constraints from user
+    prompt_parts.append(f"- The value for `amount` must be strictly smaller than {balance}.\n")
+    prompt_parts.append("- IP addresses should be plausible (each octet 0–255). Avoid placeholders like 999.999.\n")
+    prompt_parts.append("- If location is e.g. 'New York, USA', consider UTC-5 or UTC-4 (depending on date). If 'Shanghai, China', consider UTC+8.\n")
+    prompt_parts.append("- Timestamps must strictly increase with each new transaction for the same user.\n")
+    prompt_parts.append("- Keep the data realistic for anomaly detection (avoid '24:xx:xx' or negative amounts).\n")
+
+    # 4f. Past errors
     if past_errors:
         prompt_parts.append(f"- Do not repeat previous errors: {past_errors}.\n")
+
+    # Return the assembled prompt
     return "".join(prompt_parts)
+
 
 def generate_activity_sequence(strategy, global_clock, user_id, behavior_type, fraud_label, num_activities=5, user_accounts=None):
     """

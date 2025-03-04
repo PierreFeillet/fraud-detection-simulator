@@ -1,0 +1,11 @@
+transaction_id,user_id,bank_timestamp,local_timestamp,location,ip_address,device_id,network_type,type,amount,currency,account_id,balance_before,balance_after,merchant_name,recipient_id,recipient_bank,behavior_type,fraud_label
+TXN-5243db58eb,USER-96be3969,2025-03-04T14:30:00+00:00,2025-03-04T09:30:00-05:00,"Singapore, SG",18.23.45.67,iPhone-14,Wi-Fi,Transfer Out,123456.78,USD,ACC-12345678,3122,3122,,,,Account Takeover,1
+TXN-33c5ec3a3b,USER-96be3969,2025-03-04T14:40:00+00:00,2025-03-04T09:40:00-05:00,"Shanghai, China",10.10.10.10,iPhone-5,Wi-Fi,Withdrawal,75000,CNY,ACC-1234567890,7431,7431,,,,Account Takeover,1
+TXN-9534c0e4f3,USER-96be3969,2025-03-04T15:00:00+00:00,2025-03-04T10:00:00-05:00,"Shanghai, China",168.254.20.25,iPhone-5,Wi-Fi,Purchase,45000,SGD,ACC-23456789,1398,1398,GlobalTrades,,,Account Takeover,1
+TXN-b9cc2abd82,USER-01538c2b,2025-03-04T14:42:00+00:00,2025-03-04T09:42:00-05:00,"New York, USA",192.168.1.1,iPhone-14,Wi-Fi,Purchase,67890.0,USD,ACC-78901234,817,817,Tech Corp Store,,,Account Takeover,1
+TXN-0d3f92359b,USER-01538c2b,2025-03-04T15:42:00+00:00,2025-03-04T10:42:00-05:00,"London, UK",192.168.2.3,iPhone-14,Wi-Fi,Purchase,50000.0,USD,ACC-78901234,817,817,Global Exchanges Ltd,REC-00000000,BANK-00000000,Account Takeover,1
+TXN-961f403c6c,USER-01538c2b,2025-03-04T14:37:00+00:00,2025-03-04T09:37:00-05:00,"Dallas, USA",207.186.34.56,iPhone-12,Wi-Fi,Purchase,495000,USD,ACC-82736401,6828,6828,"Target, TX",,,Account Takeover,1
+TXN-35bac579ad,USER-01538c2b,2025-03-04T15:43:00+00:00,2025-03-04T19:43:00,"San Francisco, USA",73.56.201.89,iPhone-13,Wi-Fi,Purchase,45.99,USD,ACC-XXXXXXXXX,4806,4760.01,Java Haven,,,Account Takeover,1
+TXN-3d5a52a9c2,USER-01538c2b,2025-03-04T14:43:54+08:00,2025-03-04T06:43:54-08:00,"Shenzhen, China",203.156.789.01234,SGN-MS7V6X,Wi-Fi,Purchase,125437.5,SGD,ACC-12345678,7057,7057,Mall of China,,,Account Takeover,1
+TXN-5f7cae28a5,USER-01538c2b,2025-03-04T14:50:00+00:00,2025-03-04T09:50:00-05:00,"Dallas, TX, USA",10.10.10.10,DeviceInfo_001,Wi-Fi,Transfer Out,300000.0,USD,ACC-82736401,6828,6828,Suppliers'R Us,REC-89012345,BFBS01234567,Account Takeover,1
+TXN-257de8007e,USER-75165812,2025-03-04T14:43:00+00:00,2025-03-04T09:43:00-05:00,"New York, USA",1.2.3.4,iPhone-13,Wi-Fi,Purchase,48000,USD,ACC-987654321,5963,5963,Global Finance Ltd,,Global Bank,Insider Trading,1

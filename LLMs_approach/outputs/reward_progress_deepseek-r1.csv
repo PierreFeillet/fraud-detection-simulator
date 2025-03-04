@@ -1,0 +1,26 @@
+timestamp,user_id,reward,reason
+2025-03-04T15:44:39.096037,USER-96be3969,1,JSON generation succesfull
+2025-03-04T15:45:08.720278,USER-96be3969,1,JSON generation succesfull
+2025-03-04T15:45:58.287518,USER-96be3969,-1,['Error: Missing fields: account_id, currency, network_type', 'Error: Unexpected fields: balance_after']
+2025-03-04T15:47:03.586701,USER-96be3969,-1,['Error: Missing fields: local_timestamp, account_id, type, ip_address, device_id, network_type', 'Error: Unexpected fields: user_id, transaction_type, balance_after, global_clock, additional_info, timestamp']
+2025-03-04T15:47:37.068074,USER-96be3969,1,JSON generation succesfull
+2025-03-04T15:48:33.877670,USER-01538c2b,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T15:49:32.961391,USER-01538c2b,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T15:50:07.465570,USER-01538c2b,1,JSON generation succesfull
+2025-03-04T15:51:05.786181,USER-01538c2b,-1,['Error: Missing fields: location', 'Error: Unexpected fields: balance_after']
+2025-03-04T15:52:35.171371,USER-01538c2b,-1,['JSON Decode Error: Expecting value: line 1 column 1 (char 0)']
+2025-03-04T15:53:05.543426,USER-01538c2b,1,JSON generation succesfull
+2025-03-04T15:53:43.239520,USER-01538c2b,1,JSON generation succesfull
+2025-03-04T15:54:57.697952,USER-01538c2b,1,JSON generation succesfull
+2025-03-04T15:56:48.555925,USER-01538c2b,-1,["Error: Field amount expected type (<class 'int'>, <class 'float'>) but got <class 'str'>", "Error: Field balance_before expected type (<class 'int'>, <class 'float'>) but got <class 'str'>"]
+2025-03-04T15:57:33.966050,USER-01538c2b,1,JSON generation succesfull
+2025-03-04T16:00:06.417292,USER-01538c2b,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:00:59.532976,USER-01538c2b,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:02:25.258292,USER-01538c2b,-1,['Error: Missing fields: local_timestamp, account_id, currency, location, ip_address, device_id, network_type', 'Error: Unexpected fields: balance_after, user_id, global_clock']
+2025-03-04T16:03:31.981030,USER-01538c2b,-1,['Error: Missing fields: local_timestamp, account_id, currency, balance_before']
+2025-03-04T16:04:20.611482,USER-01538c2b,1,JSON generation succesfull
+2025-03-04T16:04:55.102175,USER-75165812,1,JSON generation succesfull
+2025-03-04T16:05:26.259734,USER-cdbc2d1f,1,JSON generation succesfull
+2025-03-04T16:05:57.617079,USER-cdbc2d1f,1,JSON generation succesfull
+2025-03-04T16:07:14.081127,USER-cdbc2d1f,-1,['Error: JSON not enclosed in expected delimiters.']
+2025-03-04T16:07:46.439137,USER-cdbc2d1f,1,JSON generation succesfull
