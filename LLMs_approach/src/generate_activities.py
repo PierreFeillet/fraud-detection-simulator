@@ -176,7 +176,12 @@ def validate_json(text, user_id):
 
     try:
         activity = json.loads(json_str)
+       # We want exactly one transaction dictionary, so standardize:
         if isinstance(activity, list):
+            if not activity:
+                errors.append("Error: JSON list is empty.")
+                log_json_errors(errors)
+                return 'retry', errors
             tx = activity[0]
         elif isinstance(activity, dict):
             tx = activity
@@ -186,11 +191,19 @@ def validate_json(text, user_id):
             log_json_errors(errors)
             print(f"Errors detected in JSON for user {user_id}: {errors}")
             return 'retry', errors
-        
+         #    i.e., if the model didn't supply them or gave an empty string, fix them.
+        if not tx.get("merchant_name"):
+            tx["merchant_name"] = None
+        if not tx.get("recipient_id"):
+            tx["recipient_id"] = None
+        if not tx.get("recipient_bank"):
+            tx["recipient_bank"] = None
+
         missing_fields = [field for field in EXPECTED_FIELD_TYPES if field not in tx]
         extra_fields = [field for field in tx if field not in EXPECTED_FIELD_TYPES]
         if missing_fields:
             errors.append(f"Error: Missing fields: {', '.join(missing_fields)}")
+                # Must have merchant_name
         if extra_fields:
             errors.append(f"Error: Unexpected fields: {', '.join(extra_fields)}")
         if errors:
@@ -350,24 +363,6 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
         "- recipient_bank: string, (null if not applicable).\n"
     )
 
-    transaction_rule= """
-    ### Rules for Transaction Fields
-
-        1) Purchase or Sale:
-        - `type` must be either "Purchase" or "Sale".
-        - `merchant_name` must NOT be null.
-        - `recipient_id` must be null.
-        - `recipient_bank` must be null.
-
-        2) Transfer IN or Transfer Out:
-        - `type` must be either "Transfer IN" or "Transfer Out".
-        - `merchant_name` must be null.
-        - `recipient_id` must NOT be null (use the format "REC-XXXXXXXX").
-        - `recipient_bank` must NOT be null.
-
-        3) Any other transaction type:
-        - If you introduce a different type (like “Withdrawal,” “Deposit,” etc.), specify which fields must be null or not null."""
-
     prompt_parts = []
     if history_summary:
         # If history exists, instruct the LLM to use the last bank_timestamp as reference,
@@ -394,7 +389,6 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
     #prompt_parts.append("- For a Purchase or Sale: 'merchant_name' must not be null.\n")
     #prompt_parts.append("- For a Transfer (in or out): 'recipient_id' and 'recipient_bank' must not be null.\n")
     prompt_parts.append("- Use the provided global_clock to initialize bank_timestamp if no history exists for the user.\n")
-    prompt_parts.append(f"Make sure to follow the instructions {transaction_rule}")    
     prompt_parts.append("### Important:\n")
     prompt_parts.append("- The JSON must be flat.\n")
     prompt_parts.append("- All string values must be enclosed in double quotes.\n")
