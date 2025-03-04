@@ -22,7 +22,6 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 ERROR_TRACKING_FILE = os.path.join(OUTPUT_DIR, f"error_tracking_{LLM_model}.json")
 ERROR_LOG_FILE = os.path.join(OUTPUT_DIR, f"json_errors_{LLM_model}.log")
 REWARD_LOG_FILE = os.path.join(OUTPUT_DIR, f"reward_progress_{LLM_model}.csv")
-VALIDATION_LOG_FILE = os.path.join(OUTPUT_DIR, f"json_validation_{LLM_model}.log")
 LOG_TEXT_FILE = os.path.join(OUTPUT_DIR, f"llm_chain_of_thought_{LLM_model}.txt")
 DATA_DIR = os.getcwd()+"/data"
 os.makedirs(DATA_DIR, exist_ok=True)
@@ -102,7 +101,7 @@ def initialize_logs():
         f.write(reward_header)
     
     # Clear the other log files.
-    for file in [ERROR_LOG_FILE, LOG_TEXT_FILE, VALIDATION_LOG_FILE]:
+    for file in [ERROR_LOG_FILE, LOG_TEXT_FILE, ]:
         with open(file, 'w') as f:
             f.write("")
     
@@ -156,11 +155,11 @@ def validate_json(text, user_id):
     pattern_custom = r"<<<JSON>>>(.*?)<<<END_JSON>>>"
     pattern_code = r"```json\s*(.*?)\s*```"
     
-    match = re.search(pattern_custom, text, re.DOTALL)
+    match = re.search(pattern_custom, text, re.DOTALL | re.IGNORECASE)
     if match:
         json_str = match.group(1).strip()
     else:
-        match = re.search(pattern_code, text, re.DOTALL)
+        match = re.search(pattern_code, text, re.DOTALL | re.IGNORECASE)
         if match:
             json_str = match.group(1).strip()
         else:
@@ -315,25 +314,25 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
         time_instruction = (f"Use the global clock {global_clock} as the reference for the transaction. "
                             f"The generated bank_timestamp should be close to this time.")
     json_template = """
-<<<JSON>>>        
-{
-    "bank_timestamp": "2025-03-01T07:00:00+00:00",
-    "local_timestamp": "2025-03-01T02:00:00-05:00",
-    "account_id": "ACC-12345678",
+    <<<JSON>>>        
+    {
+    "bank_timestamp": "2025-03-01T10:15:32+00:00",
+    "local_timestamp": "2025-03-01T05:15:32-05:00",
+    "account_id": "ACC-82736401",
     "type": "Purchase",
-    "amount": 150.75,
+    "amount": 45.99,
     "currency": "USD",
-    "balance_before": 1000.00,
-    "location": "New York, USA",
-    "ip_address": "192.168.1.10",
-    "device_id": "iPhone-14",
+    "balance_before": 1280.45,
+    "location": "Chicago, USA",
+    "ip_address": "73.56.201.89",
+    "device_id": "iPhone-13",
     "network_type": "Wi-Fi",
-    "merchant_name": "Amazon",
+    "merchant_name": "Starbucks",
     "recipient_id": null,
-    "recipient_bank": null,
-}
-<<<END_JSON>>>
-"""
+    "recipient_bank": null
+    }
+    <<<END_JSON>>>
+    """
     field_explanation = (
         "- bank_timestamp: string (ISO 8601), the UTC time of the activity.\n"
         "- local_timestamp: string (ISO 8601), the local time with time zone offset.\n"
@@ -346,10 +345,28 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
         "- ip_address: string, an IPv4 address.\n"
         "- device_id: string, the device model.\n"
         "- network_type: string, e.g., \"Wi-Fi\".\n"
-        "- merchant_name: string or null.\n"
-        "- recipient_id: string or null. If string, formatted as \"REC-XXXXXXXX\".\n"
-        "- recipient_bank: string or nul.\n"
+        "- merchant_name: string, (null if not applicable).\n"
+        "- recipient_id: string formatted as \"REC-XXXXXXXX\", (null if not applicable).\n"
+        "- recipient_bank: string, (null if not applicable).\n"
     )
+
+    transaction_rule= """
+    ### Rules for Transaction Fields
+
+        1) Purchase or Sale:
+        - `type` must be either "Purchase" or "Sale".
+        - `merchant_name` must NOT be null.
+        - `recipient_id` must be null.
+        - `recipient_bank` must be null.
+
+        2) Transfer IN or Transfer Out:
+        - `type` must be either "Transfer IN" or "Transfer Out".
+        - `merchant_name` must be null.
+        - `recipient_id` must NOT be null (use the format "REC-XXXXXXXX").
+        - `recipient_bank` must NOT be null.
+
+        3) Any other transaction type:
+        - If you introduce a different type (like “Withdrawal,” “Deposit,” etc.), specify which fields must be null or not null."""
 
     prompt_parts = []
     if history_summary:
@@ -374,10 +391,10 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
     prompt_parts.append("- The possible activity types are described in the strategy.\n")
     prompt_parts.append(f"- The value for `amount` must be smaller than {balance}.\n")
     prompt_parts.append("- For any transfer activity, set the 'type' field to either 'Transfer IN' if the funds are being received, or 'Transfer Out' if the funds are being sent.\n")
-    prompt_parts.append("- For a Purchase or Sale: 'merchant_name' must not be null.\n")
-    prompt_parts.append("- For a Transfer (in or out): 'recipient_id' and 'recipient_bank' must not be null.\n")
+    #prompt_parts.append("- For a Purchase or Sale: 'merchant_name' must not be null.\n")
+    #prompt_parts.append("- For a Transfer (in or out): 'recipient_id' and 'recipient_bank' must not be null.\n")
     prompt_parts.append("- Use the provided global_clock to initialize bank_timestamp if no history exists for the user.\n")
-    prompt_parts.append("You are allowed to leave the fields ")
+    prompt_parts.append(f"Make sure to follow the instructions {transaction_rule}")    
     prompt_parts.append("### Important:\n")
     prompt_parts.append("- The JSON must be flat.\n")
     prompt_parts.append("- All string values must be enclosed in double quotes.\n")
@@ -410,7 +427,7 @@ def generate_activity_sequence(strategy, global_clock, user_id, behavior_type, f
             past_errors = read_past_errors()
             #past_errors = summarize_errors(past_errors)
             prompt = build_generation_prompt(strategy, global_clock, user_id, history, current_balance, past_errors)
-            response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}])
+            response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}], options={ "temperature": 0.8, "top_p": 0.9})
             raw_response = response['message']['content'].strip()
             save_to_text(raw_response, user_id)  # For debugging
             
