@@ -1,27 +1,25 @@
 timestamp,user_id,reward,reason
-2025-03-05T10:47:02.572641,USER-9c362994,-1,Error: JSON not enclosed in expected delimiters.
-2025-03-05T10:47:20.398314,USER-9c362994,1,JSON generation succesfull
-2025-03-05T10:47:37.916106,USER-9c362994,-1,Error: JSON not enclosed in expected delimiters.
-2025-03-05T10:47:54.860457,USER-9c362994,-1,Error: JSON not enclosed in expected delimiters.
-2025-03-05T10:48:13.003967,USER-9c362994,-1,JSON Decode Error: Extra data: line 1 column 17 (char 16)
-2025-03-05T10:48:31.426467,USER-9c362994,1,JSON generation succesfull
-2025-03-05T10:48:50.048978,USER-9c362994,-1,The transaction was invalid because 'merchant_name' was missing for Transfer Out. Generate a valid JSON transaction with the required merchant_name.; Error: Missing fields: merchant_name
-2025-03-05T10:49:09.127455,USER-9c362994,1,JSON generation succesfull
-2025-03-05T10:49:28.487128,USER-9c362994,1,JSON generation succesfull
-2025-03-05T10:49:48.049049,USER-9c362994,1,JSON generation succesfull
-2025-03-05T10:50:06.622638,USER-d6a57b44,1,JSON generation succesfull
-2025-03-05T10:50:25.511953,USER-d6a57b44,1,JSON generation succesfull
-2025-03-05T10:50:44.574789,USER-d6a57b44,1,JSON generation succesfull
-2025-03-05T10:51:03.757671,USER-d6a57b44,1,JSON generation succesfull
-2025-03-05T10:51:23.107370,USER-d6a57b44,1,JSON generation succesfull
-2025-03-05T10:51:41.620930,USER-c64a61c8,1,JSON generation succesfull
-2025-03-05T10:52:00.281697,USER-c64a61c8,1,JSON generation succesfull
-2025-03-05T10:52:19.700626,USER-c64a61c8,1,JSON generation succesfull
-2025-03-05T10:52:38.922344,USER-c64a61c8,1,JSON generation succesfull
-2025-03-05T10:52:58.359603,USER-c64a61c8,1,JSON generation succesfull
-2025-03-05T10:53:17.010623,USER-3702f257,1,JSON generation succesfull
-2025-03-05T10:53:36.325400,USER-3702f257,1,JSON generation succesfull
-2025-03-05T10:53:55.408747,USER-3702f257,1,JSON generation succesfull
-2025-03-05T10:54:14.298061,USER-b8cf93de,1,JSON generation succesfull
-2025-03-05T10:54:30.419749,USER-a204a322,1,JSON generation succesfull
-2025-03-05T10:54:40.118703,USER-a204a322,1,JSON generation succesfull
+2025-03-05T15:18:05.485084,USER-9b942b68,-1,JSON Decode Error: Extra data: line 1 column 17 (char 16)
+2025-03-05T15:18:23.504623,USER-9b942b68,-1,The activity was invalid because 'merchant_name' was missing for Transfer Out. Generate a valid JSON activity with the required merchant_name.
+2025-03-05T15:18:41.449802,USER-9b942b68,1,JSON generation successful
+2025-03-05T15:18:59.411158,USER-9b942b68,1,JSON generation successful
+2025-03-05T15:19:18.057567,USER-9b942b68,-1,Error: bank_timestamp 2025-03-01T09:45:21+00:00 is not strictly later than last_timestamp 2025-03-06T09:42:17+00:00.
+2025-03-05T15:19:37.598414,USER-9b942b68,-1,Error: bank_timestamp 2025-03-02T12:30:45+00:00 is not strictly later than last_timestamp 2025-03-06T09:42:17+00:00.
+2025-03-05T15:19:56.599236,USER-9b942b68,-1,Error: bank_timestamp 2025-03-02T13:45:21+00:00 is not strictly later than last_timestamp 2025-03-06T09:42:17+00:00.
+2025-03-05T15:20:15.631084,USER-9b942b68,1,JSON generation successful
+2025-03-05T15:20:34.252146,USER-9b942b68,1,JSON generation successful
+2025-03-05T15:20:53.214478,USER-199405f9,1,JSON generation successful
+2025-03-05T15:21:11.738827,USER-199405f9,-1,The activity was invalid because 'merchant_name' was missing for Transfer OUT. Generate a valid JSON activity with the required merchant_name.
+2025-03-05T15:21:30.809146,USER-199405f9,1,JSON generation successful
+2025-03-05T15:21:49.327880,USER-199405f9,-1,Error: JSON not enclosed in expected delimiters.
+2025-03-05T15:22:08.261370,USER-199405f9,1,JSON generation successful
+2025-03-05T15:22:27.143590,USER-199405f9,1,JSON generation successful
+2025-03-05T15:22:45.970289,USER-199405f9,-1,Error: bank_timestamp 2025-03-07T01:30:23+00:00 is not strictly later than last_timestamp 2025-03-07T09:42:18+00:00.
+2025-03-05T15:23:04.888470,USER-199405f9,1,JSON generation successful
+2025-03-05T15:23:23.660586,USER-5ea9e5c5,1,JSON generation successful
+2025-03-05T15:23:42.781734,USER-5ea9e5c5,-1,JSON Decode Error: Invalid control character at: line 1 column 3 (char 2)
+2025-03-05T15:24:00.857741,USER-5ea9e5c5,-1,The activity was invalid because 'merchant_name' was missing for Transfer IN. Generate a valid JSON activity with the required merchant_name.
+2025-03-05T15:24:18.508835,USER-5ea9e5c5,-1,Error: bank_timestamp 2022-03-01T10:00:00+00:00 is not strictly later than last_timestamp 2025-03-05T14:17:45.251730+00:00.
+2025-03-05T15:24:38.666474,USER-5ea9e5c5,-1,Error: JSON root is neither a list nor a dictionary.
+2025-03-05T15:24:52.695780,USER-5ea9e5c5,-1,The activity was invalid because 'merchant_name' was missing for Transfer OUT. Generate a valid JSON activity with the required merchant_name.
+2025-03-05T15:25:08.321664,USER-5ea9e5c5,-1,JSON Decode Error: Expecting value: line 1 column 1 (char 0)

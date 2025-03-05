@@ -1,5 +1,5 @@
 from collections import defaultdict
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import time
 import json
 import os
@@ -11,8 +11,9 @@ import pandas as pd
 import ollama  # or use watsonx_chat if needed
 import matplotlib.pyplot as plt
 import secrets
+from dateutil.parser import isoparse  # Install python-dateutil if needed
 
-from watsonx_helper import watsonx_chat
+#from watsonx_helper import watsonx_chat
 
 # LLM used for sequence generation
 LLM_model = 'mistral'
@@ -51,7 +52,7 @@ EXPECTED_FIELD_TYPES = {
 }
 
 ORDERED_COLUMNS = [
-    "transaction_id",  # Transaction ID first
+    "activity_id",  # activity ID first
     "user_id",
     # Time-related fields
     "bank_timestamp",
@@ -62,7 +63,7 @@ ORDERED_COLUMNS = [
     "ip_address",
     "device_id",
     "network_type",
-    # Transaction fields
+    # activity fields
     "type",
     "amount",
     "currency",
@@ -147,26 +148,53 @@ def log_json_validation(status, json_content, errors=None):
                 f.write(f"- {error}\n")
         f.write("\n" + "="*80 + "\n")
 
-def validate_json(text, user_id):
-    """Validates JSON correctness and returns a list containing a single transaction.
-    Returns 'retry' if the JSON is invalid."""
+def extract_json_fragment(text):
+    """
+    Attempts to extract a JSON block from text using several common delimiter patterns.
+    Returns the JSON string if found, otherwise None.
+    """
+    stripped = text.strip()
+    # If the entire text is a JSON block (starts with '{' and ends with '}')
+    if stripped.startswith("{") and stripped.endswith("}"):
+        return stripped
+    
+    # First try your preferred delimiters
+    match = re.search(r"<<<JSON>>>(.*?)<<<END_JSON>>>", text, re.DOTALL | re.IGNORECASE)
+    if match:
+        return match.group(1).strip()
+    
+    # Next, try markdown code block with "json" language tag
+    match = re.search(r"```json\s*(.*?)\s*```", text, re.DOTALL | re.IGNORECASE)
+    if match:
+        return match.group(1).strip()
+    
+    # Then, try any triple-backticks (without a language tag)
+    match = re.search(r"```(.*?)```", text, re.DOTALL | re.IGNORECASE)
+    if match:
+        return match.group(1).strip()
+    
+    # As a last resort, try any block delimited by <<< and >>>
+    match = re.search(r"<<<(.*?)>>>", text, re.DOTALL | re.IGNORECASE)
+    if match:
+        return match.group(1).strip()
+    
+    return None
+
+
+def validate_json(text, user_id, last_timestamp=None):
+    """
+    Validates JSON correctness and returns a list containing a single activity.
+    Returns 'retry' if the JSON is invalid or if the new bank_timestamp is not strictly later
+    than the provided last_timestamp.
+    """
     errors = []
     print(f"Validating JSON for user {user_id}...")
-    pattern_custom = r"<<<JSON>>>(.*?)<<<END_JSON>>>"
-    pattern_code = r"```json\s*(.*?)\s*```"
-    
-    match = re.search(pattern_custom, text, re.DOTALL | re.IGNORECASE)
-    if match:
-        json_str = match.group(1).strip()
-    else:
-        match = re.search(pattern_code, text, re.DOTALL | re.IGNORECASE)
-        if match:
-            json_str = match.group(1).strip()
-        else:
-            errors.append("Error: JSON not enclosed in expected delimiters.")
-            log_json_errors(errors)
-            print(f"Errors detected in JSON for user {user_id}: {errors}")
-            return 'retry', errors
+    json_str = extract_json_fragment(text)
+    if not json_str:
+        errors.append("Error: JSON not enclosed in expected delimiters.")
+        log_json_errors(errors)
+        print(f"Errors detected in JSON for user {user_id}: {errors}")
+        return 'retry', errors
 
     if re.search(r'//', json_str) or re.search(r'/\*.*?\*/', json_str, re.DOTALL):
         errors.append("Error: JSON contains inline comments.")
@@ -176,7 +204,7 @@ def validate_json(text, user_id):
 
     try:
         activity = json.loads(json_str)
-       # We want exactly one transaction dictionary, so standardize:
+        # Standardize: we want exactly one activity dictionary.
         if isinstance(activity, list):
             if not activity:
                 errors.append("Error: JSON list is empty.")
@@ -191,24 +219,40 @@ def validate_json(text, user_id):
             log_json_errors(errors)
             print(f"Errors detected in JSON for user {user_id}: {errors}")
             return 'retry', errors
-         #    i.e., if the model didn't supply them or gave an empty string, fix them.
-        #if not tx.get("merchant_name"):
-        #    tx["merchant_name"] = None
-        #if not tx.get("recipient_id"):
-        #    tx["recipient_id"] = None
-        #if not tx.get("recipient_bank"):
-        #    tx["recipient_bank"] = None
 
+        # Check if bank_timestamp is strictly later than last_timestamp (if provided)
+        if last_timestamp:
+            try:
+                new_bank_ts = isoparse(tx["bank_timestamp"])
+                prev_ts = isoparse(last_timestamp)
+                # Ensure both datetime objects are offset-aware. If tzinfo is None, assume UTC.
+                if new_bank_ts.tzinfo is None:
+                    new_bank_ts = new_bank_ts.replace(tzinfo=timezone.utc)
+                if prev_ts.tzinfo is None:
+                    prev_ts = prev_ts.replace(tzinfo=timezone.utc)
+                if new_bank_ts <= prev_ts:
+                    errors.append(
+                        f"Error: bank_timestamp {tx['bank_timestamp']} is not strictly later than last_timestamp {last_timestamp}."
+                    )
+                    log_json_errors(errors)
+                    print(f"Errors detected in JSON for user {user_id}: {errors}")
+                    return 'retry', errors
+            except Exception as e:
+                errors.append(f"Error parsing timestamps: {e}")
+                log_json_errors(errors)
+                print(f"Errors detected in JSON for user {user_id}: {errors}")
+                return 'retry', errors
+
+        # Check for missing and extra fields
         missing_fields = [field for field in EXPECTED_FIELD_TYPES if field not in tx]
         extra_fields = [field for field in tx if field not in EXPECTED_FIELD_TYPES]
         if missing_fields:
             if "merchant_name" in missing_fields:
-                errors.append(f"The transaction was invalid because 'merchant_name' was missing for {tx.get('type')}. Generate a valid JSON transaction with the required merchant_name.")
-            elif any(word in ["recipient_id", "recipient_bank"] for word in missing_fields):
-                errors.append(f"The transaction was invalid because 'recipient_id' and 'recipient_bank' was missing for {tx.get('type')}. Generate a valid JSON transaction with the required {missing_fields}.")
+                errors.append(f"The activity was invalid because 'merchant_name' was missing for {tx.get('type')}. Generate a valid JSON activity with the required merchant_name.")
+            elif any(word in missing_fields for word in ["recipient_id", "recipient_bank"]):
+                errors.append(f"The activity was invalid because 'recipient_id' and 'recipient_bank' were missing for {tx.get('type')}. Generate a valid JSON activity with the required fields.")
             else:
                 errors.append(f"Error: Missing fields: {', '.join(missing_fields)}")
-                # Must have merchant_name
         if extra_fields:
             errors.append(f"Error: Unexpected fields: {', '.join(extra_fields)}")
         if errors:
@@ -216,6 +260,7 @@ def validate_json(text, user_id):
             print(f"Errors detected in JSON for user {user_id}: {errors}")
             return 'retry', errors
 
+        # Check for data type consistency
         for field, expected_type in EXPECTED_FIELD_TYPES.items():
             if field in tx and not isinstance(tx[field], expected_type):
                 errors.append(f"Error: Field {field} expected type {expected_type} but got {type(tx[field])}")
@@ -223,13 +268,16 @@ def validate_json(text, user_id):
             log_json_errors(errors)
             print(f"Errors detected in JSON for user {user_id}: {errors}")
             return 'retry', errors
+
         print(f"JSON validated successfully for user {user_id}.")
         return activity, None
+
     except json.JSONDecodeError as e:
         errors.append(f"JSON Decode Error: {e}")
         log_json_errors(errors)
         print(f"Errors detected in JSON for user {user_id}: {errors}")
         return 'retry', errors
+
 
 def log_json_errors(error_array):
     """Logs an array of errors to a JSON file, one per line."""
@@ -239,7 +287,7 @@ def log_json_errors(error_array):
 
 def update_balance(tx, current_balance):
     """
-    Computes the new balance based on the transaction type and amount.
+    Computes the new balance based on the activity type and amount.
     For a deposit, adds the amount.
     For a withdrawal, transfer, purchase, or sale, subtracts the amount.
     """
@@ -257,9 +305,9 @@ def update_balance(tx, current_balance):
         return current_balance
 
 def assign_actvity_fields(activity, user_id, behavior_type, fraud_label):
-    """Assigns additional fields to the transaction."""
+    """Assigns additional fields to the activity."""
     activity['user_id'] = user_id
-    activity['transaction_id'] = f"TXN-{generate_random_hash(10)}"
+    activity['activity_id'] = f"TXN-{generate_random_hash(10)}"
     activity['behavior_type'] = behavior_type
     activity['fraud_label'] = fraud_label
     return activity
@@ -317,25 +365,26 @@ def summarize_errors(past_errors):
 
 def build_generation_prompt(strategy, global_clock, user_id, history, balance, past_errors=None):
     """
-    Builds a prompt for generating the next transaction.
-    It includes a summary of previous transactions, plus explicit rules
-    for time-series consistency and transaction structure.
+    Builds a prompt for generating the next activity.
+    It includes a summary of previous activities, plus explicit rules
+    for time-series consistency and activity structure.
     """
 
     # 1. Summarize the user's history (if available).
     history_summary = ""
     if history:
-        history_summary = f"Previous transactions for user {user_id}:\n" + json.dumps(history, indent=2) + "\n"
+        history_summary = f"Previous activities for user {user_id}:\n" + json.dumps(history, indent=2) + "\n"
         last_timestamp = history[-1].get("bank_timestamp", global_clock)
         time_instruction = (
-            f"Use the last bank_timestamp {last_timestamp} as a reference for the next transaction. "
-            "The new bank_timestamp must be strictly later (chronologically) than the last one. "
-            "Generate a plausible gap in time based on the transaction type and user’s typical activity pattern."
+            f"Use the last bank_timestamp {last_timestamp} as a reference for the next activity. "
+            "The new bank_timestamp must be strictly later (chronologically) than the last one by at least 1 minute. "
+            "If the new bank_timestamp is equal to or earlier than the last one, add sufficient delay. "
+            "Generate a plausible gap in time based on the activity type and the user's typical activity pattern."
         )
     else:
         # If no history, we start from the global clock.
         time_instruction = (
-            f"Use the global clock {global_clock} as a reference for the transaction. "
+            f"Use the global clock {global_clock} as a reference for the activity. "
             "The generated bank_timestamp should be close to this time."
         )
 
@@ -382,19 +431,18 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
     # 4. Build the final prompt in parts
     prompt_parts = []
 
-    # 4a. If we have prior transactions, show them
+    # 4a. If we have prior activities, show them and add extra time instructions
     if history_summary:
         prompt_parts.append(history_summary)
         prompt_parts.append(
-            "- Use the last bank_timestamp from the history as a reference. "
-            "Ensure the new transaction's bank_timestamp is strictly later.\n"
+            f"- The new bank_timestamp must be strictly after {last_timestamp} (at least 1 minute later).\n"
+            f"- Do not produce a timestamp equal to or earlier than {last_timestamp}. If such a time is produced, add additional delay.\n"
         )
     else:
         prompt_parts.append(
-            f"- No prior history. Use the global clock {global_clock} to initialize bank_timestamp.\n"
-        )
+            f"- No prior history. Use the global clock {global_clock} as a reference, and generate a bank_timestamp that is strictly later than {global_clock} (by at least 1 minute).\n")
 
-    # Add the time_instruction from above
+    # Add the primary time_instruction
     prompt_parts.append(time_instruction + "\n")
 
     # 4b. High-level generation instruction
@@ -406,7 +454,7 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
         f"{json_template}\n"
     )
     prompt_parts.append("Do not include any extra fields, comments, or explanations.\n")
-    prompt_parts.append("Only generate one transaction in this call.\n")
+    prompt_parts.append("Only generate one activity in this call.\n")
 
     # 4c. Data Generation Rules:
     prompt_parts.append("### Data Generation Rules:\n")
@@ -417,7 +465,7 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
     prompt_parts.append("- The hour in local_timestamp cannot exceed 23.\n")
     prompt_parts.append("- End your response immediately after closing the JSON block.\n")
 
-    # 4d. Transaction-type logic:
+    # 4d. activity-type logic:
     prompt_parts.append("- For any Transfer activity, set 'type' to 'Transfer IN' or 'Transfer Out'. Provide recipient_id and recipient_bank, but merchant_name must be null.\n")
     prompt_parts.append("- For a Purchase or Sale, merchant_name must not be null, but recipient_id and recipient_bank must be null.\n")
     prompt_parts.append("- For a Withdrawal, deposit, or other, merchant_name and recipient_id can be null if not applicable.\n")
@@ -426,24 +474,53 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
     prompt_parts.append(f"- The value for `amount` must be strictly smaller than {balance}.\n")
     prompt_parts.append("- IP addresses should be plausible (each octet 0–255). Avoid placeholders like 999.999.\n")
     prompt_parts.append("- If location is e.g. 'New York, USA', consider UTC-5 or UTC-4 (depending on date). If 'Shanghai, China', consider UTC+8.\n")
-    prompt_parts.append("- Timestamps must strictly increase with each new transaction for the same user.\n")
+    prompt_parts.append("- Timestamps must strictly increase with each new activity for the same user.\n")
     prompt_parts.append("- Keep the data realistic for anomaly detection (avoid '24:xx:xx' or negative amounts).\n")
 
-    # 4f. Past errors
+    # 4f. Include past errors if provided
     if past_errors:
-        prompt_parts.append(f"{past_errors}.\n")
-
+        prompt_parts.append(f"- Do not repeat previous errors: {past_errors}.\n")
+    
     # Return the assembled prompt
     return "".join(prompt_parts)
 
 
+def enforce_timestamp_order(tx, last_timestamp_str):
+    """
+    Checks if tx["bank_timestamp"] is strictly later than last_timestamp_str.
+    If not, adjusts tx["bank_timestamp"] to be at least 1 minute later and updates tx["local_timestamp"]
+    to preserve the original time difference.
+    """
+    try:
+        last_ts = isoparse(last_timestamp_str)
+        orig_bank = isoparse(tx["bank_timestamp"])
+        orig_local = isoparse(tx["local_timestamp"])
+    except Exception as e:
+        print("Error parsing timestamps:", e)
+        return tx
+
+    # Compute the original difference between bank_timestamp and local_timestamp
+    # (this difference may include timezone offsets)
+    delta = orig_bank - orig_local  # timedelta
+
+    if orig_bank <= last_ts:
+        # Enforce a minimum gap of 1 minute
+        new_bank = last_ts + timedelta(minutes=1)
+        tx["bank_timestamp"] = new_bank.isoformat()
+        # Adjust local_timestamp to preserve the original time difference
+        new_local = new_bank - delta
+        tx["local_timestamp"] = new_local.isoformat()
+        print(f"Adjusted timestamps: new bank_timestamp set to {tx['bank_timestamp']}, new local_timestamp set to {tx['local_timestamp']}")
+    return tx
+
+
 def generate_activity_sequence(strategy, global_clock, user_id, behavior_type, fraud_label, num_activities=5, user_accounts=None):
     """
-    Iteratively generates a sequence of transactions for a user who may have multiple accounts.
+    Iteratively generates a sequence of activities for a user who may have multiple accounts.
     
-    Returns a list of transactions.
+    Returns a list of activities.
     """
-    if user_accounts is None: # Assign default values
+    if user_accounts is None:  # Assign default values
         user_accounts = {f"ACC-{generate_random_hash()}": random.randint(100, 10000)}
     history_by_account = {acc: [] for acc in user_accounts}
     
@@ -454,19 +531,24 @@ def generate_activity_sequence(strategy, global_clock, user_id, behavior_type, f
         # Get balance for that account
         current_balance = user_accounts[account_id]
         history = history_by_account.get(account_id, [])
+        # Determine last timestamp from history, or use global_clock if none
+        last_timestamp = history[-1].get("bank_timestamp", global_clock) if history else global_clock
         
         retries = 1
         while True:
             print(f"User {user_id}, Account {account_id}: Generating activity attempt {retries} with balance {current_balance:.2f}...")
             print(f"Generating activity {i+1}/{num_activities}...")
             past_errors = read_past_errors()
-            #past_errors = summarize_errors(past_errors)
+            options = {"temperature": 0.8, "top_p": 0.9}
+            #if retries > 1: # try changing parameter settings
+            #    options = {"temperature": 0.5, "top_p": 0.8}
             prompt = build_generation_prompt(strategy, global_clock, user_id, history, current_balance, past_errors)
-            response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}], options={ "temperature": 0.8, "top_p": 0.9})
+            response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}], options=options)
             raw_response = response['message']['content'].strip()
             save_to_text(raw_response, user_id)  # For debugging
             
-            activity, errors = validate_json(raw_response, user_id)
+            # Pass the last_timestamp into validate_json to enforce timestamp order.
+            activity, errors = validate_json(raw_response, user_id, last_timestamp)
             if activity != 'retry':
                 tx = activity[0]
                 new_account_id = tx.get("account_id")
@@ -483,31 +565,37 @@ def generate_activity_sequence(strategy, global_clock, user_id, behavior_type, f
                 new_balance = update_balance(tx, current_balance)
                 tx["balance_after"] = new_balance
                 tx = assign_actvity_fields(tx, user_id, behavior_type, fraud_label)
-                # Optionally, you could set a 'granted' field here if your strategy requires it.
                 history_by_account[new_account_id].append(tx)
                 user_accounts[new_account_id] = new_balance
+                tx['bank_timestamp'] = format_timestamp(tx['bank_timestamp'])
+                tx['local_timestamp'] = format_timestamp(tx['local_timestamp'])
                 activities.append(tx)
                 print(f"Activity generated for account {new_account_id}. New balance: {new_balance:.2f}")
                 update_reward_log(score=1, user_id=user_id, reason="JSON generation successful")
                 break
             else:
                 print(f"Retrying activity generation for user {user_id}, account {account_id}...")
-                # Join with a semicolon or pipe, to avoid commas.
                 joined_errors = "; ".join(errors)
                 update_reward_log(score=-1, user_id=user_id, reason=joined_errors)
                 retries += 1
     return activities
 
+def format_timestamp(time):
+    parsed_time = isoparse(time)
+    st_time = parsed_time.isoformat(timespec='seconds') 
+    return st_time
+
 def generate_activities(total_activities=1000, target_fraud_percentage=0.1, fraud_agents_count=5, legit_agents_count=20):
     """
     Generates a bank log with multiple fraudulent and legitimate agents.
     
-    Creates transactions for each agent and writes them to a CSV immediately.
+    Creates activities for each agent and writes them to a CSV immediately.
     """
     fraudulent_strategies = load_existing_strategies("strategies/fraud_strategies.json")
     legitimate_strategies = load_existing_strategies("strategies/legitimate_strategies.json")
     
-    global_clock = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S')
+    global_clock = datetime.now(timezone.utc).isoformat()
+
     header_written = False  
     buffer = []
     
@@ -520,7 +608,7 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
             header_written = True  
             buffer.clear()
     
-    total_generated = 0  # Count all transactions (fraudulent + legitimate)
+    total_generated = 0  # Count all activities (fraudulent + legitimate)
     target_fraud = int(total_activities * target_fraud_percentage)
     
     # --- Fraudulent activities generation ---
@@ -545,7 +633,7 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
             )
             for activity in activities:
                 assign_actvity_fields(activity, user_id, behavior_type, fraud_label=1)
-                flush_buffer_immediate(activity)  # Immediately flush this transaction to CSV.
+                flush_buffer_immediate(activity)  # Immediately flush this activity to CSV.
                 total_generated += 1
                 if total_generated >= target_fraud:
                     break
@@ -591,7 +679,7 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
     return final_df
 
 def flush_buffer_immediate(tx):
-    """Immediately appends a single transaction to the CSV file."""
+    """Immediately appends a single activity to the CSV file."""
     df = pd.DataFrame([tx])
     df = df[ORDERED_COLUMNS]
     header = not (os.path.exists(DATA_FILE) and os.path.getsize(DATA_FILE) > 0)
