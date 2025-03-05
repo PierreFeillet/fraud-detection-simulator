@@ -540,8 +540,9 @@ def generate_activity_sequence(strategy, global_clock, user_id, behavior_type, f
             print(f"Generating activity {i+1}/{num_activities}...")
             past_errors = read_past_errors()
             options = {"temperature": 0.8, "top_p": 0.9}
-            #if retries > 1: # try changing parameter settings
-            #    options = {"temperature": 0.5, "top_p": 0.8}
+            if retries > 1: # try changing parameter settings
+                options = {"temperature": 0.5, "top_p": 0.8}
+            print(options)
             prompt = build_generation_prompt(strategy, global_clock, user_id, history, current_balance, past_errors)
             response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}], options=options)
             raw_response = response['message']['content'].strip()
@@ -755,7 +756,7 @@ def visualize_json_success_rate():
 start_time = time.time()
 print(f"Simulation started at {datetime.now().isoformat()}")
 
-generate_activities(total_activities=20, target_fraud_percentage=0.5, fraud_agents_count=4, legit_agents_count=2)
+generate_activities(total_activities=10, target_fraud_percentage=0.5, fraud_agents_count=4, legit_agents_count=2)
 time_taken = round((time.time()-start_time)/60, 2)
 print(f"Dataset generation required time: {round((time.time()-start_time)/60,1)} minutes")
 visualize_json_success_rate()
