@@ -35,7 +35,7 @@ def generate_fraud_strategy(fraud_type=None, filename="strategies/fraud_strategi
     """
     Generates a concise JSON strategy for a specified fraud type
     (e.g., "Account Takeover," "Insider Trading") that your second LLM (Mistral)
-    can use to generate fraudulent transactions.
+    can use to generate fraudulent activities.
     """
 
     # Load existing strategies from your JSON file
@@ -52,37 +52,64 @@ def generate_fraud_strategy(fraud_type=None, filename="strategies/fraud_strategi
 
     # Build a refined JSON-only prompt for the LLM
     prompt = f"""
-You are an expert in simulating fraudulent banking behaviors.
+You are an expert in banking transaction simulation and fraud detection. Your task is to define a detailed strategy that will guide the generation of realistic banking activities for the profile {fraud_type}.
 
-Provide a concise JSON object describing a fraud strategy for: "{fraud_type}".
+Please provide a valid JSON object (without any additional commentary or chain-of-thought) with the following fields:
 
-### Output Requirements:
-- Output MUST be valid JSON only (no extra commentary).
-- Fields to include in your JSON:
-  1. "profile_or_fraud_type": string  # e.g. "Insider Trading","Account Takeover"
-  2. "transaction_types_involved": array of strings  # e.g. ["Unauthorized Stock Sale","Transfer Out","Withdrawal"]
-  3. "typical_amount_range": string  # e.g. "$5,000 - $50,000"
-  4. "geographic_focus": string or array  # e.g. ["Hong Kong","London","New York"]
-  5. "velocity": string  # describes frequency, e.g. "multiple transactions within 24 hours"
-  6. "currency": string or array  # e.g. "USD","CNY"
-  7. "common_devices": array of strings  # typical compromised devices used
-  8. "ip_address_notes": string  # e.g. "Often proxies from 203.x.x.x or 45.x.x.x"
-  9. "context": string  # short narrative about how the fraud typically unfolds
+1. "fraud_type": string  
+   // For example: {fraud_type}
 
-### Example Format (do NOT copy verbatim):
+2. "transaction_types_involved": array of strings  
+   // For example: ["Purchase", "Transfer Out", "Withdrawal"]
+
+3. "typical_amount_range": string  
+   // For example: "$10 - $500" or "$5,000 - $50,000"
+
+4. "geographic_focus": string or array  
+   // For example: "Domestic US" or ["New York, USA", "Shanghai, China"]
+
+5. "velocity": string  
+   // For example: "1-2 transactions per day" or "Multiple transactions within 1 hour"
+
+6. "currency": string or array  
+   // For example: "USD" or ["USD", "CNY"]
+
+7. "common_devices": array of strings  
+   // For example: ["iPhone-13", "MacBook Pro"]
+
+8. "ip_address_notes": string  
+   // For example: "Mostly US-based IP ranges like 73.x.x.x, occasionally foreign IPs like 203.x.x.x"
+
+9. "common_merchant_names": array of strings  
+   // List common merchant names relevant for purchase or sale transactions (e.g., ["Starbucks", "Amazon", "Walmart"]).  
+   // For transactions like Transfers, this field may be null.
+
+10. "common_recipient_ids": array of strings  
+    // Provide typical formats or examples for recipient IDs (e.g., ["REC-12345678", "REC-87654321"]).
+
+11. "common_recipient_banks": array of strings  
+    // Provide common recipient banks or patterns (e.g., ["Bank of America", "Wells Fargo", "BANK-XYZ"]).
+
+12. "context": string  
+    // A short narrative explaining how this strategy typically unfolds, highlighting key behaviors and any potential anomalies.
+
+### Example Format (Do not copy verbatim; follow the structure):
 {{
-  "profile_or_fraud_type": "Account Takeover",
-  "transaction_types_involved": ["Withdrawal","Transfer Out","Purchase"],
-  "typical_amount_range": "$50,000 - $500,000",
-  "geographic_focus": ["Domestic US, occasional international in China or Singapore"],
-  "velocity": "High velocity: multiple transactions in under an hour",
-  "currency": ["USD","CNY","SGD"],
-  "common_devices": ["Windows 7 PC","iPhone-13 (stolen)"],
-  "ip_address_notes": "Often uses compromised IP addresses from 45.x.x.x range",
-  "context": "Fraudster gains access to victim accounts, executes quick, large transactions..."
+  "profile_or_fraud_type": "Insider Trading",
+  "transaction_types_involved": ["Unauthorized Stock Purchase", "Unauthorized Stock Sale"],
+  "typical_amount_range": "$5,000 - $50,000",
+  "geographic_focus": ["Domestic US", "Occasional international trades"],
+  "velocity": "High velocity: multiple transactions within 1 hour",
+  "currency": ["USD", "HKD"],
+  "common_devices": ["iPhone-13", "MacBook Pro"],
+  "ip_address_notes": "Mostly US-based IPs (73.x.x.x) with occasional Asia-based proxies (203.x.x.x)",
+  "common_merchant_names": ["Goldman Sachs", "JP Morgan", "Morgan Stanley"],
+  "common_recipient_ids": ["REC-12345678", "REC-87654321"],
+  "common_recipient_banks": ["Bank of America", "Wells Fargo", "BANK-XYZ"],
+  "context": "This strategy exploits non-public information to execute quick, high-value trades. Transactions occur rapidly, often within an hour, with a mix of domestic and occasional international activities. Purchases and sales are common, and when transfers occur, typical recipient details follow the provided patterns."
 }}
 
-Return ONLY valid JSON with these nine fields, and no additional text.
+Return ONLY valid JSON with these exact fields.
 """
 
     response = ollama.chat(
@@ -128,30 +155,59 @@ Provide a concise JSON object describing a legitimate customer profile of type: 
 ### Output Requirements:
 - Output MUST be valid JSON only (no extra commentary, no chain-of-thought).
 - Fields to include in your JSON:
-  1. "profile_or_fraud_type": string  # e.g. "Traveler", "Saver", "Investor"
-  2. "transaction_types_involved": array of strings  # e.g. ["Purchase","Withdrawal","Transfer Out"]
-  3. "typical_amount_range": string  # e.g. "$10 - $500"
-  4. "geographic_focus": string or array  # e.g. "Domestic US" or ["New York, USA", "Shanghai, China"]
-  5. "velocity": string  # describes frequency, e.g. "1-2 transactions per day"
-  6. "currency": string or array  # e.g. "USD" or ["USD","EUR"]
-  7. "common_devices": array of strings  # typical devices used
-  8. "ip_address_notes": string  # typical IP range usage
-  9. "context": string  # short narrative about how this profile usually behaves
+1. "profile": string  
+   // For example: {profile_type}
 
-### Example Format (not to be copied verbatim):
-{{
-  "profile_or_fraud_type": "Traveler",
-  "transaction_types_involved": ["Purchase","Withdrawal"],
-  "typical_amount_range": "$10 - $300",
-  "geographic_focus": ["Asia","Europe"],
-  "velocity": "About 2 transactions per day",
-  "currency": ["USD","EUR","JPY"],
-  "common_devices": ["iPhone-12","MacBook Air"],
-  "ip_address_notes": "Mostly US-based IP (73.x.x.x), occasional foreign IP (203.x.x.x)",
-  "context": "Frequently travels internationally, making small daily purchases and occasional larger withdrawals..."
-}}
+2. "transaction_types_involved": array of strings  
+   // For example: ["Purchase", "Transfer Out", "Withdrawal"]
 
-Return ONLY valid JSON with these nine fields, and no additional commentary.
+        3. "typical_amount_range": string  
+        // For example: "$10 - $500" or "$5,000 - $50,000"
+
+        4. "geographic_focus": string or array  
+        // For example: "Domestic US" or ["New York, USA", "Shanghai, China"]
+
+        5. "velocity": string  
+        // For example: "1-2 transactions per day" or "Multiple transactions within 1 hour"
+
+        6. "currency": string or array  
+        // For example: "USD" or ["USD", "CNY"]
+
+        7. "common_devices": array of strings  
+        // For example: ["iPhone-13", "MacBook Pro"]
+
+        8. "ip_address_notes": string  
+        // For example: "Mostly US-based IP ranges like 73.x.x.x, occasionally foreign IPs like 203.x.x.x"
+
+        9. "common_merchant_names": array of strings  
+        // List common merchant names relevant for purchase or sale transactions (e.g., ["Starbucks", "Amazon", "Walmart"]).  
+        // For transactions like Transfers, this field may be null.
+
+        10. "common_recipient_ids": array of strings  
+            // Provide typical formats or examples for recipient IDs (e.g., ["REC-12345678", "REC-87654321"]).
+
+        11. "common_recipient_banks": array of strings  
+            // Provide common recipient banks or patterns (e.g., ["Bank of America", "Wells Fargo", "BANK-XYZ"]).
+
+        12. "context": string  
+            // A short narrative explaining how this strategy typically unfolds, highlighting key behaviors and any potential anomalies.
+        ### Example Format (not to be copied verbatim):
+        {{
+        "profile": "Saver",
+        "transaction_types_involved": ["Purchase", "Withdrawal", "Deposit", "Transfer IN"],
+        "typical_amount_range": "$5 - $200",
+        "geographic_focus": ["Domestic US"],
+        "velocity": "1-2 transactions per day",
+        "currency": "USD",
+        "common_devices": ["iPhone-13", "MacBook Pro"],
+        "ip_address_notes": "Stable US-based IPs (e.g., 73.x.x.x)",
+        "common_merchant_names": ["Starbucks", "Amazon", "Walmart"],
+        "common_recipient_ids": [],
+        "common_recipient_banks": [],
+        "context": "This Saver profile is characterized by cautious spending habits and consistent monthly savings. Typical transactions include small purchases and occasional withdrawals, with most activity occurring domestically. The customer maintains an emergency fund and uses reliable devices and stable IP ranges for all transactions."
+        }}
+
+        Return ONLY valid JSON with these nine fields, and no additional commentary.
 """
 
     response = ollama.chat(
