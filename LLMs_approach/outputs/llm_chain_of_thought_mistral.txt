@@ -1,0 +1,564 @@
+
+### LLM Chain of Thought for user ID USER-9c362994 ###
+
+```
+{
+  "bank_timestamp": "2025-03-06T17:46:39+08:00",
+  "local_timestamp": "2025-03-06T09:46:39+08:00",
+  "account_id": "ACC-a1b2c3d4",
+  "type": "Transfer Out",
+  "amount": 7.5,
+  "currency": "USD",
+  "balance_before": 969.5,
+  "location": "Shanghai, China",
+  "ip_address": "101.123.456.78",
+  "device_id": "iPhone-12",
+  "network_type": "Wi-Fi",
+  "merchant_name": null,
+  "recipient_id": "REC-abcdefgh",
+  "recipient_bank": "BANK-ijklmnop"
+}
+   ```
+
+
+### LLM Chain of Thought for user ID USER-9c362994 ###
+
+<<<JSON>>>
+{
+  "bank_timestamp": "2025-03-06T15:00:00+08:00",
+  "local_timestamp": "2025-03-06T07:00:00+08:00",
+  "account_id": "ACC-abcd1234",
+  "type": "Transfer Out",
+  "amount": 2.5,
+  "currency": "USD",
+  "balance_before": 105.25,
+  "location": "Shanghai, China",
+  "ip_address": "192.168.1.45",
+  "device_id": "iPhone-7",
+  "network_type": "Cellular",
+  "merchant_name": null,
+  "recipient_id": "REC-56789012",
+  "recipient_bank": "BCI-XYZ"
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-9c362994 ###
+
+{
+      "bank_timestamp": "2025-03-06T11:23:09+00:00",
+      "local_timestamp": "2025-03-06T06:23:09-08:00",
+      "account_id": "ACC-b74c97a1",
+      "type": "Transfer Out",
+      "amount": 1.5,
+      "currency": "USD",
+      "balance_before": 234.6,
+      "location": "San Francisco, USA",
+      "ip_address": "198.51.100.75",
+      "device_id": "MacBook Pro",
+      "network_type": "Wi-Fi",
+      "merchant_name": null,
+      "recipient_id": "REC-34267a89",
+      "recipient_bank": "BANK-1a2b3c4d"
+   }
+
+
+### LLM Chain of Thought for user ID USER-9c362994 ###
+
+{
+      "bank_timestamp": "2025-03-06T14:37:48+08:00",
+      "local_timestamp": "2025-03-06T06:37:48+08",
+      "account_id": "ACC-d6c9e1f2",
+      "type": "Transfer Out",
+      "amount": 120.00,
+      "currency": "USD",
+      "balance_before": 7534.00,
+      "location": "Shanghai, China",
+      "ip_address": "62.214.98.145",
+      "device_id": "iPhone-13",
+      "network_type": "Cellular",
+      "recipient_id": "REC-b7a0d1e2",
+      "recipient_bank": "BCI-SGD"
+   }
+
+
+### LLM Chain of Thought for user ID USER-9c362994 ###
+
+<<<JSON>>>
+    "bank_timestamp": "2025-03-06T10:15:32+00:00",
+    "local_timestamp": "2025-03-06T05:15:32-05:00",
+    "account_id": "ACC-8c924a7b",
+    "type": "Transfer Out",
+    "amount": 50.99,
+    "currency": "USD",
+    "balance_before": 1020.99,
+    "location": "Chicago, USA",
+    "ip_address": "73.56.203.89",
+    "device_id": "iPhone-13",
+    "network_type": "Wi-Fi",
+    "merchant_name": null,
+    "recipient_id": "REC-45312367",
+    "recipient_bank": "BANK-98765432"
+  <<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-9c362994 ###
+
+<<<JSON>>>
+    {
+      "bank_timestamp": "2025-03-05T14:46:39+00:00",
+      "local_timestamp": "2025-03-05T09:46:39-08:00",
+      "account_id": "ACC-b8c7d6e4",
+      "type": "Transfer Out",
+      "amount": 1234.56,
+      "currency": "USD",
+      "balance_before": 9896.57,
+      "location": "San Francisco, USA",
+      "ip_address": "203.0.113.2",
+      "device_id": "iPhone-13",
+      "network_type": "Wi-Fi",
+      "merchant_name": null,
+      "recipient_id": "REC-98765432",
+      "recipient_bank": "BANK-abcdefgh"
+    }
+   <<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-9c362994 ###
+
+<<<JSON>>>
+{
+  "bank_timestamp": "2025-03-02T09:45:21+00:00",
+  "local_timestamp": "2025-03-02T02:45:21-08:00",
+  "account_id": "ACC-67890123",
+  "type": "Transfer Out",
+  "amount": 5.00,
+  "currency": "USD",
+  "balance_before": 124.00,
+  "location": "San Francisco, USA",
+  "ip_address": "192.168.1.78",
+  "device_id": "iPhone-12",
+  "network_type": "Wi-Fi",
+  "recipient_id": "REC-45678901",
+  "recipient_bank": "BANK-ABCDEFGH"
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-9c362994 ###
+
+<<<JSON>>>
+{
+  "bank_timestamp": "2025-03-01T08:47:19+00:00",
+  "local_timestamp": "2025-03-01T03:47:19-05:00",
+  "account_id": "ACC-12345678",
+  "type": "Transfer Out",
+  "amount": 2.99,
+  "currency": "USD",
+  "balance_before": 456.21,
+  "location": "Chicago, USA",
+  "ip_address": "173.206.148.90",
+  "device_id": "iPhone-11",
+  "network_type": "Cellular",
+  "merchant_name": null,
+  "recipient_id": "REC-98765432",
+  "recipient_bank": "RecBank-111"
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-9c362994 ###
+
+<<<JSON>>>
+{
+  "bank_timestamp": "2025-03-01T15:45:09+00:00",
+  "local_timestamp": "2025-03-01T10:45:09-08:00",
+  "account_id": "ACC-82736401",
+  "type": "Transfer Out",
+  "amount": 10.5,
+  "currency": "USD",
+  "balance_before": 123.5,
+  "location": "San Francisco, USA",
+  "ip_address": "192.168.1.234",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": null,
+  "recipient_id": "REC-98765432",
+  "recipient_bank": "BANK-ABCDEFGH"
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-9c362994 ###
+
+<<<JSON>>>
+    {
+      "bank_timestamp": "2025-03-01T10:30:00+00:00",
+      "local_timestamp": "2025-03-01T05:30:00-05:00",
+      "account_id": "ACC-48761987",
+      "type": "Transfer Out",
+      "amount": 3.99,
+      "currency": "USD",
+      "balance_before": 4201.01,
+      "location": "Chicago, USA",
+      "ip_address": "75.68.197.15",
+      "device_id": "iPhone-13",
+      "network_type": "Wi-Fi",
+      "merchant_name": null,
+      "recipient_id": "REC-20417268",
+      "recipient_bank": "BANK-91827365"
+    }
+   <<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-d6a57b44 ###
+
+<<<JSON>>>
+{
+  "bank_timestamp": "2025-03-06T14:27:49+08:00",
+  "local_timestamp": "2025-03-06T06:27:49+08",
+  "account_id": "ACC-b2d2c00a",
+  "type": "Transfer Out",
+  "amount": 12.78,
+  "currency": "USD",
+  "balance_before": 3569.17,
+  "location": "Shanghai, China",
+  "ip_address": "192.168.1.2",
+  "device_id": "iPhone-12",
+  "network_type": "Wi-Fi",
+  "merchant_name": null,
+  "recipient_id": "REC-98765432",
+  "recipient_bank": "BANK-11122233"
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-d6a57b44 ###
+
+<<<JSON>>>
+{
+  "bank_timestamp": "2025-03-01T14:00:00+08:00",
+  "local_timestamp": "2025-03-01T06:00:00+08:00",
+  "account_id": "ACC-98765432",
+  "type": "Transfer Out",
+  "amount": 2.5,
+  "currency": "USD",
+  "balance_before": 1896.75,
+  "location": "Shanghai, China",
+  "ip_address": "192.168.0.34",
+  "device_id": "Samsung-Galaxy-S21",
+  "network_type": "Cellular",
+  "merchant_name": null,
+  "recipient_id": "REC-11122334",
+  "recipient_bank": "Bank-A"
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-d6a57b44 ###
+
+<<<JSON>>>
+    {
+      "bank_timestamp": "2025-03-01T09:45:23+00:00",
+      "local_timestamp": "2025-03-01T04:45:23-08:00",
+      "account_id": "ACC-98765432",
+      "type": "Transfer Out",
+      "amount": 15.99,
+      "currency": "USD",
+      "balance_before": 5950.51,
+      "location": "Los Angeles, USA",
+      "ip_address": "123.45.67.89",
+      "device_id": "iPhone-12",
+      "network_type": "Cellular",
+      "merchant_name": null,
+      "recipient_id": "REC-11122233",
+      "recipient_bank": "BANK-44556677"
+    }
+    <<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-d6a57b44 ###
+
+<<<JSON>>>
+{
+  "bank_timestamp": "2025-03-01T14:37:16+00:00",
+  "local_timestamp": "2025-03-01T09:37:16-08:00",
+  "account_id": "ACC-482736401",
+  "type": "Transfer Out",
+  "amount": 2.5,
+  "currency": "USD",
+  "balance_before": 5854.0,
+  "location": "San Francisco, USA",
+  "ip_address": "192.168.1.123",
+  "device_id": "iPhone-12",
+  "network_type": "Wi-Fi",
+  "merchant_name": null,
+  "recipient_id": "REC-123456789",
+  "recipient_bank": "REB-987654321"
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-d6a57b44 ###
+
+<<<JSON>>>
+{
+  "bank_timestamp": "2025-03-01T14:45:12+08:00",
+  "local_timestamp": "2025-03-01T06:45:12+08:00",
+  "account_id": "ACC-19283746",
+  "type": "Transfer Out",
+  "amount": 1.5,
+  "currency": "USD",
+  "balance_before": 5851.51,
+  "location": "Shanghai, China",
+  "ip_address": "192.168.0.99",
+  "device_id": "Huawei P40 Lite",
+  "network_type": "Cellular",
+  "merchant_name": null,
+  "recipient_id": "REC-34567890",
+  "recipient_bank": "BANK-12345678"
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-c64a61c8 ###
+
+<<<JSON>>>
+{
+  "bank_timestamp": "2025-03-06T14:37:49+00:00",
+  "local_timestamp": "2025-03-06T09:37:49-05:00",
+  "account_id": "ACC-e28c68a9",
+  "type": "Transfer Out",
+  "amount": 50.00,
+  "currency": "USD",
+  "balance_before": 1300.00,
+  "location": "New York, USA",
+  "ip_address": "73.248.6.198",
+  "device_id": "iPhone-12",
+  "network_type": "Wi-Fi",
+  "merchant_name": null,
+  "recipient_id": "REC-90123456",
+  "recipient_bank": "BANK-ABCDEFGHIJ"
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-c64a61c8 ###
+
+<<<JSON>>>
+    {
+      "bank_timestamp": "2025-03-06T14:37:58+00:00",
+      "local_timestamp": "2025-03-06T09:37:58-05:00",
+      "account_id": "ACC-f2bc16d9",
+      "type": "Transfer Out",
+      "amount": 200.00,
+      "currency": "USD",
+      "balance_before": 3400.50,
+      "location": "New York, USA",
+      "ip_address": "73.123.456.789",
+      "device_id": "Samsung-Galaxy-S21",
+      "network_type": "Cellular",
+      "merchant_name": null,
+      "recipient_id": "REC-30912465",
+      "recipient_bank": "Bank-of-America"
+    }
+   <<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-c64a61c8 ###
+
+<<<JSON>>>
+    {
+      "bank_timestamp": "2025-03-01T14:47:23+00:00",
+      "local_timestamp": "2025-03-01T09:47:23-05:00",
+      "account_id": "ACC-12345678",
+      "type": "Transfer Out",
+      "amount": 10.99,
+      "currency": "USD",
+      "balance_before": 6972.01,
+      "location": "Chicago, USA",
+      "ip_address": "73.45.89.123",
+      "device_id": "iPhone-13",
+      "network_type": "Wi-Fi",
+      "merchant_name": null,
+      "recipient_id": "REC-98765432",
+      "recipient_bank": "BANK-XYZ"
+    }
+   <<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-c64a61c8 ###
+
+<<<JSON>>>
+{
+  "bank_timestamp": "2025-03-01T16:47:29+00:00",
+  "local_timestamp": "2025-03-01T11:47:29-05:00",
+  "account_id": "ACC-82736401",
+  "type": "Transfer Out",
+  "amount": 15.5,
+  "currency": "USD",
+  "balance_before": 1989.0,
+  "location": "Chicago, USA",
+  "ip_address": "73.123.45.67",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": null,
+  "recipient_id": "REC-98765432",
+  "recipient_bank": "BankABC"
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-c64a61c8 ###
+
+<<<JSON>>>
+{
+  "bank_timestamp": "2025-03-01T16:47:23+00:00",
+  "local_timestamp": "2025-03-01T11:47:23-05:00",
+  "account_id": "ACC-12345678",
+  "type": "Transfer Out",
+  "amount": 25.99,
+  "currency": "USD",
+  "balance_before": 6867.01,
+  "location": "Los Angeles, USA",
+  "ip_address": "98.76.321.45",
+  "device_id": "Samsung-Galaxy-S21",
+  "network_type": "Cellular",
+  "merchant_name": null,
+  "recipient_id": "REC-98765432",
+  "recipient_bank": "BCA-Bank"
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-3702f257 ###
+
+<<<JSON>>>
+{
+  "bank_timestamp": "2025-03-05T09:46:38+00:00",
+  "local_timestamp": "2025-03-05T04:46:38-05:00",
+  "account_id": "ACC-3702f257",
+  "type": "Transfer Out",
+  "amount": 150.0,
+  "currency": "USD",
+  "balance_before": 1289.46,
+  "location": "Chicago, USA",
+  "ip_address": "73.123.456.789",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": null,
+  "recipient_id": "REC-12345678",
+  "recipient_bank": "BCA-98765432"
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-3702f257 ###
+
+<<<JSON>>>
+{
+  "bank_timestamp": "2025-03-01T14:28:06+00:00",
+  "local_timestamp": "2025-03-01T09:28:06-05:00",
+  "account_id": "ACC-98765432",
+  "type": "Transfer Out",
+  "amount": 50,
+  "currency": "USD",
+  "balance_before": 7902.0,
+  "location": "New York, USA",
+  "ip_address": "192.168.1.10",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": null,
+  "recipient_id": "REC-45678901",
+  "recipient_bank": "Bank-XYZ"
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-3702f257 ###
+
+<<<JSON>>>
+{
+  "bank_timestamp": "2025-03-01T07:45:09+00:00",
+  "local_timestamp": "2025-03-01T02:45:09-08:00",
+  "account_id": "ACC-65432109",
+  "type": "Transfer Out",
+  "amount": 10.99,
+  "currency": "USD",
+  "balance_before": 1937.86,
+  "location": "San Francisco, USA",
+  "ip_address": "192.168.1.225",
+  "device_id": "iPhone-12",
+  "network_type": "Cellular",
+  "merchant_name": null,
+  "recipient_id": "REC-78901234",
+  "recipient_bank": "BANK-XYZ"
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-b8cf93de ###
+
+<<<JSON>>>
+  {
+    "bank_timestamp": "2025-03-05T14:46:39+00:00",
+    "local_timestamp": "2025-03-05T09:46:39-05:00",
+    "account_id": "ACC-98765432",
+    "type": "Transfer Out",
+    "amount": 150.0,
+    "currency": "USD",
+    "balance_before": 2200.0,
+    "location": "New York, USA",
+    "ip_address": "73.89.10.91",
+    "device_id": "Samsung Galaxy S21",
+    "network_type": "Wi-Fi",
+    "merchant_name": null,
+    "recipient_id": "REC-11111111",
+    "recipient_bank": "Bank of America"
+  }
+  <<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-a204a322 ###
+
+```json
+{
+  "bank_timestamp": "2025-03-06T14:27:49+00:00",
+  "local_timestamp": "2025-03-06T09:27:49-05:00",
+  "account_id": "ACC-23890145",
+  "type": "Transfer Out",
+  "amount": 150.00,
+  "currency": "USD",
+  "balance_before": 700.00,
+  "location": "New York, USA",
+  "ip_address": "123.45.67.89",
+  "device_id": "iPhone-14 Pro",
+  "network_type": "Wi-Fi",
+  "merchant_name": null,
+  "recipient_id": "REC-12345678",
+  "recipient_bank": "BANK-XYZ"
+}
+   ```
+
+
+### LLM Chain of Thought for user ID USER-a204a322 ###
+
+```json
+    {
+      "bank_timestamp": "2025-03-06T14:27:39+00:00",
+      "local_timestamp": "2025-03-06T09:27:39-08:00",
+      "account_id": "ACC-82736401",
+      "type": "Transfer Out",
+      "amount": 100.50,
+      "currency": "USD",
+      "balance_before": 1380.95,
+      "location": "San Francisco, USA",
+      "ip_address": "23.45.67.89",
+      "device_id": "iPhone-13",
+      "network_type": "Wi-Fi",
+      "merchant_name": null,
+      "recipient_id": "REC-90123456",
+      "recipient_bank": "BANK-78901234"
+    }
+   ```
+

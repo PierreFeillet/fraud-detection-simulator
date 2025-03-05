@@ -1,0 +1,5 @@
+["Error: JSON not enclosed in expected delimiters."]
+["Error: JSON not enclosed in expected delimiters."]
+["Error: JSON not enclosed in expected delimiters."]
+["JSON Decode Error: Extra data: line 1 column 17 (char 16)"]
+["The transaction was invalid because 'merchant_name' was missing for Transfer Out. Generate a valid JSON transaction with the required merchant_name.", "Error: Missing fields: merchant_name"]
