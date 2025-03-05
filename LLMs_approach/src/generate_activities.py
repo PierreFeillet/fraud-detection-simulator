@@ -192,17 +192,22 @@ def validate_json(text, user_id):
             print(f"Errors detected in JSON for user {user_id}: {errors}")
             return 'retry', errors
          #    i.e., if the model didn't supply them or gave an empty string, fix them.
-        if not tx.get("merchant_name"):
-            tx["merchant_name"] = None
-        if not tx.get("recipient_id"):
-            tx["recipient_id"] = None
-        if not tx.get("recipient_bank"):
-            tx["recipient_bank"] = None
+        #if not tx.get("merchant_name"):
+        #    tx["merchant_name"] = None
+        #if not tx.get("recipient_id"):
+        #    tx["recipient_id"] = None
+        #if not tx.get("recipient_bank"):
+        #    tx["recipient_bank"] = None
 
         missing_fields = [field for field in EXPECTED_FIELD_TYPES if field not in tx]
         extra_fields = [field for field in tx if field not in EXPECTED_FIELD_TYPES]
         if missing_fields:
-            errors.append(f"Error: Missing fields: {', '.join(missing_fields)}")
+            if "merchant_name" in missing_fields:
+                errors.append(f"The transaction was invalid because 'merchant_name' was missing for {tx.get('type')}. Generate a valid JSON transaction with the required merchant_name.")
+            elif any(word in ["recipient_id", "recipient_bank"] for word in missing_fields):
+                errors.append(f"The transaction was invalid because 'recipient_id' and 'recipient_bank' was missing for {tx.get('type')}. Generate a valid JSON transaction with the required {missing_fields}.")
+            else:
+                errors.append(f"Error: Missing fields: {', '.join(missing_fields)}")
                 # Must have merchant_name
         if extra_fields:
             errors.append(f"Error: Unexpected fields: {', '.join(extra_fields)}")
@@ -426,7 +431,7 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
 
     # 4f. Past errors
     if past_errors:
-        prompt_parts.append(f"- Do not repeat previous errors: {past_errors}.\n")
+        prompt_parts.append(f"{past_errors}.\n")
 
     # Return the assembled prompt
     return "".join(prompt_parts)
@@ -483,11 +488,13 @@ def generate_activity_sequence(strategy, global_clock, user_id, behavior_type, f
                 user_accounts[new_account_id] = new_balance
                 activities.append(tx)
                 print(f"Activity generated for account {new_account_id}. New balance: {new_balance:.2f}")
-                update_reward_log(score=1, user_id=user_id, reason="JSON generation succesfull")
+                update_reward_log(score=1, user_id=user_id, reason="JSON generation successful")
                 break
             else:
                 print(f"Retrying activity generation for user {user_id}, account {account_id}...")
-                update_reward_log(score=-1, user_id=user_id, reason=errors)
+                # Join with a semicolon or pipe, to avoid commas.
+                joined_errors = "; ".join(errors)
+                update_reward_log(score=-1, user_id=user_id, reason=joined_errors)
                 retries += 1
     return activities
 
@@ -660,7 +667,7 @@ def visualize_json_success_rate():
 start_time = time.time()
 print(f"Simulation started at {datetime.now().isoformat()}")
 
-generate_activities(total_activities=50, target_fraud_percentage=0.5, fraud_agents_count=2, legit_agents_count=2)
+generate_activities(total_activities=20, target_fraud_percentage=0.5, fraud_agents_count=4, legit_agents_count=2)
 time_taken = round((time.time()-start_time)/60, 2)
 print(f"Dataset generation required time: {round((time.time()-start_time)/60,1)} minutes")
 visualize_json_success_rate()
