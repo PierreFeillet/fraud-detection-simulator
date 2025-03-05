@@ -52,7 +52,7 @@ behavior_catalog = {
             [0.0, 0.01, 0.02, 0.05, 0.1, 0.1, 0.6, 0.12],
             [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
         ],
-        "time_limit": for *30,  # Shorter time between suspicious activity
+        "time_limit": 60*30,  # Shorter time between suspicious activity
         "fraud": 1,
     },
 
@@ -155,8 +155,6 @@ networks = ["Home WiFi", "Public WiFi", "Mobile Network", "Corporate Network"]
 network_weights = [0.4, 0.3, 0.2, 0.1]  # Weights indicating the frequency of each network
 
 
-
-
 def check_and_normalize_catalog(behavior_catalog, output_file="src/normalized_catalog"):
     #os.makedirs(output_dir, exist_ok=True)  # Ensure directory exists
     """
@@ -201,7 +199,28 @@ def check_and_normalize_catalog(behavior_catalog, output_file="src/normalized_ca
     return normalized_catalog
 
 
-
+'''
+TRANSACTION_MERCHANTS = {
+    "purchase": [
+        ("Walmart", 0.15),
+        ("Best Buy", 0.2),
+        ("Target", 0.1),
+        ("Starbucks", 0.1),
+        ("Apple", 0.1),
+        ("Amazon", 0.25),
+        ("PayPal", 0.1)
+    ],
+    "deposit": [
+        ("Bank", 0.4),
+        ("ATM", 0.3),
+        ("PayPal", 0.3)
+    ],
+    "withdrawal": [
+        ("Bank", 0.5),
+        ("ATM", 0.5)
+    ]
+}
+'''
 
 
 '''
