@@ -2,6 +2,14 @@ import json
 import os
 import random
 import ollama
+from watsonx_helper import watsonx_chat
+import watsonx_helper
+
+model_id=watsonx_helper.strategy_gen_model_id
+model = model_id.split("/")[0]
+print(f"Using model: {model_id}")
+
+LOG_TEXT_FILE = os.path.join("strategies", f"llm_chain_of_thought_{model}.txt")
 
 #  Top 10 Banking Frauds
 TOP_10_FRAUD_TYPES = [
@@ -16,6 +24,10 @@ TOP_10_LEGITIMATE_PROFILES = [
     "Business Owner", "Student", "Retiree", "Frequent Online Shopper",
     "Tech Professional", "Freelancer"
 ]
+def save_to_text(reasoning_text, profile):
+    """Appends LLM reasoning and extracted JSON to a shared text file."""
+    with open(LOG_TEXT_FILE, "a", encoding="utf-8") as f:
+        f.write(f"\n### LLM Chain of Thought for strategy {profile} ###\n\n{reasoning_text}\n\n")
 
 def load_existing_strategies(filename):
     """Loads existing strategies from a JSON file."""
@@ -31,7 +43,7 @@ def save_strategy_to_json(strategy_type, strategy_text, filename):
     with open(filename, 'w') as file:
         json.dump(strategies, file, indent=4)
 
-def generate_fraud_strategy(fraud_type=None, filename="strategies/fraud_strategies.json"):
+def generate_fraud_strategy(fraud_type=None, filename=f"strategies/fraud_strategies_{model}.json"):
     """
     Generates a concise JSON strategy for a specified fraud type
     (e.g., "Account Takeover," "Insider Trading") that your second LLM (Mistral)
@@ -93,7 +105,10 @@ Please provide a valid JSON object (without any additional commentary or chain-o
 12. "context": string  
     // A short narrative explaining how this strategy typically unfolds, highlighting key behaviors and any potential anomalies.
 
+13. The JSON object must be enclosed withing the delimiter <<<JSON>>> ... <<<END_JSON>>> as in the example.
+
 ### Example Format (Do not copy verbatim; follow the structure):
+<<<JSON>>>
 {{
   "profile_or_fraud_type": "Insider Trading",
   "transaction_types_involved": ["Unauthorized Stock Purchase", "Unauthorized Stock Sale"],
@@ -108,27 +123,25 @@ Please provide a valid JSON object (without any additional commentary or chain-o
   "common_recipient_banks": ["Bank of America", "Wells Fargo", "BANK-XYZ"],
   "context": "This strategy exploits non-public information to execute quick, high-value trades. Transactions occur rapidly, often within an hour, with a mix of domestic and occasional international activities. Purchases and sales are common, and when transfers occur, typical recipient details follow the provided patterns."
 }}
-
+<<<END_JSON>>>
 Return ONLY valid JSON with these exact fields.
-"""
+""" 
+    # To run lcoally with ollama
+    #response = ollama.chat(
+    #    model="deepseek-r1",
+    #    messages=[{"role": "user", "content": prompt}],
+    #)
+    #strategy_text = response['message']['content'].strip()
 
-    response = ollama.chat(
-        model="deepseek-r1",
-        messages=[{"role": "user", "content": prompt}],
-    )
-    strategy_text = response['message']['content'].strip()
-
-    # Optionally validate the JSON here:
-    # try:
-    #     json.loads(strategy_text)
-    # except json.JSONDecodeError:
-    #     # handle or log error, or attempt a retry
-
+    # Run on watsonx
+    strategy_text = watsonx_chat(prompt=prompt, model_id=watsonx_helper.strategy_gen_model_id, parameters=watsonx_helper.parameters_strategy)
     # Save to your file
     save_strategy_to_json(fraud_type, strategy_text, filename)
+    print(f"Generated strategy for {fraud_type}")
+    save_to_text(strategy_text, fraud_type)
     return strategy_text
 
-def generate_legitimate_strategy(profile_type=None, filename="strategies/legitimate_strategies.json"):
+def generate_legitimate_strategy(profile_type=None, filename=f"strategies/legitimate_strategies_{model}.json"):
     """
     Generates a legitimate banking strategy based on a user profile (e.g. 'Saver', 'Traveler', etc.)
     and saves it in JSON format that can be used by another LLM (Mistral).
@@ -191,7 +204,11 @@ Provide a concise JSON object describing a legitimate customer profile of type: 
 
         12. "context": string  
             // A short narrative explaining how this strategy typically unfolds, highlighting key behaviors and any potential anomalies.
+        
+        13. The JSON object must be enclosed withing the delimiter <<<JSON>>> ... <<<END_JSON>>> as in the example.
+
         ### Example Format (not to be copied verbatim):
+        <<<JSON>>>
         {{
         "profile": "Saver",
         "transaction_types_involved": ["Purchase", "Withdrawal", "Deposit", "Transfer IN"],
@@ -206,25 +223,24 @@ Provide a concise JSON object describing a legitimate customer profile of type: 
         "common_recipient_banks": [],
         "context": "This Saver profile is characterized by cautious spending habits and consistent monthly savings. Typical transactions include small purchases and occasional withdrawals, with most activity occurring domestically. The customer maintains an emergency fund and uses reliable devices and stable IP ranges for all transactions."
         }}
+        <<<END_JSON>>>
 
         Return ONLY valid JSON with these nine fields, and no additional commentary.
 """
 
-    response = ollama.chat(
-        model="deepseek-r1",
-        messages=[{"role": "user", "content": prompt}],
-    )
-    strategy_text = response['message']['content'].strip()
+        # To run lcoally with ollama
+    #response = ollama.chat(
+    #    model="deepseek-r1",
+    #    messages=[{"role": "user", "content": prompt}],
+    #)
+    #strategy_text = response['message']['content'].strip()
 
-    # Optionally, you can do a quick validation/parsing of the JSON here:
-    # try:
-    #     json.loads(strategy_text)
-    # except json.JSONDecodeError:
-    #     print("Strategy JSON is malformed; consider retry or post-processing repair.")
-    #     # ... handle error ...
+    # Run on watsonx
+    strategy_text = watsonx_chat(prompt=prompt, model_id=model_id, parameters=watsonx_helper.parameters_strategy)
 
-    # Save the strategy to a JSON file
+    # Save to your file
     save_strategy_to_json(profile_type, strategy_text, filename)
+    print(f"Generated strategy for {profile_type}")
 
     return strategy_text
 
@@ -232,6 +248,9 @@ Provide a concise JSON object describing a legitimate customer profile of type: 
 
 os.makedirs('strategies', exist_ok=True)
 os.makedirs('outputs', exist_ok=True)
+
+#with open(LOG_TEXT_FILE, 'w') as f:
+#    f.write("")
 
 # Generate strategies
 n_strategies=3

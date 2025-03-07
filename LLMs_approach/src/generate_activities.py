@@ -12,21 +12,28 @@ import ollama  # or use watsonx_chat if needed
 import matplotlib.pyplot as plt
 import secrets
 from dateutil.parser import isoparse  # Install python-dateutil if needed
-
-#from watsonx_helper import watsonx_chat
+import csv
+from watsonx_helper import watsonx_chat
+import watsonx_helper
 
 # LLM used for sequence generation
-LLM_model = 'mistral'
+#activity_model = 'mistral'
+activity_model_id=watsonx_helper.activity_gen_model_id
+activity_model= activity_model_id.split("/")[1]
+strategy_model_id=watsonx_helper.strategy_gen_model_id
+strategy_model=strategy_model_id.split("/")[0]
+print(f"Activities will be generated using model: {activity_model_id}")
+
 # File paths
-OUTPUT_DIR = os.getcwd()+"/outputs"
+OUTPUT_DIR = os.getcwd()+"/outputs/"+activity_model
 os.makedirs(OUTPUT_DIR, exist_ok=True)
-ERROR_TRACKING_FILE = os.path.join(OUTPUT_DIR, f"error_tracking_{LLM_model}.json")
-ERROR_LOG_FILE = os.path.join(OUTPUT_DIR, f"json_errors_{LLM_model}.log")
-REWARD_LOG_FILE = os.path.join(OUTPUT_DIR, f"reward_progress_{LLM_model}.csv")
-LOG_TEXT_FILE = os.path.join(OUTPUT_DIR, f"llm_chain_of_thought_{LLM_model}.txt")
-DATA_DIR = os.getcwd()+"/data"
+ERROR_TRACKING_FILE = os.path.join(OUTPUT_DIR, f"error_tracking.json")
+ERROR_LOG_FILE = os.path.join(OUTPUT_DIR, f"json_errors.log")
+REWARD_LOG_FILE = os.path.join(OUTPUT_DIR, f"reward_progress.csv")
+LOG_TEXT_FILE = os.path.join(OUTPUT_DIR, f"llm_chain_of_thought.txt")
+DATA_DIR = os.getcwd()+"/data/"+activity_model
 os.makedirs(DATA_DIR, exist_ok=True)
-DATA_FILE = os.path.join(DATA_DIR, f"bank_log_{LLM_model}.csv")
+DATA_FILE = os.path.join(DATA_DIR, f"bank_log.csv")
 
 # Expected field types for the JSON schema
 EXPECTED_FIELD_TYPES = {
@@ -459,7 +466,7 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
     # 4c. Data Generation Rules:
     prompt_parts.append("### Data Generation Rules:\n")
     prompt_parts.append(f"- Required fields and formats:\n{field_explanation}\n\n")
-    prompt_parts.append("- The JSON must be enclosed within <<<JSON>>> and <<<END_JSON>>>.\n")
+    prompt_parts.append("- Use the strategy details above solely for internal reasoning. Do not include any part of these details in your output. Generate only the final activity JSON enclosed in <<<JSON>>> and <<<END_JSON>>>..\n")
     prompt_parts.append("- Keep timestamps logically consistent (UTC vs. local time offset).\n")
     prompt_parts.append("- The local_timestamp must match the time zone offset implied by the location.\n")
     prompt_parts.append("- The hour in local_timestamp cannot exceed 23.\n")
@@ -470,12 +477,12 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
     prompt_parts.append("- For a Purchase or Sale, merchant_name must not be null, but recipient_id and recipient_bank must be null.\n")
     prompt_parts.append("- For a Withdrawal, deposit, or other, merchant_name and recipient_id can be null if not applicable.\n")
 
-    # 4e. Additional constraints from user
-    prompt_parts.append(f"- The value for `amount` must be strictly smaller than {balance}.\n")
+    # 4e. Additional constraints from user 
+    prompt_parts.append(f"- Ensure that the value chosen for `amount` is <{balance}.\n")
     prompt_parts.append("- IP addresses should be plausible (each octet 0–255). Avoid placeholders like 999.999.\n")
     prompt_parts.append("- If location is e.g. 'New York, USA', consider UTC-5 or UTC-4 (depending on date). If 'Shanghai, China', consider UTC+8.\n")
     prompt_parts.append("- Timestamps must strictly increase with each new activity for the same user.\n")
-    prompt_parts.append("- Keep the data realistic for anomaly detection (avoid '24:xx:xx' or negative amounts).\n")
+    prompt_parts.append("- It is very important that data are realistic!!\n")
 
     # 4f. Include past errors if provided
     if past_errors:
@@ -539,13 +546,14 @@ def generate_activity_sequence(strategy, global_clock, user_id, behavior_type, f
             print(f"User {user_id}, Account {account_id}: Generating activity attempt {retries} with balance {current_balance:.2f}...")
             print(f"Generating activity {i+1}/{num_activities}...")
             past_errors = read_past_errors()
-            options = {"temperature": 0.8, "top_p": 0.9}
-            if retries > 1: # try changing parameter settings
-                options = {"temperature": 0.5, "top_p": 0.8}
-            print(options)
+            #options = {"temperature": 0.8, "top_p": 0.9}
+            #if retries > 1: # try changing parameter settings
+            #    options = {"temperature": 0.5, "top_p": 0.8}
+            #print(options)
             prompt = build_generation_prompt(strategy, global_clock, user_id, history, current_balance, past_errors)
-            response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}], options=options)
-            raw_response = response['message']['content'].strip()
+            #response = ollama.chat(model=activity_model, messages=[{"role": "user", "content": prompt}], options=options)
+            #raw_response = response['message']['content'].strip()
+            raw_response=watsonx_chat(prompt=prompt, model_id=activity_model_id, parameters=watsonx_helper.parameters_activity)
             save_to_text(raw_response, user_id)  # For debugging
             
             # Pass the last_timestamp into validate_json to enforce timestamp order.
@@ -592,8 +600,8 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
     
     Creates activities for each agent and writes them to a CSV immediately.
     """
-    fraudulent_strategies = load_existing_strategies("strategies/fraud_strategies.json")
-    legitimate_strategies = load_existing_strategies("strategies/legitimate_strategies.json")
+    fraudulent_strategies = load_existing_strategies(f"strategies/fraud_strategies_{strategy_model}.json")
+    legitimate_strategies = load_existing_strategies(f"strategies/legitimate_strategies_{strategy_model}.json")
     
     global_clock = datetime.now(timezone.utc).isoformat()
 
@@ -699,8 +707,9 @@ def save_to_text(reasoning_text, agent_id=None):
         f.write(f"\n### LLM Chain of Thought for user ID {agent_id} ###\n\n{reasoning_text}\n\n")
 
 def update_reward_log(score: int, user_id: str, reason: str):
-    with open(REWARD_LOG_FILE, 'a') as f:
-        f.write(f"{datetime.now().isoformat()},{user_id},{score},{reason}\n")
+    with open(REWARD_LOG_FILE, 'a', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow([datetime.now().isoformat(), user_id, score, reason])
 
 def visualize_rewards():
     """Plots cumulative reward progress over time."""
@@ -741,8 +750,8 @@ def visualize_json_success_rate():
     df['success'] = df['reward'].apply(lambda r: 1 if r == 1 else 0)
     df['cumulative_success'] = df['success'].cumsum()
     
-    plt.figure(figsize=(10, 5))
-    plt.plot(df.index, df['cumulative_success'], marker='o', linestyle='-', label='Cumulative Valid JSONs')
+    plt.figure(figsize=(10, 10))
+    plt.plot(df.index, df['cumulative_success'], marker='o', linestyle='-', label='Cumulative Valid JSONs') #markevery=2,
     plt.xlabel('Attempt Number')
     plt.ylabel('Cumulative Valid JSONs')
     plt.title('JSON Success Rate')
@@ -750,14 +759,14 @@ def visualize_json_success_rate():
     plt.legend()
     plt.tight_layout()
     plt.savefig(os.path.join(OUTPUT_DIR, "success_rate.png"))
-
+    print(f"Cumulative reward plto created at {OUTPUT_DIR} ")
 
 # Main simulation entry point
 start_time = time.time()
 print(f"Simulation started at {datetime.now().isoformat()}")
 
-generate_activities(total_activities=10, target_fraud_percentage=0.5, fraud_agents_count=4, legit_agents_count=2)
+generate_activities(total_activities=100, target_fraud_percentage=0.5, fraud_agents_count=4, legit_agents_count=10)
 time_taken = round((time.time()-start_time)/60, 2)
 print(f"Dataset generation required time: {round((time.time()-start_time)/60,1)} minutes")
 visualize_json_success_rate()
-visualize_rewards()
+#visualize_rewards()
