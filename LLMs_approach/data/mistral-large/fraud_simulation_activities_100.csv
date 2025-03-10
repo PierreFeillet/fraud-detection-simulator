@@ -1,0 +1,13 @@
+activity_id,user_id,bank_timestamp,local_timestamp,location,ip_address,device_id,network_type,type,amount,account_id,balance_before,balance_after,merchant_name,recipient_id,recipient_bank,behavior_type,fraud_label
+TXN-f77ffc096b,USER-b71dd9dc,2025-03-10T17:23:00+00:00,2025-03-10T12:23:00-05:00,"Chicago, USA",73.56.201.89,iPhone-13,Wi-Fi,Purchase,45.99,ACC-82736401,5571,5525.01,Amazon,,,Identity Theft,1
+TXN-52b9d28d1f,USER-b71dd9dc,2025-03-10T17:23:00+00:00,2025-03-10T12:23:00-05:00,"New York, USA",73.56.201.89,iPhone-13,Wi-Fi,Purchase,250.0,ACC-b71dd9dc,5235,4985.0,Amazon,,,Identity Theft,1
+TXN-c369e953d4,USER-b71dd9dc,2025-03-10T17:30:00+00:00,2025-03-10T12:30:00-05:00,"Chicago, USA",73.56.201.89,iPhone-13,Wi-Fi,Transfer Out,1500.0,ACC-82736401,5525.01,4025.01,,REC-123456,Bank of America,Identity Theft,1
+TXN-907409b1b9,USER-b71dd9dc,2025-03-10T17:23:00+00:00,2025-03-10T12:23:00-05:00,"Chicago, USA",73.56.201.89,iPhone-13,Wi-Fi,Purchase,45.99,ACC-82736401,4025.01,3979.0200000000004,Amazon,,,Identity Theft,1
+TXN-81e761b357,USER-ff6dcdb3,2025-03-10T17:23:00+00:00,2025-03-10T12:23:00-05:00,"Chicago, USA",73.56.201.89,iPhone-13,Wi-Fi,Purchase,45.99,ACC-82736401,9534,9488.01,Amazon,,,Identity Theft,1
+TXN-73574b7a5a,USER-ff6dcdb3,2025-03-10T17:23:00+00:00,2025-03-10T12:23:00-05:00,"Chicago, USA",73.56.201.89,iPhone-13,Wi-Fi,Purchase,45.99,ACC-82736401,9488.01,9442.02,Amazon,,,Identity Theft,1
+TXN-3eb7d4b3aa,USER-9e6b91ff,2025-03-10T17:23:00+00:00,2025-03-10T12:23:00-05:00,"New York, USA",73.56.201.89,iPhone-13,Wi-Fi,Purchase,45.99,ACC-9e6b91ff,3747,3701.01,Starbucks,,,Check Fraud,1
+TXN-70fc9074ab,USER-9e6b91ff,2025-03-10T17:23:00+00:00,2025-03-10T12:23:00-05:00,"New York, USA",73.56.201.89,iPhone-13,Wi-Fi,Purchase,45.99,ACC-9e6b91ff,3701.01,3655.0200000000004,Starbucks,,,Check Fraud,1
+TXN-79404d6581,USER-172a9aa6,2025-03-10T17:23:00+00:00,2025-03-10T12:23:00-05:00,"Chicago, USA",73.56.201.89,iPhone-13,Wi-Fi,Purchase,45.99,ACC-82736401,9999,9953.01,Starbucks,,,Check Fraud,1
+TXN-a7d1250531,USER-172a9aa6,2025-03-10T17:23:00+00:00,2025-03-10T12:23:00-05:00,"New York, USA",73.56.201.89,iPhone-13,Wi-Fi,Purchase,45.99,ACC-172a9aa6,1153,1107.01,Starbucks,,,Check Fraud,1
+TXN-3c6439b0da,USER-172a9aa6,2025-03-10T17:23:00+00:00,2025-03-10T12:23:00-05:00,"Chicago, USA",73.56.201.89,iPhone-13,Wi-Fi,Purchase,45.99,ACC-82736401,9953.01,9907.02,Starbucks,,,Check Fraud,1
+TXN-e1b80e24d6,USER-172a9aa6,2025-03-10T17:24:00+00:00,2025-03-10T12:24:00-05:00,"Chicago, USA",73.56.201.89,iPhone-13,Wi-Fi,Purchase,35.75,ACC-82736401,9907.02,9871.27,Amazon,,,Check Fraud,1

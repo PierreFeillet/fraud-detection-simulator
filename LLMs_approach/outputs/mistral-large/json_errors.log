@@ -1,2 +1,1 @@
 ["Error: Unexpected fields: balance_after, user_id, activity_id, behavior_type, fraud_label"]
-["Error: bank_timestamp 2025-03-01T10:15:32+00:00 is not strictly later than last_timestamp 2025-03-07T12:03:56.909192+00:00."]

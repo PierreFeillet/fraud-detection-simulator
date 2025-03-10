@@ -43,7 +43,6 @@ EXPECTED_FIELD_TYPES = {
     "account_id": str,
     "type": str,
     "amount": (int, float),  # Allow both int and float for amounts
-    "currency": str,
     "balance_before": (int, float),
     "location": str,
     "ip_address": str,
@@ -360,8 +359,8 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
   "local_timestamp": "2025-03-01T05:15:32-05:00",
   "account_id": "ACC-82736401",
   "type": "Purchase",
-  "amount": 45.99,
   "balance_before": 1280.45,
+  "amount": 45.99,
   "location": "Chicago, USA",
   "ip_address": "73.56.201.89",
   "device_id": "iPhone-13",
@@ -379,8 +378,8 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
         "- local_timestamp: string (ISO 8601), the local time with correct offset.\n"
         "- account_id: string, formatted as \"ACC-XXXXXXXX\".\n"
         "- type: string, activity type (Purchase, Sale, Transfer IN, Transfer Out, Withdrawal, etc.).\n"
-        "- amount: float, the monetary amount (0 if not applicable), must be < current balance.\n"
         "- balance_before: float, the balance before the activity.\n"
+        f"- amount: float, the monetary amount (0 if not applicable), must be <{balance}.\n"
         "- location: string, city and country.\n"
         "- ip_address: string, a valid IPv4 address.\n"
         "- device_id: string, the device model.\n"
@@ -433,7 +432,6 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
     prompt_parts.append("- For a Withdrawal, deposit, or other, merchant_name and recipient_id can be null if not applicable.\n")
 
     # 4e. Additional constraints from user 
-    prompt_parts.append(f"- Ensure that the value chosen for `amount` is <{balance}.\n")
     prompt_parts.append("- IP addresses should be plausible (each octet 0–255). Avoid placeholders like 999.999.\n")
     prompt_parts.append("- If location is e.g. 'New York, USA', consider UTC-5 or UTC-4 (depending on date). If 'Shanghai, China', consider UTC+8.\n")
     prompt_parts.append("- Timestamps must strictly increase with each new activity for the same user.\n")
