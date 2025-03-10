@@ -74,7 +74,6 @@ ORDERED_COLUMNS = [
     # activity fields
     "type",
     "amount",
-    "currency",
     "account_id",
     "balance_before",
     "balance_after",
@@ -362,7 +361,6 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
   "account_id": "ACC-82736401",
   "type": "Purchase",
   "amount": 45.99,
-  "currency": "USD",
   "balance_before": 1280.45,
   "location": "Chicago, USA",
   "ip_address": "73.56.201.89",
@@ -382,7 +380,6 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
         "- account_id: string, formatted as \"ACC-XXXXXXXX\".\n"
         "- type: string, activity type (Purchase, Sale, Transfer IN, Transfer Out, Withdrawal, etc.).\n"
         "- amount: float, the monetary amount (0 if not applicable), must be < current balance.\n"
-        "- currency: string, e.g., \"USD\".\n"
         "- balance_before: float, the balance before the activity.\n"
         "- location: string, city and country.\n"
         "- ip_address: string, a valid IPv4 address.\n"
