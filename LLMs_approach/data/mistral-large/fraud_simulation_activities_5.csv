@@ -1,0 +1,2 @@
+activity_id,user_id,bank_timestamp,local_timestamp,location,ip_address,device_id,network_type,type,amount,currency,account_id,balance_before,balance_after,merchant_name,recipient_id,recipient_bank,behavior_type,fraud_label
+TXN-1b4042f4c2,USER-9510dd6e,2025-03-07T12:04:32+00:00,2025-03-07T07:04:32-05:00,"New York, USA",192.168.1.100,Custom-built gaming PC,Wi-Fi,Transfer Out,5000.0,BTC,ACC-9510dd6e,5726,726.0,,REC-12345678,Crypto Exchange,Cryptocurrency Fraud,1

@@ -13,6 +13,8 @@ import matplotlib.pyplot as plt
 import secrets
 from dateutil.parser import isoparse  # Install python-dateutil if needed
 import csv
+import argparse
+from pprint import pprint
 from watsonx_helper import watsonx_chat
 import watsonx_helper
 
@@ -33,7 +35,6 @@ REWARD_LOG_FILE = os.path.join(OUTPUT_DIR, f"reward_progress.csv")
 LOG_TEXT_FILE = os.path.join(OUTPUT_DIR, f"llm_chain_of_thought.txt")
 DATA_DIR = os.getcwd()+"/data/"+activity_model
 os.makedirs(DATA_DIR, exist_ok=True)
-DATA_FILE = os.path.join(DATA_DIR, f"bank_log.csv")
 
 # Expected field types for the JSON schema
 EXPECTED_FIELD_TYPES = {
@@ -98,7 +99,7 @@ def robust_remove(file_path, max_retries=5, delay=1):
             time.sleep(delay)
     return False
 
-def initialize_logs():
+def initialize_logs(DATA_FILE):
     """Initializes all log files and clears the CSV.
     Writes a header to the reward log file."""
     # Define header for the reward log file.
@@ -120,8 +121,6 @@ def initialize_logs():
     with open(DATA_FILE, 'w') as f:
         f.write("")  # Create an empty CSV file.
 
-initialize_logs()
-
 def log_error_occurrences(errors):
     """Logs and tracks how often each type of error occurs over time."""
     if os.path.exists(ERROR_TRACKING_FILE):
@@ -141,19 +140,6 @@ def log_error_occurrences(errors):
 
     with open(ERROR_TRACKING_FILE, "w", encoding="utf-8") as f:
         json.dump(error_data, f)
-
-def log_json_validation(status, json_content, errors=None):
-    """Logs JSON validation status and errors to a dedicated file."""
-    log_file = os.path.join(OUTPUT_DIR, "json_validation.log")
-    with open(log_file, "a", encoding="utf-8") as f:
-        f.write(f"--- JSON Validation Result ---\n")
-        f.write(f"Status: {status}\n")
-        f.write(f"JSON:\n{json_content}\n")
-        if errors:
-            f.write("Errors:\n")
-            for error in errors:
-                f.write(f"- {error}\n")
-        f.write("\n" + "="*80 + "\n")
 
 def extract_json_fragment(text):
     """
@@ -340,35 +326,7 @@ def read_past_errors():
             except Exception as e:
                 print(f"⚠️ Error reading past errors: {e}")
                 return []
-    return []
-
-def summarize_errors(past_errors):
-    """
-    Processes past error messages and returns a concise summary of the issues encountered.
-    This function checks for common categories of errors and returns a combined string.
-    """
-    categories = set()
-    for err in past_errors:
-        err_lower = err.lower()
-        if "missing fields" in err_lower:
-            categories.add("missing required fields")
-        elif "unexpected fields" in err_lower:
-            categories.add("unexpected extra fields")
-        elif "json not enclosed" in err_lower:
-            categories.add("proper JSON delimiters must be used")
-        elif "inline comments" in err_lower:
-            categories.add("no inline comments allowed")
-        elif "json decode error" in err_lower:
-            categories.add("a valid JSON structure is required")
-        elif "expected type" in err_lower:
-            categories.add("all fields must have the correct data types")
-        else:
-            # If the error doesn't match a known category, add it as is.
-            categories.add(err)
-    if categories:
-        return "; ".join(sorted(categories))
-    return ""
-
+    return []    
 
 def build_generation_prompt(strategy, global_clock, user_id, history, balance, past_errors=None):
     """
@@ -594,7 +552,7 @@ def format_timestamp(time):
     st_time = parsed_time.isoformat(timespec='seconds') 
     return st_time
 
-def generate_activities(total_activities=1000, target_fraud_percentage=0.1, fraud_agents_count=5, legit_agents_count=20):
+def generate_activities(total_activities=1000, target_fraud_percentage=0.1, fraud_agents_count=5, legit_agents_count=20, DATA_FILE='output_data.csv'):
     """
     Generates a bank log with multiple fraudulent and legitimate agents.
     
@@ -642,7 +600,7 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
             )
             for activity in activities:
                 assign_actvity_fields(activity, user_id, behavior_type, fraud_label=1)
-                flush_buffer_immediate(activity)  # Immediately flush this activity to CSV.
+                flush_buffer_immediate(activity, DATA_FILE)  # Immediately flush this activity to CSV.
                 total_generated += 1
                 if total_generated >= target_fraud:
                     break
@@ -670,7 +628,7 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
             )
             for activity in activities:
                 assign_actvity_fields(activity, user_id, behavior_type, fraud_label=0)
-                flush_buffer_immediate(activity)
+                flush_buffer_immediate(activity, DATA_FILE)
                 total_generated += 1
                 if total_generated >= total_activities:
                     break
@@ -687,7 +645,7 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, frau
     final_df = pd.read_csv(DATA_FILE)
     return final_df
 
-def flush_buffer_immediate(tx):
+def flush_buffer_immediate(tx, DATA_FILE):
     """Immediately appends a single activity to the CSV file."""
     df = pd.DataFrame([tx])
     df = df[ORDERED_COLUMNS]
@@ -759,14 +717,40 @@ def visualize_json_success_rate():
     plt.legend()
     plt.tight_layout()
     plt.savefig(os.path.join(OUTPUT_DIR, "success_rate.png"))
-    print(f"Cumulative reward plto created at {OUTPUT_DIR} ")
+    print(f"Cumulative reward plot created at {OUTPUT_DIR} ")
 
-# Main simulation entry point
-start_time = time.time()
-print(f"Simulation started at {datetime.now().isoformat()}")
+def format_number(nb_global_activities):
+    if nb_global_activities >= 1_000_000:
+        value = nb_global_activities / 1_000_000
+        suffix = "M"
+    elif nb_global_activities >= 1_000:
+        value = nb_global_activities / 1_000
+        suffix = "K"
+    else:
+        return str(nb_global_activities)  # No suffix for numbers less than 1,000
 
-generate_activities(total_activities=100, target_fraud_percentage=0.5, fraud_agents_count=4, legit_agents_count=10)
-time_taken = round((time.time()-start_time)/60, 2)
-print(f"Dataset generation required time: {round((time.time()-start_time)/60,1)} minutes")
-visualize_json_success_rate()
-#visualize_rewards()
+    # Format to remove .0 if the value is an integer
+    formated_number = f"{int(value) if value.is_integer() else round(value, 1)}{suffix}"
+    return formated_number
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description='Script for generating the dataset',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument('--nb_activities', help='Total number of activities to be generated', type=int, required=True)
+    parser.add_argument('--fraud_agents_count', help='Number of fraudulent agents', type=int, default=4)
+    parser.add_argument('--legit_agents_count', help='Number of legitimate agents', type=int, default=40)
+    parser.add_argument('--target_fraud_percentage', help='Fraud rate', type=float, default=0.5) # Default is High Risk
+    # Main simulation entry point
+    start_time = time.time()
+    cfg = parser.parse_args()
+    pprint(cfg)
+    print(f"Simulation started at {datetime.now().isoformat()}")
+    DATA_FILE = os.path.join(DATA_DIR, f'fraud_simulation_activities_{format_number(cfg.nb_activities)}.csv')
+    initialize_logs(DATA_FILE)
+    generate_activities(total_activities=cfg.nb_activities, target_fraud_percentage=cfg.target_fraud_percentage, fraud_agents_count=cfg.fraud_agents_count, legit_agents_count=cfg.legit_agents_count, DATA_FILE=DATA_FILE)
+    time_taken = round((time.time()-start_time)/60, 2)
+    print(f"Dataset generation required time: {round((time.time()-start_time)/60,1)} minutes")
+    visualize_json_success_rate()
+    #visualize_rewards()
