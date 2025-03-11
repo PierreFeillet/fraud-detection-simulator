@@ -18,7 +18,7 @@ from pprint import pprint
 from watsonx_helper import watsonx_chat
 import watsonx_helper
 from static_behavior import generate_static_activity, assign_activity_fields, assign_initial_balance, select_valid_location, generate_local_and_bank_timestamp
-from utilities import generate_random_hash, format_timestamp
+from utilities import generate_random_hash, update_balance_for_account
 
 # LLM used for sequence generation
 #activity_model = 'mistral'
@@ -41,7 +41,7 @@ os.makedirs(DATA_DIR, exist_ok=True)
 # Expected field types for the JSON schema
 EXPECTED_FIELD_TYPES = {
     "bank_timestamp": str,  # ISO 8601 format
-    "local_timestamp": str,  # ISO 8601 format
+    #"local_timestamp": str,  # ISO 8601 format
     "account_id": str,
     "type": str,
     "amount": (int, float),  # Allow both int and float for amounts
@@ -61,7 +61,7 @@ EXPECTED_FIELD_TYPES = {
 }
 
 ORDERED_COLUMNS = [
-    "activity_id",  # activity ID first
+    "transaction_id",  # transaction ID first
     "user_id",
     # Time-related fields
     "bank_timestamp",
@@ -77,6 +77,7 @@ ORDERED_COLUMNS = [
     "amount",
     "account_id",
     "balance_before",
+    "granted",
     "balance_after",
     # Recipient details
     "merchant_name",
@@ -297,14 +298,6 @@ def update_balance(tx, current_balance):
     else:
         return current_balance
 
-def assign_actvity_fields(activity, user_id, behavior_type, fraud_label):
-    """Assigns additional fields to the activity."""
-    activity['user_id'] = user_id
-    activity['activity_id'] = f"TXN-{generate_random_hash(10)}"
-    activity['behavior_type'] = behavior_type
-    activity['fraud_label'] = fraud_label
-    return activity
-
 def generate_random_hash(length=8):
     """Generates a random hexadecimal string of the given length."""
     return secrets.token_hex(length // 2)
@@ -450,7 +443,10 @@ def enforce_timestamp_order(tx, last_timestamp_str):
 def generate_activity_sequence(strategy, user_id, behavior_type, fraud_label, num_activities=5, user_accounts=None):
     if isinstance(strategy, str):
         try:
-            strategy = json.loads(strategy)  # Convert string to dictionary
+            match = re.search(r'{.*}', strategy, re.DOTALL)
+            if match:
+                json_str = match.group(0)
+            strategy_json = json.loads(json_str)  # Convert string to dictionary
         except json.JSONDecodeError:
             raise ValueError(f"Invalid JSON format in strategy: {strategy}")
     
@@ -466,8 +462,8 @@ def generate_activity_sequence(strategy, user_id, behavior_type, fraud_label, nu
         history = history_by_account[account_id]
 
         last_tx = history[-1] if history else None
-        tx_location = select_valid_location(strategy.get("geographic_focus", ["Domestic US"]))
-        bank_timestamp, local_timestamp = generate_local_and_bank_timestamp(tx_location, last_tx, strategy)
+        tx_location = select_valid_location(strategy_json.get("geographic_focus", ["Domestic US"]))
+        bank_timestamp, local_timestamp = generate_local_and_bank_timestamp(tx_location, last_tx, strategy_json)
 
         retries = 0
         max_retries = 3
@@ -476,11 +472,11 @@ def generate_activity_sequence(strategy, user_id, behavior_type, fraud_label, nu
             retries += 1
             if i == 0 or fraud_label == 0:
                 # First transaction or legitimate profile
-                tx = generate_static_activity(strategy, user_id, account_id, current_balance, local_timestamp)
+                tx = generate_static_activity(strategy_json, user_id, account_id, current_balance, local_timestamp)
             else:
                 # Fraudulent transactions predicted by LLM
                 past_errors = read_past_errors()
-                prompt = build_generation_prompt(strategy, bank_timestamp, user_id, history, current_balance, past_errors)
+                prompt = build_generation_prompt(strategy, user_id, history, current_balance, past_errors)
                 raw_response = watsonx_chat(
                     prompt=prompt,
                     model_id=activity_model_id,
@@ -488,12 +484,14 @@ def generate_activity_sequence(strategy, user_id, behavior_type, fraud_label, nu
                 )
                 save_to_text(raw_response, user_id)
                 tx, errors = validate_json(raw_response, user_id, last_tx.get("bank_timestamp") if last_tx else bank_timestamp)
-
+                
                 if tx == 'retry':
                     update_reward_log(score=-1, user_id=user_id, reason="; ".join(errors))
                     continue  # Retry generation
                 else:
                     update_reward_log(score=1, user_id=user_id, reason="Successful JSON")
+                    tx = tx[0]
+                    print("Here",tx)
                     new_account_id = tx.get("account_id", account_id)
                     if new_account_id not in user_accounts:
                         user_accounts[new_account_id] = assign_initial_balance()

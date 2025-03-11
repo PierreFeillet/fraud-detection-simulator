@@ -74,35 +74,36 @@ def generate_strategy(strategy_type=None, strategy_category="fraudulent", filena
     geographic_focus_options = list(geography.REGION_TO_CITIES.keys())
 
     example_fraud = f"""
-    <<<JSON>>>
     {{
     "profile": "Insider Trading",
     "transaction_types_involved": ["Unauthorized Stock Purchase", "Unauthorized Stock Sale"],
     "typical_amount_range": "$5,000 - $50,000",
     "geographic_focus": ["Domestic US", "Europe"],
     "velocity": "High velocity: 3-8 transactions per hour",
+    "network_types": ["VPN Connection", "Tor Network", "Public Wi-Fi (Unsecured)", "International Proxy"],
     "common_devices": ["iPhone-13", "MacBook Pro"],
     "ip_address_notes": "Mostly US-based IPs (73.x.x.x) with occasional Asia-based proxies (203.x.x.x)",
     "common_merchant_names": ["Goldman Sachs", "JP Morgan", "Morgan Stanley"],
-    "common_recipient_ids": ["REC-12345678", "REC-87654321"],
+    "common_recipient_ids": ["ACC-45637846", "ACC-65748564"],
     "common_recipient_banks": ["Bank of America", "Wells Fargo", "Bankf of China"],
     "context": "This strategy exploits non-public information to execute quick, high-value trades. Transactions occur rapidly, often within an hour, with a mix of domestic and occasional international activities. Purchases and sales are common, and when transfers occur, typical recipient details follow the provided patterns."
     }}
-    <<<END_JSON>>>
+
     """
 
     example_legitimate = f"""
     <<<JSON>>>
         {{
-        "profile": "Saver",
+        "profile_or_fraud_type": "Saver",
         "transaction_types_involved": ["Purchase", "Withdrawal", "Deposit", "Transfer IN"],
         "typical_amount_range": "$5 - $200",
         "geographic_focus": ["Domestic US"],
         "velocity": "1-2 transactions per day",
+        "network_types": ["Wi-Fi", "Cellular", "Ethernet", "Corporate Network"],
         "common_devices": ["iPhone-13", "MacBook Pro"],
         "ip_address_notes": "Stable US-based IPs (e.g., 73.x.x.x)",
         "common_merchant_names": ["Starbucks", "Amazon", "Walmart"],
-        "common_recipient_ids": ["REC-65397495", "REC-37591258"],
+        "common_recipient_ids": ["ACC-65397495", "ACC-37591258"],
         "common_recipient_banks": ["Bank of America", "Wells Fargo", "Chase Bank"],
         "context": "This Saver profile is characterized by cautious spending habits and consistent monthly savings. Typical transactions include small purchases and occasional withdrawals, with most activity occurring domestically. The customer maintains an emergency fund and uses reliable devices and stable IP ranges for all transactions."
         }}
@@ -122,7 +123,7 @@ def generate_strategy(strategy_type=None, strategy_category="fraudulent", filena
     7. **common_devices** (array of strings) - Example: ["iPhone-13", "MacBook Pro"].
     8. **ip_ranges** (array of strings) - Example: ["73.x.x.x", "203.x.x.x"].
     9. **common_merchant_names** (array of strings) - If applicable, list merchants (Example: ["Amazon", "Walmart"]).
-    10. **common_recipient_ids** (array of strings) - Example: ["REC-", "REC-"].
+    10. **common_recipient_ids** (array of strings) - Example: ["ACC-", "ACC-"].
     11. **common_recipient_banks** (array of strings) - Example: ["Bank of America", "Wells Fargo"].
     12. **context** (string) - Describe common behavior in **one sentence**.
 

@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, timezone
 import secrets
 from dateutil.parser import isoparse  # Install python-dateutil if needed
 
@@ -11,30 +11,71 @@ def format_timestamp(time):
     st_time = parsed_time.isoformat(timespec='seconds') 
     return st_time
 
-def enforce_timestamp_order(tx, last_timestamp_str):
+def update_balance_for_account(tx, user_accounts):
     """
-    Checks if tx["bank_timestamp"] is strictly later than last_timestamp_str.
-    If not, adjusts tx["bank_timestamp"] to be at least 1 minute later and updates tx["local_timestamp"]
-    to preserve the original time difference.
+    Updates the account balance for a given transaction.
+    
+    - Deducts money from the sender for purchases, withdrawals, and transfers.
+    - Credits the recipient if they are an internal user.
+    - For external recipients (not in user_accounts), the money is deducted but not tracked.
+    
+    Args:
+        tx (dict): The transaction data.
+        user_accounts (dict): Dictionary mapping account IDs to their current balances.
+
+    Returns:
+        float: Updated balance for the sender's account.
     """
-    try:
-        last_ts = isoparse(last_timestamp_str)
-        orig_bank = isoparse(tx["bank_timestamp"])
-        orig_local = isoparse(tx["local_timestamp"])
-    except Exception as e:
-        print("Error parsing timestamps:", e)
-        return tx
 
-    # Compute the original difference between bank_timestamp and local_timestamp
-    # (this difference may include timezone offsets)
-    delta = orig_bank - orig_local  # timedelta
+    sender_id = tx["account_id"]
+    recipient_id = tx.get("recipient_id")  # Can be None for non-transfer transactions
+    amount = tx.get("amount", 0)
+    
+    # Ensure `granted` always exists in the transaction dictionary
+    if "granted" not in tx:
+        tx["granted"] = True  # Default to True if missing
 
-    if orig_bank <= last_ts:
-        # Enforce a minimum gap of 1 minute
-        new_bank = last_ts + timedelta(minutes=1)
-        tx["bank_timestamp"] = new_bank.isoformat()
-        # Adjust local_timestamp to preserve the original time difference
-        new_local = new_bank - delta
-        tx["local_timestamp"] = new_local.isoformat()
-        print(f"Adjusted timestamps: new bank_timestamp set to {tx['bank_timestamp']}, new local_timestamp set to {tx['local_timestamp']}")
-    return tx
+    granted = tx["granted"]  
+
+    # Ensure sender exists in user accounts
+    if sender_id not in user_accounts:
+        raise ValueError(f"Error: Sender account {sender_id} not found!")
+
+    # Get sender's current balance
+    sender_balance = user_accounts[sender_id]
+
+    if granted:
+        if tx["type"] == "Transfer Out":
+            # Ensure sender has enough balance before proceeding
+            if sender_balance >= amount:
+                user_accounts[sender_id] -= amount  # Deduct from sender
+                
+                #  If recipient is internal, update their balance
+                if recipient_id and recipient_id in user_accounts:
+                    user_accounts[recipient_id] += amount
+                else:
+                    print(f" Transfer Out: {amount:.2f} deducted from {sender_id}, but recipient {recipient_id} is external (not tracked).")
+
+            else:
+                tx["granted"] = False  # Decline transaction
+                return sender_balance  # No change
+
+        elif tx["type"] == "Transfer In":
+            #  Only credit recipient if they are an internal user
+            if recipient_id and recipient_id in user_accounts:
+                user_accounts[recipient_id] += amount
+            else:
+                print(f" Transfer In: {amount:.2f} attempted for {recipient_id}, but account is external. No tracking.")
+
+        elif tx["type"] in ["Purchase", "Withdrawal"]:
+            if sender_balance >= amount:
+                user_accounts[sender_id] -= amount  # Deduct for purchases/withdrawals
+            else:
+                tx["granted"] = False  # Decline transaction if insufficient funds
+                return sender_balance  # No change
+
+        elif tx["type"] == "Deposit":
+            user_accounts[sender_id] += amount  # Add funds for deposits
+
+    # Return updated sender balance
+    return user_accounts[sender_id]

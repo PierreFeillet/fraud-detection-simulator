@@ -1,1 +1,12 @@
 timestamp,user_id,reward,reason
+2025-03-11T21:25:25.987195,USER-ebc2d950,1,Successful JSON
+2025-03-11T21:25:37.279305,USER-ebc2d950,-1,"Error: Unexpected fields: granted, balance_after, user_id, transaction_id, behavior_type, fraud_label"
+2025-03-11T21:25:43.225106,USER-ebc2d950,1,Successful JSON
+2025-03-11T21:25:49.290358,USER-7eec06b7,1,Successful JSON
+2025-03-11T21:25:56.253537,USER-7eec06b7,1,Successful JSON
+2025-03-11T21:26:02.644410,USER-7eec06b7,1,Successful JSON
+2025-03-11T21:26:10.292456,USER-7eec06b7,1,Successful JSON
+2025-03-11T21:26:17.143561,USER-ddeac178,1,Successful JSON
+2025-03-11T21:26:23.194168,USER-ddeac178,1,Successful JSON
+2025-03-11T21:26:31.077557,USER-ddeac178,1,Successful JSON
+2025-03-11T21:26:37.011356,USER-97b18156,1,Successful JSON
