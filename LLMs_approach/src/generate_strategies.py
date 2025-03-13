@@ -75,7 +75,8 @@ def generate_strategy(strategy_type=None, strategy_category="fraudulent", filena
 
     example_fraud = f"""
     {{
-    "profile": "Insider Trading",
+    "profile_or_fraud_type": "Insider Trading",
+    "n_accounts": 1,
     "transaction_types_involved": ["Unauthorized Stock Purchase", "Unauthorized Stock Sale"],
     "typical_amount_range": "$5,000 - $50,000",
     "geographic_focus": ["Domestic US", "Europe"],
@@ -95,6 +96,7 @@ def generate_strategy(strategy_type=None, strategy_category="fraudulent", filena
     <<<JSON>>>
         {{
         "profile_or_fraud_type": "Saver",
+        "n_accounts": 2,
         "transaction_types_involved": ["Purchase", "Withdrawal", "Deposit", "Transfer IN"],
         "typical_amount_range": "$5 - $200",
         "geographic_focus": ["Domestic US"],
@@ -114,18 +116,19 @@ def generate_strategy(strategy_type=None, strategy_category="fraudulent", filena
     prompt = f"""
     You are an expert in simulating **realistic banking strategies**. Your task is to define the startegy for the profile "{strategy_type}" in a structured JSON format enclosed within <<<START_JSON>>> and <<<END_JSON>>> tags. The strategy should include the following details:\n
 
-    1. **profile_or_fraud_type** (string) - The fraud type or legitimate banking profile.
-    2. **transaction_types_involved** (array of strings) - E.g., ["Purchase", "Transfer Out", "Withdrawal"].
-    3. **typical_amount_range** (string) - Format: "$X - $Y" (Example: "$10 - $500").
-    4. **geographic_focus** (array of strings) - Must be selected from {geographic_focus_options}.
-    5. **velocity** (string) - Use format: "X-Y transactions per hour/day/week" (Example: "3-5 transactions per day").
-    6. **network_types** (array of strings) - Example: ["Wi-Fi", "Cellular"].
-    7. **common_devices** (array of strings) - Example: ["iPhone-13", "MacBook Pro"].
-    8. **ip_ranges** (array of strings) - Example: ["73.x.x.x", "203.x.x.x"].
-    9. **common_merchant_names** (array of strings) - If applicable, list merchants (Example: ["Amazon", "Walmart"]).
-    10. **common_recipient_ids** (array of strings) - Example: ["ACC-", "ACC-"].
-    11. **common_recipient_banks** (array of strings) - Example: ["Bank of America", "Wells Fargo"].
-    12. **context** (string) - Describe common behavior in **one sentence**.
+    - **profile_or_fraud_type** (string) - The fraud type or legitimate banking profile.
+    - **n_accounts** (integer) - The number of accounts associated with this profile.
+    - **transaction_types_involved** (array of strings) - E.g., ["Purchase", "Transfer Out", "Withdrawal"].
+    - **typical_amount_range** (string) - Format: "$X - $Y" (Example: "$10 - $500").
+    - **geographic_focus** (array of strings) - Must be selected from {geographic_focus_options}.
+    - **velocity** (string) - Use format: "X-Y transactions per hour/day/week" (Example: "3-5 transactions per day").
+    - **network_types** (array of strings) - Example: ["Wi-Fi", "Cellular"].
+    - **common_devices** (array of strings) - Example: ["iPhone-13", "MacBook Pro"].
+    - **ip_ranges** (array of strings) - Example: ["73.x.x.x", "203.x.x.x"].
+    - **common_merchant_names** (array of strings) - If applicable, list merchants (Example: ["Amazon", "Walmart"]).
+    - **common_recipient_ids** (array of strings) - target accounts in case of "Transfer out". Example: ["ACC-774683nf", "ACC-836gfu98"].
+    - **common_recipient_banks** (array of strings) - target banks. Example: ["Bank of America", "Wells Fargo"].
+    - **context** (string) - Describe common behavior in **one sentence**.
 
     ### **Example Output Format**, don't copy verbatim:
     {example_fraud if strategy_category == "fraudulent" else example_legitimate}

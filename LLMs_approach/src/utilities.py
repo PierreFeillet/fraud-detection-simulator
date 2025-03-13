@@ -11,6 +11,32 @@ def format_timestamp(time):
     st_time = parsed_time.isoformat(timespec='seconds') 
     return st_time
 
+# Assuming in case of transfer, the receipient is not a bank's client. ONly the account id is client
+def update_balance(tx):
+    """
+    Computes the new balance based on the activity type and amount.
+    For a deposit, adds the amount.
+    For a withdrawal, transfer, purchase, or sale, subtracts the amount.
+    """
+    tx_type = tx.get("type", "").lower()
+    amount = tx.get("amount", 0)
+    current_balance = tx["balance_before"]
+    if any(word in tx_type for word in ["deposit", "contribution", "transfer in", "sale"]):
+        return current_balance + amount
+    elif any(word in tx_type for word in ["withdrawal", "transfer out", "purchase"]):
+        new_balance = current_balance - amount
+        if new_balance<0:
+            tx["granted"] = False
+            return current_balance
+        else:
+            tx["granted"] = True
+            return new_balance
+    else:
+        tx["granted"] = True
+        return current_balance
+
+'''  
+ # Function to track balance for transfer when accounts are bank's client    
 def update_balance_for_account(tx, user_accounts):
     """
     Updates the account balance for a given transaction.
@@ -30,12 +56,11 @@ def update_balance_for_account(tx, user_accounts):
     sender_id = tx["account_id"]
     recipient_id = tx.get("recipient_id")  # Can be None for non-transfer transactions
     amount = tx.get("amount", 0)
+    tx_type = tx.get("type", "").lower()
     
     # Ensure `granted` always exists in the transaction dictionary
     if "granted" not in tx:
         tx["granted"] = True  # Default to True if missing
-
-    granted = tx["granted"]  
 
     # Ensure sender exists in user accounts
     if sender_id not in user_accounts:
@@ -44,38 +69,38 @@ def update_balance_for_account(tx, user_accounts):
     # Get sender's current balance
     sender_balance = user_accounts[sender_id]
 
-    if granted:
-        if tx["type"] == "Transfer Out":
-            # Ensure sender has enough balance before proceeding
-            if sender_balance >= amount:
-                user_accounts[sender_id] -= amount  # Deduct from sender
-                
-                #  If recipient is internal, update their balance
-                if recipient_id and recipient_id in user_accounts:
-                    user_accounts[recipient_id] += amount
-                else:
-                    print(f" Transfer Out: {amount:.2f} deducted from {sender_id}, but recipient {recipient_id} is external (not tracked).")
-
-            else:
-                tx["granted"] = False  # Decline transaction
-                return sender_balance  # No change
-
-        elif tx["type"] == "Transfer In":
-            #  Only credit recipient if they are an internal user
+    if any(word in tx_type for word in ["Transfer Out":
+        # Ensure sender has enough balance before proceeding
+        if sender_balance >= amount:
+            user_accounts[sender_id] -= amount  # Deduct from sender
+            
+            #  If recipient is internal, update their balance
             if recipient_id and recipient_id in user_accounts:
                 user_accounts[recipient_id] += amount
             else:
-                print(f" Transfer In: {amount:.2f} attempted for {recipient_id}, but account is external. No tracking.")
+                print(f" Transfer Out: {amount:.2f} deducted from {sender_id}, but recipient {recipient_id} is external (not tracked).")
 
-        elif tx["type"] in ["Purchase", "Withdrawal"]:
-            if sender_balance >= amount:
-                user_accounts[sender_id] -= amount  # Deduct for purchases/withdrawals
-            else:
-                tx["granted"] = False  # Decline transaction if insufficient funds
-                return sender_balance  # No change
+        else:
+            tx["granted"] = False  # Decline transaction
+            return sender_balance  # No change
 
-        elif tx["type"] == "Deposit":
-            user_accounts[sender_id] += amount  # Add funds for deposits
+    elif  tx_type== "Transfer In":
+        #  Only credit recipient if they are an internal user
+        if recipient_id and recipient_id in user_accounts:
+            user_accounts[recipient_id] += amount
+        else:
+            print(f" Transfer In: {amount:.2f} attempted for {recipient_id}, but account is external. No tracking.")
+
+    elif any(word in tx_type for word in ["deposit", "contribution", "transfer in"]):
+        if sender_balance >= amount:
+            user_accounts[sender_id] -= amount  # Deduct for purchases/withdrawals
+        else:
+            tx["granted"] = False  # Decline transaction if insufficient funds
+            return sender_balance  # No change
+
+    elif tx_type == "Deposit":
+        user_accounts[sender_id] += amount  # Add funds for deposits
 
     # Return updated sender balance
     return user_accounts[sender_id]
+'''
