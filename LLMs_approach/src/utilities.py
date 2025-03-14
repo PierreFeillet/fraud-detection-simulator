@@ -23,9 +23,9 @@ def update_balance(tx):
     tx["granted"] = True  # Default to True if missing
     current_balance = tx["balance_before"]
     if any(word in tx_type for word in ["deposit", "contribution", "transfer in", "sale"]):
-        return current_balance + amount
+        return round(current_balance + amount,2)
     elif any(word in tx_type for word in ["withdrawal", "transfer out", "purchase"]):
-        new_balance = current_balance - amount
+        new_balance = round(current_balance - amount,2)
         if new_balance<0:
             tx["granted"] = False
             return current_balance

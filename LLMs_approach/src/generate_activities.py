@@ -426,9 +426,9 @@ def generate_activity_sequence(strategy, user_id, behavior_type, fraud_label, gl
                     if new_account_id not in accounts:
                         accounts[new_account_id] = assign_initial_balance(strategy_json)
 
-
+            tx['amount'] = round(tx.get("amount", 0), 2)  # Round amount to 2 decimal places
             # Update balance ensuring correctness
-            tx["balance_before"] = accounts[tx["account_id"]]
+            tx["balance_before"] = round(accounts[tx["account_id"]],2)
             tx["balance_after"] = update_balance(tx)
             # Update account balance
             accounts[tx["account_id"]] = tx["balance_after"]
