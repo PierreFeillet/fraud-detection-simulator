@@ -4,7 +4,8 @@ import tiktoken
 tokenizer = tiktoken.encoding_for_model("gpt-4")
 
 # Sample Mistral-generated text (truncated for brevity)
-mistral_output = open("/Users/molocco/IBM_secondment/fraud-detection-simulator/LLMs_approach/outputs/mistral-large/1K/llm_chain_of_thought.txt", "r")
+file_path = "/Users/molocco/IBM_secondment/fraud-detection-simulator/LLMs_approach/outputs/develop_phase/llm_chain_of_thought_mistral-large.txt"
+mistral_output = open(file_path, "r")
 mistral_output = mistral_output.read()
 
 # Tokenize the output

@@ -22,6 +22,7 @@ def parse_velocity(velocity):
             max_t = int(max_t) if max_t else min_t  # If max_t is None, use min_t
             hours = int(hours) if hours else 1      # Default to 1 hour if missing
             interval = timedelta(hours=hours / max_t)
+            print("Parsed interval:", interval)
             return interval
 
     elif "day" in velocity:
@@ -32,6 +33,7 @@ def parse_velocity(velocity):
             max_t = int(max_t) if max_t else min_t
             days = int(days) if days else 1  # Default to 1 day if missing
             interval = timedelta(days=days / max_t)
+            print("Parsed interval:", interval)
             return interval
 
     elif "week" in velocity:
@@ -42,10 +44,12 @@ def parse_velocity(velocity):
             max_t = int(max_t) if max_t else min_t
             weeks = int(weeks) if weeks else 1  # Default to 1 week if missing
             interval = timedelta(days=(7 * weeks) / max_t)
+            print("Parsed interval:", interval)
             return interval
 
     elif "minute" in velocity:
         interval = timedelta(minutes=random.randint(1, 10))
+        print("Parsed interval:", interval)
         return interval
 
     # Default fallback
@@ -66,17 +70,15 @@ def generate_amount_from_strategy(strategy):
 
 
 #  Assign Initial Balance
-def assign_initial_balance(amount=None):
-    """Assigns an initial balance that is always greater than the amount if provided."""
-    min_balance = 1000  # Minimum starting balance
-    max_balance = 100000  # Maximum starting balance
-    balance = random.randint(min_balance, max_balance)
+def assign_initial_balance(strategy):
+    """Assigns an initial balance based on the strategy-defined range."""
+    amount_range = strategy.get("typical_amount_range", "$1000 - $50000")
+    # Extract min and max amount from the strategy range
+    min_amount, max_amount = [
+        float(x.replace("$", "").replace(",", "")) for x in amount_range.split(" - ")
+    ]
     
-    if amount and balance <= amount:
-        balance += random.randint(int(amount), int(amount) * 2)  # Ensure balance > amount
-    
-    return balance
-
+    return round(random.uniform(min_amount*10, max_amount*10), 2)
 
 #  Select a Valid Location Based on the Strategy
 REGION_TO_CITIES = {

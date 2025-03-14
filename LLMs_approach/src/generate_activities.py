@@ -22,21 +22,7 @@ from utilities import generate_random_hash, update_balance
 
 # LLM used for sequence generation
 #activity_model = 'mistral'
-activity_model_id=watsonx_helper.activity_gen_model_id
-activity_model= activity_model_id.split("/")[1]
-strategy_model_id=watsonx_helper.strategy_gen_model_id
-strategy_model=strategy_model_id.split("/")[0]
-print(f"Activities will be generated using model: {activity_model_id}")
 
-# File paths
-OUTPUT_DIR = os.getcwd()+"/outputs/"+activity_model
-os.makedirs(OUTPUT_DIR, exist_ok=True)
-ERROR_TRACKING_FILE = os.path.join(OUTPUT_DIR, f"error_tracking.json")
-ERROR_LOG_FILE = os.path.join(OUTPUT_DIR, f"json_errors.log")
-REWARD_LOG_FILE = os.path.join(OUTPUT_DIR, f"reward_progress.csv")
-LOG_TEXT_FILE = os.path.join(OUTPUT_DIR, f"llm_chain_of_thought.txt")
-DATA_DIR = os.getcwd()+"/data/"+activity_model
-os.makedirs(DATA_DIR, exist_ok=True)
 
 # Expected field types for the JSON schema
 EXPECTED_FIELD_TYPES = {
@@ -334,7 +320,7 @@ def build_generation_prompt(strategy, user_id, history, accounts, past_errors=No
 <<<END_JSON>>>
 """
 
-    # 3️⃣ **Field Explanations (Enforces JSON Structure)**
+    #  **Field Explanations (Enforces JSON Structure)**
     field_explanation = (
         "- `bank_timestamp`: ISO 8601 UTC timestamp (STRICTLY increasing).\n"
         "-`local_timestamp`: ISO 8601 is the bank_timestamp converted in the `location` timezone.\n"
@@ -394,7 +380,7 @@ def generate_activity_sequence(strategy, user_id, behavior_type, fraud_label, gl
     
     # Initialize as many accounts as in strategy and assign the initial balance
     n_accounts = strategy_json.get("n_accounts", 1)
-    accounts = {f"ACC-{generate_random_hash()}": assign_initial_balance() for n in range(n_accounts)}  
+    accounts = {f"ACC-{generate_random_hash()}": assign_initial_balance(strategy_json) for n in range(n_accounts)}  
     print("Initialized user accounts:", accounts)
     #history_by_account = {acc: [] for acc in accounts}
     activities = []
@@ -438,7 +424,7 @@ def generate_activity_sequence(strategy, user_id, behavior_type, fraud_label, gl
                     new_account_id = tx.get("account_id", account_id)
                     # Chcek if account exists
                     if new_account_id not in accounts:
-                        accounts[new_account_id] = assign_initial_balance()
+                        accounts[new_account_id] = assign_initial_balance(strategy_json)
 
 
             # Update balance ensuring correctness
@@ -454,7 +440,6 @@ def generate_activity_sequence(strategy, user_id, behavior_type, fraud_label, gl
             activities.append(tx)
             break  # Exit retry loop on successful generation
     print("------------------------------------------------")
-    print("\n")
     return activities
 
 
@@ -497,7 +482,7 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, DATA
     buffer = []
     header_written = True  # Header was written above
     
-    # Global clock (if needed for timestamp generation)
+    # Global clock 
     global_clock = datetime.now(timezone.utc).isoformat()
 
     # --- Generate Fraudulent Activities ---
@@ -549,8 +534,8 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, DATA
         buffer.extend(activities)
         total_generated += len(activities)
         
-        if activities:
-            global_clock = activities[-1]["bank_timestamp"]
+        #if activities:
+        #    global_clock = activities[-1]["bank_timestamp"]
         
         if len(buffer) >= buffer_size:
             header_written = flush_buffer(buffer, DATA_FILE, header_written)
@@ -669,15 +654,29 @@ if __name__ == "__main__":
     parser.add_argument('--nb_activities', help='Total number of activities to be generated', type=int, required=True)
     parser.add_argument('--fraud_agents_count', help='Number of fraudulent agents', type=int, default=4)
     parser.add_argument('--legit_agents_count', help='Number of legitimate agents', type=int, default=40)
-    parser.add_argument('--target_fraud_percentage', help='Fraud rate', type=float, default=0.5) # Default is High Risk
+    parser.add_argument('--target_fraud_percentage', help='Fraud rate', type=float, default=0.05) # Default is High Risk
     # Main simulation entry point
     start_time = time.time()
     cfg = parser.parse_args()
     pprint(cfg)
     print(f"Simulation started at {datetime.now().isoformat()}")
+    activity_model_id=watsonx_helper.activity_gen_model_id
+    activity_model= activity_model_id.split("/")[1]
+    strategy_model_id=watsonx_helper.strategy_gen_model_id
+    strategy_model=strategy_model_id.split("/")[0]
+    print(f"Activities will be generated using model: {activity_model_id}")
+
+    # File paths
+    OUTPUT_DIR = os.getcwd()+"/outputs/"+activity_model+"/"+format_number(cfg.nb_activities)
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    ERROR_TRACKING_FILE = os.path.join(OUTPUT_DIR, f"error_tracking.json")
+    ERROR_LOG_FILE = os.path.join(OUTPUT_DIR, f"json_errors.log")
+    REWARD_LOG_FILE = os.path.join(OUTPUT_DIR, f"reward_progress.csv")
+    LOG_TEXT_FILE = os.path.join(OUTPUT_DIR, f"llm_chain_of_thought.txt")
+    DATA_DIR = os.getcwd()+"/data/"+activity_model
+    os.makedirs(DATA_DIR, exist_ok=True)
     DATA_FILE = os.path.join(DATA_DIR, f'fraud_simulation_activities_{format_number(cfg.nb_activities)}.csv')
     initialize_logs(DATA_FILE)
-    OUTPUT_DIR = os.path.join(OUTPUT_DIR, f"{format_number(cfg.nb_activities)}")
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     generate_activities(total_activities=cfg.nb_activities, target_fraud_percentage=cfg.target_fraud_percentage,  DATA_FILE=DATA_FILE)
     time_taken = round((time.time()-start_time)/60, 2)

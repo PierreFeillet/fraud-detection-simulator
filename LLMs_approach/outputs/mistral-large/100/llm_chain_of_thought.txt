@@ -1,0 +1,91 @@
+
+### LLM Chain of Thought for user ID USER-6133e2b4 ###
+
+
+### Example JSON:
+<<<JSON>>>
+{
+  "bank_timestamp": "2025-03-14T12:30:00+00:00",
+  "local_timestamp": "2025-03-14T13:30:00+01:00",
+  "account_id": "ACC-f4276fd3",
+  "type": "Purchase",
+  "amount": 450.00,
+  "balance_before": 3267.5299999999997,
+  "location": "Berlin, Germany",
+  "ip_address": "81.169.145.160",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Amazon",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-6133e2b4 ###
+
+
+```json
+<<<JSON>>>
+{
+  "bank_timestamp": "2025-03-14T13:30:00+00:00",
+  "local_timestamp": "2025-03-14T14:30:00+01:00",
+  "account_id": "ACC-f4276fd3",
+  "type": "Purchase",
+  "amount": 450.0,
+  "balance_before": 2817.5299999999997,
+  "location": "London, UK",
+  "ip_address": "81.169.145.160",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Amazon",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-6133e2b4 ###
+
+
+```json
+<<<JSON>>>
+{
+  "bank_timestamp": "2025-03-14T14:30:00+00:00",
+  "local_timestamp": "2025-03-14T15:30:00+01:00",
+  "account_id": "ACC-f4276fd3",
+  "type": "Purchase",
+  "amount": 475.0,
+  "balance_before": 2367.5299999999997,
+  "location": "Madrid, Spain",
+  "ip_address": "81.169.145.160",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Amazon",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+<<<END_JSON>>>
+
+
+### LLM Chain of Thought for user ID USER-6133e2b4 ###
+
+
+<<<JSON>>>
+{
+  "bank_timestamp": "2025-03-14T15:30:00+00:00",
+  "local_timestamp": "2025-03-14T16:30:00+01:00",
+  "account_id": "ACC-f4276fd3",
+  "type": "Purchase",
+  "amount": 490.0,
+  "balance_before": 1892.5299999999997,
+  "location": "Rome, Italy",
+  "ip_address": "81.169.145.160",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Amazon",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+<<<END_JSON>>>
+

@@ -20,6 +20,7 @@ def update_balance(tx):
     """
     tx_type = tx.get("type", "").lower()
     amount = tx.get("amount", 0)
+    tx["granted"] = True  # Default to True if missing
     current_balance = tx["balance_before"]
     if any(word in tx_type for word in ["deposit", "contribution", "transfer in", "sale"]):
         return current_balance + amount
@@ -32,7 +33,6 @@ def update_balance(tx):
             tx["granted"] = True
             return new_balance
     else:
-        tx["granted"] = True
         return current_balance
 
 '''  
