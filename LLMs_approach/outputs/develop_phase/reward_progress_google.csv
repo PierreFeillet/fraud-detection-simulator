@@ -1,0 +1,3 @@
+timestamp,user_id,reward,reason
+2025-03-07T11:53:11.080520,USER-f68ea201,-1,Error: JSON not enclosed in expected delimiters.
+2025-03-07T11:53:25.840256,USER-f68ea201,-1,Error: JSON not enclosed in expected delimiters.

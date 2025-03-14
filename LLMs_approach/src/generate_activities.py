@@ -1,5 +1,5 @@
 from collections import defaultdict
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import time
 import json
 import os
@@ -11,21 +11,18 @@ import pandas as pd
 import ollama  # or use watsonx_chat if needed
 import matplotlib.pyplot as plt
 import secrets
-
+from dateutil.parser import isoparse  # Install python-dateutil if needed
+import csv
+import argparse
+from pprint import pprint
 from watsonx_helper import watsonx_chat
+import watsonx_helper
+from static_behavior import generate_static_activity, assign_activity_fields, assign_initial_balance, select_valid_location, generate_local_and_bank_timestamp
+from utilities import generate_random_hash, update_balance
 
 # LLM used for sequence generation
-LLM_model = 'mistral'
-# File paths
-OUTPUT_DIR = os.getcwd()+"/outputs"
-os.makedirs(OUTPUT_DIR, exist_ok=True)
-ERROR_TRACKING_FILE = os.path.join(OUTPUT_DIR, f"error_tracking_{LLM_model}.json")
-ERROR_LOG_FILE = os.path.join(OUTPUT_DIR, f"json_errors_{LLM_model}.log")
-REWARD_LOG_FILE = os.path.join(OUTPUT_DIR, f"reward_progress_{LLM_model}.csv")
-LOG_TEXT_FILE = os.path.join(OUTPUT_DIR, f"llm_chain_of_thought_{LLM_model}.txt")
-DATA_DIR = os.getcwd()+"/data"
-os.makedirs(DATA_DIR, exist_ok=True)
-DATA_FILE = os.path.join(DATA_DIR, f"bank_log_{LLM_model}.csv")
+#activity_model = 'mistral'
+
 
 # Expected field types for the JSON schema
 EXPECTED_FIELD_TYPES = {
@@ -34,7 +31,6 @@ EXPECTED_FIELD_TYPES = {
     "account_id": str,
     "type": str,
     "amount": (int, float),  # Allow both int and float for amounts
-    "currency": str,
     "balance_before": (int, float),
     "location": str,
     "ip_address": str,
@@ -51,7 +47,7 @@ EXPECTED_FIELD_TYPES = {
 }
 
 ORDERED_COLUMNS = [
-    "transaction_id",  # Transaction ID first
+    "transaction_id",  # transaction ID first
     "user_id",
     # Time-related fields
     "bank_timestamp",
@@ -62,12 +58,12 @@ ORDERED_COLUMNS = [
     "ip_address",
     "device_id",
     "network_type",
-    # Transaction fields
+    # activity fields
     "type",
     "amount",
-    "currency",
     "account_id",
     "balance_before",
+    "granted",
     "balance_after",
     # Recipient details
     "merchant_name",
@@ -90,7 +86,7 @@ def robust_remove(file_path, max_retries=5, delay=1):
             time.sleep(delay)
     return False
 
-def initialize_logs():
+def initialize_logs(DATA_FILE):
     """Initializes all log files and clears the CSV.
     Writes a header to the reward log file."""
     # Define header for the reward log file.
@@ -112,8 +108,6 @@ def initialize_logs():
     with open(DATA_FILE, 'w') as f:
         f.write("")  # Create an empty CSV file.
 
-initialize_logs()
-
 def log_error_occurrences(errors):
     """Logs and tracks how often each type of error occurs over time."""
     if os.path.exists(ERROR_TRACKING_FILE):
@@ -134,39 +128,53 @@ def log_error_occurrences(errors):
     with open(ERROR_TRACKING_FILE, "w", encoding="utf-8") as f:
         json.dump(error_data, f)
 
-def log_json_validation(status, json_content, errors=None):
-    """Logs JSON validation status and errors to a dedicated file."""
-    log_file = os.path.join(OUTPUT_DIR, "json_validation.log")
-    with open(log_file, "a", encoding="utf-8") as f:
-        f.write(f"--- JSON Validation Result ---\n")
-        f.write(f"Status: {status}\n")
-        f.write(f"JSON:\n{json_content}\n")
-        if errors:
-            f.write("Errors:\n")
-            for error in errors:
-                f.write(f"- {error}\n")
-        f.write("\n" + "="*80 + "\n")
+def extract_json_fragment(text):
+    """
+    Attempts to extract a JSON block from text using several common delimiter patterns.
+    Returns the JSON string if found, otherwise None.
+    """
+    stripped = text.strip()
+    # If the entire text is a JSON block (starts with '{' and ends with '}')
+    if stripped.startswith("{") and stripped.endswith("}"):
+        return stripped
+    
+    # First try your preferred delimiters
+    match = re.search(r"<<<JSON>>>(.*?)<<<END_JSON>>>", text, re.DOTALL | re.IGNORECASE)
+    if match:
+        return match.group(1).strip()
+    
+    # Next, try markdown code block with "json" language tag
+    match = re.search(r"```json\s*(.*?)\s*```", text, re.DOTALL | re.IGNORECASE)
+    if match:
+        return match.group(1).strip()
+    
+    # Then, try any triple-backticks (without a language tag)
+    match = re.search(r"```(.*?)```", text, re.DOTALL | re.IGNORECASE)
+    if match:
+        return match.group(1).strip()
+    
+    # As a last resort, try any block delimited by <<< and >>>
+    match = re.search(r"<<<(.*?)>>>", text, re.DOTALL | re.IGNORECASE)
+    if match:
+        return match.group(1).strip()
+    
+    return None
 
-def validate_json(text, user_id):
-    """Validates JSON correctness and returns a list containing a single transaction.
-    Returns 'retry' if the JSON is invalid."""
+
+def validate_json(text, user_id, last_tx_timestamp):
+    """
+    Validates JSON correctness and returns a list containing a single activity.
+    Returns 'retry' if the JSON is invalid or if the new bank_timestamp is not strictly later
+    than the provided last_timestamp.
+    """
     errors = []
     print(f"Validating JSON for user {user_id}...")
-    pattern_custom = r"<<<JSON>>>(.*?)<<<END_JSON>>>"
-    pattern_code = r"```json\s*(.*?)\s*```"
-    
-    match = re.search(pattern_custom, text, re.DOTALL | re.IGNORECASE)
-    if match:
-        json_str = match.group(1).strip()
-    else:
-        match = re.search(pattern_code, text, re.DOTALL | re.IGNORECASE)
-        if match:
-            json_str = match.group(1).strip()
-        else:
-            errors.append("Error: JSON not enclosed in expected delimiters.")
-            log_json_errors(errors)
-            print(f"Errors detected in JSON for user {user_id}: {errors}")
-            return 'retry', errors
+    json_str = extract_json_fragment(text)
+    if not json_str:
+        errors.append("Error: JSON not enclosed in expected delimiters.")
+        log_json_errors(errors)
+        print(f"Errors detected in JSON for user {user_id}: {errors}")
+        return 'retry', errors
 
     if re.search(r'//', json_str) or re.search(r'/\*.*?\*/', json_str, re.DOTALL):
         errors.append("Error: JSON contains inline comments.")
@@ -176,7 +184,7 @@ def validate_json(text, user_id):
 
     try:
         activity = json.loads(json_str)
-       # We want exactly one transaction dictionary, so standardize:
+        # Standardize: we want exactly one activity dictionary.
         if isinstance(activity, list):
             if not activity:
                 errors.append("Error: JSON list is empty.")
@@ -191,24 +199,39 @@ def validate_json(text, user_id):
             log_json_errors(errors)
             print(f"Errors detected in JSON for user {user_id}: {errors}")
             return 'retry', errors
-         #    i.e., if the model didn't supply them or gave an empty string, fix them.
-        #if not tx.get("merchant_name"):
-        #    tx["merchant_name"] = None
-        #if not tx.get("recipient_id"):
-        #    tx["recipient_id"] = None
-        #if not tx.get("recipient_bank"):
-        #    tx["recipient_bank"] = None
 
+        # Check if bank_timestamp is strictly later than last_timestamp (if prov ded)
+        try:
+            new_bank_ts = isoparse(tx["bank_timestamp"])
+            prev_ts = isoparse(last_tx_timestamp)
+            # Ensure both datetime objects are offset-aware. If tzinfo is None, assume UTC.
+            if new_bank_ts.tzinfo is None:
+                new_bank_ts = new_bank_ts.replace(tzinfo=timezone.utc)
+            if prev_ts.tzinfo is None:
+                prev_ts = prev_ts.replace(tzinfo=timezone.utc)
+            if new_bank_ts <= prev_ts:
+                errors.append(
+                    f"Error: bank_timestamp {tx['bank_timestamp']} is not strictly later than last_timestamp {last_tx_timestamp}."
+                )
+                log_json_errors(errors)
+                print(f"Errors detected in JSON for user {user_id}: {errors}")
+                return 'retry', errors
+        except Exception as e:
+            errors.append(f"Error parsing timestamps: {e}")
+            log_json_errors(errors)
+            print(f"Errors detected in JSON for user {user_id}: {errors}")
+            return 'retry', errors
+
+        # Check for missing and extra fields
         missing_fields = [field for field in EXPECTED_FIELD_TYPES if field not in tx]
         extra_fields = [field for field in tx if field not in EXPECTED_FIELD_TYPES]
         if missing_fields:
             if "merchant_name" in missing_fields:
-                errors.append(f"The transaction was invalid because 'merchant_name' was missing for {tx.get('type')}. Generate a valid JSON transaction with the required merchant_name.")
-            elif any(word in ["recipient_id", "recipient_bank"] for word in missing_fields):
-                errors.append(f"The transaction was invalid because 'recipient_id' and 'recipient_bank' was missing for {tx.get('type')}. Generate a valid JSON transaction with the required {missing_fields}.")
+                errors.append(f"The activity was invalid because 'merchant_name' was missing for {tx.get('type')}. Generate a valid JSON activity with the required merchant_name.")
+            elif any(word in missing_fields for word in ["recipient_id", "recipient_bank"]):
+                errors.append(f"The activity was invalid because 'recipient_id' and 'recipient_bank' were missing for {tx.get('type')}. Generate a valid JSON activity with the required fields.")
             else:
                 errors.append(f"Error: Missing fields: {', '.join(missing_fields)}")
-                # Must have merchant_name
         if extra_fields:
             errors.append(f"Error: Unexpected fields: {', '.join(extra_fields)}")
         if errors:
@@ -216,6 +239,7 @@ def validate_json(text, user_id):
             print(f"Errors detected in JSON for user {user_id}: {errors}")
             return 'retry', errors
 
+        # Check for data type consistency
         for field, expected_type in EXPECTED_FIELD_TYPES.items():
             if field in tx and not isinstance(tx[field], expected_type):
                 errors.append(f"Error: Field {field} expected type {expected_type} but got {type(tx[field])}")
@@ -223,46 +247,22 @@ def validate_json(text, user_id):
             log_json_errors(errors)
             print(f"Errors detected in JSON for user {user_id}: {errors}")
             return 'retry', errors
+
         print(f"JSON validated successfully for user {user_id}.")
         return activity, None
+
     except json.JSONDecodeError as e:
         errors.append(f"JSON Decode Error: {e}")
         log_json_errors(errors)
         print(f"Errors detected in JSON for user {user_id}: {errors}")
         return 'retry', errors
 
+
 def log_json_errors(error_array):
     """Logs an array of errors to a JSON file, one per line."""
     with open(ERROR_LOG_FILE, "a") as f:
         json.dump(error_array, f)
         f.write("\n")
-
-def update_balance(tx, current_balance):
-    """
-    Computes the new balance based on the transaction type and amount.
-    For a deposit, adds the amount.
-    For a withdrawal, transfer, purchase, or sale, subtracts the amount.
-    """
-    tx_type = tx.get("type", "").lower()
-    amount = tx.get("amount", 0)
-    if any(word in tx_type for word in ["deposit", "contribution", "transfer in"]):
-        return current_balance + amount
-    elif any(word in tx_type for word in ["withdrawal", "transfer out", "purchase", "sale"]):
-        new_balance = current_balance - amount
-        if new_balance<0:
-            return current_balance
-        else:
-            return new_balance
-    else:
-        return current_balance
-
-def assign_actvity_fields(activity, user_id, behavior_type, fraud_label):
-    """Assigns additional fields to the transaction."""
-    activity['user_id'] = user_id
-    activity['transaction_id'] = f"TXN-{generate_random_hash(10)}"
-    activity['behavior_type'] = behavior_type
-    activity['fraud_label'] = fraud_label
-    return activity
 
 def generate_random_hash(length=8):
     """Generates a random hexadecimal string of the given length."""
@@ -285,61 +285,21 @@ def read_past_errors():
             except Exception as e:
                 print(f"⚠️ Error reading past errors: {e}")
                 return []
-    return []
+    return []    
 
-def summarize_errors(past_errors):
+def build_generation_prompt(strategy, user_id, history, accounts, past_errors=None):
     """
-    Processes past error messages and returns a concise summary of the issues encountered.
-    This function checks for common categories of errors and returns a combined string.
+    Builds a refined prompt for generating the next banking activity.
+    - Strictly follows the given strategy for transaction type, amount range, location, velocity, etc.
+    - Ensures timestamps follow chronological order.
+    - Generates only 'bank_timestamp' (local timestamp is computed separately).
+    - Prevents common JSON errors using past error feedback.
+
+    Returns:
+        A structured prompt for LLM-based activity generation.
     """
-    categories = set()
-    for err in past_errors:
-        err_lower = err.lower()
-        if "missing fields" in err_lower:
-            categories.add("missing required fields")
-        elif "unexpected fields" in err_lower:
-            categories.add("unexpected extra fields")
-        elif "json not enclosed" in err_lower:
-            categories.add("proper JSON delimiters must be used")
-        elif "inline comments" in err_lower:
-            categories.add("no inline comments allowed")
-        elif "json decode error" in err_lower:
-            categories.add("a valid JSON structure is required")
-        elif "expected type" in err_lower:
-            categories.add("all fields must have the correct data types")
-        else:
-            # If the error doesn't match a known category, add it as is.
-            categories.add(err)
-    if categories:
-        return "; ".join(sorted(categories))
-    return ""
-
-
-def build_generation_prompt(strategy, global_clock, user_id, history, balance, past_errors=None):
-    """
-    Builds a prompt for generating the next transaction.
-    It includes a summary of previous transactions, plus explicit rules
-    for time-series consistency and transaction structure.
-    """
-
-    # 1. Summarize the user's history (if available).
-    history_summary = ""
-    if history:
-        history_summary = f"Previous transactions for user {user_id}:\n" + json.dumps(history, indent=2) + "\n"
-        last_timestamp = history[-1].get("bank_timestamp", global_clock)
-        time_instruction = (
-            f"Use the last bank_timestamp {last_timestamp} as a reference for the next transaction. "
-            "The new bank_timestamp must be strictly later (chronologically) than the last one. "
-            "Generate a plausible gap in time based on the transaction type and user’s typical activity pattern."
-        )
-    else:
-        # If no history, we start from the global clock.
-        time_instruction = (
-            f"Use the global clock {global_clock} as a reference for the transaction. "
-            "The generated bank_timestamp should be close to this time."
-        )
-
-    # 2. Provide a JSON template as an example
+    last_tx = history[-1]
+    last_timestamp = last_tx["bank_timestamp"]
     json_template = """
 <<<JSON>>>        
 {
@@ -348,7 +308,6 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
   "account_id": "ACC-82736401",
   "type": "Purchase",
   "amount": 45.99,
-  "currency": "USD",
   "balance_before": 1280.45,
   "location": "Chicago, USA",
   "ip_address": "73.56.201.89",
@@ -361,237 +320,242 @@ def build_generation_prompt(strategy, global_clock, user_id, history, balance, p
 <<<END_JSON>>>
 """
 
-    # 3. Explain the fields
+    #  **Field Explanations (Enforces JSON Structure)**
     field_explanation = (
-        "- bank_timestamp: string (ISO 8601), the UTC time of the activity.\n"
-        "- local_timestamp: string (ISO 8601), the local time with correct offset.\n"
-        "- account_id: string, formatted as \"ACC-XXXXXXXX\".\n"
-        "- type: string, activity type (Purchase, Sale, Transfer IN, Transfer Out, Withdrawal, etc.).\n"
-        "- amount: float, the monetary amount (0 if not applicable), must be < current balance.\n"
-        "- currency: string, e.g., \"USD\".\n"
-        "- balance_before: float, the balance before the activity.\n"
-        "- location: string, city and country.\n"
-        "- ip_address: string, a valid IPv4 address.\n"
-        "- device_id: string, the device model.\n"
-        "- network_type: string, e.g., \"Wi-Fi\", \"Cellular\".\n"
-        "- merchant_name: string (null if not applicable).\n"
-        "- recipient_id: string formatted as \"REC-XXXXXXXX\" (null if not applicable).\n"
-        "- recipient_bank: string (null if not applicable).\n"
+        "- `bank_timestamp`: ISO 8601 UTC timestamp (STRICTLY increasing).\n"
+        "-`local_timestamp`: ISO 8601 is the bank_timestamp converted in the `location` timezone.\n"
+        "- `account_id`: Must follow the format `ACC-XXXXXXXX`. This is the account the user operates on for the generated transaction.\n"
+        "- `type`: Must be one of the allowed transaction types (`Purchase`, `Transfer IN`, `Transfer OUT`, etc.).\n"
+        f"- `amount`: Must be within the range specified in the strategy .\n"
+        "- `balance_before`: Account balance before the transaction.\n"
+        "- `location`: City, Country (MUST match the geographic focus in the strategy).\n"
+        "- `ip_address`: Must correspond to the transaction location (e.g., US-based IPs for US locations).\n"
+        "- `device_id`: Device model (if unknown, set as `Unknown Device`).\n"
+        "- `network_type`: `Wi-Fi` or `Cellular` (if unknown, set as `Unknown Network`).\n"
+        "- `merchant_name`: Required for purchases and salea, MUST be null for Transfers.\n"
+        "- `recipient_id` & `recipient_bank`: Required for Transfers, MUST be null for other transactions.\n"
     )
 
-    # 4. Build the final prompt in parts
-    prompt_parts = []
+    # **Main Prompt Assembly**
+    prompt_parts = [
+        f"Your task is to generate the next most probable bank activity for user {user_id} whose profile is described by the following strategy:\n",
+        f"\n### Strategy Guidelines:\n{json.dumps(strategy, indent=2)}\n\n",
+        f"The most probable transaction should follow the user's historical behavior and the strategy guidelines.\n",
+        f"### History Summary:\n{history}\n",
+        "**Strictly adhere to this strategy when choosing transaction type, amount range, location, and other fields.**\n",
+        "The generated tarnsaction and its charactheristics must be returned as a JSON file in the delimiters <<<START>>> ... <<<END_JSON>>>\n",
+        "### Example JSON:\n",
+        json_template,
+        "### Field Requirements:\n",
+        field_explanation,
+        "### Additional Constraints:\n",
+        f"- The `amount` must be within the strategy's typical amount range and smaller than the latest balance on the chosen account.\n",
+        f"The possible accounts the user can operate on are: {accounts}. Pick the most probable one.\n",
+        "- **Realistic Time Differences:** Ensure that the time gap between the current transaction bank_timestamp and the previous transaction is realistic given the geographical locations. For instance, if the previous transaction was in Paris and the current one is in Berlin (or another distant European city), the time interval should be long enough to be plausible—if it’s too short, it would trigger suspicion.\n",
+        f"- Ensure `bank_timestamp` is strictly increasing compared to the previous transaction bank_timestamp {last_timestamp}.\n",
+        "- Derive `ip_address` realistically from the transaction location. Examples:\n",
+        "  - USA locations → US-based IPv4 ranges (73.x.x.x, 24.x.x.x).\n",
+        "  - Europe locations → European IPv4 ranges (81.x.x.x, 217.x.x.x).\n",
+        "  - China locations → Chinese IPv4 ranges (202.x.x.x, 223.x.x.x).\n",
+        "- Ensure the generated JSON follows a flat structure with NO comments or extra text.\n",
+        "- DO NOT include any explanations, calculations, or metadata—ONLY return the JSON within <<<JSON>>> and <<<END_JSON>>>.\n"
+    ]
 
-    # 4a. If we have prior transactions, show them
-    if history_summary:
-        prompt_parts.append(history_summary)
-        prompt_parts.append(
-            "- Use the last bank_timestamp from the history as a reference. "
-            "Ensure the new transaction's bank_timestamp is strictly later.\n"
-        )
-    else:
-        prompt_parts.append(
-            f"- No prior history. Use the global clock {global_clock} to initialize bank_timestamp.\n"
-        )
-
-    # Add the time_instruction from above
-    prompt_parts.append(time_instruction + "\n")
-
-    # 4b. High-level generation instruction
-    prompt_parts.append(
-        f"You are generating the next probable banking activity for user {user_id} with strategy: {strategy}.\n"
-    )
-    prompt_parts.append(
-        "The output must be valid JSON with **exactly** the same fields as in this example:\n"
-        f"{json_template}\n"
-    )
-    prompt_parts.append("Do not include any extra fields, comments, or explanations.\n")
-    prompt_parts.append("Only generate one transaction in this call.\n")
-
-    # 4c. Data Generation Rules:
-    prompt_parts.append("### Data Generation Rules:\n")
-    prompt_parts.append(f"- Required fields and formats:\n{field_explanation}\n\n")
-    prompt_parts.append("- The JSON must be enclosed within <<<JSON>>> and <<<END_JSON>>>.\n")
-    prompt_parts.append("- Keep timestamps logically consistent (UTC vs. local time offset).\n")
-    prompt_parts.append("- The local_timestamp must match the time zone offset implied by the location.\n")
-    prompt_parts.append("- The hour in local_timestamp cannot exceed 23.\n")
-    prompt_parts.append("- End your response immediately after closing the JSON block.\n")
-
-    # 4d. Transaction-type logic:
-    prompt_parts.append("- For any Transfer activity, set 'type' to 'Transfer IN' or 'Transfer Out'. Provide recipient_id and recipient_bank, but merchant_name must be null.\n")
-    prompt_parts.append("- For a Purchase or Sale, merchant_name must not be null, but recipient_id and recipient_bank must be null.\n")
-    prompt_parts.append("- For a Withdrawal, deposit, or other, merchant_name and recipient_id can be null if not applicable.\n")
-
-    # 4e. Additional constraints from user
-    prompt_parts.append(f"- The value for `amount` must be strictly smaller than {balance}.\n")
-    prompt_parts.append("- IP addresses should be plausible (each octet 0–255). Avoid placeholders like 999.999.\n")
-    prompt_parts.append("- If location is e.g. 'New York, USA', consider UTC-5 or UTC-4 (depending on date). If 'Shanghai, China', consider UTC+8.\n")
-    prompt_parts.append("- Timestamps must strictly increase with each new transaction for the same user.\n")
-    prompt_parts.append("- Keep the data realistic for anomaly detection (avoid '24:xx:xx' or negative amounts).\n")
-
-    # 4f. Past errors
+    # **Error Handling: Prevent Past Mistakes**
     if past_errors:
-        prompt_parts.append(f"{past_errors}.\n")
+        prompt_parts.append(f"- Avoid repeating these errors: {past_errors}.\n")
 
-    # Return the assembled prompt
     return "".join(prompt_parts)
 
 
-def generate_activity_sequence(strategy, global_clock, user_id, behavior_type, fraud_label, num_activities=5, user_accounts=None):
-    """
-    Iteratively generates a sequence of transactions for a user who may have multiple accounts.
+def generate_activity_sequence(strategy, user_id, behavior_type, fraud_label, global_clock, num_activities=5, user_accounts=None):
+    if isinstance(strategy, str):
+        try:
+            match = re.search(r'{.*}', strategy, re.DOTALL)
+            if match:
+                json_str = match.group(0)
+            strategy_json = json.loads(json_str)  # Convert string to dictionary
+        except json.JSONDecodeError:
+            raise ValueError(f"Invalid JSON format in strategy: {strategy}")
     
-    Returns a list of transactions.
-    """
-    if user_accounts is None: # Assign default values
-        user_accounts = {f"ACC-{generate_random_hash()}": random.randint(100, 10000)}
-    history_by_account = {acc: [] for acc in user_accounts}
-    
+    # Initialize as many accounts as in strategy and assign the initial balance
+    n_accounts = strategy_json.get("n_accounts", 1)
+    accounts = {f"ACC-{generate_random_hash()}": assign_initial_balance(strategy_json) for n in range(n_accounts)}  
+    print("Initialized user accounts:", accounts)
+    #history_by_account = {acc: [] for acc in accounts}
     activities = []
+
     for i in range(num_activities):
-        # Randomly select an account (LLM may output a new one)
-        account_id = random.choice(list(user_accounts.keys()))
-        # Get balance for that account
-        current_balance = user_accounts[account_id]
-        history = history_by_account.get(account_id, [])
-        
-        retries = 1
+        retries = 0
+
         while True:
-            print(f"User {user_id}, Account {account_id}: Generating activity attempt {retries} with balance {current_balance:.2f}...")
-            print(f"Generating activity {i+1}/{num_activities}...")
-            past_errors = read_past_errors()
-            #past_errors = summarize_errors(past_errors)
-            prompt = build_generation_prompt(strategy, global_clock, user_id, history, current_balance, past_errors)
-            response = ollama.chat(model=LLM_model, messages=[{"role": "user", "content": prompt}], options={ "temperature": 0.8, "top_p": 0.9})
-            raw_response = response['message']['content'].strip()
-            save_to_text(raw_response, user_id)  # For debugging
-            
-            activity, errors = validate_json(raw_response, user_id)
-            if activity != 'retry':
-                tx = activity[0]
-                new_account_id = tx.get("account_id")
-                if not new_account_id or new_account_id.strip() == "":
-                    new_account_id = account_id
-                    tx["account_id"] = new_account_id
-                if new_account_id not in user_accounts:
-                    default_balance = random.randint(100, 10000)
-                    print(f"New account detected: {new_account_id}. Creating account with initial balance {default_balance:.2f}.")
-                    user_accounts[new_account_id] = default_balance
-                    history_by_account[new_account_id] = []
-                current_balance = user_accounts[new_account_id]
-                tx["balance_before"] = current_balance
-                new_balance = update_balance(tx, current_balance)
-                tx["balance_after"] = new_balance
-                tx = assign_actvity_fields(tx, user_id, behavior_type, fraud_label)
-                # Optionally, you could set a 'granted' field here if your strategy requires it.
-                history_by_account[new_account_id].append(tx)
-                user_accounts[new_account_id] = new_balance
-                activities.append(tx)
-                print(f"Activity generated for account {new_account_id}. New balance: {new_balance:.2f}")
-                update_reward_log(score=1, user_id=user_id, reason="JSON generation successful")
-                break
+            retries += 1
+            print(f"Generating activity {i+1}/{num_activities} for user {user_id}: attempt {retries}")
+            if i == 0 or fraud_label == 0:
+                print("Chosen apporach: statitic")
+                # First transaction or legitimate profile
+                # Pick account randomly and related transcation history
+                account_id = random.choice(list(accounts.keys()))
+                #history = history_by_account[account_id]
+                last_tx = activities[-1] if activities else None
+                tx = generate_static_activity(strategy_json, user_id, account_id, global_clock, last_tx)
+                #embed() 
             else:
-                print(f"Retrying activity generation for user {user_id}, account {account_id}...")
-                # Join with a semicolon or pipe, to avoid commas.
-                joined_errors = "; ".join(errors)
-                update_reward_log(score=-1, user_id=user_id, reason=joined_errors)
-                retries += 1
+                print("Chosen approach: LLM")
+                # Fraudulent transactions predicted by LLM
+                past_errors = read_past_errors()
+                # Feed LLM with all history for that user (to allow connections among accounts)
+                prompt = build_generation_prompt(strategy, user_id, activities, accounts, past_errors)
+                raw_response = watsonx_chat(
+                    prompt=prompt,
+                    model_id=activity_model_id,
+                    parameters=watsonx_helper.parameters_activity
+                )
+                save_to_text(raw_response, user_id)
+                tx, errors = validate_json(raw_response, user_id, activities[-1].get("bank_timestamp"))
+                
+                if tx == 'retry':
+                    update_reward_log(score=-1, user_id=user_id, reason="; ".join(errors))
+                    print(f"Activity generation failed for user {user_id} after {retries} retries.")
+                    continue  # Retry generation
+                else:
+                    update_reward_log(score=1, user_id=user_id, reason="Successful JSON")
+                    tx = tx[0]
+                    new_account_id = tx.get("account_id", account_id)
+                    # Chcek if account exists
+                    if new_account_id not in accounts:
+                        accounts[new_account_id] = assign_initial_balance(strategy_json)
+
+            tx['amount'] = round(tx.get("amount", 0), 2)  # Round amount to 2 decimal places
+            # Update balance ensuring correctness
+            tx["balance_before"] = round(accounts[tx["account_id"]],2)
+            tx["balance_after"] = update_balance(tx)
+            # Update account balance
+            accounts[tx["account_id"]] = tx["balance_after"]
+            #tx["balance_after"] = update_balance_for_account(tx, user_accounts)
+
+            # Assign metadata fields, timestamps, and fraud labels **AFTER** balance updates
+            tx = assign_activity_fields(tx, user_id, behavior_type, fraud_label)
+            # Enforce realistic timestamp ordering based on the previous transaction
+            activities.append(tx)
+            break  # Exit retry loop on successful generation
+    print("------------------------------------------------")
     return activities
 
-def generate_activities(total_activities=1000, target_fraud_percentage=0.1, fraud_agents_count=5, legit_agents_count=20):
+
+import pandas as pd
+import random
+from datetime import datetime, timezone
+def flush_buffer(buffer, data_file, header_written):
     """
-    Generates a bank log with multiple fraudulent and legitimate agents.
-    
-    Creates transactions for each agent and writes them to a CSV immediately.
+    Writes the current buffer to the CSV file and clears the buffer.
+    Returns True indicating that the header is now written.
     """
-    fraudulent_strategies = load_existing_strategies("strategies/fraud_strategies.json")
-    legitimate_strategies = load_existing_strategies("strategies/legitimate_strategies.json")
+    if buffer:
+        df = pd.DataFrame(buffer)
+        df = df[ORDERED_COLUMNS]  # ensure correct column order
+        df.to_csv(data_file, mode='a', index=False, header=not header_written)
+        buffer.clear()
+        header_written = True
+    return header_written
+
+def generate_activities(total_activities=1000, target_fraud_percentage=0.1, DATA_FILE='output_data.csv', buffer_size=2):
+    """
+    Generates a bank log with both fraudulent and legitimate agents.
+    Fraudulent activities are generated first until the target fraud count is reached,
+    then legitimate activities are generated until total_activities is met.
+    Activities are written to CSV in batches based on the buffer_size.
+    Finally, the CSV is sorted by bank_timestamp to interleave transactions realistically.
+    """
+    # Load strategies
+    fraudulent_strategies = load_existing_strategies(f"strategies/fraud_strategies_{strategy_model}.json")
+    legitimate_strategies = load_existing_strategies(f"strategies/legitimate_strategies_{strategy_model}.json")
     
-    global_clock = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S')
-    header_written = False  
-    buffer = []
-    
-    def flush_buffer():
-        nonlocal header_written
-        if buffer:
-            df = pd.DataFrame(buffer)
-            df = df[ORDERED_COLUMNS]
-            df.to_csv(DATA_FILE, mode='a', index=False, header=not header_written)
-            header_written = True  
-            buffer.clear()
-    
-    total_generated = 0  # Count all transactions (fraudulent + legitimate)
+    # Determine target counts
     target_fraud = int(total_activities * target_fraud_percentage)
     
-    # --- Fraudulent activities generation ---
-    while total_generated < target_fraud:
-        remaining = target_fraud - total_generated
-        for _ in range(fraud_agents_count):
-            if total_generated >= target_fraud:
-                break
-            user_id = f"USER-{generate_random_hash(8)}"
-            behavior_type = random.choice(list(fraudulent_strategies.keys()))
-            strategy = fraudulent_strategies[behavior_type]
-            # Decide the number of activities for this agent, but don't generate more than needed.
-            num_act = random.randint(1, 6)
-            num_act = min(num_act, remaining)
-            activities = generate_activity_sequence(
-                strategy=strategy, 
-                global_clock=global_clock, 
-                user_id=user_id, 
-                behavior_type=behavior_type, 
-                fraud_label=1, 
-                num_activities=num_act
-            )
-            for activity in activities:
-                assign_actvity_fields(activity, user_id, behavior_type, fraud_label=1)
-                flush_buffer_immediate(activity)  # Immediately flush this transaction to CSV.
-                total_generated += 1
-                if total_generated >= target_fraud:
-                    break
-            if total_generated >= target_fraud:
-                break
+    # Clear (or create) the CSV file by writing an empty DataFrame with header
+    df_empty = pd.DataFrame(columns=ORDERED_COLUMNS)
+    df_empty.to_csv(DATA_FILE, index=False)
+    
+    # We'll use a buffer to accumulate transactions before writing them out.
+    buffer = []
+    header_written = True  # Header was written above
+    
+    # Global clock 
+    global_clock = datetime.now(timezone.utc).isoformat()
 
-    # --- Legitimate activities generation ---
+    # --- Generate Fraudulent Activities ---
+    fraud_count = 0
+    while fraud_count < target_fraud:
+        user_id = f"USER-{generate_random_hash(8)}"
+        behavior_type = random.choice(list(fraudulent_strategies.keys()))
+        strategy = fraudulent_strategies[behavior_type]
+        # Generate a random number of activities for this agent without exceeding the fraud target
+        num_act = random.randint(1, 6)
+        num_act = min(num_act, target_fraud - fraud_count)
+        print("\n")
+        activities = generate_activity_sequence(
+            strategy=strategy, 
+            user_id=user_id, 
+            behavior_type=behavior_type, 
+            fraud_label=1, 
+            global_clock=global_clock,
+            num_activities=num_act
+        )
+        buffer.extend(activities)
+        fraud_count += len(activities)
+        
+        # Update global clock based on the last transaction if available
+        #if activities:
+        #    global_clock = activities[-1]["bank_timestamp"]
+        
+        # Flush the buffer if it has reached the desired size
+        if len(buffer) >= buffer_size:
+            header_written = flush_buffer(buffer, DATA_FILE, header_written)
+
+    # --- Generate Legitimate Activities ---
+    total_generated = fraud_count  # fraudulent activities already generated
     while total_generated < total_activities:
-        remaining = total_activities - total_generated
-        for _ in range(legit_agents_count):
-            if total_generated >= total_activities:
-                break
-            user_id = f"USER-{generate_random_hash(8)}"
-            behavior_type = random.choice(list(legitimate_strategies.keys()))
-            strategy = legitimate_strategies[behavior_type]
-            num_act = random.randint(1, 6)
-            num_act = min(num_act, remaining)
-            activities = generate_activity_sequence(
-                strategy=strategy, 
-                global_clock=global_clock, 
-                user_id=user_id, 
-                behavior_type=behavior_type, 
-                fraud_label=0, 
-                num_activities=num_act
-            )
-            for activity in activities:
-                assign_actvity_fields(activity, user_id, behavior_type, fraud_label=0)
-                flush_buffer_immediate(activity)
-                total_generated += 1
-                if total_generated >= total_activities:
-                    break
-            if total_generated >= total_activities:
-                break
-        if total_generated >= total_activities:
-            break
-
-    # Final flush in case anything remains.
+        user_id = f"USER-{generate_random_hash(8)}"
+        behavior_type = random.choice(list(legitimate_strategies.keys()))
+        strategy = legitimate_strategies[behavior_type]
+        num_act = random.randint(1, 6)
+        num_act = min(num_act, total_activities - total_generated)
+        
+        activities = generate_activity_sequence(
+            strategy=strategy, 
+            user_id=user_id, 
+            behavior_type=behavior_type, 
+            fraud_label=0, 
+            global_clock=global_clock,
+            num_activities=num_act
+        )
+        buffer.extend(activities)
+        total_generated += len(activities)
+        
+        #if activities:
+        #    global_clock = activities[-1]["bank_timestamp"]
+        
+        if len(buffer) >= buffer_size:
+            header_written = flush_buffer(buffer, DATA_FILE, header_written)
+    
+    # Flush any remaining activities in the buffer
     if buffer:
-        flush_buffer()
+        header_written = flush_buffer(buffer, DATA_FILE, header_written)
+    
+    # --- Merge and Sort for Realism ---
+    # Read the CSV, sort by bank_timestamp, and write back the sorted CSV.
+    df_final = pd.read_csv(DATA_FILE)
+    #df_final.sort_values(by='bank_timestamp', key=lambda col: pd.to_datetime(df_final['bank_timestamp']), inplace=True)
+    df_final.to_csv(DATA_FILE, index=False)
     
     print(f"Activity generation complete. Data saved to {DATA_FILE}")
-    final_df = pd.read_csv(DATA_FILE)
-    return final_df
+    return df_final
 
-def flush_buffer_immediate(tx):
-    """Immediately appends a single transaction to the CSV file."""
+
+def flush_buffer_immediate(tx, DATA_FILE):
+    """Immediately appends a single activity to the CSV file."""
     df = pd.DataFrame([tx])
     df = df[ORDERED_COLUMNS]
     header = not (os.path.exists(DATA_FILE) and os.path.getsize(DATA_FILE) > 0)
@@ -610,8 +574,9 @@ def save_to_text(reasoning_text, agent_id=None):
         f.write(f"\n### LLM Chain of Thought for user ID {agent_id} ###\n\n{reasoning_text}\n\n")
 
 def update_reward_log(score: int, user_id: str, reason: str):
-    with open(REWARD_LOG_FILE, 'a') as f:
-        f.write(f"{datetime.now().isoformat()},{user_id},{score},{reason}\n")
+    with open(REWARD_LOG_FILE, 'a', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow([datetime.now().isoformat(), user_id, score, reason])
 
 def visualize_rewards():
     """Plots cumulative reward progress over time."""
@@ -630,12 +595,14 @@ def visualize_rewards():
     df['cumulative_reward'] = df['reward'].cumsum()
     
     plt.figure(figsize=(10, 5))
-    plt.plot(df['timestamp'], df['cumulative_reward'], marker='o', linestyle='-', label='Cumulative Reward')
-    plt.xlabel('Time')
-    plt.ylabel('Cumulative Reward')
-    plt.title('Reward Progress Over Time')
+    plt.plot(df['timestamp'], df['cumulative_reward'], marker='o', linestyle='-', label='Cumulative Reward',)
+    plt.xlabel('Time', fontsize=16)
+    plt.ylabel('Cumulative Reward', fontsize=16)
+    plt.title('Reward Progress Over Time', fontsize=16)
     plt.xticks(rotation=45)
-    plt.legend()
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
+    plt.legend(fontsize=16)
     plt.tight_layout()
     plt.savefig(os.path.join(OUTPUT_DIR, "reward_trend.png"))
 
@@ -652,23 +619,67 @@ def visualize_json_success_rate():
     df['success'] = df['reward'].apply(lambda r: 1 if r == 1 else 0)
     df['cumulative_success'] = df['success'].cumsum()
     
-    plt.figure(figsize=(10, 5))
-    plt.plot(df.index, df['cumulative_success'], marker='o', linestyle='-', label='Cumulative Valid JSONs')
-    plt.xlabel('Attempt Number')
-    plt.ylabel('Cumulative Valid JSONs')
-    plt.title('JSON Success Rate')
+    plt.figure(figsize=(10, 10))
+    plt.plot(df.index, df['cumulative_success'], marker='o', linestyle='-', label='Cumulative Valid JSONs',) #markevery=2,
+    plt.xlabel('Attempt Number', fontsize=16)
+    plt.ylabel('Cumulative Valid JSONs', fontsize=16)
+    plt.title('JSON Success Rate', fontsize=16)
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
     plt.grid(True)
-    plt.legend()
+    plt.legend(fontsize=16)
     plt.tight_layout()
     plt.savefig(os.path.join(OUTPUT_DIR, "success_rate.png"))
+    print(f"Cumulative reward plot created at {OUTPUT_DIR} ")
 
+def format_number(nb_global_activities):
+    if nb_global_activities >= 1_000_000:
+        value = nb_global_activities / 1_000_000
+        suffix = "M"
+    elif nb_global_activities >= 1_000:
+        value = nb_global_activities / 1_000
+        suffix = "K"
+    else:
+        return str(nb_global_activities)  # No suffix for numbers less than 1,000
 
-# Main simulation entry point
-start_time = time.time()
-print(f"Simulation started at {datetime.now().isoformat()}")
+    # Format to remove .0 if the value is an integer
+    formated_number = f"{int(value) if value.is_integer() else round(value, 1)}{suffix}"
+    return formated_number
 
-generate_activities(total_activities=20, target_fraud_percentage=0.5, fraud_agents_count=4, legit_agents_count=2)
-time_taken = round((time.time()-start_time)/60, 2)
-print(f"Dataset generation required time: {round((time.time()-start_time)/60,1)} minutes")
-visualize_json_success_rate()
-visualize_rewards()
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description='Script for generating the dataset',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument('--nb_activities', help='Total number of activities to be generated', type=int, required=True)
+    parser.add_argument('--fraud_agents_count', help='Number of fraudulent agents', type=int, default=4)
+    parser.add_argument('--legit_agents_count', help='Number of legitimate agents', type=int, default=40)
+    parser.add_argument('--target_fraud_percentage', help='Fraud rate', type=float, default=0.05) # Default is High Risk
+    # Main simulation entry point
+    start_time = time.time()
+    cfg = parser.parse_args()
+    pprint(cfg)
+    print(f"Simulation started at {datetime.now().isoformat()}")
+    activity_model_id=watsonx_helper.activity_gen_model_id
+    activity_model= activity_model_id.split("/")[1]
+    strategy_model_id=watsonx_helper.strategy_gen_model_id
+    strategy_model=strategy_model_id.split("/")[0]
+    print(f"Activities will be generated using model: {activity_model_id}")
+
+    # File paths
+    OUTPUT_DIR = os.getcwd()+"/outputs/"+activity_model+"/"+format_number(cfg.nb_activities)
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    ERROR_TRACKING_FILE = os.path.join(OUTPUT_DIR, f"error_tracking.json")
+    ERROR_LOG_FILE = os.path.join(OUTPUT_DIR, f"json_errors.log")
+    REWARD_LOG_FILE = os.path.join(OUTPUT_DIR, f"reward_progress.csv")
+    LOG_TEXT_FILE = os.path.join(OUTPUT_DIR, f"llm_chain_of_thought.txt")
+    DATA_DIR = os.getcwd()+"/data/"+activity_model
+    os.makedirs(DATA_DIR, exist_ok=True)
+    DATA_FILE = os.path.join(DATA_DIR, f'fraud_simulation_activities_{format_number(cfg.nb_activities)}.csv')
+    initialize_logs(DATA_FILE)
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    generate_activities(total_activities=cfg.nb_activities, target_fraud_percentage=cfg.target_fraud_percentage,  DATA_FILE=DATA_FILE)
+    time_taken = round((time.time()-start_time)/60, 2)
+    print(f"Dataset generation required time: {round((time.time()-start_time)/60,1)} minutes")
+    visualize_json_success_rate()
+    #visualize_rewards()

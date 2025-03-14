@@ -1,0 +1,6 @@
+transaction_id,user_id,bank_timestamp,local_timestamp,location,ip_address,device_id,network_type,type,amount,account_id,balance_before,granted,balance_after,merchant_name,recipient_id,recipient_bank,behavior_type,fraud_label
+TXN-0cb64f7f2b,USER-3976a2b8,2025-03-14T11:19:22+00:00,2025-03-14T19:19:22+08:00,"Shanghai, China",203.195.50.77,MacBook Pro,Wi-Fi,Withdrawal,47126.45,ACC-6fb4af51,310436.37,True,263309.92,,,,Investor,0
+TXN-ff7b6f50e5,USER-3976a2b8,2025-03-15T04:07:22+00:00,2025-03-15T12:07:22+08:00,"Seoul, South Korea",121.254.57.218,iPhone-13,Wi-Fi,Withdrawal,38575.9,ACC-b3106307,348403.84,True,309827.94,,,,Investor,0
+TXN-e079811013,USER-3976a2b8,2025-03-15T20:55:22+00:00,2025-03-16T04:55:22+08:00,"Shanghai, China",203.195.155.226,iPhone-13,Cellular,Purchase,12381.23,ACC-b3106307,309827.94,True,297446.71,Robinhood,,,Investor,0
+TXN-4ca442a3a5,USER-3976a2b8,2025-03-16T13:43:22+00:00,2025-03-16T21:43:22+08:00,"Paris, France",51.75.106.236,iPhone-13,Ethernet,Investment,12360.67,ACC-b3106307,297446.71,True,297446.71,,,,Investor,0
+TXN-e5db0ef197,USER-3976a2b8,2025-03-17T06:31:22+00:00,2025-03-17T14:31:22+08:00,"New York, USA",73.56.79.167,Dell Laptop,Cellular,Purchase,12081.38,ACC-6fb4af51,263309.92,True,251228.54,Fidelity,,,Investor,0

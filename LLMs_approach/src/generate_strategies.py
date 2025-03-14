@@ -2,17 +2,25 @@ import json
 import os
 import random
 import ollama
+from watsonx_helper import watsonx_chat
+import watsonx_helper
+import geography
 
-#  Top 10 Banking Frauds
+model_id=watsonx_helper.strategy_gen_model_id
+model = model_id.split("/")[0]
+print(f"Using model: {model_id}")
+
+LOG_TEXT_FILE = os.path.join("strategies", f"llm_chain_of_thought_{model}.txt")
+
+# Fraudulent and Legitimate categories
 TOP_10_FRAUD_TYPES = [
     "Money Laundering", "Account Takeover", "Synthetic Identity Fraud", "Identity Theft",
-    "Card Skimming", "Loan Fraud", "Check Fraud", 
-    "Wire Fraud", "Ponzi Scheme", "Cryptocurrency Fraud", "Insider Trading"
+    "Card Skimming", "Loan Fraud", "Check Fraud", "Wire Fraud",
+    "Ponzi Scheme", "Cryptocurrency Fraud", "Insider Trading"
 ]
 
-#  Top 10 Legitimate Banking Profiles
 TOP_10_LEGITIMATE_PROFILES = [
-    "Saver", "Investor", "Traveler", "Everyday Spender", 
+    "Saver", "Investor", "Traveler", "Everyday Spender",
     "Business Owner", "Student", "Retiree", "Frequent Online Shopper",
     "Tech Professional", "Freelancer"
 ]
@@ -31,154 +39,121 @@ def save_strategy_to_json(strategy_type, strategy_text, filename):
     with open(filename, 'w') as file:
         json.dump(strategies, file, indent=4)
 
-def generate_fraud_strategy(fraud_type=None, filename="strategies/fraud_strategies.json"):
+def generate_strategy(strategy_type=None, strategy_category="fraudulent", filename=None):
     """
-    Generates a concise JSON strategy for a specified fraud type
-    (e.g., "Account Takeover," "Insider Trading") that your second LLM (Mistral)
-    can use to generate fraudulent transactions.
+    Generates a structured JSON strategy for either a **fraudulent** or **legitimate** profile.
+    Ensures the **geographic focus** is chosen from the predefined REGION_TO_CITIES.
     """
 
-    # Load existing strategies from your JSON file
-    existing_strategies = load_existing_strategies(filename)
-
-    # If no fraud type was specified, pick one randomly
-    if fraud_type is None:
-        fraud_type = random.choice(TOP_10_FRAUD_TYPES)
-
-    # If the strategy already exists, return it directly
-    if fraud_type in existing_strategies:
-        print(f"Strategy for {fraud_type} already exists.")
-        return existing_strategies[fraud_type]
-
-    # Build a refined JSON-only prompt for the LLM
-    prompt = f"""
-You are an expert in simulating fraudulent banking behaviors.
-
-Provide a concise JSON object describing a fraud strategy for: "{fraud_type}".
-
-### Output Requirements:
-- Output MUST be valid JSON only (no extra commentary).
-- Fields to include in your JSON:
-  1. "profile_or_fraud_type": string  # e.g. "Insider Trading","Account Takeover"
-  2. "transaction_types_involved": array of strings  # e.g. ["Unauthorized Stock Sale","Transfer Out","Withdrawal"]
-  3. "typical_amount_range": string  # e.g. "$5,000 - $50,000"
-  4. "geographic_focus": string or array  # e.g. ["Hong Kong","London","New York"]
-  5. "velocity": string  # describes frequency, e.g. "multiple transactions within 24 hours"
-  6. "currency": string or array  # e.g. "USD","CNY"
-  7. "common_devices": array of strings  # typical compromised devices used
-  8. "ip_address_notes": string  # e.g. "Often proxies from 203.x.x.x or 45.x.x.x"
-  9. "context": string  # short narrative about how the fraud typically unfolds
-
-### Example Format (do NOT copy verbatim):
-{{
-  "profile_or_fraud_type": "Account Takeover",
-  "transaction_types_involved": ["Withdrawal","Transfer Out","Purchase"],
-  "typical_amount_range": "$50,000 - $500,000",
-  "geographic_focus": ["Domestic US, occasional international in China or Singapore"],
-  "velocity": "High velocity: multiple transactions in under an hour",
-  "currency": ["USD","CNY","SGD"],
-  "common_devices": ["Windows 7 PC","iPhone-13 (stolen)"],
-  "ip_address_notes": "Often uses compromised IP addresses from 45.x.x.x range",
-  "context": "Fraudster gains access to victim accounts, executes quick, large transactions..."
-}}
-
-Return ONLY valid JSON with these nine fields, and no additional text.
-"""
-
-    response = ollama.chat(
-        model="deepseek-r1",
-        messages=[{"role": "user", "content": prompt}],
-    )
-    strategy_text = response['message']['content'].strip()
-
-    # Optionally validate the JSON here:
-    # try:
-    #     json.loads(strategy_text)
-    # except json.JSONDecodeError:
-    #     # handle or log error, or attempt a retry
-
-    # Save to your file
-    save_strategy_to_json(fraud_type, strategy_text, filename)
-    return strategy_text
-
-def generate_legitimate_strategy(profile_type=None, filename="strategies/legitimate_strategies.json"):
-    """
-    Generates a legitimate banking strategy based on a user profile (e.g. 'Saver', 'Traveler', etc.)
-    and saves it in JSON format that can be used by another LLM (Mistral).
-    """
+    if strategy_category == "fraudulent":
+        strategy_list = TOP_10_FRAUD_TYPES
+        if filename is None:
+            filename = f"strategies/fraud_strategies_{watsonx_helper.strategy_gen_model_id.split('/')[0]}.json"
+    elif strategy_category == "legitimate":
+        strategy_list = TOP_10_LEGITIMATE_PROFILES
+        if filename is None:
+            filename = f"strategies/legitimate_strategies_{watsonx_helper.strategy_gen_model_id.split('/')[0]}.json"
+    else:
+        raise ValueError("Invalid strategy category! Choose 'fraudulent' or 'legitimate'.")
 
     # Load existing strategies
     existing_strategies = load_existing_strategies(filename)
 
-    # Pick a profile type if none is provided
-    if profile_type is None:
-        profile_type = random.choice(TOP_10_LEGITIMATE_PROFILES)
+    # Choose a random strategy type if not provided
+    if strategy_type is None:
+        strategy_type = random.choice(strategy_list)
 
     # If the strategy already exists, return it directly
-    if profile_type in existing_strategies:
-        print(f"Strategy for {profile_type} already exists.")
-        return existing_strategies[profile_type]
+    if strategy_type in existing_strategies:
+        print(f"Strategy for {strategy_type} already exists.")
+        return existing_strategies[strategy_type]
+    else:
+        print(f"Generating {strategy_type}...")
 
-    # Build a refined prompt that requests JSON-only output with the needed fields
+    # Enforce strict selection of geographic focus
+    geographic_focus_options = list(geography.REGION_TO_CITIES.keys())
+
+    example_fraud = f"""
+    {{
+    "profile_or_fraud_type": "Insider Trading",
+    "n_accounts": 1,
+    "transaction_types_involved": ["Unauthorized Stock Purchase", "Unauthorized Stock Sale"],
+    "typical_amount_range": "$5,000 - $50,000",
+    "geographic_focus": ["Domestic US", "Europe"],
+    "velocity": "High velocity: 3-8 transactions per hour",
+    "network_types": ["VPN Connection", "Tor Network", "Public Wi-Fi (Unsecured)", "International Proxy"],
+    "common_devices": ["iPhone-13", "MacBook Pro"],
+    "ip_address_notes": "Mostly US-based IPs (73.x.x.x) with occasional Asia-based proxies (203.x.x.x)",
+    "common_merchant_names": ["Goldman Sachs", "JP Morgan", "Morgan Stanley"],
+    "common_recipient_ids": ["ACC-45637846", "ACC-65748564"],
+    "common_recipient_banks": ["Bank of America", "Wells Fargo", "Bankf of China"],
+    "context": "This strategy exploits non-public information to execute quick, high-value trades. Transactions occur rapidly, often within an hour, with a mix of domestic and occasional international activities. Purchases and sales are common, and when transfers occur, typical recipient details follow the provided patterns."
+    }}
+
+    """
+
+    example_legitimate = f"""
+    <<<JSON>>>
+        {{
+        "profile_or_fraud_type": "Saver",
+        "n_accounts": 2,
+        "transaction_types_involved": ["Purchase", "Withdrawal", "Deposit", "Transfer IN"],
+        "typical_amount_range": "$5 - $200",
+        "geographic_focus": ["Domestic US"],
+        "velocity": "1-2 transactions per day",
+        "network_types": ["Wi-Fi", "Cellular", "Ethernet", "Corporate Network"],
+        "common_devices": ["iPhone-13", "MacBook Pro"],
+        "ip_address_notes": "Stable US-based IPs (e.g., 73.x.x.x)",
+        "common_merchant_names": ["Starbucks", "Amazon", "Walmart"],
+        "common_recipient_ids": ["ACC-65397495", "ACC-37591258"],
+        "common_recipient_banks": ["Bank of America", "Wells Fargo", "Chase Bank"],
+        "context": "This Saver profile is characterized by cautious spending habits and consistent monthly savings. Typical transactions include small purchases and occasional withdrawals, with most activity occurring domestically. The customer maintains an emergency fund and uses reliable devices and stable IP ranges for all transactions."
+        }}
+        <<<END_JSON>>>
+    """
+
+    # Construct the LLM prompt
     prompt = f"""
-You are an expert in simulating realistic, legitimate banking customer behaviors.
+    You are an expert in simulating **realistic banking strategies**. Your task is to define the startegy for the profile "{strategy_type}" in a structured JSON format enclosed within <<<START_JSON>>> and <<<END_JSON>>> tags. The strategy should include the following details:\n
 
-Provide a concise JSON object describing a legitimate customer profile of type: "{profile_type}".
+    - **profile_or_fraud_type** (string) - The fraud type or legitimate banking profile.
+    - **n_accounts** (integer) - The number of accounts associated with this profile.
+    - **transaction_types_involved** (array of strings) - E.g., ["Purchase", "Transfer Out", "Withdrawal"].
+    - **typical_amount_range** (string) - Format: "$X - $Y" (Example: "$10 - $500").
+    - **geographic_focus** (array of strings) - Must be selected from {geographic_focus_options}.
+    - **velocity** (string) - Use format: "X-Y transactions per hour/day/week" (Example: "3-5 transactions per day").
+    - **network_types** (array of strings) - Example: ["Wi-Fi", "Cellular"].
+    - **common_devices** (array of strings) - Example: ["iPhone-13", "MacBook Pro"].
+    - **ip_ranges** (array of strings) - Example: ["73.x.x.x", "203.x.x.x"].
+    - **common_merchant_names** (array of strings) - If applicable, list merchants (Example: ["Amazon", "Walmart"]).
+    - **common_recipient_ids** (array of strings) - target accounts in case of "Transfer out". Example: ["ACC-774683nf", "ACC-836gfu98"].
+    - **common_recipient_banks** (array of strings) - target banks. Example: ["Bank of America", "Wells Fargo"].
+    - **context** (string) - Describe common behavior in **one sentence**.
 
-### Output Requirements:
-- Output MUST be valid JSON only (no extra commentary, no chain-of-thought).
-- Fields to include in your JSON:
-  1. "profile_or_fraud_type": string  # e.g. "Traveler", "Saver", "Investor"
-  2. "transaction_types_involved": array of strings  # e.g. ["Purchase","Withdrawal","Transfer Out"]
-  3. "typical_amount_range": string  # e.g. "$10 - $500"
-  4. "geographic_focus": string or array  # e.g. "Domestic US" or ["New York, USA", "Shanghai, China"]
-  5. "velocity": string  # describes frequency, e.g. "1-2 transactions per day"
-  6. "currency": string or array  # e.g. "USD" or ["USD","EUR"]
-  7. "common_devices": array of strings  # typical devices used
-  8. "ip_address_notes": string  # typical IP range usage
-  9. "context": string  # short narrative about how this profile usually behaves
+    ### **Example Output Format**, don't copy verbatim:
+    {example_fraud if strategy_category == "fraudulent" else example_legitimate}
 
-### Example Format (not to be copied verbatim):
-{{
-  "profile_or_fraud_type": "Traveler",
-  "transaction_types_involved": ["Purchase","Withdrawal"],
-  "typical_amount_range": "$10 - $300",
-  "geographic_focus": ["Asia","Europe"],
-  "velocity": "About 2 transactions per day",
-  "currency": ["USD","EUR","JPY"],
-  "common_devices": ["iPhone-12","MacBook Air"],
-  "ip_address_notes": "Mostly US-based IP (73.x.x.x), occasional foreign IP (203.x.x.x)",
-  "context": "Frequently travels internationally, making small daily purchases and occasional larger withdrawals..."
-}}
+    Return **ONLY** valid JSON with all fields. **Do NOT add any explanations or extra text**.
+    """
 
-Return ONLY valid JSON with these nine fields, and no additional commentary.
-"""
+    # Run on watsonx
+    strategy_text = watsonx_chat(prompt=prompt, model_id=watsonx_helper.strategy_gen_model_id, parameters=watsonx_helper.parameters_strategy)
 
-    response = ollama.chat(
-        model="deepseek-r1",
-        messages=[{"role": "user", "content": prompt}],
-    )
-    strategy_text = response['message']['content'].strip()
-
-    # Optionally, you can do a quick validation/parsing of the JSON here:
-    # try:
-    #     json.loads(strategy_text)
-    # except json.JSONDecodeError:
-    #     print("Strategy JSON is malformed; consider retry or post-processing repair.")
-    #     # ... handle error ...
-
-    # Save the strategy to a JSON file
-    save_strategy_to_json(profile_type, strategy_text, filename)
+    # Save the strategy
+    save_strategy_to_json(strategy_type, strategy_text, filename)
+    print(f"Generated {strategy_category} strategy for {strategy_type}")
 
     return strategy_text
-
 
 
 os.makedirs('strategies', exist_ok=True)
 os.makedirs('outputs', exist_ok=True)
 
+#with open(LOG_TEXT_FILE, 'w') as f:
+#    f.write("")
+
 # Generate strategies
 n_strategies=3
 for i in range(n_strategies):
-    generate_fraud_strategy()
-    generate_legitimate_strategy()
+    generate_strategy(strategy_category="fraudulent")
+    generate_strategy(strategy_category="legitimate")

@@ -1,0 +1,24 @@
+
+### LLM Chain of Thought for user ID USER-beff8936 ###
+
+- Use a bank_timestamp that is strictly later than 2025-03-06T11:47:09.313680+00:00.
+### Example Output:
+<<<JSON>>>
+{
+  "bank_timestamp": "2025-03-06T11:48:09+00:00",
+  "local_timestamp": "2025-03-06T06:48:09-05:00",
+  "account_id": "ACC-12345678",
+  "type": "Transfer Out",
+  "amount": 10.0,
+  "currency": "USD",
+  "balance_before": 1000.0,
+  "location": "Chicago, USA",
+  "ip_address": "73.142.12.34",
+  "device_id": "iPhone-12",
+  "network_type": "Wi-Fi",
+  "merchant_name": null,
+  "recipient_id": "REC-98765432",
+  "recipient_bank": "Bank of America"
+}
+<<<END_JSON>>>
+
