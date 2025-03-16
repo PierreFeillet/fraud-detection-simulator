@@ -442,10 +442,6 @@ def generate_activity_sequence(strategy, user_id, behavior_type, fraud_label, gl
     print("------------------------------------------------")
     return activities
 
-
-import pandas as pd
-import random
-from datetime import datetime, timezone
 def flush_buffer(buffer, data_file, header_written):
     """
     Writes the current buffer to the CSV file and clears the buffer.
