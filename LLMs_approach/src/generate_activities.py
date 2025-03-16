@@ -18,24 +18,6 @@ from pprint import pprint
 from watsonx_helper import watsonx_chat
 import watsonx_helper
 
-# LLM used for sequence generation
-#activity_model = 'mistral'
-activity_model_id=watsonx_helper.activity_gen_model_id
-activity_model= activity_model_id.split("/")[1]
-strategy_model_id=watsonx_helper.strategy_gen_model_id
-strategy_model=strategy_model_id.split("/")[0]
-print(f"Activities will be generated using model: {activity_model_id}")
-
-# File paths
-OUTPUT_DIR = os.getcwd()+"/outputs/"+activity_model
-os.makedirs(OUTPUT_DIR, exist_ok=True)
-ERROR_TRACKING_FILE = os.path.join(OUTPUT_DIR, f"error_tracking.json")
-ERROR_LOG_FILE = os.path.join(OUTPUT_DIR, f"json_errors.log")
-REWARD_LOG_FILE = os.path.join(OUTPUT_DIR, f"reward_progress.csv")
-LOG_TEXT_FILE = os.path.join(OUTPUT_DIR, f"llm_chain_of_thought.txt")
-DATA_DIR = os.getcwd()+"/data/"+activity_model
-os.makedirs(DATA_DIR, exist_ok=True)
-
 # Expected field types for the JSON schema
 EXPECTED_FIELD_TYPES = {
     "bank_timestamp": str,  # ISO 8601 format
@@ -285,9 +267,9 @@ def update_balance(tx, current_balance):
     tx_type = tx.get("type", "").lower()
     amount = tx.get("amount", 0)
     if any(word in tx_type for word in ["deposit", "contribution", "transfer in"]):
-        return current_balance + amount
+        return round(current_balance + amount,2)
     elif any(word in tx_type for word in ["withdrawal", "transfer out", "purchase", "sale"]):
-        new_balance = current_balance - amount
+        new_balance = round(current_balance - amount,2)
         if new_balance<0:
             return current_balance
         else:
@@ -522,9 +504,9 @@ def generate_activity_sequence(strategy, global_clock, user_id, behavior_type, f
                     print(f"New account detected: {new_account_id}. Creating account with initial balance {default_balance:.2f}.")
                     user_accounts[new_account_id] = default_balance
                     history_by_account[new_account_id] = []
-                current_balance = user_accounts[new_account_id]
+                current_balance = round(user_accounts[new_account_id],2)
                 tx["balance_before"] = current_balance
-                new_balance = update_balance(tx, current_balance)
+                new_balance = round(update_balance(tx, current_balance),2)
                 tx["balance_after"] = new_balance
                 tx = assign_actvity_fields(tx, user_id, behavior_type, fraud_label)
                 history_by_account[new_account_id].append(tx)
@@ -742,7 +724,24 @@ if __name__ == "__main__":
     cfg = parser.parse_args()
     pprint(cfg)
     print(f"Simulation started at {datetime.now().isoformat()}")
+    activity_model_id=watsonx_helper.activity_gen_model_id
+    activity_model= activity_model_id.split("/")[1]
+    strategy_model_id=watsonx_helper.strategy_gen_model_id
+    strategy_model=strategy_model_id.split("/")[0]
+    print(f"Activities will be generated using model: {activity_model_id}")
+
+    # File paths
+    OUTPUT_DIR = os.getcwd()+"/outputs/"+activity_model+"/"+format_number(cfg.nb_activities)
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    ERROR_TRACKING_FILE = os.path.join(OUTPUT_DIR, f"error_tracking.json")
+    ERROR_LOG_FILE = os.path.join(OUTPUT_DIR, f"json_errors.log")
+    REWARD_LOG_FILE = os.path.join(OUTPUT_DIR, f"reward_progress.csv")
+    LOG_TEXT_FILE = os.path.join(OUTPUT_DIR, f"llm_chain_of_thought.txt")
+    DATA_DIR = os.getcwd()+"/data/"+activity_model
+    os.makedirs(DATA_DIR, exist_ok=True)
     DATA_FILE = os.path.join(DATA_DIR, f'fraud_simulation_activities_{format_number(cfg.nb_activities)}.csv')
+    initialize_logs(DATA_FILE)
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
     initialize_logs(DATA_FILE)
     generate_activities(total_activities=cfg.nb_activities, target_fraud_percentage=cfg.target_fraud_percentage, fraud_agents_count=cfg.fraud_agents_count, legit_agents_count=cfg.legit_agents_count, DATA_FILE=DATA_FILE)
     time_taken = round((time.time()-start_time)/60, 2)

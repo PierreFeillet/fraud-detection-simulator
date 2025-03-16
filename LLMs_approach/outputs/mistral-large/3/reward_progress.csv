@@ -1,0 +1,5 @@
+timestamp,user_id,reward,reason
+2025-03-16T10:50:02.456895,USER-3e20fe06,1,JSON generation successful
+2025-03-16T10:50:09.114646,USER-25e6f7c6,1,JSON generation successful
+2025-03-16T10:50:17.652586,USER-25e6f7c6,-1,"Error: Unexpected fields: balance_after, user_id, activity_id, behavior_type, fraud_label"
+2025-03-16T10:50:24.270349,USER-25e6f7c6,1,JSON generation successful
