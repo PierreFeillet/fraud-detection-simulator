@@ -4,6 +4,7 @@ import re
 import pytz
 from dateutil.parser import isoparse
 from utilities import format_timestamp, generate_random_hash
+import geography
 
 def parse_velocity(velocity):
     """
@@ -80,26 +81,17 @@ def assign_initial_balance(strategy):
     
     return round(random.uniform(min_amount*10, max_amount*10), 2)
 
-#  Select a Valid Location Based on the Strategy
-REGION_TO_CITIES = {
-    "Domestic US": ["New York, USA", "Los Angeles, USA", "Chicago, USA"],
-    "Europe": ["Paris, France", "Berlin, Germany", "Madrid, Spain", "Rome, Italy"],
-    "East Asia": ["Shanghai, China", "Tokyo, Japan", "Seoul, South Korea"],
-    "South America": ["São Paulo, Brazil", "Buenos Aires, Argentina"],
-    "Middle East": ["Dubai, UAE", "Riyadh, Saudi Arabia"]
-}
-
 def select_valid_location(geographic_focus):
     """Selects a valid city based on the strategy's geographic focus."""
     possible_cities = []
     
     for region in geographic_focus:
-        if region in REGION_TO_CITIES:
-            possible_cities.extend(REGION_TO_CITIES[region])
+        if region in geography.REGION_TO_CITIES:
+            possible_cities.extend(geography.REGION_TO_CITIES[region])
     
     if not possible_cities:
         print("No valid cities found in the strategy's geographic focus. Choosing randomly.\n")
-        possible_cities = sum(REGION_TO_CITIES.values(), [])  # Flatten list of cities
+        possible_cities = sum(geography.REGION_TO_CITIES.values(), [])  # Flatten list of cities
     
     print(f"Possible cities for {geographic_focus}: {possible_cities}")
     chosen_city = random.choice(possible_cities)
@@ -107,53 +99,17 @@ def select_valid_location(geographic_focus):
     return chosen_city
 
 
-#  Generate a Realistic IP Address
-LOCATION_TO_IP_RANGES = {
-    "New York, USA": "73.56",
-    "Los Angeles, USA": "172.58",
-    "Chicago, USA": "98.23",
-    "Paris, France": "51.75",
-    "Berlin, Germany": "88.99",
-    "Madrid, Spain": "213.97",
-    "Rome, Italy": "151.13",
-    "Shanghai, China": "203.195",
-    "Tokyo, Japan": "210.153",
-    "Seoul, South Korea": "121.254",
-    "São Paulo, Brazil": "200.98",
-    "Buenos Aires, Argentina": "190.3",
-    "Dubai, UAE": "94.200",
-    "Riyadh, Saudi Arabia": "188.48"
-}
-
 def generate_realistic_ip(location):
     """Generates an IP address consistent with the given location."""
-    base_ip = LOCATION_TO_IP_RANGES.get(location, f"{random.randint(1, 255)}.{random.randint(1, 255)}")
+    base_ip = geography.LOCATION_TO_IP_RANGES.get(location, f"{random.randint(1, 255)}.{random.randint(1, 255)}")
     return f"{base_ip}.{random.randint(1, 255)}.{random.randint(1, 255)}"
 
-
-#  Generate Timestamps
-TIMEZONE_MAPPING = {
-    "New York, USA": "America/New_York",
-    "Los Angeles, USA": "America/Los_Angeles",
-    "Chicago, USA": "America/Chicago",
-    "Paris, France": "Europe/Paris",
-    "Berlin, Germany": "Europe/Berlin",
-    "Madrid, Spain": "Europe/Madrid",
-    "Rome, Italy": "Europe/Rome",
-    "Shanghai, China": "Asia/Shanghai",
-    "Tokyo, Japan": "Asia/Tokyo",
-    "Seoul, South Korea": "Asia/Seoul",
-    "São Paulo, Brazil": "America/Sao_Paulo",
-    "Buenos Aires, Argentina": "America/Argentina/Buenos_Aires",
-    "Dubai, UAE": "Asia/Dubai",
-    "Riyadh, Saudi Arabia": "Asia/Riyadh"
-}
 
 def generate_local_and_bank_timestamp(location, global_clock, last_tx, strategy):
     """
     Generates a local timestamp first, then maps it to UTC (bank timestamp) while enforcing order.
     """
-    local_tz = pytz.timezone(TIMEZONE_MAPPING.get(location, "UTC"))
+    local_tz = pytz.timezone(geography.TIMEZONE_MAPPING.get(location, "UTC"))
     # Handle first transaction case
     # Handle first transaction case (if there's no last_tx)
     if last_tx is None:

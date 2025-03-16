@@ -19,7 +19,6 @@ from watsonx_helper import watsonx_chat
 import watsonx_helper
 from static_behavior import generate_static_activity, assign_activity_fields, assign_initial_balance, select_valid_location, generate_local_and_bank_timestamp
 from utilities import generate_random_hash, update_balance
-
 # LLM used for sequence generation
 #activity_model = 'mistral'
 
