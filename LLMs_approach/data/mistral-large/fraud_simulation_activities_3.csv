@@ -1,4 +1,4 @@
 activity_id,user_id,bank_timestamp,local_timestamp,location,ip_address,device_id,network_type,type,amount,account_id,balance_before,balance_after,merchant_name,recipient_id,recipient_bank,behavior_type,fraud_label
-TXN-91c136ac3a,USER-3e20fe06,2025-03-16T09:50:55+00:00,2025-03-16T04:50:55-05:00,"New York, USA",73.123.45.67,iPhone-13,Wi-Fi,Purchase,150.75,ACC-3e20fe06,8013,7862.25,Amazon,,,Identity Theft,1
-TXN-080ffd7cf2,USER-25e6f7c6,2025-03-16T09:50:55+00:00,2025-03-16T04:50:55-05:00,"New York, USA",73.56.201.89,iPhone-13,Wi-Fi,Purchase,75.25,ACC-25e6f7c6,3383,3307.75,Amazon,,,Frequent Online Shopper,0
-TXN-1185809883,USER-25e6f7c6,2025-03-16T09:52:00+00:00,2025-03-16T04:52:00-05:00,"New York, USA",73.56.201.89,iPhone-13,Wi-Fi,Purchase,125.5,ACC-25e6f7c6,3307.75,3182.25,Best Buy,,,Frequent Online Shopper,0
+TXN-2f142b3722,USER-90bdb7d0,2025-03-16T15:47:00+00:00,2025-03-16T10:47:00-05:00,"New York, USA",73.123.45.67,iPhone-13,VPN Connection,Unauthorized Stock Purchase,15000.0,ACC-90bdb7d0,557,557,Goldman Sachs,,,Insider Trading,1
+TXN-315d30c72e,USER-1f6edf49,2025-03-16T15:47:00+00:00,2025-03-16T10:47:00-05:00,"New York, USA",73.123.45.67,iPhone-13,Cellular,Transfer Out,2500.0,ACC-774683nf,1431,1431,,ACC-836gfu98,Wells Fargo,Business Owner,0
+TXN-ace727f543,USER-1f6edf49,2025-03-16T15:47:00+00:00,2025-03-16T10:47:00-05:00,"New York, USA",73.56.201.89,iPhone-13,Wi-Fi,Transfer Out,2500.0,ACC-774683nf,1431,1431,,ACC-836gfu98,Wells Fargo,Business Owner,0

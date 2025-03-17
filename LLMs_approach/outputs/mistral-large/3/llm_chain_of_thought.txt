@@ -1,94 +1,88 @@
 
-### LLM Chain of Thought for user ID USER-3e20fe06 ###
+### LLM Chain of Thought for user ID USER-90bdb7d0 ###
 
 
 ```json
-<<<JSON>>>
 {
-  "bank_timestamp": "2025-03-16T09:50:55.524003+00:00",
-  "local_timestamp": "2025-03-16T04:50:55.524003-05:00",
-  "account_id": "ACC-3e20fe06",
-  "type": "Purchase",
-  "balance_before": 3500.00,
-  "amount": 150.75,
+  "bank_timestamp": "2025-03-16T15:46:30.024011+00:00",
+  "local_timestamp": "2025-03-16T10:46:30-05:00",
+  "account_id": "ACC-90bdb7d0",
+  "type": "Unauthorized Stock Purchase",
+  "balance_before": 25000.00,
+  "amount": 15000.00,
   "location": "New York, USA",
   "ip_address": "73.123.45.67",
   "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Amazon",
+  "network_type": "VPN Connection",
+  "merchant_name": "Goldman Sachs",
   "recipient_id": null,
   "recipient_bank": null
 }
-<<<END_JSON>>>
+```
 
 
-### LLM Chain of Thought for user ID USER-25e6f7c6 ###
+### LLM Chain of Thought for user ID USER-90bdb7d0 ###
 
 
-<<<JSON>>>
+```json
 {
-  "bank_timestamp": "2025-03-16T09:50:55.524003+00:00",
-  "local_timestamp": "2025-03-16T04:50:55.524003-05:00",
-  "account_id": "ACC-25e6f7c6",
-  "type": "Purchase",
-  "balance_before": 1280.45,
-  "amount": 75.25,
+  "bank_timestamp": "2025-03-16T15:47:00+00:00",
+  "local_timestamp": "2025-03-16T10:47:00-05:00",
+  "account_id": "ACC-90bdb7d0",
+  "type": "Unauthorized Stock Purchase",
+  "balance_before": 45000.00,
+  "amount": 15000.00,
+  "location": "New York, USA",
+  "ip_address": "73.123.45.67",
+  "device_id": "iPhone-13",
+  "network_type": "VPN Connection",
+  "merchant_name": "Goldman Sachs",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+```
+
+
+### LLM Chain of Thought for user ID USER-1f6edf49 ###
+
+
+```json
+{
+  "bank_timestamp": "2025-03-16T15:47:00+00:00",
+  "local_timestamp": "2025-03-16T10:47:00-05:00",
+  "account_id": "ACC-774683nf",
+  "type": "Transfer Out",
+  "balance_before": 5000.00,
+  "amount": 2500.00,
+  "location": "New York, USA",
+  "ip_address": "73.123.45.67",
+  "device_id": "iPhone-13",
+  "network_type": "Cellular",
+  "merchant_name": null,
+  "recipient_id": "ACC-836gfu98",
+  "recipient_bank": "Wells Fargo"
+}
+```
+
+
+### LLM Chain of Thought for user ID USER-1f6edf49 ###
+
+
+```json
+{
+  "bank_timestamp": "2025-03-16T15:47:00+00:00",
+  "local_timestamp": "2025-03-16T10:47:00-05:00",
+  "account_id": "ACC-774683nf",
+  "type": "Transfer Out",
+  "balance_before": 5000.00,
+  "amount": 2500.00,
   "location": "New York, USA",
   "ip_address": "73.56.201.89",
   "device_id": "iPhone-13",
   "network_type": "Wi-Fi",
-  "merchant_name": "Amazon",
-  "recipient_id": null,
-  "recipient_bank": null
+  "merchant_name": null,
+  "recipient_id": "ACC-836gfu98",
+  "recipient_bank": "Wells Fargo"
 }
-<<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-25e6f7c6 ###
-
-
-<<<JSON>>>
-{
-  "bank_timestamp": "2025-03-16T09:51:55+00:00",
-  "local_timestamp": "2025-03-16T04:51:55-05:00",
-  "account_id": "ACC-25e6f7c6",
-  "type": "Purchase",
-  "balance_before": 3307.75,
-  "amount": 150.75,
-  "location": "New York, USA",
-  "ip_address": "73.56.201.89",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "eBay",
-  "recipient_id": null,
-  "recipient_bank": null,
-  "balance_after": 3157.00,
-  "user_id": "USER-25e6f7c6",
-  "activity_id": "TXN-c7d11a21b7",
-  "behavior_type": "Frequent Online Shopper",
-  "fraud_label": 0
-}
-<<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-25e6f7c6 ###
-
-
-<<<JSON>>>
-{
-  "bank_timestamp": "2025-03-16T09:52:00+00:00",
-  "local_timestamp": "2025-03-16T04:52:00-05:00",
-  "account_id": "ACC-25e6f7c6",
-  "type": "Purchase",
-  "balance_before": 3307.75,
-  "amount": 125.50,
-  "location": "New York, USA",
-  "ip_address": "73.56.201.89",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Best Buy",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-<<<END_JSON>>>
+```
 

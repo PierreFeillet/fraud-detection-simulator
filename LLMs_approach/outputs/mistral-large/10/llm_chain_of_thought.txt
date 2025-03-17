@@ -1,225 +1,66 @@
 
-### LLM Chain of Thought for user ID USER-8a961869 ###
+### LLM Chain of Thought for user ID USER-7ac6c936 ###
 
 
-<<<JSON>>>
+```json
 {
-  "bank_timestamp": "2025-03-16T09:46:03.110411+00:00",
-  "local_timestamp": "2025-03-16T04:46:03-05:00",
-  "account_id": "ACC-82736401",
-  "type": "Purchase",
-  "balance_before": 1280.45,
-  "amount": 45.99,
-  "location": "Chicago, USA",
-  "ip_address": "73.56.201.89",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Starbucks",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-<<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-8a961869 ###
-
-
-<<<JSON>>>
-{
-  "bank_timestamp": "2025-03-16T09:47:03+00:00",
-  "local_timestamp": "2025-03-16T04:47:03-05:00",
-  "account_id": "ACC-82736401",
+  "bank_timestamp": "2025-03-16T16:16:00+00:00",
+  "local_timestamp": "2025-03-16T11:16:00-05:00",
+  "account_id": "ACC-7ac6c936",
   "type": "Transfer Out",
-  "balance_before": 756.01,
-  "amount": 150.00,
-  "location": "Chicago, USA",
-  "ip_address": "73.56.201.89",
+  "balance_before": 4500.00,
+  "amount": 1500.00,
+  "location": "New York, USA",
+  "ip_address": "73.123.45.67",
   "device_id": "iPhone-13",
   "network_type": "Wi-Fi",
   "merchant_name": null,
-  "recipient_id": "REC-12345678",
+  "recipient_id": "ACC-774683nf",
   "recipient_bank": "Bank of America"
 }
-<<<END_JSON>>>
+```
 
 
-### LLM Chain of Thought for user ID USER-8a961869 ###
-
-
-<<<JSON>>>
-{
-  "bank_timestamp": "2025-03-16T09:46:03.110411+00:00",
-  "local_timestamp": "2025-03-16T04:46:03-05:00",
-  "account_id": "ACC-82736401",
-  "type": "Purchase",
-  "balance_before": 1280.45,
-  "amount": 45.99,
-  "location": "Chicago, USA",
-  "ip_address": "73.56.201.89",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Starbucks",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-<<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-8a961869 ###
-
-
-<<<JSON>>>
-{
-  "bank_timestamp": "2025-03-16T09:46:03.110411+00:00",
-  "local_timestamp": "2025-03-16T04:46:03-05:00",
-  "account_id": "ACC-82736401",
-  "type": "Purchase",
-  "balance_before": 1280.45,
-  "amount": 45.99,
-  "location": "Chicago, USA",
-  "ip_address": "73.56.201.89",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Starbucks",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-<<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-8a961869 ###
-
-
-### Response
-<<<JSON>>>
-{
-  "bank_timestamp": "2025-03-16T09:46:03.110411+00:00",
-  "local_timestamp": "2025-03-16T04:46:03-05:00",
-  "account_id": "ACC-82736401",
-  "type": "Purchase",
-  "balance_before": 1280.45,
-  "amount": 45.99,
-  "location": "Chicago, USA",
-  "ip_address": "73.56.201.89",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Starbucks",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-<<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-a39d6606 ###
+### LLM Chain of Thought for user ID USER-7ac6c936 ###
 
 
 ```json
-<<<JSON>>>
 {
-  "bank_timestamp": "2025-03-16T09:46:03.110411+00:00",
-  "local_timestamp": "2025-03-16T04:46:03-05:00",
-  "account_id": "ACC-82736401",
-  "type": "Purchase",
-  "balance_before": 1280.45,
-  "amount": 45.99,
+  "bank_timestamp": "2025-03-16T16:20:40+00:00",
+  "local_timestamp": "2025-03-16T11:20:40-05:00",
+  "account_id": "ACC-7ac6c936",
+  "type": "Transfer Out",
+  "balance_before": 3500.00,
+  "amount": 2500.00,
   "location": "New York, USA",
-  "ip_address": "73.56.201.89",
+  "ip_address": "73.123.45.67",
   "device_id": "iPhone-13",
   "network_type": "Wi-Fi",
-  "merchant_name": "Starbucks",
-  "recipient_id": null,
-  "recipient_bank": null
+  "merchant_name": null,
+  "recipient_id": "ACC-774683nf",
+  "recipient_bank": "Bank of America"
 }
-<<<END_JSON>>>
+```
 
 
-### LLM Chain of Thought for user ID USER-a39d6606 ###
+### LLM Chain of Thought for user ID USER-7ac6c936 ###
 
 
 ```json
-<<<JSON>>>
 {
-  "bank_timestamp": "2025-03-16T09:46:03.110411+00:00",
-  "local_timestamp": "2025-03-16T04:46:03-05:00",
-  "account_id": "ACC-82736401",
-  "type": "Purchase",
-  "balance_before": 1280.45,
-  "amount": 45.99,
+  "bank_timestamp": "2025-03-16T16:20:00+00:00",
+  "local_timestamp": "2025-03-16T11:20:00-05:00",
+  "account_id": "ACC-7ac6c936",
+  "type": "Transfer Out",
+  "balance_before": 3500.00,
+  "amount": 2500.00,
   "location": "New York, USA",
-  "ip_address": "73.56.201.89",
+  "ip_address": "73.123.45.67",
   "device_id": "iPhone-13",
   "network_type": "Wi-Fi",
-  "merchant_name": "Starbucks",
-  "recipient_id": null,
-  "recipient_bank": null
+  "merchant_name": null,
+  "recipient_id": "ACC-774683nf",
+  "recipient_bank": "Bank of America"
 }
-<<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-a39d6606 ###
-
-
-<<<JSON>>>
-{
-  "bank_timestamp": "2025-03-16T09:46:03.110411+00:00",
-  "local_timestamp": "2025-03-16T04:46:03-05:00",
-  "account_id": "ACC-82736401",
-  "type": "Purchase",
-  "balance_before": 1280.45,
-  "amount": 45.99,
-  "location": "New York, USA",
-  "ip_address": "73.56.201.89",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Starbucks",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-<<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-a39d6606 ###
-
-
-```json
-<<<JSON>>>
-{
-  "bank_timestamp": "2025-03-16T09:46:03.110411+00:00",
-  "local_timestamp": "2025-03-16T04:46:03-05:00",
-  "account_id": "ACC-82736401",
-  "type": "Purchase",
-  "balance_before": 1280.45,
-  "amount": 45.99,
-  "location": "Chicago, USA",
-  "ip_address": "73.56.201.89",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Starbucks",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-<<<END_JSON>>>
-
-
-### LLM Chain of Thought for user ID USER-a39d6606 ###
-
-
-```json
-<<<JSON>>>
-{
-  "bank_timestamp": "2025-03-16T09:46:03.110411+00:00",
-  "local_timestamp": "2025-03-16T04:46:03-05:00",
-  "account_id": "ACC-82736401",
-  "type": "Purchase",
-  "balance_before": 1280.45,
-  "amount": 45.99,
-  "location": "New York, USA",
-  "ip_address": "73.56.201.89",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Starbucks",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-<<<END_JSON>>>
+```
 
