@@ -32,7 +32,7 @@ parameters_strategy = {
     #GenParams.TOP_K: 50,
     GenParams.TOP_P: 0.9,
     GenParams.STOP_SEQUENCES: [
-			"<<<END_JSON>>>"
+			"```end_json"
 		],
 }
 
@@ -43,7 +43,7 @@ parameters_activity = {
     GenParams.TEMPERATURE: 0.4, #try 0.2
     #GenParams.TOP_K: 50,
     GenParams.TOP_P: 0.8,
-    GenParams.STOP_SEQUENCES: ["<<<END_JSON>>>"],
+    GenParams.STOP_SEQUENCES: ["```end_json"],
 }
 print("Available models on Watsonx:\n")
 api_client = APIClient(credentials=credentials, project_id=project_id)

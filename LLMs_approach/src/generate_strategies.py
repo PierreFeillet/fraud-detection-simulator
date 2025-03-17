@@ -74,9 +74,11 @@ def generate_strategy(strategy_type=None, strategy_category="fraudulent", filena
     geographic_focus_options = list(geography.REGION_TO_CITIES.keys())
 
     example_fraud = f"""
+    ```json
     {{
     "profile_or_fraud_type": "Insider Trading",
     "n_accounts": 1,
+    "involves_hijacking": False,
     "transaction_types_involved": ["Unauthorized Stock Purchase", "Unauthorized Stock Sale"],
     "typical_amount_range": "$5,000 - $50,000",
     "geographic_focus": ["Domestic US", "Europe"],
@@ -89,14 +91,15 @@ def generate_strategy(strategy_type=None, strategy_category="fraudulent", filena
     "common_recipient_banks": ["Bank of America", "Wells Fargo", "Bankf of China"],
     "context": "This strategy exploits non-public information to execute quick, high-value trades. Transactions occur rapidly, often within an hour, with a mix of domestic and occasional international activities. Purchases and sales are common, and when transfers occur, typical recipient details follow the provided patterns."
     }}
-
+    ```end_json
     """
 
     example_legitimate = f"""
-    <<<JSON>>>
+    ```json
         {{
         "profile_or_fraud_type": "Saver",
         "n_accounts": 2,
+        "involves_hijacking": False,
         "transaction_types_involved": ["Purchase", "Withdrawal", "Deposit", "Transfer IN"],
         "typical_amount_range": "$5 - $200",
         "geographic_focus": ["Domestic US"],
@@ -109,15 +112,16 @@ def generate_strategy(strategy_type=None, strategy_category="fraudulent", filena
         "common_recipient_banks": ["Bank of America", "Wells Fargo", "Chase Bank"],
         "context": "This Saver profile is characterized by cautious spending habits and consistent monthly savings. Typical transactions include small purchases and occasional withdrawals, with most activity occurring domestically. The customer maintains an emergency fund and uses reliable devices and stable IP ranges for all transactions."
         }}
-        <<<END_JSON>>>
+    ```end_json
     """
 
     # Construct the LLM prompt
     prompt = f"""
-    You are an expert in simulating **realistic banking strategies**. Your task is to define the startegy for the profile "{strategy_type}" in a structured JSON format enclosed within <<<START_JSON>>> and <<<END_JSON>>> tags. The strategy should include the following details:\n
+    You are an expert in simulating **realistic banking strategies**. Your task is to define the startegy for the profile "{strategy_type}" in a structured JSON format enclosed within ```json and ```end_json tags. The strategy should include the following details:\n
 
     - **profile_or_fraud_type** (string) - The fraud type or legitimate banking profile.
     - **n_accounts** (integer) - The number of accounts associated with this profile.
+    - **involves_hijacking** (boolean) - Whether the strategy involves account hijacking.
     - **transaction_types_involved** (array of strings) - E.g., ["Purchase", "Transfer Out", "Withdrawal"].
     - **typical_amount_range** (string) - Format: "$X - $Y" (Example: "$10 - $500").
     - **geographic_focus** (array of strings) - Must be selected from {geographic_focus_options}.

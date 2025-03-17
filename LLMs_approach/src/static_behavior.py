@@ -105,36 +105,36 @@ def generate_realistic_ip(location):
     return f"{base_ip}.{random.randint(1, 255)}.{random.randint(1, 255)}"
 
 
-def generate_local_and_bank_timestamp(location, global_clock, last_tx, strategy):
+def generate_local_and_bank_timestamp(location, global_clock, strategy):
     """
     Generates a local timestamp first, then maps it to UTC (bank timestamp) while enforcing order.
     """
     local_tz = pytz.timezone(geography.TIMEZONE_MAPPING.get(location, "UTC"))
     # Handle first transaction case
     # Handle first transaction case (if there's no last_tx)
-    if last_tx is None:
-        print(f"No previous transaction on that account. Using global clock with random delta.")
-        # Parse the global_clock (assumed to be in UTC)
-        global_clock_dt = isoparse(global_clock)
-        # Add a random delta between 1 and 10 minutes (adjust as needed)
-        random_delta = timedelta(minutes=random.randint(1, 10))
-        bank_time = global_clock_dt + random_delta
-        # Convert the new UTC time to local time
-        local_time = bank_time.astimezone(local_tz)
-    else:
-        last_time = isoparse(last_tx["local_timestamp"])
-        min_gap = parse_velocity(strategy.get("velocity", "1-2 transactions per day"))
-        print("Gap between transactions:", min_gap)
-        local_time = last_time + min_gap
-        print(f"Last transaction at {last_time}. New transaction at {local_time}")
-        # Convert local time to UTC
-        bank_time = local_time.astimezone(pytz.utc)
+    
+    print(f"No previous transaction on that account. Using global clock with random delta.")
+    # Parse the global_clock (assumed to be in UTC)
+    global_clock_dt = isoparse(global_clock)
+    # Add a random delta between 1 and 10 minutes (adjust as needed)
+    random_delta = timedelta(minutes=random.randint(1, 10))
+    bank_time = global_clock_dt + random_delta
+    # Convert the new UTC time to local time
+    local_time = bank_time.astimezone(local_tz)
+
+        #last_time = isoparse(last_tx["local_timestamp"])
+        #min_gap = parse_velocity(strategy.get("velocity", "1-2 transactions per day"))
+        #print("Gap between transactions:", min_gap)
+        #local_time = last_time + min_gap
+        #print(f"Last transaction at {last_time}. New transaction at {local_time}")
+        ## Convert local time to UTC
+        #bank_time = local_time.astimezone(pytz.utc)
 
     return format_timestamp(local_time.isoformat()), format_timestamp(bank_time.isoformat())
 
 
 #  Generate Static Activity
-def generate_static_activity(strategy, user_id, account_id, global_clock, last_tx):
+def generate_static_activity(strategy, user_id, account_id, global_clock):
     """
     Generates a legitimate or initial fraudulent activity.
     """
@@ -142,7 +142,7 @@ def generate_static_activity(strategy, user_id, account_id, global_clock, last_t
     tx_amount = generate_amount_from_strategy(strategy)
     tx_location = select_valid_location(strategy.get("geographic_focus", ["Domestic US"]))
     tx_ip = generate_realistic_ip(tx_location)
-    local_timestamp, bank_timestamp = generate_local_and_bank_timestamp(tx_location, global_clock, last_tx, strategy)
+    local_timestamp, bank_timestamp = generate_local_and_bank_timestamp(tx_location, global_clock, strategy)
     # Check for fields that can be null
     if any(word in tx_type.lower() for word in ["transfer out"]):
         recipient_ids = strategy.get("common_recipient_ids", [])
@@ -190,6 +190,7 @@ def assign_activity_fields(tx, user_id, behavior_type, fraud_label):
     # Assign user and fraud metadata
     tx["user_id"] = user_id
     tx['transaction_id'] = f"TXN-{generate_random_hash(10)}"
+    tx["is_hijacked"] = 0 # Default to 0
     tx["behavior_type"] = behavior_type
     tx["fraud_label"] = fraud_label
     return tx
