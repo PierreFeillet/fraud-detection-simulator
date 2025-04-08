@@ -340,16 +340,22 @@ def build_generation_prompt(strategy, user_id, history, global_clock, accounts, 
 
     if history:
         time_instruction = (
-        f"The most probable transaction should follow the user's historical behavior.\n"
-        f"### History Summary:\n{history}\n"
-        f"- Ensure `bank_timestamp` is strictly increasing compared to the previous transaction bank_timestamp {last_timestamp}.\n"
-        "- **Realistic Time Differences:** Ensure that the time gap between the current transaction bank_timestamp and the previous transaction is realistic given the geographical locations. For instance, if the previous transaction was in Paris and the current one is in Berlin (or another distant European city), the time interval should be long enough to be plausible—if it is too short, it would trigger suspicion.\n"
+            f"### Timing Instructions:\n"
+            f"- The new `bank_timestamp` MUST be strictly later than: **{last_timestamp}**.\n"
+            "- NEVER reuse the same `bank_timestamp` or make it earlier.\n"
+            "- Use a time interval that is realistic based on the user behavior and location change.\n"
+            "- Example: if the last transaction was in Paris and the next is in Tokyo, ensure several hours of gap.\n"
+            "- Avoid generating multiple transactions in the same second or minute.\n"
         )
-    else:  
-        time_instruction = ( 
-        f"Initialize the `bank_timestamp` for the activity by starting from {global_clock} and adding a randomly selected time interval (typically in the range of a few minutes).\n"
-        f"The `local_timestamp` as `bank_timestamp` time in the chosen `location`.\n"
+    else:
+        time_instruction = (
+            f"### Timing Instructions:\n"
+            f"- Initialize the `bank_timestamp` starting from: **{global_clock}**.\n"
+            "- The first activity must begin a few minutes later than the global clock.\n"
+            "- Always compute the correct `local_timestamp` from the UTC `bank_timestamp` using the time zone of the `location`.\n"
         )
+
+    # Main assembly
 
 
     # **Main Prompt Assembly**
@@ -365,13 +371,18 @@ def build_generation_prompt(strategy, user_id, history, global_clock, accounts, 
         field_explanation,
         "### Additional Constraints:\n",
         f"The possible accounts the user can operate on are: {accounts}. Pick the most probable one for your activity. Don't generate new account ids!\n",
-        f"- The `amount` must be within the strategy's typical amount range and smaller than balance on the chosen account.\n",
+        f"- The `amount` must be a float within the strategy's typical amount range and smaller than balance on the chosen account.\n",
         "- Derive `ip_address` realistically from the transaction location. Examples:\n",
         "  - USA locations → US-based IPv4 ranges (73.x.x.x, 24.x.x.x).\n",
         "  - Europe locations → European IPv4 ranges (81.x.x.x, 217.x.x.x).\n",
         "  - China locations → Chinese IPv4 ranges (202.x.x.x, 223.x.x.x).\n",
         "- Ensure the generated JSON follows a flat structure with NO comments or extra text.\n",
         "- DO NOT include any explanations, calculations, or metadata—ONLY return the JSON within ```json and ```end_json.\n",
+        "### Timing Requirements Recap:\n",
+        "- NEVER repeat timestamps.\n",
+        "- Always increase `bank_timestamp`.\n",
+        "- Use realistic time gaps between locations.\n",
+        "- Respect travel time when the country changes (e.g., no Paris → Tokyo in 1 minute).\n",
        "- Make sure the `local_timestamp` is correctly converted from the `bank_timestamp` based on the transaction location.\n",
     ]
 
