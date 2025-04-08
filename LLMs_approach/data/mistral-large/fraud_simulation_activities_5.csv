@@ -1,1 +1,6 @@
 transaction_id,user_id,bank_timestamp,local_timestamp,location,ip_address,device_id,network_type,type,amount,account_id,balance_before,granted,balance_after,merchant_name,recipient_id,recipient_bank,behavior_type,is_hijacked,fraud_label
+TXN-edf220e455,USER-613d0c57,2025-04-08T16:05:04+00:00,2025-04-08T12:05:04-04:00,"New York, USA",73.123.45.67,iPhone-13,Wi-Fi,Purchase,500.0,ACC-ed4a00cd,8404.0,True,7904.0,Amazon,,,Synthetic Identity Fraud,0,1
+TXN-6d5ae5130a,USER-613d0c57,2025-04-08T16:05:04+00:00,2025-04-08T12:05:04-04:00,"New York, USA",73.123.45.67,iPhone-13,Wi-Fi,Purchase,500.0,ACC-ed4a00cd,7904.0,True,7404.0,Amazon,,,Synthetic Identity Fraud,0,1
+TXN-3956287b02,USER-206d2e5c,2025-04-08T16:00:00+00:00,2025-04-08T12:00:00-04:00,"New York, USA",73.123.45.67,iPhone-13,Wi-Fi,Purchase,15.75,ACC-629c9b91,372.0,True,356.25,Starbucks,,,Saver,0,0
+TXN-e965b9d8be,USER-206d2e5c,2025-04-08T16:05:04+00:00,2025-04-08T12:05:04-04:00,"New York, USA",73.123.45.67,iPhone-13,Wi-Fi,Purchase,15.75,ACC-629c9b91,356.25,True,340.5,Starbucks,,,Saver,0,0
+TXN-63ca418d05,USER-206d2e5c,2025-04-08T16:05:04+00:00,2025-04-08T12:05:04-04:00,"New York, USA",73.123.45.67,iPhone-13,Wi-Fi,Purchase,15.75,ACC-629c9b91,340.5,True,324.75,Starbucks,,,Saver,0,0

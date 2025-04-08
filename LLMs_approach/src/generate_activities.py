@@ -23,6 +23,8 @@ from utilities import generate_random_hash, update_balance, format_timestamp
 #activity_model = 'mistral'
 
 
+#errore su pansad key columns e cercare di capire perche' ripettuti stessi valori nei sample
+
 # Expected field types for the JSON schema
 EXPECTED_FIELD_TYPES = {
     "bank_timestamp": str,  # ISO 8601 format
@@ -327,7 +329,7 @@ def build_generation_prompt(strategy, user_id, history, global_clock, accounts, 
         "-`local_timestamp`: ISO 8601 is the bank_timestamp converted in the `location` timezone.\n"
         "- `account_id`: Must follow the format `ACC-XXXXXXXX`. This is the account the user operates on for the generated transaction.\n"
         "- `type`: Must be one of the allowed transaction types (`Purchase`, `Transfer IN`, `Transfer OUT`, etc.).\n"
-        f"- `amount`: Must be within the range specified in the strategy .\n"
+        f"- `amount`: Must be a float number within the range specified in the strategy .\n"
         "- `balance_before`: Account balance before the transaction.\n"
         "- `ip_address`: Must correspond to the transaction location (e.g., US-based IPs for US locations).\n"
         "- `device_id`: Device model (if unknown, set as `Unknown Device`).\n"
@@ -475,6 +477,8 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, DATA
 
     # --- Generate Fraudulent Activities ---
     fraud_count = 0
+    total_generated = 0
+
     while fraud_count < target_fraud:
         fraud_user_id = f"USER-{generate_random_hash(8)}"
         behavior_type = random.choice(list(fraudulent_strategies.keys()))
@@ -517,6 +521,8 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, DATA
             full_history = []  # Contains both fraud and legit transactions
             num_act = min(random.randint(3, 7), target_fraud - fraud_count)
             for _ in range(num_act):  # Total transactions for this hijacking case
+                if total_generated >= total_activities:
+                    break
                 if random.uniform(0, 1) < 0.6:  # 60% fraudster, 40% legitimate
                     acting_user = fraud_user_id
                     acting_strategy = strategy_text
@@ -536,7 +542,7 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, DATA
                     global_clock=global_clock,
                     history=full_history,
                     num_activities=1,  
-                    accounts=acting_accounts  # Now correctly asigns separate accounts
+                    accounts=acting_accounts  # Now correctly assigns separate accounts
                     )  # Get the single transaction generated
                 if isinstance(tx, list):
                     tx = tx[0]  # Extract the first dictionary from the list
@@ -545,8 +551,12 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, DATA
                 else:
                     tx['is_hijacked'] = 0
                 full_history.append(tx)
-                buffer.extend(tx)
-                fraud_count += len([t for t in full_history if t["user_id"] == fraud_user_id])
+                buffer.append(tx)
+                if fraud_label == 1:
+                    fraud_count += 1
+                total_generated += 1  # count all activities toward the total
+
+                #fraud_count += len([t for t in full_history if t["user_id"] == fraud_user_id])
                 # Flush buffer if needed
                 if len(buffer) >= buffer_size:
                     header_written = flush_buffer(buffer, DATA_FILE, header_written)
@@ -561,19 +571,20 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, DATA
             # Standard fraud generation (no hijacking)
             n_accounts = strategy.get("n_accounts", 1)
             accounts = {f"ACC-{generate_random_hash()}": assign_initial_balance(strategy) for n in range(n_accounts)}  
-
+            num_act = min(random.randint(1, 6), target_fraud - fraud_count, total_activities - total_generated)
             activities = generate_activity_sequence(
                 strategy=strategy_text, 
                 user_id=user_id, 
                 behavior_type=behavior_type, 
                 fraud_label=1, 
                 global_clock=global_clock,
-                num_activities=min(random.randint(1, 6), target_fraud - fraud_count),
+                num_activities=num_act,
                 accounts=accounts
 
             )
             buffer.extend(activities)
             fraud_count += len(activities)
+            total_generated += len(activities)
 
             # Flush buffer if needed
             if len(buffer) >= buffer_size:
@@ -581,7 +592,7 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, DATA
 
 
     # --- Generate Legitimate Activities ---
-    total_generated = fraud_count  # fraudulent activities already generated
+    
     while total_generated < total_activities:
         user_id = f"USER-{generate_random_hash(8)}"
         behavior_type = random.choice(list(legitimate_strategies.keys()))
@@ -638,12 +649,6 @@ def load_existing_strategies(filename):
     if os.path.exists(filename):
         with open(filename, 'r') as f:
             return json.load(f)
-
-import json
-import re
-
-import json
-import re
 
 def load_json_strategy(strategy_text): 
     """

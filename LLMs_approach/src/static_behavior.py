@@ -79,7 +79,7 @@ def assign_initial_balance(strategy):
         float(x.replace("$", "").replace(",", "")) for x in amount_range.split(" - ")
     ]
     
-    return round(random.uniform(min_amount*10, max_amount*10), 2)
+    return random.randint(min_amount * 10, max_amount * 10)
 
 def select_valid_location(geographic_focus):
     """Selects a valid city based on the strategy's geographic focus."""
