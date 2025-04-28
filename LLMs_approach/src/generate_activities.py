@@ -325,7 +325,7 @@ def build_generation_prompt(strategy, user_id, history, last_timestamp, accounts
         "-`local_timestamp`: ISO 8601 is the bank_timestamp converted in the `location` timezone.\n"
         "- `account_id`: Must follow the format `ACC-XXXXXXXX`. This is the account the user operates on for the generated transaction.\n"
         "- `type`: Must be one of the allowed transaction types (`Purchase`, `Transfer IN`, `Transfer OUT`, etc.).\n"
-        f"- `amount`: Must be a random float number within the range specified in the strategy .\n"
+        f"- `amount`: Must be a random float number within the range specified in the strategy (336.56, 294.90, 5419.99 etc).\n"
         "- `balance_before`: Account balance before the transaction.\n"
         "- `ip_address`: Must correspond to the transaction location (e.g., US-based IPs for US locations).\n"
         "- `device_id`: Device model (if unknown, set as `Unknown Device`).\n"
