@@ -1,0 +1,4 @@
+transaction_id,user_id,bank_timestamp,local_timestamp,location,ip_address,device_id,network_type,type,amount,account_id,balance_before,granted,balance_after,merchant_name,recipient_id,recipient_bank,behavior_type,is_hijacked,fraud_label
+TXN-baa09ffd4b,USER-05a2a756,2025-04-28T09:40:11+00:00,2025-04-28T05:40:11-04:00,"New York, USA",73.123.45.67,iPhone-13,Wi-Fi,Purchase,4500.0,ACC-66ed8aca,36751.0,True,32251.0,Amazon,,,Identity Theft,0,1
+TXN-28bf741a47,USER-693e5a45,2025-04-28T09:40:11+00:00,2025-04-28T05:40:11-04:00,"New York, USA",73.123.45.67,iPhone-13,Wi-Fi,Transfer Out,5000.0,ACC-6fceb232,92716.0,True,87716.0,,ACC-774683nf,Bank of America,Investor,0,0
+TXN-c50c5494cb,USER-693e5a45,2025-04-28T09:40:11+00:00,2025-04-28T05:40:11-04:00,"New York, USA",73.123.45.67,iPhone-13,Wi-Fi,Purchase,5000.0,ACC-6fceb232,87716.0,True,82716.0,Fidelity,,,Investor,0,0

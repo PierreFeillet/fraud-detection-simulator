@@ -80,9 +80,10 @@ def generate_strategy(strategy_type=None, strategy_category="fraudulent", filena
     "n_accounts": 1,
     "involves_hijacking": False,
     "transaction_types_involved": ["Unauthorized Stock Purchase", "Unauthorized Stock Sale"],
-    "typical_amount_range": "$5,000 - $50,000",
+    "typical_amount_range": "$5000 - $50000",
     "geographic_focus": ["Domestic US", "Europe"],
     "velocity": "High velocity: 3-8 transactions per hour",
+    "expected_time_gap": "7-20 minutes between transactions",
     "network_types": ["VPN Connection", "Tor Network", "Public Wi-Fi (Unsecured)", "International Proxy"],
     "common_devices": ["iPhone-13", "MacBook Pro"],
     "ip_address_notes": "Mostly US-based IPs (73.x.x.x) with occasional Asia-based proxies (203.x.x.x)",
@@ -104,6 +105,7 @@ def generate_strategy(strategy_type=None, strategy_category="fraudulent", filena
         "typical_amount_range": "$5 - $200",
         "geographic_focus": ["Domestic US"],
         "velocity": "1-2 transactions per day",
+        "expected_time_gap": "12-24 hours between transactions",
         "network_types": ["Wi-Fi", "Cellular", "Ethernet", "Corporate Network"],
         "common_devices": ["iPhone-13", "MacBook Pro"],
         "ip_address_notes": "Stable US-based IPs (e.g., 73.x.x.x)",
@@ -123,9 +125,10 @@ def generate_strategy(strategy_type=None, strategy_category="fraudulent", filena
     - **n_accounts** (integer) - The number of accounts associated with this profile.
     - **involves_hijacking** (boolean) - Whether the strategy involves account hijacking.
     - **transaction_types_involved** (array of strings) - E.g., ["Purchase", "Transfer Out", "Withdrawal"].
-    - **typical_amount_range** (string) - Format: "$X - $Y" (Example: "$10 - $500").
+    - **typical_amount_range** (string) - Format: "$X - $Y" (Example: "$100 - $5000").
     - **geographic_focus** (array of strings) - Must be selected from {geographic_focus_options}.
     - **velocity** (string) - Use format: "X-Y transactions per hour/day/week" (Example: "3-5 transactions per day").
+    - **expected_time_gap** (string) - Based on the velocity, estimate realistic time gaps (e.g., "5-30 minutes between transactions" or "2-5 hours between transactions"). 
     - **network_types** (array of strings) - Example: ["Wi-Fi", "Cellular"].
     - **common_devices** (array of strings) - Example: ["iPhone-13", "MacBook Pro"].
     - **ip_ranges** (array of strings) - Example: ["73.x.x.x", "203.x.x.x"].

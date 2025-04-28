@@ -287,7 +287,7 @@ def read_past_errors():
                 return []
     return []    
 
-def build_generation_prompt(strategy, user_id, history, global_clock, accounts, past_errors=None):
+def build_generation_prompt(strategy, user_id, history, last_timestamp, accounts, past_errors=None):
     """
     Builds a refined prompt for generating the next banking activity.
     - Strictly follows the given strategy for transaction type, amount range, location, velocity, etc.
@@ -298,10 +298,6 @@ def build_generation_prompt(strategy, user_id, history, global_clock, accounts, 
     Returns:
         A structured prompt for LLM-based activity generation.
     """
-    if history:     
-        last_tx = history[-1]
-        last_timestamp = last_tx["bank_timestamp"]
-
     json_template = """
 ```json        
 {
@@ -329,7 +325,7 @@ def build_generation_prompt(strategy, user_id, history, global_clock, accounts, 
         "-`local_timestamp`: ISO 8601 is the bank_timestamp converted in the `location` timezone.\n"
         "- `account_id`: Must follow the format `ACC-XXXXXXXX`. This is the account the user operates on for the generated transaction.\n"
         "- `type`: Must be one of the allowed transaction types (`Purchase`, `Transfer IN`, `Transfer OUT`, etc.).\n"
-        f"- `amount`: Must be a float number within the range specified in the strategy .\n"
+        f"- `amount`: Must be a random float number within the range specified in the strategy .\n"
         "- `balance_before`: Account balance before the transaction.\n"
         "- `ip_address`: Must correspond to the transaction location (e.g., US-based IPs for US locations).\n"
         "- `device_id`: Device model (if unknown, set as `Unknown Device`).\n"
@@ -341,7 +337,7 @@ def build_generation_prompt(strategy, user_id, history, global_clock, accounts, 
     if history:
         time_instruction = (
             f"### Timing Instructions:\n"
-            f"- The new `bank_timestamp` MUST be strictly later than: **{last_timestamp}**.\n"
+            f"- The new `bank_timestamp` MUST be strictly later than: **{last_timestamp}**. Use the `expected_time_gap` to decide how much. \n"
             "- NEVER reuse the same `bank_timestamp` or make it earlier.\n"
             "- Use a time interval that is realistic based on the user behavior and location change.\n"
             "- Example: if the last transaction was in Paris and the next is in Tokyo, ensure several hours of gap.\n"
@@ -350,8 +346,7 @@ def build_generation_prompt(strategy, user_id, history, global_clock, accounts, 
     else:
         time_instruction = (
             f"### Timing Instructions:\n"
-            f"- Initialize the `bank_timestamp` starting from: **{global_clock}**.\n"
-            "- The first activity must begin a few minutes later than the global clock.\n"
+            f"- The activity must begin at {last_timestamp}.\n"
             "- Always compute the correct `local_timestamp` from the UTC `bank_timestamp` using the time zone of the `location`.\n"
         )
 
@@ -360,7 +355,7 @@ def build_generation_prompt(strategy, user_id, history, global_clock, accounts, 
 
     # **Main Prompt Assembly**
     prompt_parts = [
-        f"Your task is to generate the next most probable bank activity for user {user_id} whose profile is described by the following strategy:\n",
+        f"Your task is to generate the next most probable and realistic bank activity for user {user_id} whose profile is described by the following strategy:\n",
         f"\n### Strategy Guidelines:\n{json.dumps(strategy, indent=2)}\n\n",
         "**Strictly adhere to this strategy when choosing transaction type, amount range, location, and other fields.**\n",
         time_instruction,
@@ -371,7 +366,8 @@ def build_generation_prompt(strategy, user_id, history, global_clock, accounts, 
         field_explanation,
         "### Additional Constraints:\n",
         f"The possible accounts the user can operate on are: {accounts}. Pick the most probable one for your activity. Don't generate new account ids!\n",
-        f"- The `amount` must be a float within the strategy's typical amount range and smaller than balance on the chosen account.\n",
+        f"- The `amount` must be a random float within the strategy's typical amount range and smaller than `balance_before` on the chosen account.\n",
+        "- Vary the `amount` for each transaction.\n"
         "- Derive `ip_address` realistically from the transaction location. Examples:\n",
         "  - USA locations → US-based IPv4 ranges (73.x.x.x, 24.x.x.x).\n",
         "  - Europe locations → European IPv4 ranges (81.x.x.x, 217.x.x.x).\n",
@@ -380,12 +376,11 @@ def build_generation_prompt(strategy, user_id, history, global_clock, accounts, 
         "- DO NOT include any explanations, calculations, or metadata—ONLY return the JSON within ```json and ```end_json.\n",
         "### Timing Requirements Recap:\n",
         "- NEVER repeat timestamps.\n",
-        "- Always increase `bank_timestamp`.\n",
+        "- Always increase `bank_timestamp` according to the `expected_time_gap` in the strategy\n",
         "- Use realistic time gaps between locations.\n",
         "- Respect travel time when the country changes (e.g., no Paris → Tokyo in 1 minute).\n",
-       "- Make sure the `local_timestamp` is correctly converted from the `bank_timestamp` based on the transaction location.\n",
+        "- Make sure the `local_timestamp` is correctly converted from the `bank_timestamp` based on the transaction location.\n",
     ]
-
     # **Error Handling: Prevent Past Mistakes**
     if past_errors:
         prompt_parts.append(f"- Avoid repeating these errors: {past_errors}.\n")
@@ -410,14 +405,27 @@ def generate_activity_sequence(strategy, user_id, behavior_type, fraud_label, gl
             # Fraudulent transactions predicted by LLM
             past_errors = read_past_errors()
             # Feed LLM with all history for that user (to allow connections among accounts)
-            prompt = build_generation_prompt(strategy, user_id, history, global_clock, accounts, past_errors)
+            # Determine the last timestamp for this user
+            if history:
+                # Subsequent transactions: use the actual previous tx time
+                last_timestamp = history[-1]["bank_timestamp"]
+            else:
+                # First transaction ever for this user:
+                #   1) parse your global clock
+                base_dt = isoparse(global_clock)
+                #   2) add a small random delay
+                jitter = timedelta(seconds=random.randint(60, 300))  # Random delay between 1 and 5 minutes
+                new_dt = base_dt + jitter
+                #   3) serialize back to ISO
+                last_timestamp = new_dt.isoformat()
+            print(f"History {history}")
+            prompt = build_generation_prompt(strategy, user_id, history, last_timestamp, accounts, past_errors)
             raw_response = watsonx_chat(
                 prompt=prompt,
                 model_id=activity_model_id,
                 parameters=watsonx_helper.parameters_activity
             )
             save_to_text(raw_response, user_id)
-            last_timestamp = history[-1]["bank_timestamp"] if history else global_clock
             tx, errors = validate_json(raw_response, user_id, last_timestamp)
             
             if tx == 'retry':
@@ -442,6 +450,7 @@ def generate_activity_sequence(strategy, user_id, behavior_type, fraud_label, gl
                 # Assign metadata fields, timestamps, and fraud labels **AFTER** balance updates
                 tx = assign_activity_fields(tx, user_id, behavior_type, fraud_label)
                 # Enforce realistic timestamp ordering based on the previous transaction
+                history.append(tx)
                 activities.append(tx)
                 break  # Exit retry loop on successful generation
     print("------------------------------------------------")
@@ -485,6 +494,7 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, DATA
     
     # Global clock 
     global_clock = format_timestamp(datetime.now(timezone.utc).isoformat())
+    print("The simulation reference time is set to:", global_clock)
 
     # --- Generate Fraudulent Activities ---
     fraud_count = 0
@@ -628,8 +638,8 @@ def generate_activities(total_activities=1000, target_fraud_percentage=0.1, DATA
         buffer.extend(activities)
         total_generated += len(activities)
         
-        #if activities:
-        #    global_clock = activities[-1]["bank_timestamp"]
+        if activities:
+            global_clock = activities[-1]["bank_timestamp"]
         
         if len(buffer) >= buffer_size:
             header_written = flush_buffer(buffer, DATA_FILE, header_written)

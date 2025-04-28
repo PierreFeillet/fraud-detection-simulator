@@ -1,5 +1,6 @@
 transaction_id,user_id,bank_timestamp,local_timestamp,location,ip_address,device_id,network_type,type,amount,account_id,balance_before,granted,balance_after,merchant_name,recipient_id,recipient_bank,behavior_type,is_hijacked,fraud_label
-TXN-c38fd60cf0,USER-0094fe79,2025-04-08T16:55:02+00:00,2025-04-08T12:55:02-04:00,"New York, USA",73.123.45.67,iPhone-12,Wi-Fi,Loan Application,15000.0,ACC-46a5ff22,126962,True,126962.0,LendingClub,,,Loan Fraud,0,1
-TXN-fc6fe0bf82,USER-6d2d5c61,2025-04-08T17:30:00+00:00,2025-04-08T13:30:00-04:00,"New York, USA",73.56.201.89,iPhone-13,Wi-Fi,Purchase,500.0,ACC-3de7f059,20308,True,19808.0,Amazon,,,Business Owner,0,0
-TXN-ebfd5f8fdd,USER-8cceb5cf,2025-04-08T16:55:02+00:00,2025-04-08T12:55:02-04:00,"New York, USA",73.56.201.89,iPhone-13,Wi-Fi,Purchase,500.0,ACC-817272a3,36721,True,36221.0,Amazon,,,Business Owner,0,0
-TXN-7bb90ba07f,USER-02e36577,2025-04-08T16:55:02+00:00,2025-04-08T12:55:02-04:00,"New York, USA",73.123.45.67,iPhone-13,Wi-Fi,Purchase,500.0,ACC-1744472a,87819,True,87319.0,Amazon,,,Business Owner,0,0
+TXN-394be7044e,USER-eef3b712,2025-04-28T09:30:00+00:00,2025-04-28T05:30:00-04:00,"New York, USA",73.123.45.67,iPhone-13,Wi-Fi,Purchase,500.0,ACC-6229aa82,6765.0,True,6265.0,Amazon,,,Synthetic Identity Fraud,0,1
+TXN-089485d4fe,USER-6852a31c,2025-04-28T09:30:00+00:00,2025-04-28T05:30:00-04:00,"New York, USA",73.123.45.67,iPhone-13,Wi-Fi,Purchase,250.0,ACC-6a31176d,3223.0,True,2973.0,Amazon,,,Synthetic Identity Fraud,0,1
+TXN-44f2175304,USER-be093b0c,2025-04-28T09:30:00+00:00,2025-04-28T05:30:00-04:00,"New York, USA",73.123.45.67,iPhone-13,Wi-Fi,Purchase,1500.0,ACC-87473001,3499.0,True,1999.0,Fidelity,,,Investor,0,0
+TXN-7508ea03c1,USER-be093b0c,2025-04-28T09:30:00+00:00,2025-04-28T05:30:00-04:00,"New York, USA",73.56.201.89,iPhone-13,Wi-Fi,Purchase,500.0,ACC-87473001,1999.0,True,1499.0,Fidelity,,,Investor,0,0
+TXN-9e5d3c8503,USER-be093b0c,2025-04-28T09:30:00+00:00,2025-04-28T05:30:00-04:00,"New York, USA",73.56.201.89,iPhone-13,Wi-Fi,Purchase,1500.0,ACC-87473001,1499.0,False,1499.0,Fidelity,,,Investor,0,0

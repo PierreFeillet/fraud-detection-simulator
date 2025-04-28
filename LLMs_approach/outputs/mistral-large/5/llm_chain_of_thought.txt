@@ -1,106 +1,16 @@
 
-### LLM Chain of Thought for user ID USER-0094fe79 ###
+### LLM Chain of Thought for user ID USER-eef3b712 ###
 
 
 ```json
 {
-  "bank_timestamp": "2025-04-08T16:55:02+00:00",
+  "bank_timestamp": "2025-04-28T09:30:00+00:00",
   "location": "New York, USA",
-  "local_timestamp": "2025-04-08T12:55:02-04:00",
-  "account_id": "ACC-46a5ff22",
-  "type": "Loan Application",
-  "amount": 15000.00,
-  "balance_before": 126962.00,
-  "ip_address": "73.123.45.67",
-  "device_id": "iPhone-12",
-  "network_type": "Wi-Fi",
-  "merchant_name": "LendingClub",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-```end_json
-
-
-### LLM Chain of Thought for user ID USER-6d2d5c61 ###
-
-
-Here is the last transaction for user USER-6d2d5c61:
-
-```json
-{
-  "bank_timestamp": "2025-04-08T16:55:02+00:00",
-  "location": "New York, USA",
-  "local_timestamp": "2025-04-08T12:55:02-04:00",
-  "account_id": "ACC-3de7f059",
+  "local_timestamp": "2025-04-28T05:30:00-04:00",
+  "account_id": "ACC-6229aa82",
   "type": "Purchase",
   "amount": 500.00,
-  "balance_before": 20808.00,
-  "ip_address": "73.56.201.89",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Amazon",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-```end_json
-
-
-### LLM Chain of Thought for user ID USER-6d2d5c61 ###
-
-
-```json
-{
-  "bank_timestamp": "2025-04-08T17:30:00+00:00",
-  "location": "New York, USA",
-  "local_timestamp": "2025-04-08T13:30:00-04:00",
-  "account_id": "ACC-3de7f059",
-  "type": "Purchase",
-  "amount": 500.00,
-  "balance_before": 20308.00,
-  "ip_address": "73.56.201.89",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Amazon",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-```end_json
-
-
-### LLM Chain of Thought for user ID USER-8cceb5cf ###
-
-
-```json
-{
-  "bank_timestamp": "2025-04-08T16:55:02+00:00",
-  "location": "New York, USA",
-  "local_timestamp": "2025-04-08T12:55:02-04:00",
-  "account_id": "ACC-817272a3",
-  "type": "Purchase",
-  "amount": 500.00,
-  "balance_before": 36721.00,
-  "ip_address": "73.56.201.89",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Amazon",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-```end_json
-
-
-### LLM Chain of Thought for user ID USER-02e36577 ###
-
-
-```json
-{
-  "bank_timestamp": "2025-04-08T16:55:02+00:00",
-  "location": "New York, USA",
-  "local_timestamp": "2025-04-08T12:55:02-04:00",
-  "account_id": "ACC-1744472a",
-  "type": "Purchase",
-  "amount": 500.00,
-  "balance_before": 87819.00,
+  "balance_before": 6765.00,
   "ip_address": "73.123.45.67",
   "device_id": "iPhone-13",
   "network_type": "Wi-Fi",
@@ -111,22 +21,88 @@ Here is the last transaction for user USER-6d2d5c61:
 ```end_json
 
 
-### LLM Chain of Thought for user ID USER-ec201f55 ###
+### LLM Chain of Thought for user ID USER-6852a31c ###
 
 
 ```json
 {
-  "bank_timestamp": "2025-04-08T16:55:02+00:00",
+  "bank_timestamp": "2025-04-28T09:30:00+00:00",
   "location": "New York, USA",
-  "local_timestamp": "2025-04-08T12:55:02-04:00",
-  "account_id": "ACC-7d75a2bc",
+  "local_timestamp": "2025-04-28T05:30:00-04:00",
+  "account_id": "ACC-6a31176d",
+  "type": "Purchase",
+  "amount": 250.00,
+  "balance_before": 3223.00,
+  "ip_address": "73.123.45.67",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Amazon",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+```end_json
+
+
+### LLM Chain of Thought for user ID USER-be093b0c ###
+
+
+```json
+{
+  "bank_timestamp": "2025-04-28T09:30:00+00:00",
+  "location": "New York, USA",
+  "local_timestamp": "2025-04-28T05:30:00-04:00",
+  "account_id": "ACC-87473001",
   "type": "Purchase",
   "amount": 1500.00,
-  "balance_before": 98885.00,
+  "balance_before": 3499.00,
   "ip_address": "73.123.45.67",
   "device_id": "iPhone-13",
   "network_type": "Wi-Fi",
-  "merchant_name": "Amazon",
+  "merchant_name": "Fidelity",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+```end_json
+
+
+### LLM Chain of Thought for user ID USER-be093b0c ###
+
+
+```json
+{
+  "bank_timestamp": "2025-04-28T09:30:00+00:00",
+  "location": "New York, USA",
+  "local_timestamp": "2025-04-28T05:30:00-04:00",
+  "account_id": "ACC-87473001",
+  "type": "Purchase",
+  "amount": 500.00,
+  "balance_before": 1999.0,
+  "ip_address": "73.56.201.89",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Fidelity",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+```end_json
+
+
+### LLM Chain of Thought for user ID USER-be093b0c ###
+
+
+```json
+{
+  "bank_timestamp": "2025-04-28T09:30:00+00:00",
+  "location": "New York, USA",
+  "local_timestamp": "2025-04-28T05:30:00-04:00",
+  "account_id": "ACC-87473001",
+  "type": "Purchase",
+  "amount": 1500.0,
+  "balance_before": 1499.0,
+  "ip_address": "73.56.201.89",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Fidelity",
   "recipient_id": null,
   "recipient_bank": null
 }
