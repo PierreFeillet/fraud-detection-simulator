@@ -1,20 +1,21 @@
 timestamp,user_id,reward,reason
-2025-04-28T18:18:34.116820,USER-2d850307,-1,Error: bank_timestamp 2025-03-01T10:15:32+00:00 is not strictly later than last_timestamp 2025-04-28T16:21:25+00:00.
-2025-04-28T18:18:40.471357,USER-2d850307,1,Successful JSON
-2025-04-28T18:18:47.278079,USER-2d850307,1,Successful JSON
-2025-04-28T18:18:53.724562,USER-65df615e,1,Successful JSON
-2025-04-28T18:19:01.355956,USER-2d850307,1,Successful JSON
-2025-04-28T18:19:15.084769,USER-b2297426,-1,Error: bank_timestamp 2025-04-28T16:23:09+00:00 is not strictly later than last_timestamp 2025-04-28T16:23:09+00:00.
-2025-04-28T18:19:22.005768,USER-b2297426,-1,Error: bank_timestamp 2025-04-28T16:22:03+00:00 is not strictly later than last_timestamp 2025-04-28T16:22:03+00:00.
-2025-04-28T18:19:28.600637,USER-b2297426,-1,Error: bank_timestamp 2025-04-28T16:22:31+00:00 is not strictly later than last_timestamp 2025-04-28T16:22:31+00:00.
-2025-04-28T18:19:35.446953,USER-b2297426,-1,Error: bank_timestamp 2025-04-28T16:22:28+00:00 is not strictly later than last_timestamp 2025-04-28T16:22:28+00:00.
-2025-04-28T18:19:41.814239,USER-b2297426,-1,Error: bank_timestamp 2025-04-28T16:20:10+00:00 is not strictly later than last_timestamp 2025-04-28T16:20:10+00:00.
-2025-04-28T18:19:48.289942,USER-b2297426,-1,Error: bank_timestamp 2025-04-28T16:22:41+00:00 is not strictly later than last_timestamp 2025-04-28T16:22:41+00:00.
-2025-04-28T18:19:56.273085,USER-b2297426,-1,Error: bank_timestamp 2025-04-28T16:20:51+00:00 is not strictly later than last_timestamp 2025-04-28T16:20:51+00:00.
-2025-04-28T18:20:02.493510,USER-b2297426,1,Successful JSON
-2025-04-28T18:20:09.558936,USER-b2297426,1,Successful JSON
-2025-04-28T18:20:16.112078,USER-7caa17f9,-1,Error: bank_timestamp 2025-04-28T16:20:49+00:00 is not strictly later than last_timestamp 2025-04-28T16:20:49+00:00.
-2025-04-28T18:20:23.638545,USER-7caa17f9,1,Successful JSON
-2025-04-28T18:20:30.120416,USER-7caa17f9,1,Successful JSON
-2025-04-28T18:20:37.220136,USER-7caa17f9,1,Successful JSON
-2025-04-28T18:20:44.044732,USER-7caa17f9,1,Successful JSON
+2025-04-29T15:32:57.255701,USER-737389ff,-1,Error: bank_timestamp 2025-04-29T13:34:08+00:00 is not strictly later than last_timestamp 2025-04-29T13:34:08+00:00.
+2025-04-29T15:33:04.495087,USER-737389ff,-1,Error: bank_timestamp 2025-04-29T13:35:55+00:00 is not strictly later than last_timestamp 2025-04-29T13:35:55+00:00.
+2025-04-29T15:33:12.512568,USER-737389ff,-1,Error: bank_timestamp 2025-04-29T13:36:19+00:00 is not strictly later than last_timestamp 2025-04-29T13:36:19+00:00.
+2025-04-29T15:33:19.775856,USER-737389ff,-1,Error: bank_timestamp 2025-04-29T13:35:39+00:00 is not strictly later than last_timestamp 2025-04-29T13:35:39+00:00.
+2025-04-29T15:33:29.643071,USER-737389ff,1,Successful JSON
+2025-04-29T15:33:37.391939,USER-737389ff,1,Successful JSON
+2025-04-29T15:33:46.177470,USER-737389ff,1,Successful JSON
+2025-04-29T15:33:54.629445,USER-3f651a42,1,Successful JSON
+2025-04-29T15:34:02.454788,USER-a4d2baa4,1,Successful JSON
+2025-04-29T15:34:10.672948,USER-792f2021,-1,Error: bank_timestamp 2025-04-29T13:36:47+00:00 is not strictly later than last_timestamp 2025-04-29T13:36:47+00:00.
+2025-04-29T15:34:21.606341,USER-792f2021,1,Successful JSON
+2025-04-29T15:34:30.524682,USER-f2144f7c,-1,Error: bank_timestamp 2025-04-29T13:34:31+00:00 is not strictly later than last_timestamp 2025-04-29T13:34:31+00:00.
+2025-04-29T15:34:40.933229,USER-f2144f7c,-1,Error: bank_timestamp 2025-04-29T13:34:30+00:00 is not strictly later than last_timestamp 2025-04-29T13:34:30+00:00.
+2025-04-29T15:34:48.216713,USER-f2144f7c,-1,Error: bank_timestamp 2025-04-29T13:37:21+00:00 is not strictly later than last_timestamp 2025-04-29T13:37:21+00:00.
+2025-04-29T15:34:55.401020,USER-f2144f7c,-1,Error: bank_timestamp 2025-04-29T13:34:39+00:00 is not strictly later than last_timestamp 2025-04-29T13:34:39+00:00.
+2025-04-29T15:35:02.197425,USER-f2144f7c,-1,Error: bank_timestamp 2025-04-29T13:34:09+00:00 is not strictly later than last_timestamp 2025-04-29T13:34:09+00:00.
+2025-04-29T15:35:10.861291,USER-f2144f7c,1,Successful JSON
+2025-04-29T15:35:19.623896,USER-29c47f1d,1,Successful JSON
+2025-04-29T15:35:28.012130,USER-29c47f1d,1,Successful JSON
+2025-04-29T15:35:34.770447,USER-29c47f1d,1,Successful JSON

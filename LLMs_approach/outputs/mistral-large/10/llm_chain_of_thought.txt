@@ -1,40 +1,16 @@
 
-### LLM Chain of Thought for user ID USER-2d850307 ###
-
-
-### Example JSON:
-
-```json
-{
-  "bank_timestamp": "2025-03-01T10:15:32+00:00",
-  "location": "Chicago, USA",
-  "local_timestamp": "2025-03-01T05:15:32-05:00",
-  "account_id": "ACC-82736401",
-  "type": "Purchase",
-  "amount": 45.99,
-  "balance_before": 1280.45,
-  "ip_address": "73.56.201.89",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Starbucks",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-```end_json
-
-
-### LLM Chain of Thought for user ID USER-2d850307 ###
+### LLM Chain of Thought for user ID USER-737389ff ###
 
 
 ```json
 {
-  "bank_timestamp": "2025-04-28T16:37:18+00:00",
+  "bank_timestamp": "2025-04-29T13:34:08+00:00",
   "location": "New York, USA",
-  "local_timestamp": "2025-04-28T12:37:18-04:00",
-  "account_id": "ACC-f8436253",
+  "local_timestamp": "2025-04-29T09:34:08-04:00",
+  "account_id": "ACC-4151a49f",
   "type": "Purchase",
   "amount": 1250.75,
-  "balance_before": 29083,
+  "balance_before": 32331,
   "ip_address": "73.123.45.67",
   "device_id": "iPhone-13",
   "network_type": "Wi-Fi",
@@ -45,18 +21,84 @@
 ```end_json
 
 
-### LLM Chain of Thought for user ID USER-2d850307 ###
+### LLM Chain of Thought for user ID USER-737389ff ###
 
 
 ```json
 {
-  "bank_timestamp": "2025-04-28T16:57:18+00:00",
+  "bank_timestamp": "2025-04-29T13:35:55+00:00",
   "location": "New York, USA",
-  "local_timestamp": "2025-04-28T12:57:18-04:00",
-  "account_id": "ACC-f8436253",
+  "local_timestamp": "2025-04-29T09:35:55-04:00",
+  "account_id": "ACC-4151a49f",
+  "type": "Purchase",
+  "amount": 450.75,
+  "balance_before": 32331.00,
+  "ip_address": "73.123.45.67",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Amazon",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+```end_json
+
+
+### LLM Chain of Thought for user ID USER-737389ff ###
+
+
+```json
+{
+  "bank_timestamp": "2025-04-29T13:36:19+00:00",
+  "location": "New York, USA",
+  "local_timestamp": "2025-04-29T09:36:19-04:00",
+  "account_id": "ACC-4151a49f",
+  "type": "Purchase",
+  "amount": 450.75,
+  "balance_before": 32331,
+  "ip_address": "73.123.45.67",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Amazon",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+```end_json
+
+
+### LLM Chain of Thought for user ID USER-737389ff ###
+
+
+```json
+{
+  "bank_timestamp": "2025-04-29T13:35:39+00:00",
+  "location": "New York, USA",
+  "local_timestamp": "2025-04-29T09:35:39-04:00",
+  "account_id": "ACC-4151a49f",
+  "type": "Purchase",
+  "amount": 450.75,
+  "balance_before": 32331.00,
+  "ip_address": "73.123.45.67",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Amazon",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+```end_json
+
+
+### LLM Chain of Thought for user ID USER-737389ff ###
+
+
+```json
+{
+  "bank_timestamp": "2025-04-29T13:42:22+00:00",
+  "location": "New York, USA",
+  "local_timestamp": "2025-04-29T09:42:22-04:00",
+  "account_id": "ACC-4151a49f",
   "type": "Purchase",
   "amount": 1250.75,
-  "balance_before": 27832.25,
+  "balance_before": 32331,
   "ip_address": "73.123.45.67",
   "device_id": "iPhone-13",
   "network_type": "Wi-Fi",
@@ -67,329 +109,106 @@
 ```end_json
 
 
-### LLM Chain of Thought for user ID USER-65df615e ###
+### LLM Chain of Thought for user ID USER-737389ff ###
 
 
 ```json
 {
-  "bank_timestamp": "2025-04-28T17:12:18+00:00",
+  "bank_timestamp": "2025-04-29T13:57:22+00:00",
   "location": "New York, USA",
-  "local_timestamp": "2025-04-28T13:12:18-04:00",
-  "account_id": "ACC-57fcaf9e",
-  "type": "Purchase",
-  "amount": 345.75,
-  "balance_before": 11084,
-  "ip_address": "73.123.45.67",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Amazon",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-```end_json
-
-
-### LLM Chain of Thought for user ID USER-2d850307 ###
-
-
-```json
-{
-  "bank_timestamp": "2025-04-28T17:32:18+00:00",
-  "location": "New York, USA",
-  "local_timestamp": "2025-04-28T13:32:18-04:00",
-  "account_id": "ACC-52be1c6a",
-  "type": "Purchase",
-  "amount": 450.75,
-  "balance_before": 10922,
-  "ip_address": "73.123.45.67",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Amazon",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-```end_json
-
-
-### LLM Chain of Thought for user ID USER-b2297426 ###
-
-
-### Example JSON:
-```json
-{
-  "bank_timestamp": "2025-04-28T16:23:09+00:00",
-  "location": "New York, USA",
-  "local_timestamp": "2025-04-28T12:23:09-04:00",
-  "account_id": "ACC-20bf8871",
-  "type": "Purchase",
-  "amount": 1234.56,
-  "balance_before": 33176.00,
-  "ip_address": "73.123.45.67",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Amazon",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-```end_json
-
-
-### LLM Chain of Thought for user ID USER-b2297426 ###
-
-
-### Example JSON:
-
-```json
-{
-  "bank_timestamp": "2025-04-28T16:22:03+00:00",
-  "location": "New York, USA",
-  "local_timestamp": "2025-04-28T12:22:03-04:00",
-  "account_id": "ACC-20bf8871",
-  "type": "Purchase",
-  "amount": 336.56,
-  "balance_before": 33176,
-  "ip_address": "73.56.201.89",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Amazon",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-```end_json
-
-
-### LLM Chain of Thought for user ID USER-b2297426 ###
-
-
-```json
-{
-  "bank_timestamp": "2025-04-28T16:22:31+00:00",
-  "location": "New York, USA",
-  "local_timestamp": "2025-04-28T12:22:31-04:00",
-  "account_id": "ACC-20bf8871",
-  "type": "Purchase",
+  "local_timestamp": "2025-04-29T09:57:22-04:00",
+  "account_id": "ACC-4151a49f",
+  "type": "Transfer Out",
   "amount": 1250.75,
-  "balance_before": 33176,
+  "balance_before": 31080.25,
   "ip_address": "73.123.45.67",
   "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Amazon",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-```end_json
-
-
-### LLM Chain of Thought for user ID USER-b2297426 ###
-
-
-```json
-{
-  "bank_timestamp": "2025-04-28T16:22:28+00:00",
-  "location": "New York, USA",
-  "local_timestamp": "2025-04-28T12:22:28-04:00",
-  "account_id": "ACC-20bf8871",
-  "type": "Purchase",
-  "amount": 1250.75,
-  "balance_before": 33176,
-  "ip_address": "73.123.45.67",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Amazon",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-```end_json
-
-
-### LLM Chain of Thought for user ID USER-b2297426 ###
-
-
-```json
-{
-  "bank_timestamp": "2025-04-28T16:20:10+00:00",
-  "location": "New York, USA",
-  "local_timestamp": "2025-04-28T12:20:10-04:00",
-  "account_id": "ACC-20bf8871",
-  "type": "Purchase",
-  "amount": 450.75,
-  "balance_before": 33176,
-  "ip_address": "73.123.45.67",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Amazon",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-```end_json
-
-
-### LLM Chain of Thought for user ID USER-b2297426 ###
-
-
-```json
-{
-  "bank_timestamp": "2025-04-28T16:22:41+00:00",
-  "location": "New York, USA",
-  "local_timestamp": "2025-04-28T12:22:41-04:00",
-  "account_id": "ACC-20bf8871",
-  "type": "Purchase",
-  "amount": 350.75,
-  "balance_before": 33176.00,
-  "ip_address": "73.123.45.67",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Amazon",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-```end_json
-
-
-### LLM Chain of Thought for user ID USER-b2297426 ###
-
-
-```json
-{
-  "bank_timestamp": "2025-04-28T16:20:51+00:00",
-  "location": "New York, USA",
-  "local_timestamp": "2025-04-28T12:20:51-04:00",
-  "account_id": "ACC-20bf8871",
-  "type": "Purchase",
-  "amount": 450.75,
-  "balance_before": 33176,
-  "ip_address": "73.123.45.67",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Amazon",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-```end_json
-
-
-### LLM Chain of Thought for user ID USER-b2297426 ###
-
-
-```json
-{
-  "bank_timestamp": "2025-04-28T16:22:32+00:00",
-  "location": "New York, USA",
-  "local_timestamp": "2025-04-28T12:22:32-04:00",
-  "account_id": "ACC-20bf8871",
-  "type": "Purchase",
-  "amount": 456.78,
-  "balance_before": 33176.00,
-  "ip_address": "73.123.45.67",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Amazon",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-```end_json
-
-
-### LLM Chain of Thought for user ID USER-b2297426 ###
-
-
-```json
-{
-  "bank_timestamp": "2025-04-28T16:52:32+00:00",
-  "location": "New York, USA",
-  "local_timestamp": "2025-04-28T12:52:32-04:00",
-  "account_id": "ACC-20bf8871",
-  "type": "Purchase",
-  "amount": 450.75,
-  "balance_before": 32719.22,
-  "ip_address": "73.123.45.67",
-  "device_id": "iPhone-13",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Amazon",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-```end_json
-
-
-### LLM Chain of Thought for user ID USER-7caa17f9 ###
-
-
-```json
-{
-  "bank_timestamp": "2025-04-28T16:20:49+00:00",
-  "location": "New York, USA",
-  "local_timestamp": "2025-04-28T12:20:49-04:00",
-  "account_id": "ACC-fb6b5000",
-  "type": "Purchase",
-  "amount": 356.78,
-  "balance_before": 10326.00,
-  "ip_address": "73.123.45.67",
-  "device_id": "iPhone-8",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Walmart",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-```end_json
-
-
-### LLM Chain of Thought for user ID USER-7caa17f9 ###
-
-
-```json
-{
-  "bank_timestamp": "2025-04-30T16:19:43+00:00",
-  "location": "Los Angeles, USA",
-  "local_timestamp": "2025-04-30T09:19:43-07:00",
-  "account_id": "ACC-fb6b5000",
-  "type": "Purchase",
-  "amount": 150.75,
-  "balance_before": 10326.00,
-  "ip_address": "73.123.45.67",
-  "device_id": "iPhone-8",
-  "network_type": "Wi-Fi",
-  "merchant_name": "Walmart",
-  "recipient_id": null,
-  "recipient_bank": null
-}
-```end_json
-
-
-### LLM Chain of Thought for user ID USER-7caa17f9 ###
-
-
-```json
-{
-  "bank_timestamp": "2025-05-03T12:30:00+00:00",
-  "location": "Chicago, USA",
-  "local_timestamp": "2025-05-03T07:30:00-05:00",
-  "account_id": "ACC-fb6b5000",
-  "type": "Withdrawal",
-  "amount": 500.75,
-  "balance_before": 10175.25,
-  "ip_address": "73.123.45.67",
-  "device_id": "iPhone-8",
   "network_type": "Wi-Fi",
   "merchant_name": null,
+  "recipient_id": "ACC-774683nf",
+  "recipient_bank": "Bank of America"
+}
+```end_json
+
+
+### LLM Chain of Thought for user ID USER-737389ff ###
+
+
+```json
+{
+  "bank_timestamp": "2025-04-29T14:17:22+00:00",
+  "location": "New York, USA",
+  "local_timestamp": "2025-04-29T10:17:22-04:00",
+  "account_id": "ACC-4151a49f",
+  "type": "Purchase",
+  "amount": 450.75,
+  "balance_before": 29829.5,
+  "ip_address": "73.123.45.67",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Amazon",
   "recipient_id": null,
   "recipient_bank": null
 }
 ```end_json
 
 
-### LLM Chain of Thought for user ID USER-7caa17f9 ###
+### LLM Chain of Thought for user ID USER-3f651a42 ###
 
 
 ```json
 {
-  "bank_timestamp": "2025-05-06T12:30:00+00:00",
-  "location": "Los Angeles, USA",
-  "local_timestamp": "2025-05-06T05:30:00-07:00",
-  "account_id": "ACC-fb6b5000",
+  "bank_timestamp": "2025-04-29T13:41:56+00:00",
+  "location": "New York, USA",
+  "local_timestamp": "2025-04-29T09:41:56-04:00",
+  "account_id": "ACC-2d8ccf78",
   "type": "Purchase",
-  "amount": 150.75,
-  "balance_before": 9674.5,
+  "amount": 345.75,
+  "balance_before": 1858.00,
+  "ip_address": "73.123.45.67",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Amazon",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+```end_json
+
+
+### LLM Chain of Thought for user ID USER-a4d2baa4 ###
+
+
+```json
+{
+  "bank_timestamp": "2025-04-29T13:56:56+00:00",
+  "location": "New York, USA",
+  "local_timestamp": "2025-04-29T09:56:56-04:00",
+  "account_id": "ACC-9cfcdbf0",
+  "type": "Purchase",
+  "amount": 456.78,
+  "balance_before": 39987,
+  "ip_address": "73.123.45.67",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Amazon",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+```end_json
+
+
+### LLM Chain of Thought for user ID USER-792f2021 ###
+
+
+```json
+{
+  "bank_timestamp": "2025-04-29T13:36:47+00:00",
+  "location": "Los Angeles, USA",
+  "local_timestamp": "2025-04-29T06:36:47-07:00",
+  "account_id": "ACC-02b158bf",
+  "type": "Purchase",
+  "amount": 1250.75,
+  "balance_before": 12627,
   "ip_address": "73.123.45.67",
   "device_id": "iPhone-8",
   "network_type": "Wi-Fi",
@@ -400,18 +219,216 @@
 ```end_json
 
 
-### LLM Chain of Thought for user ID USER-7caa17f9 ###
+### LLM Chain of Thought for user ID USER-792f2021 ###
 
 
 ```json
 {
-  "bank_timestamp": "2025-05-09T12:30:00+00:00",
+  "bank_timestamp": "2025-05-03T13:34:42+00:00",
+  "location": "Los Angeles, USA",
+  "local_timestamp": "2025-05-03T06:34:42-07:00",
+  "account_id": "ACC-02b158bf",
+  "type": "Purchase",
+  "amount": 125.75,
+  "balance_before": 12627,
+  "ip_address": "73.123.45.67",
+  "device_id": "iPhone-8",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Walmart",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+```end_json
+
+
+### LLM Chain of Thought for user ID USER-f2144f7c ###
+
+
+```json
+{
+  "bank_timestamp": "2025-04-29T13:34:31+00:00",
   "location": "New York, USA",
-  "local_timestamp": "2025-05-09T08:30:00-04:00",
-  "account_id": "ACC-fb6b5000",
+  "local_timestamp": "2025-04-29T09:34:31-04:00",
+  "account_id": "ACC-fa0273a2",
+  "type": "Purchase",
+  "amount": 1250.75,
+  "balance_before": 19265,
+  "ip_address": "73.123.45.67",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Coinbase",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+```end_json
+
+
+### LLM Chain of Thought for user ID USER-f2144f7c ###
+
+
+```json
+{
+  "bank_timestamp": "2025-04-29T13:34:30+00:00",
+  "location": "New York, USA",
+  "local_timestamp": "2025-04-29T09:34:30-04:00",
+  "account_id": "ACC-82116489",
+  "type": "Purchase",
+  "amount": 2500.75,
+  "balance_before": 44464,
+  "ip_address": "73.123.45.67",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Coinbase",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+```end_json
+
+
+### LLM Chain of Thought for user ID USER-f2144f7c ###
+
+
+```json
+{
+  "bank_timestamp": "2025-04-29T13:37:21+00:00",
+  "location": "San Francisco, USA",
+  "local_timestamp": "2025-04-29T06:37:21-07:00",
+  "account_id": "ACC-82116489",
+  "type": "Purchase",
+  "amount": 1250.75,
+  "balance_before": 44464,
+  "ip_address": "73.123.45.67",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Coinbase",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+```end_json
+
+
+### LLM Chain of Thought for user ID USER-f2144f7c ###
+
+
+```json
+{
+  "bank_timestamp": "2025-04-29T13:34:39+00:00",
+  "location": "San Francisco, USA",
+  "local_timestamp": "2025-04-29T06:34:39-07:00",
+  "account_id": "ACC-ada07b9c",
+  "type": "Purchase",
+  "amount": 1250.75,
+  "balance_before": 49102,
+  "ip_address": "73.123.45.67",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Coinbase",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+```end_json
+
+
+### LLM Chain of Thought for user ID USER-f2144f7c ###
+
+
+```json
+{
+  "bank_timestamp": "2025-04-29T13:34:09+00:00",
+  "location": "New York, USA",
+  "local_timestamp": "2025-04-29T09:34:09-04:00",
+  "account_id": "ACC-ada07b9c",
+  "type": "Purchase",
+  "amount": 2500.00,
+  "balance_before": 49102.00,
+  "ip_address": "73.123.45.67",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Coinbase",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+```end_json
+
+
+### LLM Chain of Thought for user ID USER-f2144f7c ###
+
+
+```json
+{
+  "bank_timestamp": "2025-04-29T13:36:07+00:00",
+  "location": "San Francisco, USA",
+  "local_timestamp": "2025-04-29T06:36:07-07:00",
+  "account_id": "ACC-82116489",
+  "type": "Purchase",
+  "amount": 1250.75,
+  "balance_before": 44464,
+  "ip_address": "73.123.45.67",
+  "device_id": "iPhone-13",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Coinbase",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+```end_json
+
+
+### LLM Chain of Thought for user ID USER-29c47f1d ###
+
+
+```json
+{
+  "bank_timestamp": "2025-05-03T13:34:59+00:00",
+  "location": "New York, USA",
+  "local_timestamp": "2025-05-03T09:34:59-04:00",
+  "account_id": "ACC-f0debfa5",
   "type": "Purchase",
   "amount": 150.75,
-  "balance_before": 9523.75,
+  "balance_before": 15739.00,
+  "ip_address": "73.123.45.67",
+  "device_id": "iPhone-8",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Walmart",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+```end_json
+
+
+### LLM Chain of Thought for user ID USER-29c47f1d ###
+
+
+```json
+{
+  "bank_timestamp": "2025-05-06T13:34:59+00:00",
+  "location": "New York, USA",
+  "local_timestamp": "2025-05-06T09:34:59-04:00",
+  "account_id": "ACC-f0debfa5",
+  "type": "Purchase",
+  "amount": 150.75,
+  "balance_before": 15588.25,
+  "ip_address": "73.123.45.67",
+  "device_id": "iPhone-8",
+  "network_type": "Wi-Fi",
+  "merchant_name": "Walmart",
+  "recipient_id": null,
+  "recipient_bank": null
+}
+```end_json
+
+
+### LLM Chain of Thought for user ID USER-29c47f1d ###
+
+
+```json
+{
+  "bank_timestamp": "2025-05-08T15:45:30+00:00",
+  "location": "Los Angeles, USA",
+  "local_timestamp": "2025-05-08T08:45:30-07:00",
+  "account_id": "ACC-f0debfa5",
+  "type": "Purchase",
+  "amount": 150.75,
+  "balance_before": 15437.5,
   "ip_address": "73.123.45.67",
   "device_id": "iPhone-8",
   "network_type": "Wi-Fi",

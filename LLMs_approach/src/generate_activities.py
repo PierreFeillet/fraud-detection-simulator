@@ -425,6 +425,7 @@ def generate_activity_sequence(strategy, user_id, behavior_type, fraud_label, gl
                 model_id=activity_model_id,
                 parameters=watsonx_helper.parameters_activity
             )
+            print(prompt)
             save_to_text(raw_response, user_id)
             tx, errors = validate_json(raw_response, user_id, last_timestamp)
             
