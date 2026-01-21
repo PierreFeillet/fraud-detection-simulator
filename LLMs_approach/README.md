@@ -7,6 +7,10 @@ This repository contains a Python pipeline that generates **synthetic banking tr
 
 The output is a CSV dataset suitable for fraud detection experiments, anomaly detection, sequence modeling, or simulation.
 
+**This pipeline is an alternative implementation of the Markov-chain-based simulator located in `markov_chain_approach/`, which generates sequences without using an LLM.**
+
+For details on the non-LLM approach (Markov chains, transition matrices, clustering and feature evaluation scripts), see: `markov_chain_approach/README.md`.
+
 ---
 
 ## What this pipeline produces
