@@ -1,9 +1,5 @@
 # Bank Fraud Simulation System Using Markov Chains
 
-
-TO BE CHECKED
-- more overlap between legitimate and fraudulent activities (right now quite separated) --> this requires bigger matrix or reducing the variability of activities for the different sequences
-
 This README provides a comprehensive overview of the bank fraud simulation system using Markov chains, designed to model both legitimate and fraudulent user behaviors within a financial environment. It also includes scripts for clustering analysis and feature evaluation using machine learning techniques.
 
 ## Table of Contents
@@ -165,3 +161,6 @@ Simulation results are saved as CSV files, with each row representing an activit
 
 This system is designed to be flexible, allowing users to simulate various fraud scenarios for research and industry applications.
 
+
+TO BE CHECKED
+- more overlap between legitimate and fraudulent activities (right now quite separated) --> this requires bigger matrix or reducing the variability of activities for the different sequences
