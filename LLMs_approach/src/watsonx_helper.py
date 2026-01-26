@@ -11,12 +11,12 @@ import os
 
 load_dotenv()
 api_key = os.getenv("API_KEY")
+project_id = os.getenv("PROJECT_ID")
 
 credentials = Credentials(
     url="https://us-south.ml.cloud.ibm.com",
     api_key=api_key
 )
-project_id = "952c902e-8928-4bf6-9e60-2ed48398154e"
 
 #model_id = "meta-llama/llama-3-3-70b-instruct"
 strategy_gen_model_id = "meta-llama/llama-3-405b-instruct"
