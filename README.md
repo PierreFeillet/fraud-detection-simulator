@@ -139,9 +139,10 @@ project_root/
 ```
 
 ## 12. Running the Simulation
+Create the python environment with the requirments installed and activate it with source `fraud_env/bin/activate`.
 To run the simulation, use the command:
 ```bash
-python src/simulator.py --nb_activities 1000000 --min_n_agents 40 --fraudster_rate 0.1 --data_folder data --start_time "2025-01-06T12:00:00"
+python src/simulator.py --nb_activities 1000000 --min_n_agents 40 --fraudster_rate 0.1 --data_folder data 
 ```
 
 ## 13. Output and Data Interpretation

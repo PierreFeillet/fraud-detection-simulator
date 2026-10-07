@@ -299,7 +299,7 @@ if __name__ == "__main__":
     distributions.plot_distributions()
 
     dataset = run_full_simulation(fraudster_rate=cfg.fraudster_rate, nb_activities=cfg.nb_activities, min_n_agents=cfg.min_n_agents, normalized_catalog=normalized_catalog, distributions=distributions, data_folder=cfg.data_folder, start_time=cfg.start_time, target_size=cfg.nb_activities)
-    print(f"Running the simulation required {round((time.time() - start_time)/60,2)} seconds.")
+    print(f"Running the simulation required {round((time.time() - start_time)/60,2)} minutes.")
     # dataset = generate_dataset(fraudster_rate=cfg.fraudster_rate, normalized_catalog=normalized_catalog, nb_activities=cfg.nb_activities, min_n_agents=cfg.min_n_agents, data_folder=cfg.data_folder, start_time=cfg.start_time, target_size=cfg.nb_activities)
     # Build sample for training ML clustering alghoritms
     #columns_to_drop = ['behavior']
