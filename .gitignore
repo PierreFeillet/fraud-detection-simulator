@@ -1,6 +1,6 @@
 # Big files
-data/*M.csv
-data/*K.csv
+**/data/*M.csv
+**/data/*K.csv
 
 
 # Byte-compiled / optimized / DLL files

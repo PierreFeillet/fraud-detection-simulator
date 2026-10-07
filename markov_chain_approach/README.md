@@ -2,7 +2,7 @@
 
 > Part of the [Synthetic Banking Fraud Simulator](../README.md). This is the **fast, statistical** approach. For the more realistic LLM-based approach, see [`../LLMs_approach/`](../LLMs_approach/README.md).
 
-This simulator models legitimate and fraudulent user behaviour with **Markov chains**. Activity amounts, locations, devices and networks are drawn from **statistical distributions**. Because no external model is involved, it is fully transparent and scales to millions of activities: 1M activities in **~TODO minutes**. The folder also includes scripts for clustering analysis and feature evaluation of the generated data.
+This simulator models legitimate and fraudulent user behaviour with **Markov chains**. Activity amounts, locations, devices and networks are drawn from **statistical distributions**. Because no external model is involved, it is fully transparent and scales to millions of activities: 1M activities in **~9 minutes** on a laptop. The folder also includes scripts for clustering analysis and feature evaluation of the generated data.
 
 ## Table of Contents
 1. Introduction

@@ -8,7 +8,7 @@ Real transaction data is sensitive, heavily regulated, and fraud labels are scar
 |---|---|---|
 | Folder | [`markov_chain_approach/`](markov_chain_approach/) | [`LLMs_approach/`](LLMs_approach/) |
 | How sequences are built | Transition matrices + sampling from statistical distributions | A *Strategist* LLM designs behaviour profiles, an *Activity Generator* LLM writes transactions that follow them |
-| Strength | **Fast and scalable**: 1M activities in **~TODO minutes** on a laptop | **More realistic and context-aware**: coherent locations, IPs, devices, merchants, timing |
+| Strength | **Fast and scalable**: 1M activities in **~9 minutes** on a laptop | **More realistic and context-aware**: coherent locations, IPs, devices, merchants, timing |
 | Control / explainability | Fully transparent, every probability is in the catalog | Guided by structured strategies + strict JSON validation |
 | Cost | CPU only, no external services | Requires LLM calls (IBM watsonx.ai) |
 | Best for | Large-volume datasets, baselines, stress tests | High-fidelity fraud scenarios, smaller curated datasets |
