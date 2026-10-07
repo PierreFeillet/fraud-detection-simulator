@@ -1,166 +1,92 @@
-# Bank Fraud Simulation System Using Markov Chains
+# Synthetic Banking Fraud Simulator
 
-This README provides a comprehensive overview of the bank fraud simulation system using Markov chains, designed to model both legitimate and fraudulent user behaviors within a financial environment. It also includes scripts for clustering analysis and feature evaluation using machine learning techniques.
+Generate **realistic, labelled synthetic banking transaction logs** that mix legitimate customers and fraudsters, for training and benchmarking fraud-detection models when real banking data cannot be shared.
 
-## Table of Contents
-1. Introduction
-2. System Architecture
-3. Markov Chain Approach
-4. Agent and Activity Definitions
-5. Behavior Catalog
-6. Location Modeling
-7. Transaction Amount Distributions
-8. Simulation Workflow
-9. Evaluation and Goodness Check
-10. Limitations and Advantages of the Markov Chain Approach
-11. Project Structure
-12. Running the Simulation
-13. Output and Data Interpretation
-14. Customization and Extensions
+Real transaction data is sensitive, heavily regulated, and fraud labels are scarce. This project explores two complementary ways to produce a synthetic replacement:
 
-## 1. Introduction
-This system simulates banking activities using Markov chains, allowing researchers and developers to generate realistic datasets for testing fraud detection models. The simulation replicates patterns of everyday users and fraudsters, with detailed transaction logs saved as CSV files.
+| | **1. Statistical simulator (Markov chains)** | **2. Two-stage LLM generator** |
+|---|---|---|
+| Folder | [`markov_chain_approach/`](markov_chain_approach/) | [`LLMs_approach/`](LLMs_approach/) |
+| How sequences are built | Transition matrices + sampling from statistical distributions | A *Strategist* LLM designs behaviour profiles, an *Activity Generator* LLM writes transactions that follow them |
+| Strength | **Fast and scalable**: 1M activities in **~TODO minutes** on a laptop | **More realistic and context-aware**: coherent locations, IPs, devices, merchants, timing |
+| Control / explainability | Fully transparent, every probability is in the catalog | Guided by structured strategies + strict JSON validation |
+| Cost | CPU only, no external services | Requires LLM calls (IBM watsonx.ai) |
+| Best for | Large-volume datasets, baselines, stress tests | High-fidelity fraud scenarios, smaller curated datasets |
 
-## 2. System Architecture
-The system is modular, consisting of:
-- **simulator.py**: Main script that runs the simulation.
-- **activity.py**: Defines and manages user activities, including transaction details and locations.
-- **agent.py**: Represents legitimate users and fraudsters, defining their behaviors and attributes.
-- **bank.py**: Manages transaction logging.
-- **catalog.py**: Stores behavior definitions, transition matrices, and location data.
-- **distributions.py**: Defines transaction amount distributions.
-- **clustering.py**: Analyzes clusters emerging from the dataset using DBSCAN, KMeans, Hierarchical Clustering, and Isolation Forest.
-- **analyze_sample.py**: Evaluates feature importance and correlations using Random Forest and other statistical methods.
+---
 
-## 3. Markov Chain Approach
-The Markov chain approach models the probability of a sequence of activities using a transition matrix. Each activity is associated in the `catalog.py` to a probability array that determines the likelihood of transitioning to other activities. Currently, these probabilities are constant, but future implementations may incorporate variables such as location and transaction amount.
+## Approach 1: Statistical simulator (Markov chains)
 
-Future enhancements could include tailored distributions for specific profiles, such as High-Spender, Student, and Investor for legitimate users, and distinct patterns for each type of fraud.
+A deterministic, rule-driven simulator. Each **agent** (legitimate user or fraudster) is assigned a behaviour, such as *Legitimate*, *Card Skimming*, *Identity Theft*, *Money Laundering* or *Synthetic Identity Fraud*. Its next activity is chosen from that behaviour's **Markov transition matrix**.
 
-## 4. Agent and Activity Definitions
-### Agent (agent.py)
-- **Real ID:** Unique identifier for the agent.
-- **Virtual ID:** Used when impersonating victims.
-- **Initial Balance:** Starting balance assigned randomly within a defined range.
-- **Initial Country:** Geographic location where the agent primarily transacts.
-- **Agent Type:** Can be either “traveler” or “static,” influencing location probabilities.
-- **Visited Countries:** A dictionary storing countries and their transaction probabilities.
+Transaction amounts are drawn from **log-normal distributions** (different for legitimate and fraudulent behaviour). Locations, devices and networks are sampled from probability tables. Balances are tracked, so transactions can be declined.
 
-### Activity (activity.py)
-- **Inheritance:** The `Activity` class extends the `Agent` class, inheriting key attributes.
-- **Transaction Location:** Determined based on the agent’s type and visited countries.
-- **Device and Network:** Randomly chosen from predefined lists with associated probabilities.
-- **Compromised Status:** Simulates whether the device or network is compromised, with planned improvements to model patterns rather than using random assignments.
-- **Transaction Amount:** Defined based on the activity type and agent’s behavior.
-- **Balance Update:** Adjusted after each transaction, with validation for insufficient funds.
-- **Merchant Categories (Planned):** Future versions could include merchant categories to provide additional context for transaction data.
+- Simple, interpretable and very fast: it scales to millions of rows.
+- Limitation: realism is bounded by hand-written matrices and distributions. Fields are sampled largely independently, so cross-field consistency (e.g. IP vs. location vs. merchant) is limited.
 
-## 5. Behavior Catalog
-The `catalog.py` file defines behaviors and their properties, including:
-- **Legitimate**
-- **Card Skimming**
-- **Identity Theft**
-- **Money Laundering**
-- **Synthetic Identity Fraud**
+➡️ Details, architecture and usage: [`markov_chain_approach/README.md`](markov_chain_approach/README.md)
 
-Each behavior is associated with:
-- **Set of Activities:** Possible actions for the behavior.
-- **Transition Matrix:** Probability of transitioning between activities.
-- **Time Limit:** Maximum time between activities (e.g., 15 minutes for card skimming).
-- **Fraud Label:** Indicates whether the behavior is considered fraudulent.
+## Approach 2: Two-stage LLM generator
 
-For identity theft, two users share the same virtual ID but have different real IDs.
+To push realism further, generation is split between two LLMs with distinct roles:
 
-## 6. Location Modeling
-Location assignments are based on probability distributions:
-- **Travelers:** Probability shifts gradually from the home country to foreign countries.
-- **Static Agents:** Primarily transact in their home country, with rare foreign transactions.
-
-Future improvements could introduce location assignment based on a probability distribution centered around a defined barycenter, decreasing the likelihood of selecting locations as the distance from the barycenter increases.
-
-## 7. Transaction Amount Distributions
-
-Transaction amounts follow a log-normal distribution defined by parameters \(\mu\) and \(\sigma\):
-- **Legitimate behavior:** \(\mu = 5\), \(\sigma = 1\), with a peak around $150.
-- **Fraudulent behavior:** \(\mu = 8\), \(\sigma = 1.2\), with a peak around $3000.
-Future versions could include specific log-normal distributions for different legitimate profiles and fraud scenarios.
-
-## Balance computation
-In catalog.py, each activity is labeled as "neutral", "positive", or "negative", referring to the impact on the balance. For example, a "Purchase" results in a "negative" impact, while a "Login" is "neutral" and has no effect on the balance (the `amount` associated to that activyt is 0 and the balance is not changed). The initial balance is randomly assigned, and subsequent balances are updated based on transaction amounts. If a transaction amount exceeds the current balance, the transaction is declined, and the granted field is set to False; otherwise, it is set to True.
-
-The remaining sections follow the previously detailed structure, ensuring clarity and modularity for users looking to customize and extend the simulation.
-
-
-## 8. Simulation Workflow
-1. **Activity Selection:** Determined using Markov chain transition probabilities.
-2. **Transaction Execution:** Amounts are drawn from the appropriate distributions.
-3. **Location Assignment:** Based on agent type, visited countries, and fraud behavior.
-4. **Balance Validation:** Transactions are approved if the balance is sufficient. 
-5. **Logging:** Each transaction is recorded with timestamps, amounts, and labels.
-6. **Account Closure:** Agents are removed after performing the “Close Account” activity.
-
-## 9. Evaluation and Goodness Check
-### Clustering Analysis (clustering.py)
-- **DBSCAN:** Density-based clustering
-- **KMeans:** Partition-based clustering
-- **Hierarchical Clustering:** Visualized using dendrograms
-- **Isolation Forest:** Anomaly detection
-
-### Feature Evaluation (analyze_sample.py)
-- **Random Forest Classifier:** Measures feature importance and predicts fraud labels
-- **Decision Tree:** Visualizes decision rules
-- **Correlation Analysis:** Uses Pearson correlation and Cramér's V
-- **Heatmaps:** Visualizes feature correlations
-
-## 10. Limitations and Advantages of the Markov Chain Approach
-### Limitations
-- Large and sparse transition matrices are required for modeling complex sequences.
-- Transition probabilities should ideally depend on variables like amount, location, and time.
-- Realistic modeling requires domain expertise in banking.
-
-### Advantages
-- Simple to control and interpret.
-- Transparent and easily explainable modeling process.
-
-## 11. Project Structure
 ```
-project_root/
-├── src/
-│   ├── simulator.py
-│   ├── activity.py
-│   ├── agent.py
-│   ├── bank.py
-│   ├── catalog.py
-│   ├── distributions.py
-│   ├── clustering.py
-│   ├── analyze_sample.py
-└── data/
-    └── Output files are saved here
+ ┌──────────────────────┐   strategies (JSON)   ┌───────────────────────────┐   validated   ┌─────────┐
+ │  Stage 1: STRATEGIST │ ────────────────────▶ │ Stage 2: ACTIVITY         │ ───────────▶  │ CSV log │
+ │  (Llama 3 405B)      │  per fraud type /     │ GENERATOR (Mistral Large) │  JSON + retry │         │
+ │  designs behaviour   │  legit profile        │ writes the next tx given  │               │         │
+ │  profiles            │                       │ strategy + user history   │               │         │
+ └──────────────────────┘                       └───────────────────────────┘               └─────────┘
 ```
 
-## 12. Running the Simulation
-To run the simulation, use the command:
+1. **Strategist LLM** (`generate_strategies.py`): for each fraud type (Money Laundering, Account Takeover, Wire Fraud, …) and legitimate profile (Student, Retiree, Business Owner, …), it produces a structured JSON *strategy*. A strategy covers the number of accounts, transaction types, amount range, geographic focus, velocity, devices, networks, IP ranges, typical merchants and recipients, plus a short narrative context.
+2. **Activity Generator LLM** (`generate_activities.py`): generates each user's transactions **one at a time**. Every prompt contains the user's strategy and full transaction history, so the sequence stays coherent: plausible travel times between cities, IPs consistent with location, and amounts within balance. Every output is **validated against a strict JSON schema** (field types, formats, strictly increasing timestamps). Failures are retried, and recurring errors are fed back into the next prompt.
+
+To keep cost under control, the LLM is only used where it adds the most value: **fraudulent sequences after the first event**. Legitimate activity and first events reuse the fast statistical generator.
+
+➡️ Details, prompt/JSON contract and usage: [`LLMs_approach/README.md`](LLMs_approach/README.md)
+
+---
+
+## Output
+
+Both approaches produce a CSV with **one row per activity**: user/agent ID, timestamps, activity type, amount, balance, location and contextual fields, plus the **behaviour type and a binary fraud label**. The LLM approach adds richer context fields (local vs. bank timestamp, IP address, device, network, merchant, recipient account/bank).
+
+Both folders also include evaluation scripts: clustering (DBSCAN, KMeans, hierarchical, Isolation Forest), feature importance (Random Forest, decision trees) and correlation analysis. Use them to check that the generated data has learnable but non-trivial fraud signal.
+
+## Repository structure
+
+```
+fraud-detection-simulator/
+├── README.md                  ← you are here (project overview)
+├── requirements.txt
+├── markov_chain_approach/     ← Approach 1: statistical simulator
+│   ├── README.md
+│   ├── src/                   simulator, agents, behaviour catalog, distributions, evaluation
+│   ├── data/                  generated datasets
+│   └── plots/                 analysis plots
+└── LLMs_approach/             ← Approach 2: two-stage LLM generator
+    ├── README.md
+    ├── src/                   strategist, activity generator, validation, evaluation
+    ├── strategies/            LLM-generated strategies (JSON)
+    ├── data/                  generated datasets
+    └── outputs/               run logs, JSON error tracking, success-rate plots
+```
+
+## Quick start
+
 ```bash
-python src/simulator.py --nb_activities 1000000 --min_n_agents 40 --fraudster_rate 0.1 --data_folder data --start_time "2025-01-06T12:00:00"
+# Python 3.11
+python3.11 -m venv fraud_env && source fraud_env/bin/activate
+pip install -r requirements.txt
+
+# Approach 1: statistical simulator
+cd markov_chain_approach
+python src/simulator.py --nb_activities 1000000 --min_n_agents 40 --fraudster_rate 0.1 --start_time "2025-01-06T12:00:00"
+cd ..
+
+# Approach 2: two-stage LLM generator (needs IBM watsonx.ai credentials, see its README)
+cd LLMs_approach
+python src/generate_strategies.py           # Stage 1: build strategies
+python src/generate_activities.py --nb_activities 1000 --target_fraud_percentage 0.05   # Stage 2
 ```
-
-## 13. Output and Data Interpretation
-Simulation results are saved as CSV files, with each row representing an activity:
-- **`agent_id`**: Unique identifier of the agent.
-- **`timestamp`**: Activity execution time.
-- **`behavior`**: Type of behavior (legitimate or fraudulent).
-- **`activity_type`**: Specific activity performed.
-- **`amount`**: Transaction amount, positive or negative.
-- **`balance`**: Agent’s balance after the activity.
-- **`fraudulent`**: Binary flag indicating fraud.
-
-## 14. Customization and Extensions
-- **Adding New Behaviors:** Define additional behaviors in `catalog.py`.
-- **Modifying Transaction Amounts:** Adjust log-normal parameters in `distributions.py`.
-- **Changing Agent Logic:** Customize `assign_behavior()` and `run_simulation_step()` in `simulator.py`.
-
-This system is designed to be flexible, allowing users to simulate various fraud scenarios for research and industry applications.
-
-
-TO BE CHECKED
-- more overlap between legitimate and fraudulent activities (right now quite separated) --> this requires bigger matrix or reducing the variability of activities for the different sequences
